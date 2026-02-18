@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Pointer Arithmetic Test
-fr fr Tests: Basic pointer arithmetic and array access
-fr fr Expected: Identical results in both modes
+no cap
+Pointer Arithmetic Test
+Tests: Basic pointer arithmetic and array access
+Expected: Identical results in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Pointer Arithmetic Test ===")

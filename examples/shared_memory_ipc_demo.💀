@@ -1,10 +1,12 @@
-fr fr/ Comprehensive Shared Memory IPC Demo for CURSED Language
-fr fr/ This example demonstrates advanced shared memory features including:
-fr fr/ - Cross-platform memory mapping
-fr fr/ - Thread-safe operations
-fr fr/ - Typed memory views
-fr fr/ - Statistics tracking
-fr fr/ - Error handling
+no cap
+/ Comprehensive Shared Memory IPC Demo for CURSED Language
+/ This example demonstrates advanced shared memory features including:
+/ - Cross-platform memory mapping
+/ - Thread-safe operations
+/ - Typed memory views
+/ - Statistics tracking
+/ - Error handling
+on god
 
 yeet "stdlib::ipc::shared_memory" as shm;
 yeet "stdlib::io::console" as console;

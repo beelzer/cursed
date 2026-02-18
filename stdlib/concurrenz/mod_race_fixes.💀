@@ -83,9 +83,11 @@ struct CondVar {
     spill condition_signal *atomic_drip.AtomicFlag fr fr FIXED: Condition wake-up signal
 }
 
-fr fr =============================================================================
-fr fr MUTEX OPERATIONS - RACE CONDITION FIXES
-fr fr =============================================================================
+no cap
+=============================================================================
+MUTEX OPERATIONS - RACE CONDITION FIXES
+=============================================================================
+on god
 
 fr fr RACE-SAFE: Create new mutex with atomic initialization
 slay create_mutex() *Mutex {
@@ -190,9 +192,11 @@ slay mutex_unlock(mutex *Mutex) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr CHANNEL OPERATIONS - RACE CONDITION FIXES
-fr fr =============================================================================
+no cap
+=============================================================================
+CHANNEL OPERATIONS - RACE CONDITION FIXES
+=============================================================================
+on god
 
 fr fr RACE-SAFE: Create channel with atomic initialization
 slay create_channel(capacity normie) *Channel {
@@ -474,9 +478,11 @@ slay channel_close(ch *Channel) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr UTILITY FUNCTIONS - Fixed runtime integration
-fr fr =============================================================================
+no cap
+=============================================================================
+UTILITY FUNCTIONS - Fixed runtime integration
+=============================================================================
+on god
 
 fr fr Get current goroutine ID (simplified)
 slay get_current_goroutine_id() thicc {
@@ -485,12 +491,14 @@ slay get_current_goroutine_id() thicc {
 
 fr fr FIXED: Proper runtime yielding with scheduler integration
 slay runtime_yield() {
-    fr fr In real implementation, this would:
-    fr fr 1. Save current goroutine state
-    fr fr 2. Switch to scheduler
-    fr fr 3. Pick next runnable goroutine
-    fr fr 4. Resume execution
-    fr fr For now, this provides cooperative yielding point
+    no cap
+    In real implementation, this would:
+    1. Save current goroutine state
+    2. Switch to scheduler
+    3. Pick next runnable goroutine
+    4. Resume execution
+    For now, this provides cooperative yielding point
+    on god
 }
 
 fr fr Memory fence operation for ordering guarantees

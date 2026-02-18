@@ -1,8 +1,10 @@
-fr fr fr fr MySQL Comprehensive Driver Demo - That's so fire periodt 🔥
-fr fr 
-fr fr This example demonstrates the comprehensive MySQL driver for CURSED
-fr fr with real connection pooling, prepared statements, transactions,
-fr fr and full Gen Z syntax integration that absolutely slays!
+no cap
+fr fr MySQL Comprehensive Driver Demo - That's so fire periodt 🔥
+
+This example demonstrates the comprehensive MySQL driver for CURSED
+with real connection pooling, prepared statements, transactions,
+and full Gen Z syntax integration that absolutely slays!
+on god
 
 yeet "stdlib::database"
 yeet "stdlib::database::mysql"
@@ -354,7 +356,9 @@ slay demo_transaction_handling() {
     println("  🛡️ Database state preserved - rollback successful!");
 }
 
-fr fr fr fr This demo showcases the comprehensive MySQL driver for CURSED
-fr fr with real-world examples, error handling, performance considerations,
-fr fr and full integration with the CURSED programming language ecosystem.
-fr fr It's designed to be both educational and production-lowkey!
+no cap
+fr fr This demo showcases the comprehensive MySQL driver for CURSED
+with real-world examples, error handling, performance considerations,
+and full integration with the CURSED programming language ecosystem.
+It's designed to be both educational and production-lowkey!
+on god

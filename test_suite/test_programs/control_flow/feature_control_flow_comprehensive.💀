@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Comprehensive Control Flow Test
-fr fr Tests: All control flow structures work correctly
-fr fr Expected: Conditionals, loops, and returns function properly
+no cap
+Comprehensive Control Flow Test
+Tests: All control flow structures work correctly
+Expected: Conditionals, loops, and returns function properly
+on god
 
 slay main_character() {
     vibez.spill("=== Control Flow Test ===")

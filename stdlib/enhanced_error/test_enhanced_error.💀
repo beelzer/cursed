@@ -3,9 +3,11 @@ yeet "enhanced_error"
 
 test_start("Enhanced Error Handling Comprehensive Tests")
 
-fr fr ================================
-fr fr Error Type Tests
-fr fr ================================
+no cap
+================================
+Error Type Tests
+================================
+on god
 
 test_start("RuntimeError creation and methods")
 sus runtime_err RuntimeError = RuntimeError{
@@ -61,9 +63,11 @@ assert_true(string_contains(fs_message, "/tmp/test.txt"))
 assert_true(string_contains(fs_message, "read"))
 assert_true(fs_err.is_recoverable()) fr fr Read operations are recoverable
 
-fr fr ================================
-fr fr Result Type Tests
-fr fr ================================
+no cap
+================================
+Result Type Tests
+================================
+on god
 
 test_start("Ok result creation and methods")
 sus ok_result Result<normie, tea> = ok<normie, tea>(42)
@@ -93,9 +97,11 @@ sus mapped_error_result Result<normie, tea> = original_err.map_error(error_mappe
 assert_true(mapped_error_result.is_error())
 assert_eq_string(mapped_error_result.unwrap_error(), "mapped: original error")
 
-fr fr ================================
-fr fr Error Creation Function Tests
-fr fr ================================
+no cap
+================================
+Error Creation Function Tests
+================================
+on god
 
 test_start("create_runtime_error function")
 sus created_runtime Error = create_runtime_error("Runtime issue", 503, based)
@@ -118,9 +124,11 @@ sus created_fs Error = create_filesystem_error("Permission denied", "/etc/passwd
 assert_eq_string(created_fs.error_type(), "FileSystemError")
 assert_eq_int(created_fs.error_code(), 2001)
 
-fr fr ================================
-fr fr Result Utility Function Tests
-fr fr ================================
+no cap
+================================
+Result Utility Function Tests
+================================
+on god
 
 test_start("result_from_nullable with valid value")
 sus valid_result Result<normie, tea> = result_from_nullable(42, based, "Invalid")
@@ -170,9 +178,11 @@ sus collected_mixed Result<normie[value], tea> = collect_results(mixed_results)
 assert_true(collected_mixed.is_error())
 assert_eq_string(collected_mixed.unwrap_error(), "Failed")
 
-fr fr ================================
-fr fr Retry Configuration Tests
-fr fr ================================
+no cap
+================================
+Retry Configuration Tests
+================================
+on god
 
 test_start("default_retry_config creation")
 sus config RetryConfig = default_retry_config()
@@ -192,9 +202,11 @@ assert_true(retry_result.is_ok())
 assert_eq_int(retry_result.unwrap(), 42)
 assert_eq_int(attempt_count, 1) fr fr Should succeed on first try
 
-fr fr ================================
-fr fr Error Logging Tests
-fr fr ================================
+no cap
+================================
+Error Logging Tests
+================================
+on god
 
 test_start("ErrorLogger creation")
 sus logger ErrorLogger = ErrorLogger_new(100, "test.log")
@@ -212,9 +224,11 @@ assert_true(string_contains(log_entry, "RuntimeError"))
 assert_true(string_contains(log_entry, "500"))
 assert_true(string_contains(log_entry, "Test error"))
 
-fr fr ================================
-fr fr Error Aggregation Tests
-fr fr ================================
+no cap
+================================
+Error Aggregation Tests
+================================
+on god
 
 test_start("ErrorAggregator creation")
 sus aggregator ErrorAggregator = ErrorAggregator_new()
@@ -240,9 +254,11 @@ assert_eq_int(stats.total_errors, 3)
 assert_eq_int(stats.unique_types, 2)
 assert_eq_string(stats.most_common_type, "RuntimeError") fr fr 2 runtime errors vs 1 validation
 
-fr fr ================================
-fr fr Panic and Recovery Tests
-fr fr ================================
+no cap
+================================
+Panic and Recovery Tests
+================================
+on god
 
 test_start("PanicInfo creation")
 sus panic_info PanicInfo = PanicInfo{
@@ -265,9 +281,11 @@ sus recovery_success lit = recover_from_panic(recovery_function)
 assert_true(recovery_success)
 assert_true(recovery_called)
 
-fr fr ================================
-fr fr Error Context Tests
-fr fr ================================
+no cap
+================================
+Error Context Tests
+================================
+on god
 
 test_start("ErrorContext creation and metadata")
 sus context ErrorContext = ErrorContext_new("database_query")
@@ -293,9 +311,11 @@ assert_eq_int(contextual.error_code(), 500)
 assert_eq_string(contextual.error_type(), "ContextualError")
 assert_true(contextual.is_recoverable())
 
-fr fr ================================
-fr fr Utility Function Tests
-fr fr ================================
+no cap
+================================
+Utility Function Tests
+================================
+on god
 
 test_start("string_format_int function")
 assert_eq_string(string_format_int(0), "0")
@@ -320,9 +340,11 @@ test_start("get_current_timestamp function")
 sus timestamp tea = get_current_timestamp()
 assert_eq_string(timestamp, "2025-01-01T12:00:00Z")
 
-fr fr ================================
-fr fr Integration Tests
-fr fr ================================
+no cap
+================================
+Integration Tests
+================================
+on god
 
 test_start("Complete error handling workflow")
 fr fr Simulate a complex operation that might fail

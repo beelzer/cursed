@@ -1,11 +1,15 @@
-fr fr CURSED TestResult Type System
-fr fr Complete test result handling with type safety and serialization
-fr fr Author: CURSED Compiler Team
-fr fr Version: 1.0.0
+no cap
+CURSED TestResult Type System
+Complete test result handling with type safety and serialization
+Author: CURSED Compiler Team
+Version: 1.0.0
+on god
 
-fr fr ================================
-fr fr Core TestResult Type System
-fr fr ================================
+no cap
+================================
+Core TestResult Type System
+================================
+on god
 
 fr fr TestResult type with comprehensive metadata
 slay TestResult.new(test_name tea, assertion_name tea, status tea, message tea) TestResult {
@@ -81,9 +85,11 @@ slay TestResult.with_metadata(result TestResult, key tea, value tea) TestResult 
     damn result
 }
 
-fr fr ================================
-fr fr TestSuite Type System
-fr fr ================================
+no cap
+================================
+TestSuite Type System
+================================
+on god
 
 slay TestSuite.new(suite_name tea) TestSuite {
     damn TestSuite {
@@ -173,9 +179,11 @@ slay TestSuite.is_successful(suite TestSuite) lit {
     damn TestSuite.failed_count(suite) == 0 && TestSuite.error_count(suite) == 0
 }
 
-fr fr ================================
-fr fr TestReport Type System
-fr fr ================================
+no cap
+================================
+TestReport Type System
+================================
+on god
 
 slay TestReport.new() TestReport {
     damn TestReport {
@@ -223,9 +231,11 @@ slay TestReport.add_metadata(report TestReport, key tea, value tea) TestReport {
     damn report
 }
 
-fr fr ================================
-fr fr Serialization Functions
-fr fr ================================
+no cap
+================================
+Serialization Functions
+================================
+on god
 
 slay TestResult.to_json(result TestResult) tea {
     sus json tea = "{"
@@ -289,9 +299,11 @@ slay TestReport.to_json(report TestReport) tea {
     damn json
 }
 
-fr fr ================================
-fr fr XML Serialization
-fr fr ================================
+no cap
+================================
+XML Serialization
+================================
+on god
 
 slay TestResult.to_xml(result TestResult) tea {
     sus xml tea = "    <testcase"
@@ -348,9 +360,11 @@ slay TestReport.to_xml(report TestReport) tea {
     damn xml
 }
 
-fr fr ================================
-fr fr HTML Serialization
-fr fr ================================
+no cap
+================================
+HTML Serialization
+================================
+on god
 
 slay TestResult.to_html_row(result TestResult) tea {
     sus status_class tea = "pass"
@@ -425,9 +439,11 @@ slay TestReport.to_html(report TestReport) tea {
     damn html
 }
 
-fr fr ================================
-fr fr Console Reporting
-fr fr ================================
+no cap
+================================
+Console Reporting
+================================
+on god
 
 slay TestResult.to_console_line(result TestResult) tea {
     sus symbol tea = "✓"
@@ -498,9 +514,11 @@ slay TestReport.to_console(report TestReport) tea {
     damn output
 }
 
-fr fr ================================
-fr fr Builder Pattern for Fluent API
-fr fr ================================
+no cap
+================================
+Builder Pattern for Fluent API
+================================
+on god
 
 slay TestResultBuilder.new(test_name tea, assertion_name tea) TestResultBuilder {
     damn TestResultBuilder {
@@ -589,9 +607,11 @@ slay TestResultBuilder.build(builder TestResultBuilder) TestResult {
     damn result
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay TestResult.display_symbol(result TestResult) tea {
     lowkey result.status == "PASS" {
@@ -638,9 +658,11 @@ slay TestReport.display_summary(report TestReport) tea {
     damn summary
 }
 
-fr fr ================================
-fr fr Performance Utilities
-fr fr ================================
+no cap
+================================
+Performance Utilities
+================================
+on god
 
 slay TestResult.benchmark(test_name tea, assertion_name tea, operation slay()) TestResult {
     sus start_time normie = time.now_millis()
@@ -668,9 +690,11 @@ slay TestSuite.benchmark_suite(suite_name tea, operations slay[value]()) TestSui
     damn suite
 }
 
-fr fr ================================
-fr fr Integration with testz
-fr fr ================================
+no cap
+================================
+Integration with testz
+================================
+on god
 
 fr fr Provide backward compatibility and enhanced integration
 slay create_test_result(test_name tea, assertion_name tea, status tea, message tea) TestResult {
@@ -726,15 +750,19 @@ slay assert_false_result(test_name tea, value lit) TestResult {
     }
 }
 
-fr fr ================================
-fr fr Export Summary
-fr fr ================================
+no cap
+================================
+Export Summary
+================================
+on god
 
-fr fr Core Types: TestResult, TestSuite, TestReport, TestResultBuilder
-fr fr Factory Functions: TestResult.new, TestSuite.new, TestReport.new
-fr fr Status Functions: TestResult.is_pass, TestResult.is_fail, etc.
-fr fr Serialization: to_json, to_xml, to_html, to_console
-fr fr Builder Pattern: TestResultBuilder for fluent API
-fr fr Integration: Enhanced assertion functions returning TestResult
-fr fr Performance: Benchmark utilities and timing functions
-fr fr Backward Compatibility: Compatible with existing testz framework
+no cap
+Core Types: TestResult, TestSuite, TestReport, TestResultBuilder
+Factory Functions: TestResult.new, TestSuite.new, TestReport.new
+Status Functions: TestResult.is_pass, TestResult.is_fail, etc.
+Serialization: to_json, to_xml, to_html, to_console
+Builder Pattern: TestResultBuilder for fluent API
+Integration: Enhanced assertion functions returning TestResult
+Performance: Benchmark utilities and timing functions
+Backward Compatibility: Compatible with existing testz framework
+on god

@@ -1,7 +1,9 @@
-fr fr Question Mark Operator Demo for CURSED Language
-fr fr 
-fr fr This example demonstrates the `?` operator for automatic error propagation
-fr fr in CURSED, similar to Rust's error handling.
+no cap
+Question Mark Operator Demo for CURSED Language
+
+This example demonstrates the `?` operator for automatic error propagation
+in CURSED, similar to Rust's error handling.
+on god
 
 vibe question_mark_demo
 

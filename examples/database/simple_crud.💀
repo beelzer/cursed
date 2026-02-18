@@ -1,11 +1,13 @@
-fr fr fr fr Simple CRUD operations example - showing basic database usage periodt
-fr fr 
-fr fr This example demonstrates:
-fr fr - Database connection setup
-fr fr - Table creation and schema management  
-fr fr - CRUD operations (Create, Read, Update, Delete)
-fr fr - Error handling and resource cleanup
-fr fr - Basic transaction usage
+no cap
+fr fr Simple CRUD operations example - showing basic database usage periodt
+
+This example demonstrates:
+- Database connection setup
+- Table creation and schema management  
+- CRUD operations (Create, Read, Update, Delete)
+- Error handling and resource cleanup
+- Basic transaction usage
+on god
 
 sus main() {
     // Connect to SQLite database (in-memory for this example)

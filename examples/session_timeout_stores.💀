@@ -1,7 +1,9 @@
-fr fr/ Session timeout management with Redis and Database stores
-fr fr/ 
-fr fr/ This example demonstrates the complete timeout-aware session management
-fr fr/ system including Redis and Database session stores.
+no cap
+/ Session timeout management with Redis and Database stores
+/ 
+/ This example demonstrates the complete timeout-aware session management
+/ system including Redis and Database session stores.
+on god
 
 fr fr Import the web framework and session timeout infrastructure
 yeet "stdlib::web_vibez" as web;

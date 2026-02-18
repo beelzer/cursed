@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Test to validate floating-point output format parity
-fr fr Ensures interpreter and compiled modes produce identical output
-fr fr Expected: Compact floating-point format (3.5, not 3.500000)
+no cap
+Test to validate floating-point output format parity
+Ensures interpreter and compiled modes produce identical output
+Expected: Compact floating-point format (3.5, not 3.500000)
+on god
 
 slay main_character() {
     vibez.spill("=== Floating Point Format Test ===")

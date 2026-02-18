@@ -1,11 +1,15 @@
-fr fr ================================
-fr fr Standalone Parallel Test Runner Demo
-fr fr Demonstrates parallelism control without external dependencies
-fr fr ================================
+no cap
+================================
+Standalone Parallel Test Runner Demo
+Demonstrates parallelism control without external dependencies
+================================
+on god
 
-fr fr ================================
-fr fr Environment Variable Simulation
-fr fr ================================
+no cap
+================================
+Environment Variable Simulation
+================================
+on god
 
 slay get_env_bool(key tea, default_value lit) lit {
     lowkey (key == "CURSED_TEST_PARALLEL") {
@@ -38,9 +42,11 @@ slay get_env_string(key tea, default_value tea) tea {
     damn default_value
 }
 
-fr fr ================================
-fr fr Configuration and Execution Demo
-fr fr ================================
+no cap
+================================
+Configuration and Execution Demo
+================================
+on god
 
 slay demo_parallel_test_runner() {
     sus parallel_enabled lit = get_env_bool("CURSED_TEST_PARALLEL", based)
@@ -139,9 +145,11 @@ slay demo_parallel_test_runner() {
     damn failed_count
 }
 
-fr fr ================================
-fr fr Configuration Profiles Demo
-fr fr ================================
+no cap
+================================
+Configuration Profiles Demo
+================================
+on god
 
 slay demo_configuration_profiles() {
     print("")
@@ -188,9 +196,11 @@ slay demo_configuration_profiles() {
     print("  Use case: Performance testing")
 }
 
-fr fr ================================
-fr fr Environment Variables Help
-fr fr ================================
+no cap
+================================
+Environment Variables Help
+================================
+on god
 
 slay demo_environment_variables() {
     print("")
@@ -218,9 +228,11 @@ slay demo_environment_variables() {
     print("  CURSED_TEST_FILTER=\"*math*\" ./run_tests.💀")
 }
 
-fr fr ================================
-fr fr Advanced Features Demo
-fr fr ================================
+no cap
+================================
+Advanced Features Demo
+================================
+on god
 
 slay demo_advanced_features() {
     print("")
@@ -251,9 +263,11 @@ slay demo_advanced_features() {
     print("  • Bottleneck identification")
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay print(message tea) {
     fr fr Built-in print function placeholder
@@ -288,9 +302,11 @@ slay int_to_string(value drip) tea {
     damn "unknown"
 }
 
-fr fr ================================
-fr fr Main Entry Point
-fr fr ================================
+no cap
+================================
+Main Entry Point
+================================
+on god
 
 slay main_character() {
     fr fr Demonstrate parallel test runner capabilities

@@ -3,9 +3,11 @@ vibe main
 yeet "vibez"
 yeet "mathz"
 
-fr fr Memory Safety Regression Test
-fr fr Tests: Variable reassignment and expression evaluation safety
-fr fr Expected: No memory issues or invalid references
+no cap
+Memory Safety Regression Test
+Tests: Variable reassignment and expression evaluation safety
+Expected: No memory issues or invalid references
+on god
 
 slay main_character() {
     vibez.spill("=== Memory Safety Test ===")

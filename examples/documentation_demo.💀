@@ -1,8 +1,10 @@
-fr fr! CURSED Documentation Generation Demo
-fr fr!
-fr fr! This module demonstrates the enhanced documentation generation capabilities
-fr fr! of the CURSED programming language, showing how real parameter and return
-fr fr! type parsing works with various complex scenarios.
+no cap
+! CURSED Documentation Generation Demo
+!
+! This module demonstrates the enhanced documentation generation capabilities
+! of the CURSED programming language, showing how real parameter and return
+! type parsing works with various complex scenarios.
+on god
 
 fr fr/ HTTP server implementation with CURSED Gen Z syntax
 squad HttpServer {

@@ -295,11 +295,13 @@ fr fr Example of advanced usage patterns
 slay advanced_usage_example() {
     fr fr This would demonstrate more complex scenarios in a real application
     
-    fr fr 1. Continuous performance monitoring
-    fr fr 2. Adaptive GC tuning based on workload
-    fr fr 3. Goroutine leak detection
-    fr fr 4. Memory pressure response
-    fr fr 5. Real-time profiling integration
+    no cap
+    1. Continuous performance monitoring
+    2. Adaptive GC tuning based on workload
+    3. Goroutine leak detection
+    4. Memory pressure response
+    5. Real-time profiling integration
+    on god
     
     println("🔬 Advanced usage patterns available for production applications")?;
 }

@@ -3,9 +3,11 @@ fr fr Provides test discovery and execution functionality
 
 yeet "testz"
 
-fr fr ================================
-fr fr Test Discovery
-fr fr ================================
+no cap
+================================
+Test Discovery
+================================
+on god
 
 struct TestFunction {
     name tea
@@ -58,9 +60,11 @@ slay is_test_function(func_name tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr Test Execution
-fr fr ================================
+no cap
+================================
+Test Execution
+================================
+on god
 
 slay run_test_function(test_func TestFunction) lit {
     vibez.spill("Running test function: " + test_func.name)
@@ -70,9 +74,11 @@ slay run_test_function(test_func TestFunction) lit {
     
     test_start(test_func.name)
     
-    fr fr Mock test execution - would call the actual function
-    fr fr In a real implementation, this would use reflection or
-    fr fr function pointers to call the discovered test functions
+    no cap
+    Mock test execution - would call the actual function
+    In a real implementation, this would use reflection or
+    function pointers to call the discovered test functions
+    on god
     
     sus success lit = based  fr fr Mock success
     
@@ -106,9 +112,11 @@ slay run_discovered_tests() normie {
     }
 }
 
-fr fr ================================
-fr fr Test Filtering
-fr fr ================================
+no cap
+================================
+Test Filtering
+================================
+on god
 
 slay filter_tests_by_name(pattern tea) {
     fr fr Filter tests by name pattern
@@ -211,9 +219,11 @@ slay filter_tests_by_file(filename tea) {
     discovered_tests = filtered_tests
 }
 
-fr fr ================================
-fr fr Test Configuration
-fr fr ================================
+no cap
+================================
+Test Configuration
+================================
+on god
 
 struct TestConfig {
     parallel lit
@@ -254,9 +264,11 @@ slay run_tests_with_config(config TestConfig) normie {
     damn run_discovered_tests()
 }
 
-fr fr ================================
-fr fr Test Reporting
-fr fr ================================
+no cap
+================================
+Test Reporting
+================================
+on god
 
 slay generate_test_report(format tea) {
     lowkey format == "json" {
@@ -369,9 +381,11 @@ slay generate_html_report() {
     vibez.spill(html_output)
 }
 
-fr fr ================================
-fr fr Main Test Runner Entry Point
-fr fr ================================
+no cap
+================================
+Main Test Runner Entry Point
+================================
+on god
 
 slay main_character() {
     sus config TestConfig = create_default_config()

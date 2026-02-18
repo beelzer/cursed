@@ -1,14 +1,18 @@
-fr fr ================================
-fr fr CURSED Testing Framework v5.0 - Enhanced Tests
-fr fr Comprehensive test suite for the enhanced testing framework
-fr fr Tests all testing primitives and advanced features
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework v5.0 - Enhanced Tests
+Comprehensive test suite for the enhanced testing framework
+Tests all testing primitives and advanced features
+================================
+on god
 
 yeet "testz"
 
-fr fr ================================
-fr fr Test Suite: Basic Framework Functionality
-fr fr ================================
+no cap
+================================
+Test Suite: Basic Framework Functionality
+================================
+on god
 
 slay test_framework_initialization() {
     test_start("test_framework_initialization")
@@ -45,9 +49,11 @@ slay test_configuration_system() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Basic Assertions
-fr fr ================================
+no cap
+================================
+Test Suite: Basic Assertions
+================================
+on god
 
 slay test_integer_assertions() {
     test_start("test_integer_assertions")
@@ -181,9 +187,11 @@ slay test_nil_assertions() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Performance Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Performance Testing
+================================
+on god
 
 slay test_performance_testing() {
     test_start("test_performance_testing")
@@ -205,9 +213,11 @@ slay test_performance_testing() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Suite Management
-fr fr ================================
+no cap
+================================
+Test Suite: Suite Management
+================================
+on god
 
 slay test_suite_management() {
     suite_start("Test Suite Management")
@@ -223,9 +233,11 @@ slay test_suite_management() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Report Generation
-fr fr ================================
+no cap
+================================
+Test Suite: Report Generation
+================================
+on god
 
 slay test_report_generation() {
     test_start("test_report_generation")
@@ -253,9 +265,11 @@ slay test_report_generation() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Edge Cases
-fr fr ================================
+no cap
+================================
+Test Suite: Edge Cases
+================================
+on god
 
 slay test_edge_cases() {
     test_start("test_edge_cases")
@@ -285,9 +299,11 @@ slay test_edge_cases() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: State Management
-fr fr ================================
+no cap
+================================
+Test Suite: State Management
+================================
+on god
 
 slay test_state_management() {
     test_start("test_state_management")
@@ -307,9 +323,11 @@ slay test_state_management() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Skip Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Skip Testing
+================================
+on god
 
 slay test_skipping() {
     test_start("test_skipping")
@@ -323,9 +341,11 @@ slay test_skipping() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Configuration Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Configuration Testing
+================================
+on god
 
 slay test_configuration_settings() {
     test_start("test_configuration_settings")
@@ -355,9 +375,11 @@ slay test_configuration_settings() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Filter Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Filter Testing
+================================
+on god
 
 slay test_filtering() {
     test_start("test_filtering")
@@ -371,9 +393,11 @@ slay test_filtering() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Statistics Collection
-fr fr ================================
+no cap
+================================
+Test Suite: Statistics Collection
+================================
+on god
 
 slay test_statistics_collection() {
     test_start("test_statistics_collection")
@@ -399,9 +423,11 @@ slay test_statistics_collection() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Comprehensive Validation
-fr fr ================================
+no cap
+================================
+Test Suite: Comprehensive Validation
+================================
+on god
 
 slay test_comprehensive_validation() {
     test_start("test_comprehensive_validation")
@@ -433,9 +459,11 @@ slay test_comprehensive_validation() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Error Handling
-fr fr ================================
+no cap
+================================
+Test Suite: Error Handling
+================================
+on god
 
 slay test_error_handling() {
     test_start("test_error_handling")
@@ -450,9 +478,11 @@ slay test_error_handling() {
     test_end()
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("🧪 Starting CURSED Testing Framework v5.0 Enhanced Tests...")

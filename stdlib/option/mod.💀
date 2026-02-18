@@ -3,9 +3,11 @@ fr fr Critical for self-hosting and error handling
 
 yeet "testz"
 
-fr fr Option type definition (using enum-like pattern)
-fr fr Option<T> can be Some(T) or None
-fr fr Implemented as a tuple with discriminant pattern
+no cap
+Option type definition (using enum-like pattern)
+Option<T> can be Some(T) or None
+Implemented as a tuple with discriminant pattern
+on god
 
 slay some_int(value normie) (lit, normie) {
     damn (based, value)

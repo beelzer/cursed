@@ -155,9 +155,11 @@ slay demo_graceful_shutdown() tea {
     vibez.spill("   - Completed tasks: {}", status.completed_tasks.len())
     vibez.spill("   - Errors: {}", status.errors.len())
     
-    fr fr In a real application, you would:
-    fr fr shutdown.start()    // Start listening for signals
-    fr fr shutdown.wait()     // Wait for shutdown completion
+    no cap
+    In a real application, you would:
+    shutdown.start()    // Start listening for signals
+    shutdown.wait()     // Wait for shutdown completion
+    on god
     
     vibez.spill("✅ Graceful shutdown demo completed")
 }
@@ -193,9 +195,11 @@ slay demo_signal_multiplexing() tea {
     vibez.spill("   - Active subscriptions: {}", stats.active_subscriptions)
     vibez.spill("   - Total signals processed: {}", stats.signals_processed)
     
-    fr fr In a real application, you would:
-    fr fr multiplexer.start()  // Start distributing signals
-    fr fr Handle signals in separate goroutines for each channel
+    no cap
+    In a real application, you would:
+    multiplexer.start()  // Start distributing signals
+    Handle signals in separate goroutines for each channel
+    on god
     
     fr fr Clean up
     multiplexer.remove_handle(ui_handle)
@@ -471,10 +475,12 @@ slay real_world_example() tea {
     vibez.spill("   - SIGUSR2: Statistics report")
     vibez.spill("   - SIGQUIT: Emergency exit (disabled in demo)")
     
-    fr fr In a real server, you would:
-    fr fr shutdown.start()       // Start listening for shutdown signals
-    fr fr start_http_server()    // Start the actual HTTP server
-    fr fr shutdown.wait()        // Wait for graceful shutdown
+    no cap
+    In a real server, you would:
+    shutdown.start()       // Start listening for shutdown signals
+    start_http_server()    // Start the actual HTTP server
+    shutdown.wait()        // Wait for graceful shutdown
+    on god
     
     fr fr Clean up
     health_checker.stop()

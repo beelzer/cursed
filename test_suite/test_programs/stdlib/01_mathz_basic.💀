@@ -3,9 +3,11 @@ vibe main
 yeet "mathz"
 yeet "vibez"
 
-fr fr Basic Mathz Stdlib Test
-fr fr Tests: mathz module functions
-fr fr Expected: Stdlib functions work identically
+no cap
+Basic Mathz Stdlib Test
+Tests: mathz module functions
+Expected: Stdlib functions work identically
+on god
 
 slay main_character() {
     vibez.spill("=== Mathz Stdlib Test ===")

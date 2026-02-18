@@ -1,13 +1,17 @@
-fr fr/ CURSED Documentation Example
-fr fr/ 
-fr fr/ This example demonstrates the CURSED documentation generator
-fr fr/ with various language constructs and documentation comments.
+no cap
+/ CURSED Documentation Example
+/ 
+/ This example demonstrates the CURSED documentation generator
+/ with various language constructs and documentation comments.
+on god
 
-fr fr/ Calculate the factorial of a number
-fr fr/ @param n The number to calculate factorial for
-fr fr/ @return The factorial result
-fr fr/ @example Basic usage
-fr fr/ facts result = factorial(5);
+no cap
+/ Calculate the factorial of a number
+/ @param n The number to calculate factorial for
+/ @return The factorial result
+/ @example Basic usage
+/ facts result = factorial(5);
+on god
 slay factorial(n: i32) -> i32 {
     lowkey (n <= 1) {
         return 1;

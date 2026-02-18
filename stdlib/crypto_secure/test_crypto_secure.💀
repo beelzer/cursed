@@ -3,9 +3,11 @@ yeet "crypto_secure"
 
 test_start("Crypto Secure Module Test Suite")
 
-fr fr ================================
-fr fr Test Secure Random Generation
-fr fr ================================
+no cap
+================================
+Test Secure Random Generation
+================================
+on god
 
 test_start("ChaCha20-based Secure RNG")
 
@@ -32,9 +34,11 @@ vibez.spill("✅ Secure random byte generation works")
 
 print_test_summary()
 
-fr fr ================================
-fr fr Test Secure Hash Functions
-fr fr ================================
+no cap
+================================
+Test Secure Hash Functions
+================================
+on god
 
 test_start("SHA-256 Secure Implementation")
 
@@ -57,9 +61,11 @@ vibez.spill("✅ SHA-256 produces different hashes for different inputs")
 
 print_test_summary()
 
-fr fr ================================
-fr fr Test HMAC Implementation
-fr fr ================================
+no cap
+================================
+Test HMAC Implementation
+================================
+on god
 
 test_start("HMAC-SHA256 Secure Implementation")
 
@@ -81,9 +87,11 @@ vibez.spill("✅ HMAC-SHA256 produces different outputs for different keys")
 
 print_test_summary()
 
-fr fr ================================
-fr fr Test AES Encryption
-fr fr ================================
+no cap
+================================
+Test AES Encryption
+================================
+on god
 
 test_start("AES-256 Secure Implementation")
 
@@ -99,9 +107,11 @@ vibez.spill("✅ AES-256 encryption transforms data")
 
 print_test_summary()
 
-fr fr ================================
-fr fr Test Constant-time Operations
-fr fr ================================
+no cap
+================================
+Test Constant-time Operations
+================================
+on god
 
 test_start("Constant-time Comparison")
 
@@ -119,9 +129,11 @@ vibez.spill("✅ Constant-time comparison works correctly")
 
 print_test_summary()
 
-fr fr ================================
-fr fr Test Key Derivation
-fr fr ================================
+no cap
+================================
+Test Key Derivation
+================================
+on god
 
 test_start("PBKDF2 Key Derivation")
 
@@ -144,9 +156,11 @@ vibez.spill("✅ PBKDF2 produces different keys for different passwords")
 
 print_test_summary()
 
-fr fr ================================
-fr fr Test Secure Random String Generation
-fr fr ================================
+no cap
+================================
+Test Secure Random String Generation
+================================
+on god
 
 test_start("Secure Random String Generation")
 
@@ -162,9 +176,11 @@ vibez.spill("✅ Secure random string generation works")
 
 print_test_summary()
 
-fr fr ================================
-fr fr Security Validation Tests
-fr fr ================================
+no cap
+================================
+Security Validation Tests
+================================
+on god
 
 test_start("Security Validation")
 
@@ -186,9 +202,11 @@ assert_true(based) fr fr All security checks pass
 
 print_test_summary()
 
-fr fr ================================
-fr fr Performance and Compatibility Tests
-fr fr ================================
+no cap
+================================
+Performance and Compatibility Tests
+================================
+on god
 
 test_start("Performance and Compatibility")
 
@@ -218,9 +236,11 @@ assert_true(based) fr fr Performance tests pass
 
 print_test_summary()
 
-fr fr ================================
-fr fr Module Integration Test
-fr fr ================================
+no cap
+================================
+Module Integration Test
+================================
+on god
 
 test_start("Module Integration")
 

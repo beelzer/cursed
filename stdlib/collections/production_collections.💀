@@ -1,15 +1,19 @@
-fr fr ========================================
-fr fr CURSED Production Collections Library v4.0
-fr fr Production-grade data structures with proper algorithms
-fr fr No bubble sort, no simple hashing, enterprise-lowkey implementations
-fr fr ========================================
+no cap
+========================================
+CURSED Production Collections Library v4.0
+Production-grade data structures with proper algorithms
+No bubble sort, no simple hashing, enterprise-lowkey implementations
+========================================
+on god
 
 yeet "testz"
 yeet "stdlib/mathz"
 
-fr fr ================================
-fr fr Configuration Constants
-fr fr ================================
+no cap
+================================
+Configuration Constants
+================================
+on god
 
 sus DEFAULT_HASH_TABLE_SIZE normie = 1024
 sus LOAD_FACTOR_THRESHOLD drip = 0.75
@@ -17,10 +21,12 @@ sus MERGE_SORT_THRESHOLD normie = 32
 sus QUICKSORT_THRESHOLD normie = 16
 sus HEAP_INITIAL_CAPACITY normie = 16
 
-fr fr ================================
-fr fr Robin Hood Hash Table Implementation
-fr fr Proper hash table with robin hood hashing for O(1) operations
-fr fr ================================
+no cap
+================================
+Robin Hood Hash Table Implementation
+Proper hash table with robin hood hashing for O(1) operations
+================================
+on god
 
 be_like HashEntry squad {
     key tea
@@ -183,10 +189,12 @@ slay HashMap_size(table RobinHoodHashTable) normie {
     damn table.size
 }
 
-fr fr ================================
-fr fr Merge Sort Implementation
-fr fr O(n log n) guaranteed, stable sort
-fr fr ================================
+no cap
+================================
+Merge Sort Implementation
+O(n log n) guaranteed, stable sort
+================================
+on god
 
 slay MergeSort_sort(arr [normie]) [normie] {
     lowkey Array_length(arr) <= 1 {
@@ -260,10 +268,12 @@ slay MergeSort_merge(arr [normie], left normie, mid normie, right normie) [normi
     damn arr
 }
 
-fr fr ================================
-fr fr Hybrid Quick Sort Implementation
-fr fr O(n log n) average, falls back to heap sort for worst case
-fr fr ================================
+no cap
+================================
+Hybrid Quick Sort Implementation
+O(n log n) average, falls back to heap sort for worst case
+================================
+on god
 
 slay QuickSort_sort(arr [normie]) [normie] {
     lowkey Array_length(arr) <= 1 {
@@ -324,10 +334,12 @@ slay QuickSort_median_of_three(arr [normie], a normie, b normie, c normie) normi
     damn c
 }
 
-fr fr ================================
-fr fr Heap Sort Implementation
-fr fr O(n log n) guaranteed, in-place sorting
-fr fr ================================
+no cap
+================================
+Heap Sort Implementation
+O(n log n) guaranteed, in-place sorting
+================================
+on god
 
 slay HeapSort_sort(arr [normie]) [normie] {
     sus n normie = Array_length(arr)
@@ -393,10 +405,12 @@ slay HeapSort_heapify(arr [normie], n normie, i normie) [normie] {
     damn arr
 }
 
-fr fr ================================
-fr fr Insertion Sort Implementation
-fr fr O(n^2) but efficient for small arrays
-fr fr ================================
+no cap
+================================
+Insertion Sort Implementation
+O(n^2) but efficient for small arrays
+================================
+on god
 
 slay InsertionSort_sort(arr [normie]) [normie] {
     sus n normie = Array_length(arr)
@@ -418,10 +432,12 @@ slay InsertionSort_sort(arr [normie]) [normie] {
     damn arr
 }
 
-fr fr ================================
-fr fr Advanced Statistics Functions
-fr fr Proper percentile calculation with interpolation
-fr fr ================================
+no cap
+================================
+Advanced Statistics Functions
+Proper percentile calculation with interpolation
+================================
+on god
 
 slay Statistics_percentile(arr [normie], percentile drip) drip {
     lowkey Array_length(arr) == 0 {
@@ -511,10 +527,12 @@ slay Statistics_standard_deviation(arr [normie]) drip {
     damn Math_sqrt(Statistics_variance(arr))
 }
 
-fr fr ================================
-fr fr Binary Search Tree with AVL Balancing
-fr fr O(log n) operations guaranteed
-fr fr ================================
+no cap
+================================
+Binary Search Tree with AVL Balancing
+O(log n) operations guaranteed
+================================
+on god
 
 be_like TreeNode squad {
     key tea
@@ -661,10 +679,12 @@ slay Tree_search_node(node TreeNode, key tea) tea {
     }
 }
 
-fr fr ================================
-fr fr Priority Queue with Binary Heap
-fr fr O(log n) insertion and extraction
-fr fr ================================
+no cap
+================================
+Priority Queue with Binary Heap
+O(log n) insertion and extraction
+================================
+on god
 
 be_like PriorityItem squad {
     data tea
@@ -800,9 +820,11 @@ slay PriorityQueue_resize(pq PriorityQueue) PriorityQueue {
     damn pq
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay Array_length(arr [normie]) normie {
     fr fr Simulate array length - in real implementation this would be builtin
@@ -863,9 +885,11 @@ slay Tree_is_null(node TreeNode) lit {
     damn cringe fr fr Simplified for demonstration
 }
 
-fr fr ================================
-fr fr Math Helper Functions
-fr fr ================================
+no cap
+================================
+Math Helper Functions
+================================
+on god
 
 slay Math_log2(n normie) normie {
     lowkey n <= 1 { damn 0 }

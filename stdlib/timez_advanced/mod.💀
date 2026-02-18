@@ -1,13 +1,17 @@
-fr fr CURSED Advanced Time Zone Module - Real System Integration
-fr fr Complete time zone handling with IANA database integration
-fr fr Production-ready timezone conversions and DST calculations
+no cap
+CURSED Advanced Time Zone Module - Real System Integration
+Complete time zone handling with IANA database integration
+Production-ready timezone conversions and DST calculations
+on god
 
 yeet "stringz"
 yeet "mathz"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like TimeZone squad {
     name tea                  fr fr IANA name (e.g., "America/New_York")
@@ -80,9 +84,11 @@ be_like TimeZoneConversion squad {
     ambiguity_info tea      fr fr Details about ambiguous conversion
 }
 
-fr fr ================================
-fr fr External System Integration
-fr fr ================================
+no cap
+================================
+External System Integration
+================================
+on god
 
 outer slay sys_get_timezone_name() [*:0]const u8
 outer slay sys_get_timezone_offset() normie
@@ -105,9 +111,11 @@ be_like DSTTransition squad {
     is_dst_start lit         fr fr True if entering DST, false if leaving
 }
 
-fr fr ================================
-fr fr Global State Management
-fr fr ================================
+no cap
+================================
+Global State Management
+================================
+on god
 
 sus global_timezone_db TimeZoneDatabase
 sus system_timezone TimeZone
@@ -125,9 +133,11 @@ be_like CachedZone squad {
 facts MAX_CACHED_ZONES normie = 50
 facts CACHE_EXPIRY_SECONDS thicc = 3600 fr fr 1 hour
 
-fr fr ================================
-fr fr Initialization and Database Loading
-fr fr ================================
+no cap
+================================
+Initialization and Database Loading
+================================
+on god
 
 slay init_timezone_system() lit { fr fr Initialize timezone system
     fr fr Load system timezone
@@ -260,9 +270,11 @@ slay create_dst_rule_from_timestamp(timestamp thicc) DST_Rule { fr fr Create DST
     damn rule
 }
 
-fr fr ================================
-fr fr Time Zone Conversion
-fr fr ================================
+no cap
+================================
+Time Zone Conversion
+================================
+on god
 
 slay convert_timezone(dt DateTime, from_zone tea, to_zone tea) TimeZoneConversion { fr fr Convert between timezones
     sus conversion TimeZoneConversion = {
@@ -419,9 +431,11 @@ slay find_nth_weekday(year normie, month normie, weekday normie, week normie) no
     damn 1 fr fr Fallback to first day of month
 }
 
-fr fr ================================
-fr fr DST Transition Detection
-fr fr ================================
+no cap
+================================
+DST Transition Detection
+================================
+on god
 
 slay check_conversion_ambiguity(conversion *TimeZoneConversion, source_tz TimeZone, target_tz TimeZone) {
     fr fr Check if conversion occurs during DST transitions
@@ -484,9 +498,11 @@ slay is_time_nonexistent(timezone TimeZone, timestamp thicc) lit { fr fr Check i
     damn timestamp >= dst_start && timestamp < (dst_start + hour_in_seconds)
 }
 
-fr fr ================================
-fr fr Time Zone Information Queries
-fr fr ================================
+no cap
+================================
+Time Zone Information Queries
+================================
+on god
 
 slay get_system_timezone() TimeZone { fr fr Get current system timezone
     damn system_timezone
@@ -579,9 +595,11 @@ slay get_timezone_abbreviation_at_time(timezone_name tea, timestamp thicc) tea {
     damn timezone.abbreviation
 }
 
-fr fr ================================
-fr fr Current Time Functions
-fr fr ================================
+no cap
+================================
+Current Time Functions
+================================
+on god
 
 slay get_current_time() DateTime { fr fr Get current local time
     sus timestamp thicc = get_current_timestamp()
@@ -599,9 +617,11 @@ slay get_current_time_in_zone(timezone_name tea) DateTime { fr fr Get current ti
     damn timestamp_to_datetime(timestamp, timezone)
 }
 
-fr fr ================================
-fr fr Leap Second Handling
-fr fr ================================
+no cap
+================================
+Leap Second Handling
+================================
+on god
 
 slay load_leap_seconds() LeapSecond[value]{ fr fr Load leap second data
     sus leap_seconds [*]LeapSecond = sys_get_leap_seconds()
@@ -645,9 +665,11 @@ slay adjust_for_leap_seconds(timestamp thicc, include_leap_seconds lit) thicc { 
     damn timestamp + offset
 }
 
-fr fr ================================
-fr fr Caching and Performance
-fr fr ================================
+no cap
+================================
+Caching and Performance
+================================
+on god
 
 slay get_cached_zone(name tea) CachedZone { fr fr Get timezone from cache
     bestie i := 0; i < array_length(timezone_cache); i++ {
@@ -725,9 +747,11 @@ slay cleanup_timezone_cache() { fr fr Clean up expired cache entries
     }
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay resolve_timezone_alias(name tea) tea { fr fr Resolve timezone alias to canonical name
     sus aliases TimeZoneAlias[value] = global_timezone_db.aliases
@@ -787,9 +811,11 @@ slay create_empty_cached_zone() CachedZone { fr fr Create empty cached zone
     damn cached
 }
 
-fr fr ================================
-fr fr Date/Time Calculation Helpers
-fr fr ================================
+no cap
+================================
+Date/Time Calculation Helpers
+================================
+on god
 
 slay datetime_to_timestamp(dt DateTime) thicc { fr fr Convert DateTime to Unix timestamp
     fr fr Simplified calculation - in practice would use proper calendar arithmetic
@@ -857,9 +883,11 @@ slay is_leap_year(year normie) lit { fr fr Check if year is leap year
     damn (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))
 }
 
-fr fr ================================
-fr fr Real System Functions (Fixed Implementation)
-fr fr ================================
+no cap
+================================
+Real System Functions (Fixed Implementation)
+================================
+on god
 
 slay get_current_timestamp() thicc {
     fr fr Get actual system time using Unix epoch

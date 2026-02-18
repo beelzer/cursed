@@ -1,6 +1,8 @@
-fr fr CURSED Self-Hosted Built-ins Module
-fr fr Pure CURSED implementations replacing Zig built-in functions from src-zig/built_ins.zig
-fr fr This module provides self-hosted equivalents for all Zig-dependent functionality
+no cap
+CURSED Self-Hosted Built-ins Module
+Pure CURSED implementations replacing Zig built-in functions from src-zig/built_ins.zig
+This module provides self-hosted equivalents for all Zig-dependent functionality
+on god
 
 yeet "stringz"
 yeet "mathz"
@@ -440,13 +442,15 @@ slay legacy_vibez_spill(msg tea) lit {
 
 fr fr ===== FUTURE ENHANCEMENTS =====
 
-fr fr TODO: Add pure CURSED implementations for:
-fr fr - Complex number operations
-fr fr - Advanced string algorithms (pattern matching, regex)
-fr fr - More sophisticated channel operations
-fr fr - File I/O operations
-fr fr - Network operations
-fr fr - Error handling primitives
-fr fr - Memory pool management
-fr fr - Garbage collection hooks
-fr fr - Performance monitoring functions
+no cap
+TODO: Add pure CURSED implementations for:
+- Complex number operations
+- Advanced string algorithms (pattern matching, regex)
+- More sophisticated channel operations
+- File I/O operations
+- Network operations
+- Error handling primitives
+- Memory pool management
+- Garbage collection hooks
+- Performance monitoring functions
+on god

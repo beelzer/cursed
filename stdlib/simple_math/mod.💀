@@ -1,9 +1,11 @@
 fr fr Enhanced Simple Math Module - Mathematically robust implementation
 fr fr IEEE 754 compliant with proper error handling
 
-fr fr ==========================================
-fr fr BASIC ARITHMETIC WITH ERROR HANDLING
-fr fr ==========================================
+no cap
+==========================================
+BASIC ARITHMETIC WITH ERROR HANDLING
+==========================================
+on god
 
 slay add(a normie, b normie) normie {
     fr fr Addition with overflow protection
@@ -56,9 +58,11 @@ slay divide(a normie, b normie) normie {
     damn a / b
 }
 
-fr fr ==========================================
-fr fr ENHANCED MATHEMATICAL FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED MATHEMATICAL FUNCTIONS
+==========================================
+on god
 
 slay abs_int(x normie) normie {
     fr fr Absolute value with overflow handling
@@ -153,9 +157,11 @@ slay lcm_simple(a normie, b normie) normie {
     damn product
 }
 
-fr fr ==========================================
-fr fr SIMPLE STATISTICAL FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+SIMPLE STATISTICAL FUNCTIONS
+==========================================
+on god
 
 slay sum_array(values normie[value], count normie) normie {
     fr fr Sum with overflow protection using Kahan-like approach
@@ -218,9 +224,11 @@ slay range_simple(values normie[value], count normie) normie {
     damn subtract(max_val, min_val)  fr fr Use safe subtraction
 }
 
-fr fr ==========================================
-fr fr UTILITY AND VALIDATION FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+UTILITY AND VALIDATION FUNCTIONS
+==========================================
+on god
 
 slay is_even(n normie) lit {
     damn (n % 2) == 0
@@ -295,9 +303,11 @@ slay fibonacci_simple(n normie) normie {
     damn b
 }
 
-fr fr ==========================================
-fr fr INPUT VALIDATION FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+INPUT VALIDATION FUNCTIONS
+==========================================
+on god
 
 slay is_valid_for_division(dividend normie, divisor normie) lit {
     lowkey (divisor == 0) {

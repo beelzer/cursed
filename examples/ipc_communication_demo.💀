@@ -1,7 +1,9 @@
-fr fr/ Complete Inter-Process Communication (IPC) Demo in CURSED
-fr fr/ 
-fr fr/ This example demonstrates comprehensive IPC mechanisms including shared memory,
-fr fr/ named pipes, message queues, semaphores, and signals using CURSED's IPC system.
+no cap
+/ Complete Inter-Process Communication (IPC) Demo in CURSED
+/ 
+/ This example demonstrates comprehensive IPC mechanisms including shared memory,
+/ named pipes, message queues, semaphores, and signals using CURSED's IPC system.
+on god
 
 yeet "stdlib::ipc"
 yeet "stdlib::process"

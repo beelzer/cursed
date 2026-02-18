@@ -1,6 +1,8 @@
-fr fr exec_vibez - Pure CURSED Process Execution Module
-fr fr Enhanced external command execution and process management
-fr fr Zero FFI dependencies - completely self-contained
+no cap
+exec_vibez - Pure CURSED Process Execution Module
+Enhanced external command execution and process management
+Zero FFI dependencies - completely self-contained
+on god
 
 fr fr Global process execution state
 sus process_registry map = {}
@@ -42,9 +44,11 @@ sus SIGTERM normie = 15
 sus SIGINT normie = 2
 sus SIGCHLD normie = 17
 
-fr fr ==============================================================================
-fr fr INITIALIZATION AND CONFIGURATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+INITIALIZATION AND CONFIGURATION
+==============================================================================
+on god
 
 fr fr Initialize exec_vibez module
 slay init_exec_vibez() lit {
@@ -96,9 +100,11 @@ slay get_exec_config() map {
     damn exec_config
 }
 
-fr fr ==============================================================================
-fr fr COMMAND CREATION AND EXECUTION
-fr fr ==============================================================================
+no cap
+==============================================================================
+COMMAND CREATION AND EXECUTION
+==============================================================================
+on god
 
 fr fr Create a command object
 slay create_command(program tea, args [tea]) map {
@@ -162,9 +168,11 @@ slay set_exec_mode(command map, mode tea) lit {
     damn cap
 }
 
-fr fr ==============================================================================
-fr fr COMMAND EXECUTION
-fr fr ==============================================================================
+no cap
+==============================================================================
+COMMAND EXECUTION
+==============================================================================
+on god
 
 fr fr Execute command synchronously
 slay execute_command(command map) map {
@@ -235,9 +243,11 @@ slay kill_process(process_id tea) lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr COMMAND SIMULATION (Pure CURSED Implementation)
-fr fr ==============================================================================
+no cap
+==============================================================================
+COMMAND SIMULATION (Pure CURSED Implementation)
+==============================================================================
+on god
 
 fr fr Simulate command execution without FFI
 slay simulate_command_execution(command map) map {
@@ -377,9 +387,11 @@ slay simulate_command_output(program tea, args [tea]) map {
     }
 }
 
-fr fr ==============================================================================
-fr fr PROCESS MANAGEMENT
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS MANAGEMENT
+==============================================================================
+on god
 
 fr fr Register process
 slay register_process(process_id tea, command map) lit {
@@ -436,9 +448,11 @@ slay list_all_processes() [tea] {
     damn process_registry.keys()
 }
 
-fr fr ==============================================================================
-fr fr PROCESS GROUPS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS GROUPS
+==============================================================================
+on god
 
 fr fr Create process group
 slay create_process_group(group_name tea) lit {
@@ -500,9 +514,11 @@ slay kill_process_group(group_name tea) lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr OUTPUT STREAMING AND CAPTURE
-fr fr ==============================================================================
+no cap
+==============================================================================
+OUTPUT STREAMING AND CAPTURE
+==============================================================================
+on god
 
 fr fr Create output streamer
 slay create_output_streamer(process_id tea, stream_type tea) lit {
@@ -568,9 +584,11 @@ slay get_captured_output(process_id tea, stream_type tea) tea {
     damn output
 }
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTIONS
+==============================================================================
+on god
 
 fr fr Generate unique command ID
 slay generate_command_id() tea {
@@ -633,9 +651,11 @@ slay update_execution_statistics(result map) {
     }
 }
 
-fr fr ==============================================================================
-fr fr HIGH-LEVEL CONVENIENCE FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+HIGH-LEVEL CONVENIENCE FUNCTIONS
+==============================================================================
+on god
 
 fr fr Simple command execution
 slay run_command(program tea, args [tea]) map {
@@ -672,9 +692,11 @@ slay run_shell(command_str tea) map {
     damn run_command(shell, args)
 }
 
-fr fr ==============================================================================
-fr fr STATISTICS AND MONITORING
-fr fr ==============================================================================
+no cap
+==============================================================================
+STATISTICS AND MONITORING
+==============================================================================
+on god
 
 fr fr Get execution statistics
 slay get_exec_statistics() map {

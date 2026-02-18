@@ -1,14 +1,18 @@
-fr fr ================================
-fr fr CURSED Testing Framework v5.0 - Test Runner
-fr fr Production-ready test discovery and execution system
-fr fr Supports parallel execution, filtering, and comprehensive reporting
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework v5.0 - Test Runner
+Production-ready test discovery and execution system
+Supports parallel execution, filtering, and comprehensive reporting
+================================
+on god
 
 yeet "testz"
 
-fr fr ================================
-fr fr Test Runner Configuration
-fr fr ================================
+no cap
+================================
+Test Runner Configuration
+================================
+on god
 
 struct TestRunnerConfig {
     test_directory tea
@@ -27,9 +31,11 @@ struct TestRunnerConfig {
     benchmark_mode lit
 }
 
-fr fr ================================
-fr fr Test Discovery System
-fr fr ================================
+no cap
+================================
+Test Discovery System
+================================
+on god
 
 slay create_test_runner_config() TestRunnerConfig {
     damn TestRunnerConfig{
@@ -146,9 +152,11 @@ slay matches_pattern(text tea, pattern tea) lit {
     damn text.contains(pattern)
 }
 
-fr fr ================================
-fr fr Test Execution System
-fr fr ================================
+no cap
+================================
+Test Execution System
+================================
+on god
 
 struct TestExecutionResult {
     test_file tea
@@ -242,9 +250,11 @@ slay execute_tests_parallel(test_files [tea], config TestRunnerConfig) [TestExec
     damn results
 }
 
-fr fr ================================
-fr fr Test Result Aggregation
-fr fr ================================
+no cap
+================================
+Test Result Aggregation
+================================
+on god
 
 struct TestRunSummary {
     total_files normie
@@ -340,9 +350,11 @@ slay aggregate_test_results(results [TestExecutionResult]) TestRunSummary {
     damn summary
 }
 
-fr fr ================================
-fr fr Reporting System
-fr fr ================================
+no cap
+================================
+Reporting System
+================================
+on god
 
 slay print_test_run_summary(summary TestRunSummary) {
     vibez.spill("")
@@ -425,9 +437,11 @@ slay generate_test_run_json_report(summary TestRunSummary, results [TestExecutio
     damn json_output
 }
 
-fr fr ================================
-fr fr Command Line Interface
-fr fr ================================
+no cap
+================================
+Command Line Interface
+================================
+on god
 
 slay run_test_discovery(config TestRunnerConfig) [tea] {
     sus all_files [tea] = discover_test_files(config.test_directory, config.test_pattern)
@@ -489,9 +503,11 @@ slay run_tests_with_config(config TestRunnerConfig) TestRunSummary {
     damn summary
 }
 
-fr fr ================================
-fr fr Preset Configurations
-fr fr ================================
+no cap
+================================
+Preset Configurations
+================================
+on god
 
 slay run_all_stdlib_tests() TestRunSummary {
     sus config TestRunnerConfig = create_test_runner_config()
@@ -556,9 +572,11 @@ slay run_benchmark_tests() TestRunSummary {
     damn run_tests_with_config(config)
 }
 
-fr fr ================================
-fr fr Main Test Runner Entry Point
-fr fr ================================
+no cap
+================================
+Main Test Runner Entry Point
+================================
+on god
 
 slay main_character() {
     vibez.spill("🚀 CURSED Test Runner v5.0 - Production Ready")
@@ -583,9 +601,11 @@ slay main_character() {
     }
 }
 
-fr fr ================================
-fr fr Convenience Functions for Common Use Cases
-fr fr ================================
+no cap
+================================
+Convenience Functions for Common Use Cases
+================================
+on god
 
 slay test_stdlib_crypto() {
     vibez.spill("🔐 Running crypto module tests...")

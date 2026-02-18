@@ -2,14 +2,18 @@ yeet "testz"
 yeet "tls_vibe"
 yeet "crypto"
 
-fr fr ========================================
-fr fr CURSED TLS/SSL Implementation Tests
-fr fr Comprehensive test suite for TLS operations
-fr fr ========================================
+no cap
+========================================
+CURSED TLS/SSL Implementation Tests
+Comprehensive test suite for TLS operations
+========================================
+on god
 
-fr fr ================================
-fr fr TLS Configuration Tests
-fr fr ================================
+no cap
+================================
+TLS Configuration Tests
+================================
+on god
 
 slay test_tls_config_creation() lit {
     test_start("TLS Config Creation")
@@ -123,9 +127,11 @@ slay test_tls_versions() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Connection Tests
-fr fr ================================
+no cap
+================================
+TLS Connection Tests
+================================
+on god
 
 slay test_tls_connection_creation() lit {
     test_start("TLS Connection Creation")
@@ -188,9 +194,11 @@ slay test_tls_server_creation() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Handshake Tests
-fr fr ================================
+no cap
+================================
+TLS Handshake Tests
+================================
+on god
 
 slay test_tls_handshake_messages() lit {
     test_start("TLS Handshake Messages")
@@ -264,9 +272,11 @@ slay test_tls_server_handshake() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Certificate Tests
-fr fr ================================
+no cap
+================================
+TLS Certificate Tests
+================================
+on god
 
 slay test_tls_certificate_verification() lit {
     test_start("TLS Certificate Verification")
@@ -377,9 +387,11 @@ slay test_tls_signature_verification() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Record Layer Tests
-fr fr ================================
+no cap
+================================
+TLS Record Layer Tests
+================================
+on god
 
 slay test_tls_record_encryption() lit {
     test_start("TLS Record Encryption")
@@ -438,9 +450,11 @@ slay test_tls_record_decryption() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS I/O Tests
-fr fr ================================
+no cap
+================================
+TLS I/O Tests
+================================
+on god
 
 slay test_tls_read_write() lit {
     test_start("TLS Read/Write Operations")
@@ -500,9 +514,11 @@ slay test_tls_connection_close() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Session Tests
-fr fr ================================
+no cap
+================================
+TLS Session Tests
+================================
+on god
 
 slay test_tls_session_management() lit {
     test_start("TLS Session Management")
@@ -531,9 +547,11 @@ slay test_tls_session_management() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Alert Tests
-fr fr ================================
+no cap
+================================
+TLS Alert Tests
+================================
+on god
 
 slay test_tls_alert_handling() lit {
     test_start("TLS Alert Handling")
@@ -585,9 +603,11 @@ slay test_tls_alert_handling() lit {
     damn based
 }
 
-fr fr ================================
-fr fr High-Level TLS Tests
-fr fr ================================
+no cap
+================================
+High-Level TLS Tests
+================================
+on god
 
 slay test_tls_dial() lit {
     test_start("TLS Dial Connection")
@@ -637,9 +657,11 @@ slay test_tls_listen_accept() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Utility Tests
-fr fr ================================
+no cap
+================================
+TLS Utility Tests
+================================
+on god
 
 slay test_tls_connection_security() lit {
     test_start("TLS Connection Security")
@@ -733,9 +755,11 @@ slay test_tls_connection_state() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Protocol Constants Tests
-fr fr ================================
+no cap
+================================
+TLS Protocol Constants Tests
+================================
+on god
 
 slay test_tls_protocol_constants() lit {
     test_start("TLS Protocol Constants")
@@ -788,9 +812,11 @@ slay test_tls_protocol_constants() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Mutual Authentication Tests
-fr fr ================================
+no cap
+================================
+TLS Mutual Authentication Tests
+================================
+on god
 
 slay test_tls_mutual_authentication() lit {
     test_start("TLS Mutual Authentication")
@@ -820,9 +846,11 @@ slay test_tls_mutual_authentication() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Performance Tests
-fr fr ================================
+no cap
+================================
+TLS Performance Tests
+================================
+on god
 
 slay test_tls_performance() lit {
     test_start("TLS Performance")
@@ -853,9 +881,11 @@ slay test_tls_performance() lit {
     damn based
 }
 
-fr fr ================================
-fr fr TLS Error Handling Tests
-fr fr ================================
+no cap
+================================
+TLS Error Handling Tests
+================================
+on god
 
 slay test_tls_error_handling() lit {
     test_start("TLS Error Handling")
@@ -889,9 +919,11 @@ slay test_tls_error_handling() lit {
     damn based
 }
 
-fr fr ================================
-fr fr Run All Tests
-fr fr ================================
+no cap
+================================
+Run All Tests
+================================
+on god
 
 slay run_all_tls_tests() lit {
     vibez.spill("🧪 Running comprehensive TLS/SSL test suite...")

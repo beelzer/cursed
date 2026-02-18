@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Test: Validation of all CURSED Gen Z slang keywords
-fr fr Purpose: Ensure all language keywords are recognized and parsed correctly
-fr fr Expected: All keywords should parse without errors
+no cap
+Test: Validation of all CURSED Gen Z slang keywords
+Purpose: Ensure all language keywords are recognized and parsed correctly
+Expected: All keywords should parse without errors
+on god
 
 slay main_character() {
     fr fr Variable declarations using sus

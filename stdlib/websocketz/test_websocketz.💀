@@ -2,10 +2,12 @@ yeet "testz"
 yeet "websocketz"
 yeet "stringz"
 
-fr fr ========================================
-fr fr CURSED WebSocket Module Test Suite
-fr fr Comprehensive Testing for websocketz
-fr fr ========================================
+no cap
+========================================
+CURSED WebSocket Module Test Suite
+Comprehensive Testing for websocketz
+========================================
+on god
 
 slay test_websocket_frame_creation() {
     test_start("WebSocket Frame Creation")
@@ -560,9 +562,11 @@ slay test_websocket_performance() {
     assert_eq_lit(large_frame_fail, cap)  fr fr Should fail due to size limit
 }
 
-fr fr =============================================================================
-fr fr TEST SUITE EXECUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+TEST SUITE EXECUTION
+=============================================================================
+on god
 
 slay run_all_websocket_tests() {
     vibez.spill("🧪 Running WebSocket Test Suite")

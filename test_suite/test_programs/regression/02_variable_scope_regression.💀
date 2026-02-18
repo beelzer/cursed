@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Variable Scope Regression Test
-fr fr Tests: Ensures proper variable scoping doesn't regress
-fr fr Expected: Variables are properly scoped and accessible
+no cap
+Variable Scope Regression Test
+Tests: Ensures proper variable scoping doesn't regress
+Expected: Variables are properly scoped and accessible
+on god
 
 slay main_character() {
     vibez.spill("=== Variable Scope Regression Test ===")

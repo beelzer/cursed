@@ -1,14 +1,16 @@
-fr fr/ Comprehensive SQLite Production Driver Demo
-fr fr/ 
-fr fr/ This example demonstrates all features of the production-lowkey SQLite driver:
-fr fr/ - Connection management and pooling
-fr fr/ - Prepared statements with parameter binding
-fr fr/ - Transaction management with savepoints
-fr fr/ - Type conversions and data handling
-fr fr/ - Error handling and recovery
-fr fr/ - Performance monitoring
-fr fr/ - Concurrent operations
-fr fr/ - Database maintenance
+no cap
+/ Comprehensive SQLite Production Driver Demo
+/ 
+/ This example demonstrates all features of the production-lowkey SQLite driver:
+/ - Connection management and pooling
+/ - Prepared statements with parameter binding
+/ - Transaction management with savepoints
+/ - Type conversions and data handling
+/ - Error handling and recovery
+/ - Performance monitoring
+/ - Concurrent operations
+/ - Database maintenance
+on god
 
 yeet "stdlib::database"
 yeet "stdlib::io"

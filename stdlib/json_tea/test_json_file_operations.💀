@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "json_tea"
 
-fr fr ==========================================
-fr fr CURSED JSON Tea File Operations Test Suite
-fr fr Testing real JSON file I/O capabilities
-fr fr ==========================================
+no cap
+==========================================
+CURSED JSON Tea File Operations Test Suite
+Testing real JSON file I/O capabilities
+==========================================
+on god
 
 slay test_json_file_reading() {
     test_start("JSON File Reading")

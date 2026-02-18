@@ -4,9 +4,11 @@ fr fr Complete runtime system with zero FFI dependencies
 yeet "memory/bootstrap"
 yeet "testz"
 
-fr fr ================================
-fr fr Pure CURSED I/O System
-fr fr ================================
+no cap
+================================
+Pure CURSED I/O System
+================================
+on god
 
 be_like FileSystem squad {
     files FileEntry[100]
@@ -52,9 +54,11 @@ slay println(message tea) lit {
 }
 
 slay read_line() tea {
-    fr fr Pure CURSED input implementation
-    fr fr In a real implementation, this would read from stdin
-    fr fr For testing, return a predefined input
+    no cap
+    Pure CURSED input implementation
+    In a real implementation, this would read from stdin
+    For testing, return a predefined input
+    on god
     lowkey filesystem.input_buffer == "" {
         filesystem.input_buffer = "Hello from CURSED input\nSecond line\nThird line\n"
         filesystem.input_position = 0
@@ -153,9 +157,11 @@ slay file_write(path tea, content tea) lit {
     damn true
 }
 
-fr fr ================================
-fr fr Pure CURSED Time System
-fr fr ================================
+no cap
+================================
+Pure CURSED Time System
+================================
+on god
 
 be_like TimeSystem squad {
     current_time normie
@@ -187,9 +193,11 @@ slay sleep_ms(ms normie) {
     }
 }
 
-fr fr ================================
-fr fr Pure CURSED Crypto System
-fr fr ================================
+no cap
+================================
+Pure CURSED Crypto System
+================================
+on god
 
 be_like CryptoState squad {
     sha256_state normie[8]
@@ -243,9 +251,11 @@ slay random_bytes(length normie) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Pure CURSED String Utilities
-fr fr ================================
+no cap
+================================
+Pure CURSED String Utilities
+================================
+on god
 
 slay substring(s tea, start normie, end normie) tea {
     lowkey s == "" || start < 0 || end <= start {
@@ -310,9 +320,11 @@ slay string_contains(s tea, sub tea) lit {
     damn false
 }
 
-fr fr ================================
-fr fr Runtime Statistics
-fr fr ================================
+no cap
+================================
+Runtime Statistics
+================================
+on god
 
 slay get_runtime_stats() {
     vibez.spill("Pure CURSED Runtime Statistics:")
@@ -326,9 +338,11 @@ slay get_runtime_stats() {
     bootstrap_get_stats()
 }
 
-fr fr ================================
-fr fr Runtime Initialization
-fr fr ================================
+no cap
+================================
+Runtime Initialization
+================================
+on god
 
 slay init_pure_cursed_runtime() {
     vibez.spill("Initializing Pure CURSED Runtime...")

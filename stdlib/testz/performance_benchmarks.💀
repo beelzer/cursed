@@ -3,9 +3,11 @@ yeet "testz"
 
 fr fr Performance benchmarks for the enhanced testz framework
 
-fr fr ===============================
-fr fr Performance Benchmark Suite
-fr fr ===============================
+no cap
+===============================
+Performance Benchmark Suite
+===============================
+on god
 
 slay benchmark_assertion_performance() {
     vibez.spill("⚡ Benchmarking assertion performance...")
@@ -165,9 +167,11 @@ slay run_comparative_benchmarks() {
     testz.after_all_tests()
 }
 
-fr fr ===============================
-fr fr Performance Regression Tests
-fr fr ===============================
+no cap
+===============================
+Performance Regression Tests
+===============================
+on god
 
 slay run_performance_regression_tests() {
     vibez.spill("🔍 Running performance regression tests...")
@@ -192,9 +196,11 @@ slay run_performance_regression_tests() {
     testz.after_all_tests()
 }
 
-fr fr ===============================
-fr fr Main Performance Suite Runner
-fr fr ===============================
+no cap
+===============================
+Main Performance Suite Runner
+===============================
+on god
 
 slay main_character() {
     vibez.spill("🚀 Starting Enhanced Testz Performance Benchmarks")

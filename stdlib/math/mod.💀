@@ -1,8 +1,10 @@
 yeet "testz"
 
-fr fr ==========================================
-fr fr CURSED Math Module - Advanced Implementation
-fr fr ==========================================
+no cap
+==========================================
+CURSED Math Module - Advanced Implementation
+==========================================
+on god
 
 fr fr Constants
 sus PI meal = 3.141592653589793
@@ -12,9 +14,11 @@ sus LN10 meal = 2.302585092994046
 sus SQRT2 meal = 1.4142135623730951
 sus EPSILON meal = 1e-15
 
-fr fr ==========================================
-fr fr Basic Arithmetic Functions
-fr fr ==========================================
+no cap
+==========================================
+Basic Arithmetic Functions
+==========================================
+on god
 
 slay add(a normie, b normie) normie {
     damn a + b
@@ -74,9 +78,11 @@ slay min_float(a meal, b meal) meal {
     damn b
 }
 
-fr fr ==========================================
-fr fr Exponential and Power Functions
-fr fr ==========================================
+no cap
+==========================================
+Exponential and Power Functions
+==========================================
+on god
 
 slay pow_int(base normie, exp normie) normie {
     bestie exp == 0 {
@@ -147,9 +153,11 @@ slay exp2(x meal) meal {
     damn pow_float(2.0, x)
 }
 
-fr fr ==========================================
-fr fr Logarithmic Functions
-fr fr ==========================================
+no cap
+==========================================
+Logarithmic Functions
+==========================================
+on god
 
 slay ln(x meal) meal { fr fr Natural logarithm using Newton's method
     bestie x <= 0.0 {
@@ -189,9 +197,11 @@ slay log_base(x meal, base meal) meal {
     damn ln(x) / ln(base)
 }
 
-fr fr ==========================================
-fr fr Trigonometric Functions
-fr fr ==========================================
+no cap
+==========================================
+Trigonometric Functions
+==========================================
+on god
 
 slay sin(x meal) meal { fr fr Taylor series: sin(x) = x - x³/3! + x⁵/5! - x⁷/7! + ... fr fr Normalize x to [-π, π]
     x = x - 2.0 * PI * floor_float(x / (2.0 * PI))
@@ -312,9 +322,11 @@ slay atan2(y meal, x meal) meal {
     damn 0.0 fr fr x = 0, y = 0
 }
 
-fr fr ==========================================
-fr fr Hyperbolic Functions
-fr fr ==========================================
+no cap
+==========================================
+Hyperbolic Functions
+==========================================
+on god
 
 slay sinh(x meal) meal {
     sus exp_x meal = exp_float(x)
@@ -333,9 +345,11 @@ slay tanh(x meal) meal {
     damn (exp_2x - 1.0) / (exp_2x + 1.0)
 }
 
-fr fr ==========================================
-fr fr Special Functions
-fr fr ==========================================
+no cap
+==========================================
+Special Functions
+==========================================
+on god
 
 slay factorial(n normie) meal {
     bestie n <= 0 {
@@ -385,9 +399,11 @@ slay bessel_j0(x meal) meal { fr fr Bessel function J₀(x) approximation
     damn sqrt(0.636619772 / ax) * (cos(xx) * (p0 + y * p1) - z * sin(xx) * (q0 + y * q1))
 }
 
-fr fr ==========================================
-fr fr Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Helper Functions
+==========================================
+on god
 
 slay floor_float(x meal) meal {
     sus int_part normie = x.(normie)
@@ -418,9 +434,11 @@ slay round_float(x meal) meal {
     damn ceil_float(x - 0.5)
 }
 
-fr fr ==========================================
-fr fr Statistical Functions
-fr fr ==========================================
+no cap
+==========================================
+Statistical Functions
+==========================================
+on god
 
 slay mean(values meal[value], count normie) meal {
     bestie count <= 0 {
@@ -468,9 +486,11 @@ slay median(values meal[value], count normie) meal {
     damn (values[mid - 1] + values[mid]) / 2.0
 }
 
-fr fr ==========================================
-fr fr Numerical Analysis Functions
-fr fr ==========================================
+no cap
+==========================================
+Numerical Analysis Functions
+==========================================
+on god
 
 slay integrate_simpson(f_vals meal[value], count normie, h meal) meal { fr fr Simpson's rule for numerical integration
     bestie count < 3 {
@@ -505,9 +525,11 @@ slay solve_linear_2x2(a11 meal, a12 meal, b1 meal, a21 meal, a22 meal, b2 meal) 
     damn (b1 * a22 - b2 * a12) / det
 }
 
-fr fr ==========================================
-fr fr Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+Utility Functions
+==========================================
+on god
 
 slay gcd(a normie, b normie) normie {
     bestie b == 0 {

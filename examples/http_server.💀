@@ -1,8 +1,10 @@
-fr fr/ HTTP Server example demonstrating CURSED web programming
-fr fr/ 
-fr fr/ This example shows how to build a simple HTTP server using
-fr fr/ CURSED language constructs including structs, interfaces,
-fr fr/ and concurrent programming with goroutines.
+no cap
+/ HTTP Server example demonstrating CURSED web programming
+/ 
+/ This example shows how to build a simple HTTP server using
+/ CURSED language constructs including structs, interfaces,
+/ and concurrent programming with goroutines.
+on god
 
 vibe http_server
 
@@ -10,10 +12,12 @@ yeet "net/http"
 yeet "fmt"
 yeet "encoding/json"
 
-fr fr/ HTTP request handler interface
-fr fr/ 
-fr fr/ This collab defines the contract for handling HTTP requests
-fr fr/ in the CURSED web framework.
+no cap
+/ HTTP request handler interface
+/ 
+/ This collab defines the contract for handling HTTP requests
+/ in the CURSED web framework.
+on god
 collab RequestHandler {
     /// Handle an incoming HTTP request
     /// 
@@ -22,10 +26,12 @@ collab RequestHandler {
     handle_request(req @HttpRequest, resp @HttpResponse) void
 }
 
-fr fr/ HTTP request structure
-fr fr/ 
-fr fr/ Contains all information about an incoming HTTP request
-fr fr/ including headers, body, and metadata.
+no cap
+/ HTTP request structure
+/ 
+/ Contains all information about an incoming HTTP request
+/ including headers, body, and metadata.
+on god
 squad HttpRequest {
     /// HTTP method (GET, POST, etc.)
     method facts_string
@@ -39,9 +45,11 @@ squad HttpRequest {
     query_params map[facts_string]facts_string
 }
 
-fr fr/ HTTP response structure
-fr fr/ 
-fr fr/ Used to construct and send HTTP responses back to clients.
+no cap
+/ HTTP response structure
+/ 
+/ Used to construct and send HTTP responses back to clients.
+on god
 squad HttpResponse {
     /// HTTP status code
     status_code normie
@@ -53,10 +61,12 @@ squad HttpResponse {
     sent bool
 }
 
-fr fr/ Simple JSON API handler
-fr fr/ 
-fr fr/ Demonstrates handling JSON requests and responses
-fr fr/ in the CURSED web framework.
+no cap
+/ Simple JSON API handler
+/ 
+/ Demonstrates handling JSON requests and responses
+/ in the CURSED web framework.
+on god
 squad JsonApiHandler {
     /// Base path for this handler
     base_path facts_string
@@ -152,10 +162,12 @@ impl JsonApiHandler : RequestHandler {
     }
 }
 
-fr fr/ HTTP server configuration
-fr fr/ 
-fr fr/ Contains configuration options for the HTTP server
-fr fr/ including port, timeouts, and middleware settings.
+no cap
+/ HTTP server configuration
+/ 
+/ Contains configuration options for the HTTP server
+/ including port, timeouts, and middleware settings.
+on god
 squad ServerConfig {
     /// Port to listen on
     port normie
@@ -169,10 +181,12 @@ squad ServerConfig {
     enable_logging bool
 }
 
-fr fr/ HTTP server implementation
-fr fr/ 
-fr fr/ The main server struct that handles incoming connections
-fr fr/ and routes requests to appropriate handlers.
+no cap
+/ HTTP server implementation
+/ 
+/ The main server struct that handles incoming connections
+/ and routes requests to appropriate handlers.
+on god
 squad HttpServer {
     /// Server configuration
     config ServerConfig
@@ -182,10 +196,12 @@ squad HttpServer {
     listen_chan chan bool
 }
 
-fr fr/ Create a new HTTP server
-fr fr/ 
-fr fr/ @param config - Server configuration
-fr fr/ @return - New HTTP server instance
+no cap
+/ Create a new HTTP server
+/ 
+/ @param config - Server configuration
+/ @return - New HTTP server instance
+on god
 slay new_server(config ServerConfig) -> @HttpServer {
     damn &HttpServer{
         config: config,
@@ -194,20 +210,24 @@ slay new_server(config ServerConfig) -> @HttpServer {
     }
 }
 
-fr fr/ Add a request handler to the server
-fr fr/ 
-fr fr/ @param path - URL path pattern
-fr fr/ @param handler - Request handler implementation
+no cap
+/ Add a request handler to the server
+/ 
+/ @param path - URL path pattern
+/ @param handler - Request handler implementation
+on god
 slay (server @HttpServer) add_handler(path facts_string, handler RequestHandler) {
     server.handlers[path] = handler
 }
 
-fr fr/ Start the HTTP server
-fr fr/ 
-fr fr/ This method starts the server and begins listening for
-fr fr/ incoming HTTP connections on the configured port.
-fr fr/ 
-fr fr/ @return - Error if server fails to start
+no cap
+/ Start the HTTP server
+/ 
+/ This method starts the server and begins listening for
+/ incoming HTTP connections on the configured port.
+/ 
+/ @return - Error if server fails to start
+on god
 slay (server @HttpServer) start() -> error {
     sus address = fmt.Sprintf("%s:%d", server.config.hostname, server.config.port)
     
@@ -229,17 +249,21 @@ slay (server @HttpServer) start() -> error {
     damn nil
 }
 
-fr fr/ Stop the HTTP server
-fr fr/ 
-fr fr/ Gracefully shuts down the server and closes all connections.
+no cap
+/ Stop the HTTP server
+/ 
+/ Gracefully shuts down the server and closes all connections.
+on god
 slay (server @HttpServer) stop() {
     server.listen_chan <- based
     close(server.listen_chan)
 }
 
-fr fr/ Handle an individual connection
-fr fr/ 
-fr fr/ @param conn - The network connection
+no cap
+/ Handle an individual connection
+/ 
+/ @param conn - The network connection
+on god
 slay (server @HttpServer) handle_connection(conn net.Conn) {
     defer conn.Close()
     

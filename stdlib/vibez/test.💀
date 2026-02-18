@@ -179,9 +179,11 @@ slay main_character() {
     fr fr ===== INPUT OPERATION TESTS =====
     testz.test_group("Input Operation Functions")
     
-    fr fr Test scan functions exist and return strings
-    fr fr Note: These don't test actual input since we can't simulate stdin in tests
-    fr fr Just verify the functions can be called without crashing
+    no cap
+    Test scan functions exist and return strings
+    Note: These don't test actual input since we can't simulate stdin in tests
+    Just verify the functions can be called without crashing
+    on god
     
     fr fr ===== FILE OPERATION EDGE CASES =====
     testz.test_group("File Operation Edge Cases")

@@ -1,36 +1,38 @@
 #!/usr/bin/env cursed
 
-fr fr! # Comprehensive Standard Library Demo
-fr fr! 
-fr fr! This example demonstrates the extensive capabilities of CURSED's standard library,
-fr fr! showcasing over 30 modules that provide enterprise-grade functionality for
-fr fr! real-world applications.
-fr fr! 
-fr fr! ## Modules Demonstrated
-fr fr! - **Math Operations**: Basic, advanced, statistics, trigonometry
-fr fr! - **String Manipulation**: Text processing, formatting, validation  
-fr fr! - **File System**: I/O operations, directory management, metadata
-fr fr! - **Networking**: HTTP clients/servers, DNS, WebSockets
-fr fr! - **Database**: SQLite, PostgreSQL, MongoDB integration
-fr fr! - **Cryptography**: Complete crypto ecosystem with 10+ modules
-fr fr! - **Process Management**: System processes, IPC, monitoring
-fr fr! - **Time Handling**: Date/time operations, formatting, timezones
-fr fr! - **Collections**: Data structures, iterators, algorithms
-fr fr! - **Testing Framework**: Unit testing, benchmarks, assertions
-fr fr! - **Environment**: Variable handling, configuration management
-fr fr! - **JSON Processing**: Parsing, serialization, streaming
-fr fr! - **Logging**: Structured logging with multiple outputs
-fr fr! - **Template System**: Multiple formats, rendering engines
-fr fr! - **Web Framework**: Full-stack web development
-fr fr! - **Atomic Operations**: Low-level synchronization primitives
-fr fr! - **Signal Handling**: OS signal management and coordination
-fr fr! - **Inter-Process Communication**: Pipes, queues, shared memory
-fr fr! - **Performance Profiling**: CPU, memory, benchmark tools
-fr fr! - **Synchronization**: Threading, mutexes, channels
-fr fr! - **Asynchronous Operations**: Future-based programming
-fr fr!
-fr fr! @author CURSED Language Team
-fr fr! @version 1.0.0
+no cap
+! # Comprehensive Standard Library Demo
+! 
+! This example demonstrates the extensive capabilities of CURSED's standard library,
+! showcasing over 30 modules that provide enterprise-grade functionality for
+! real-world applications.
+! 
+! ## Modules Demonstrated
+! - **Math Operations**: Basic, advanced, statistics, trigonometry
+! - **String Manipulation**: Text processing, formatting, validation  
+! - **File System**: I/O operations, directory management, metadata
+! - **Networking**: HTTP clients/servers, DNS, WebSockets
+! - **Database**: SQLite, PostgreSQL, MongoDB integration
+! - **Cryptography**: Complete crypto ecosystem with 10+ modules
+! - **Process Management**: System processes, IPC, monitoring
+! - **Time Handling**: Date/time operations, formatting, timezones
+! - **Collections**: Data structures, iterators, algorithms
+! - **Testing Framework**: Unit testing, benchmarks, assertions
+! - **Environment**: Variable handling, configuration management
+! - **JSON Processing**: Parsing, serialization, streaming
+! - **Logging**: Structured logging with multiple outputs
+! - **Template System**: Multiple formats, rendering engines
+! - **Web Framework**: Full-stack web development
+! - **Atomic Operations**: Low-level synchronization primitives
+! - **Signal Handling**: OS signal management and coordination
+! - **Inter-Process Communication**: Pipes, queues, shared memory
+! - **Performance Profiling**: CPU, memory, benchmark tools
+! - **Synchronization**: Threading, mutexes, channels
+! - **Asynchronous Operations**: Future-based programming
+!
+! @author CURSED Language Team
+! @version 1.0.0
+on god
 
 fr fr Import major standard library modules
 yeet "stdlib::math"

@@ -1,8 +1,10 @@
 vibe main
 
-fr fr Test: Operator precedence edge cases
-fr fr Purpose: Test complex precedence scenarios
-fr fr Expected: Operators should follow correct precedence rules
+no cap
+Test: Operator precedence edge cases
+Purpose: Test complex precedence scenarios
+Expected: Operators should follow correct precedence rules
+on god
 
 slay main_character() {
     fr fr Basic precedence: * and / before + and -

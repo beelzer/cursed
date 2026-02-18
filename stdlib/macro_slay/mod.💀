@@ -1,6 +1,8 @@
-fr fr macro_slay - Complete Macro System Implementation for CURSED
-fr fr Provides comprehensive macro functionality including definition, expansion, 
-fr fr AST integration, template substitution, and built-in macro library
+no cap
+macro_slay - Complete Macro System Implementation for CURSED
+Provides comprehensive macro functionality including definition, expansion, 
+AST integration, template substitution, and built-in macro library
+on god
 
 yeet "ast_mood"
 yeet "stringz"

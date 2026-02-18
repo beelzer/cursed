@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "json"
 
-fr fr ==========================================
-fr fr CURSED JSON Library Test Suite
-fr fr RFC 7159 Compliant JSON Processing Tests
-fr fr ==========================================
+no cap
+==========================================
+CURSED JSON Library Test Suite
+RFC 7159 Compliant JSON Processing Tests
+==========================================
+on god
 
 slay test_json_parse_main_api() {
     test_start("JSON Main API - parse_json() and from_string()") fr fr Test main parse_json function

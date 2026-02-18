@@ -4,9 +4,11 @@ yeet "mathz"
 yeet "stringz"
 yeet "collections"
 
-fr fr Stress test for deeply nested operations and complex expressions
-fr fr Tests parser limits, expression evaluation, and memory management
-fr fr Expected: Successful evaluation of complex nested operations
+no cap
+Stress test for deeply nested operations and complex expressions
+Tests parser limits, expression evaluation, and memory management
+Expected: Successful evaluation of complex nested operations
+on god
 
 slay deeply_nested_calculation(depth normie) {
     lowkey depth <= 0 {

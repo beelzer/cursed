@@ -1,8 +1,10 @@
-fr fr/ fr fr Redis database operations demo - cache like a boss periodt!
-fr fr/
-fr fr/ This example demonstrates comprehensive Redis operations using the CURSED
-fr fr/ Redis driver including basic operations, data structures, and performance
-fr fr/ monitoring.
+no cap
+/ fr fr Redis database operations demo - cache like a boss periodt!
+/
+/ This example demonstrates comprehensive Redis operations using the CURSED
+/ Redis driver including basic operations, data structures, and performance
+/ monitoring.
+on god
 
 yeet "stdlib::packages::db_nosql::redis"
 yeet "stdlib::io"

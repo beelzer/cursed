@@ -1,15 +1,19 @@
-fr fr ==========================================
-fr fr ENHANCED JSON PARSER - Complete RFC 7159 Implementation
-fr fr Full JSON specification support with proper error handling
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED JSON PARSER - Complete RFC 7159 Implementation
+Full JSON specification support with proper error handling
+==========================================
+on god
 
 yeet "stringz"
 yeet "mathz"
 yeet "vibez"
 
-fr fr ==========================================
-fr fr JSON Parser Data Structures
-fr fr ==========================================
+no cap
+==========================================
+JSON Parser Data Structures
+==========================================
+on god
 
 squad JsonValue {
     sus value_type tea              fr fr "null", "boolean", "number", "string", "array", "object"
@@ -45,9 +49,11 @@ squad JsonParseResult {
     sus parser JsonParser
 }
 
-fr fr ==========================================
-fr fr Core JSON Parser Implementation
-fr fr ==========================================
+no cap
+==========================================
+Core JSON Parser Implementation
+==========================================
+on god
 
 slay json_parse_string(json_content tea) JsonParseResult {
     fr fr Parse JSON string with complete RFC 7159 compliance
@@ -150,9 +156,11 @@ slay parse_json_value(parser JsonParser) JsonParseResult {
     }
 }
 
-fr fr ==========================================
-fr fr JSON String Parsing with Full Unicode Support
-fr fr ==========================================
+no cap
+==========================================
+JSON String Parsing with Full Unicode Support
+==========================================
+on god
 
 slay parse_json_string_value(parser JsonParser) JsonParseResult {
     fr fr Parse JSON string with full escape sequence support
@@ -291,9 +299,11 @@ slay parse_unicode_escape(parser JsonParser) UnicodeParseResult {
     damn result
 }
 
-fr fr ==========================================
-fr fr JSON Number Parsing with Proper Precision
-fr fr ==========================================
+no cap
+==========================================
+JSON Number Parsing with Proper Precision
+==========================================
+on god
 
 slay parse_json_number(parser JsonParser) JsonParseResult {
     fr fr Parse JSON number with full RFC 7159 compliance
@@ -394,9 +404,11 @@ slay parse_json_number(parser JsonParser) JsonParseResult {
     damn result
 }
 
-fr fr ==========================================
-fr fr JSON Object Parsing
-fr fr ==========================================
+no cap
+==========================================
+JSON Object Parsing
+==========================================
+on god
 
 slay parse_json_object(parser JsonParser) JsonParseResult {
     fr fr Parse JSON object with proper key validation
@@ -535,9 +547,11 @@ slay parse_json_object(parser JsonParser) JsonParseResult {
     damn result
 }
 
-fr fr ==========================================
-fr fr JSON Array Parsing
-fr fr ==========================================
+no cap
+==========================================
+JSON Array Parsing
+==========================================
+on god
 
 slay parse_json_array(parser JsonParser) JsonParseResult {
     fr fr Parse JSON array with proper element handling
@@ -627,9 +641,11 @@ slay parse_json_array(parser JsonParser) JsonParseResult {
     damn result
 }
 
-fr fr ==========================================
-fr fr JSON Literal Parsing (true, false, null)
-fr fr ==========================================
+no cap
+==========================================
+JSON Literal Parsing (true, false, null)
+==========================================
+on god
 
 slay parse_json_literal(parser JsonParser, expected tea) JsonParseResult {
     fr fr Parse JSON literal values with exact matching
@@ -681,9 +697,11 @@ slay parse_json_literal(parser JsonParser, expected tea) JsonParseResult {
     damn result
 }
 
-fr fr ==========================================
-fr fr JSON Parser Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+JSON Parser Utility Functions
+==========================================
+on god
 
 slay advance_json_parser(parser JsonParser) JsonParser {
     fr fr Advance parser position and update line/column tracking
@@ -746,9 +764,11 @@ slay is_json_control_character(char tea) lit {
     damn (char_code >= 0 && char_code <= 31)
 }
 
-fr fr ==========================================
-fr fr JSON Utility and Conversion Functions
-fr fr ==========================================
+no cap
+==========================================
+JSON Utility and Conversion Functions
+==========================================
+on god
 
 slay hex_string_to_int(hex_str tea) drip {
     fr fr Convert hexadecimal string to integer
@@ -843,9 +863,11 @@ slay code_point_to_char(code_point drip) tea {
     damn " "  fr fr Default to space
 }
 
-fr fr ==========================================
-fr fr Array Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Array Helper Functions
+==========================================
+on god
 
 slay array_contains_string(arr tea[value], target tea) lit {
     fr fr Check if string array contains target string

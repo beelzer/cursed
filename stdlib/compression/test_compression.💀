@@ -1,16 +1,20 @@
 yeet "testz"
 yeet "compression"
 
-fr fr ==========================================
-fr fr CURSED Compression Module Test Suite
-fr fr Comprehensive tests for all compression algorithms  
-fr fr ==========================================
+no cap
+==========================================
+CURSED Compression Module Test Suite
+Comprehensive tests for all compression algorithms  
+==========================================
+on god
 
 test_start("Compression Module Tests")
 
-fr fr ==========================================
-fr fr Basic Compression Algorithm Tests
-fr fr ==========================================
+no cap
+==========================================
+Basic Compression Algorithm Tests
+==========================================
+on god
 
 fr fr Test LZ4 compression and decompression
 sus test_data tea = "Hello World Test Data"
@@ -34,9 +38,11 @@ sus gzip_decompressed tea = gzip_decompress_data(gzip_compressed)
 assert_eq_string(gzip_decompressed, test_data)
 assert_true(string_length(gzip_compressed) > string_length(test_data))
 
-fr fr ==========================================
-fr fr High-Level Interface Tests
-fr fr ==========================================
+no cap
+==========================================
+High-Level Interface Tests
+==========================================
+on god
 
 fr fr Test main compression interface with LZ4
 sus compressed_lz4 tea = compress_slay(test_data, ALGO_LZ4, COMPRESS_LEVEL_FAST)
@@ -53,9 +59,11 @@ sus compressed_gzip tea = compress_slay(test_data, ALGO_GZIP, COMPRESS_LEVEL_BAL
 sus decompressed_gzip tea = decompress_vibes(compressed_gzip, ALGO_GZIP)
 assert_eq_string(decompressed_gzip, test_data)
 
-fr fr ==========================================
-fr fr Algorithm Detection Tests
-fr fr ==========================================
+no cap
+==========================================
+Algorithm Detection Tests
+==========================================
+on god
 
 fr fr Test auto-detection of LZ4 format
 sus lz4_test_data tea = "LZ4F:test_data_content"
@@ -77,9 +85,11 @@ sus unknown_data tea = "UNKNOWN_FORMAT:data"
 sus detected_unknown normie = auto_detect_algorithm(unknown_data)
 assert_eq_int(detected_unknown, 0)
 
-fr fr ==========================================
-fr fr Compression Level Tests
-fr fr ==========================================
+no cap
+==========================================
+Compression Level Tests
+==========================================
+on god
 
 fr fr Test different compression levels for LZ4
 sus fast_lz4 tea = lz4_compress_data(test_data, COMPRESS_LEVEL_FAST)
@@ -100,9 +110,11 @@ assert_eq_string(deflate_decompress_data(fast_deflate), test_data)
 assert_eq_string(deflate_decompress_data(max_deflate), test_data)
 assert_eq_string(deflate_decompress_data(balanced_deflate), test_data)
 
-fr fr ==========================================
-fr fr Utility Function Tests
-fr fr ==========================================
+no cap
+==========================================
+Utility Function Tests
+==========================================
+on god
 
 fr fr Test compression ratio calculation
 sus original_size normie = 100
@@ -130,9 +142,11 @@ assert_true(is_compressed_vibes(compressed_test))
 sus uncompressed_test tea = "regular_text_data"
 assert_false(is_compressed_vibes(uncompressed_test))
 
-fr fr ==========================================
-fr fr Edge Case Tests
-fr fr ==========================================
+no cap
+==========================================
+Edge Case Tests
+==========================================
+on god
 
 fr fr Test empty string compression
 sus empty_data tea = ""
@@ -155,9 +169,11 @@ assert_eq_string(lz4_decompress_data(small_lz4), small_data)
 assert_eq_string(deflate_decompress_data(small_deflate), small_data)
 assert_eq_string(gzip_decompress_data(small_gzip), small_data)
 
-fr fr ==========================================
-fr fr String Utility Function Tests  
-fr fr ==========================================
+no cap
+==========================================
+String Utility Function Tests  
+==========================================
+on god
 
 fr fr Test string_starts_with function
 assert_true(string_starts_with("LZ4F:data", "LZ4"))
@@ -177,9 +193,11 @@ assert_eq_int(char_h, 72) fr fr ASCII 'H'
 sus char_e normie = char_at("Hello", 1)
 assert_eq_int(char_e, 101) fr fr ASCII 'e'
 
-fr fr ==========================================
-fr fr Integration Tests
-fr fr ==========================================
+no cap
+==========================================
+Integration Tests
+==========================================
+on god
 
 fr fr Test round-trip compression for all algorithms
 sus integration_data tea = "Integration test data with various characters 123!@#"
@@ -210,9 +228,11 @@ vibes auto_algo > 0 {
     assert_eq_string(auto_decomp, integration_data)
 }
 
-fr fr ==========================================
-fr fr Performance and Benchmarking Tests
-fr fr ==========================================
+no cap
+==========================================
+Performance and Benchmarking Tests
+==========================================
+on god
 
 fr fr Test compression ratio calculation with realistic data
 sus perf_original_size normie = 1000
@@ -224,9 +244,11 @@ fr fr Test zero division protection
 sus zero_ratio normie = calculate_compression_ratio(0, 100)
 assert_eq_int(zero_ratio, 100)
 
-fr fr ==========================================
-fr fr Algorithm Constant Tests
-fr fr ==========================================
+no cap
+==========================================
+Algorithm Constant Tests
+==========================================
+on god
 
 fr fr Verify algorithm constants are properly defined
 assert_eq_int(ALGO_LZ4, 3)
@@ -238,9 +260,11 @@ assert_eq_int(COMPRESS_LEVEL_FAST, 1)
 assert_eq_int(COMPRESS_LEVEL_BALANCED, 5)
 assert_eq_int(COMPRESS_LEVEL_MAX, 9)
 
-fr fr ==========================================
-fr fr Error Handling Tests
-fr fr ==========================================
+no cap
+==========================================
+Error Handling Tests
+==========================================
+on god
 
 fr fr Test invalid algorithm handling
 sus invalid_comp tea = compress_slay(test_data, 999, COMPRESS_LEVEL_BALANCED)
@@ -260,9 +284,11 @@ assert_true(string_length(malformed_lz4) >= 0)
 assert_true(string_length(malformed_deflate) >= 0)  
 assert_true(string_length(malformed_gzip) >= 0)
 
-fr fr ==========================================
-fr fr Advanced Feature Tests
-fr fr ==========================================
+no cap
+==========================================
+Advanced Feature Tests
+==========================================
+on god
 
 fr fr Test string_substring functionality
 sus substr_test tea = "0123456789"

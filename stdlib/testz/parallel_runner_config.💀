@@ -1,38 +1,46 @@
-fr fr ================================
-fr fr CURSED Parallel Test Runner Configuration
-fr fr Environment variable support and runtime configuration management
-fr fr ================================
+no cap
+================================
+CURSED Parallel Test Runner Configuration
+Environment variable support and runtime configuration management
+================================
+on god
 
 yeet "testz"
 
-fr fr ================================
-fr fr Environment Variable Documentation
-fr fr ================================
+no cap
+================================
+Environment Variable Documentation
+================================
+on god
 
-fr fr Available Environment Variables:
-fr fr 
-fr fr CURSED_TEST_PARALLEL=true/false        - Enable/disable parallel execution
-fr fr CURSED_TEST_WORKERS=N                  - Number of parallel workers (default: 4)
-fr fr CURSED_TEST_TIMEOUT=N                  - Test timeout in seconds (default: 30)
-fr fr CURSED_TEST_MEMORY_LIMIT=N             - Memory limit in MB (default: 512)
-fr fr CURSED_TEST_FILTER="pattern"           - Filter tests by pattern (default: "*")
-fr fr CURSED_TEST_EXCLUDE="pattern"          - Exclude tests by pattern (default: "")
-fr fr CURSED_TEST_VERBOSE=true/false         - Enable verbose output (default: false)
-fr fr CURSED_TEST_FAIL_FAST=true/false       - Stop on first failure (default: false)
-fr fr CURSED_TEST_ISOLATION=true/false       - Run tests in isolation (default: true)
-fr fr CURSED_TEST_CLEANUP=true/false         - Cleanup after each test (default: true)
-fr fr CURSED_TEST_DEBUG=true/false           - Enable debug output (default: false)
-fr fr CURSED_TEST_PROFILE=true/false         - Enable performance profiling (default: false)
-fr fr CURSED_TEST_RETRY_COUNT=N              - Number of retries for failed tests (default: 0)
-fr fr CURSED_TEST_RETRY_DELAY=N              - Delay between retries in ms (default: 1000)
-fr fr CURSED_TEST_OUTPUT_FORMAT=format       - Output format: console/json/xml (default: console)
-fr fr CURSED_TEST_REPORT_FILE="path"         - Output report file path
-fr fr CURSED_TEST_COVERAGE=true/false        - Collect test coverage (default: false)
-fr fr CURSED_TEST_BENCHMARK=true/false       - Run in benchmark mode (default: false)
+no cap
+Available Environment Variables:
 
-fr fr ================================
-fr fr Configuration Structures
-fr fr ================================
+CURSED_TEST_PARALLEL=true/false        - Enable/disable parallel execution
+CURSED_TEST_WORKERS=N                  - Number of parallel workers (default: 4)
+CURSED_TEST_TIMEOUT=N                  - Test timeout in seconds (default: 30)
+CURSED_TEST_MEMORY_LIMIT=N             - Memory limit in MB (default: 512)
+CURSED_TEST_FILTER="pattern"           - Filter tests by pattern (default: "*")
+CURSED_TEST_EXCLUDE="pattern"          - Exclude tests by pattern (default: "")
+CURSED_TEST_VERBOSE=true/false         - Enable verbose output (default: false)
+CURSED_TEST_FAIL_FAST=true/false       - Stop on first failure (default: false)
+CURSED_TEST_ISOLATION=true/false       - Run tests in isolation (default: true)
+CURSED_TEST_CLEANUP=true/false         - Cleanup after each test (default: true)
+CURSED_TEST_DEBUG=true/false           - Enable debug output (default: false)
+CURSED_TEST_PROFILE=true/false         - Enable performance profiling (default: false)
+CURSED_TEST_RETRY_COUNT=N              - Number of retries for failed tests (default: 0)
+CURSED_TEST_RETRY_DELAY=N              - Delay between retries in ms (default: 1000)
+CURSED_TEST_OUTPUT_FORMAT=format       - Output format: console/json/xml (default: console)
+CURSED_TEST_REPORT_FILE="path"         - Output report file path
+CURSED_TEST_COVERAGE=true/false        - Collect test coverage (default: false)
+CURSED_TEST_BENCHMARK=true/false       - Run in benchmark mode (default: false)
+on god
+
+no cap
+================================
+Configuration Structures
+================================
+on god
 
 struct RuntimeConfig {
     max_memory_mb normie
@@ -85,9 +93,11 @@ struct BenchmarkConfig {
     output_file tea
 }
 
-fr fr ================================
-fr fr Advanced Configuration Loading
-fr fr ================================
+no cap
+================================
+Advanced Configuration Loading
+================================
+on god
 
 slay load_runtime_config() RuntimeConfig {
     vibez.spill("🔧 Loading runtime configuration...")
@@ -160,9 +170,11 @@ slay load_benchmark_config() BenchmarkConfig {
     }
 }
 
-fr fr ================================
-fr fr Configuration Validation
-fr fr ================================
+no cap
+================================
+Configuration Validation
+================================
+on god
 
 slay validate_environment_config(env_config EnvironmentConfig) lit {
     vibez.spill("✅ Validating environment configuration...")
@@ -210,9 +222,11 @@ slay validate_parallelism_config(parallel_config ParallelismConfig) lit {
     damn based
 }
 
-fr fr ================================
-fr fr Configuration Profiles
-fr fr ================================
+no cap
+================================
+Configuration Profiles
+================================
+on god
 
 slay create_development_profile() ParallelTestRunnerConfig {
     vibez.spill("🔧 Creating development profile...")
@@ -326,9 +340,11 @@ slay create_benchmark_profile() ParallelTestRunnerConfig {
     }
 }
 
-fr fr ================================
-fr fr Configuration Display and Debugging
-fr fr ================================
+no cap
+================================
+Configuration Display and Debugging
+================================
+on god
 
 slay print_configuration_summary(config ParallelTestRunnerConfig) {
     vibez.spill("")
@@ -406,9 +422,11 @@ slay print_environment_variables_help() {
     vibez.spill("═══════════════════════════════════════════")
 }
 
-fr fr ================================
-fr fr Configuration Testing and Validation
-fr fr ================================
+no cap
+================================
+Configuration Testing and Validation
+================================
+on god
 
 slay test_configuration_profiles() {
     vibez.spill("🧪 Testing configuration profiles...")
@@ -436,9 +454,11 @@ slay test_configuration_profiles() {
     vibez.spill("✅ All configuration profiles are valid")
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay parse_env_array(key tea, default_array [tea]) [tea] {
     fr fr Parse comma-separated environment variable into array
@@ -465,9 +485,11 @@ struct TestDiscoveryConfig {
     follow_symlinks lit
 }
 
-fr fr ================================
-fr fr Main Entry Point for Configuration Testing
-fr fr ================================
+no cap
+================================
+Main Entry Point for Configuration Testing
+================================
+on god
 
 slay main_character() {
     vibez.spill("🔧 CURSED Parallel Test Runner Configuration")

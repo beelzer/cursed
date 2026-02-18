@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Test: Basic tea operations
-fr fr Purpose: Test tea literals and basic tea handling
-fr fr Expected: String literals should parse and be handled correctly
+no cap
+Test: Basic tea operations
+Purpose: Test tea literals and basic tea handling
+Expected: String literals should parse and be handled correctly
+on god
 
 slay main_character() {
     fr fr String literal declarations

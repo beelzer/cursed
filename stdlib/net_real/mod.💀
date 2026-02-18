@@ -1,12 +1,16 @@
-fr fr CURSED Real Networking Module - Production Implementation with Real Syscalls
-fr fr Complete networking operations using actual system calls
-fr fr Replaces mock operations with real TCP/UDP sockets through Zig syscall interface
+no cap
+CURSED Real Networking Module - Production Implementation with Real Syscalls
+Complete networking operations using actual system calls
+Replaces mock operations with real TCP/UDP sockets through Zig syscall interface
+on god
 
 yeet "testz"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like Socket squad {
     socket_id normie
@@ -62,9 +66,11 @@ facts SOCK_DGRAM normie = 2
 facts IPPROTO_TCP normie = 6
 facts IPPROTO_UDP normie = 17
 
-fr fr ================================
-fr fr Pure CURSED Socket Implementation
-fr fr ================================
+no cap
+================================
+Pure CURSED Socket Implementation
+================================
+on god
 
 fr fr Socket registry for tracking active sockets
 be_like SocketRegistry squad {
@@ -228,9 +234,11 @@ slay cursed_socket_recv(socket_id normie, buffer [*]normie, size normie, flags n
     damn 0
 }
 
-fr fr ================================
-fr fr TCP Socket Operations
-fr fr ================================
+no cap
+================================
+TCP Socket Operations
+================================
+on god
 
 slay tcp_socket_create() TCPSocket {
     sus socket_id normie = cursed_socket_create(AF_INET, SOCK_STREAM, IPPROTO_TCP)
@@ -341,9 +349,11 @@ slay tcp_socket_close(socket *TCPSocket) lit {
     damn false
 }
 
-fr fr ================================
-fr fr TCP Listener Operations
-fr fr ================================
+no cap
+================================
+TCP Listener Operations
+================================
+on god
 
 slay tcp_listener_create(address tea, port normie, backlog normie) TCPListener {
     sus socket_id normie = cursed_socket_create(AF_INET, SOCK_STREAM, IPPROTO_TCP)
@@ -461,9 +471,11 @@ slay tcp_listener_close(listener *TCPListener) lit {
     damn false
 }
 
-fr fr ================================
-fr fr UDP Socket Operations
-fr fr ================================
+no cap
+================================
+UDP Socket Operations
+================================
+on god
 
 slay udp_socket_create() UDPSocket {
     sus socket_id normie = cursed_socket_create(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
@@ -560,9 +572,11 @@ slay udp_socket_close(socket *UDPSocket) lit {
     damn false
 }
 
-fr fr ================================
-fr fr HTTP Client Implementation
-fr fr ================================
+no cap
+================================
+HTTP Client Implementation
+================================
+on god
 
 slay http_get(url tea) HTTPResponse {
     sus response HTTPResponse = {
@@ -670,9 +684,11 @@ slay http_post(url tea, data tea, content_type tea) HTTPResponse {
     damn response
 }
 
-fr fr ================================
-fr fr URL and HTTP Parsing Utilities
-fr fr ================================
+no cap
+================================
+URL and HTTP Parsing Utilities
+================================
+on god
 
 be_like ParsedURL squad {
     scheme tea
@@ -749,9 +765,11 @@ slay parse_http_response(response_data tea) HTTPResponse {
     damn response
 }
 
-fr fr ================================
-fr fr Pure CURSED Utility Functions
-fr fr ================================
+no cap
+================================
+Pure CURSED Utility Functions
+================================
+on god
 
 yeet "memory/bootstrap"
 

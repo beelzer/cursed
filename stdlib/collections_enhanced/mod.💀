@@ -343,9 +343,11 @@ slay simple_hash(key drip, table_size drip) drip {
     damn secure_collection_hash(key_str, table_size)
 }
 
-fr fr Hash table operations using parallel arrays
-fr fr keys array stores the keys, values array stores corresponding values
-fr fr -1 in keys array indicates empty slot
+no cap
+Hash table operations using parallel arrays
+keys array stores the keys, values array stores corresponding values
+-1 in keys array indicates empty slot
+on god
 
 slay hash_table_init(keys drip[value], values drip[value], size drip) lit {
     sus i drip = 0

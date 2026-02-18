@@ -1,13 +1,17 @@
-fr fr CURSED Filesystem Module Tests - Production Version
-fr fr Comprehensive testing of all filesystem functions
-fr fr Tests both interpretation and compilation modes
+no cap
+CURSED Filesystem Module Tests - Production Version
+Comprehensive testing of all filesystem functions
+Tests both interpretation and compilation modes
+on god
 
 yeet "testz"
 yeet "fs"
 
-fr fr ================================
-fr fr Test Setup and Initialization
-fr fr ================================
+no cap
+================================
+Test Setup and Initialization
+================================
+on god
 
 test_start("Filesystem Module - Initialization")
 
@@ -18,9 +22,11 @@ assert_true(stats["directories"] >= 0)
 assert_true(stats["metadata_entries"] >= 0)
 assert_true(stats["open_handles"] >= 0)
 
-fr fr ================================
-fr fr Basic File Operations Tests
-fr fr ================================
+no cap
+================================
+Basic File Operations Tests
+================================
+on god
 
 test_start("File Operations - Create, Read, Write")
 
@@ -80,9 +86,11 @@ assert_eq_string(read_file(append_file), initial_content + appended_content)
 fr fr Clean up
 assert_true(delete_file(append_file))
 
-fr fr ================================
-fr fr Directory Operations Tests
-fr fr ================================
+no cap
+================================
+Directory Operations Tests
+================================
+on god
 
 test_start("Directory Operations - Create and Remove")
 
@@ -138,9 +146,11 @@ assert_true(len(entries) >= 3)
 fr fr Clean up
 assert_true(remove_dir_recursive(list_dir))
 
-fr fr ================================
-fr fr Path Utilities Tests
-fr fr ================================
+no cap
+================================
+Path Utilities Tests
+================================
+on god
 
 test_start("Path Utilities - Basename and Extension")
 
@@ -176,9 +186,11 @@ assert_false(is_absolute_path("relative/path"))
 assert_eq_string(get_absolute_path("relative"), "/relative")
 assert_eq_string(get_absolute_path("/already/absolute"), "/already/absolute")
 
-fr fr ================================
-fr fr Timestamp Functions Tests
-fr fr ================================
+no cap
+================================
+Timestamp Functions Tests
+================================
+on god
 
 test_start("Timestamp Functions - Get and Set Times")
 
@@ -221,9 +233,11 @@ assert_false(set_accessed_time("nonexistent.txt", new_timestamp))
 fr fr Clean up
 assert_true(delete_file(timestamp_file))
 
-fr fr ================================
-fr fr Permission Functions Tests
-fr fr ================================
+no cap
+================================
+Permission Functions Tests
+================================
+on god
 
 test_start("Permission Functions - Basic Permissions")
 
@@ -282,9 +296,11 @@ assert_false(is_executable("nonexistent.txt"))
 fr fr Clean up
 assert_true(delete_file(rwx_file))
 
-fr fr ================================
-fr fr File Metadata Tests
-fr fr ================================
+no cap
+================================
+File Metadata Tests
+================================
+on god
 
 test_start("File Metadata - Comprehensive Info")
 
@@ -329,9 +345,11 @@ fr fr Clean up
 assert_true(delete_file(metadata_file))
 assert_true(remove_dir(metadata_dir))
 
-fr fr ================================
-fr fr Special File Tests
-fr fr ================================
+no cap
+================================
+Special File Tests
+================================
+on god
 
 test_start("Special Files - Hidden and System")
 
@@ -380,9 +398,11 @@ assert_true(delete_file(non_empty_file))
 assert_true(remove_dir_recursive(non_empty_dir))
 assert_true(remove_dir(empty_dir))
 
-fr fr ================================
-fr fr File Locking Tests
-fr fr ================================
+no cap
+================================
+File Locking Tests
+================================
+on god
 
 test_start("File Locking - Lock and Unlock")
 
@@ -412,9 +432,11 @@ assert_false(lock_file("nonexistent.txt"))
 fr fr Clean up
 assert_true(delete_file(lock_file))
 
-fr fr ================================
-fr fr Error Handling Tests
-fr fr ================================
+no cap
+================================
+Error Handling Tests
+================================
+on god
 
 test_start("Error Handling - Non-existent Files")
 
@@ -462,9 +484,11 @@ fr fr Clean up
 assert_true(delete_file(test_file))
 assert_true(remove_dir(test_dir))
 
-fr fr ================================
-fr fr Performance Tests
-fr fr ================================
+no cap
+================================
+Performance Tests
+================================
+on god
 
 test_start("Performance - Large Operations")
 
@@ -512,9 +536,11 @@ bestie i := 0; i < file_count; i++ {
     assert_true(delete_file(file_name))
 }
 
-fr fr ================================
-fr fr Cross-Platform Compatibility Tests
-fr fr ================================
+no cap
+================================
+Cross-Platform Compatibility Tests
+================================
+on god
 
 test_start("Cross-Platform - Path Handling")
 
@@ -532,9 +558,11 @@ fr fr Test complex paths
 assert_eq_string(get_basename("very/long/path/with/many/components/final.txt"), "final.txt")
 assert_eq_string(get_extension("archive.tar.gz"), ".gz")
 
-fr fr ================================
-fr fr Filesystem Utilities Tests
-fr fr ================================
+no cap
+================================
+Filesystem Utilities Tests
+================================
+on god
 
 test_start("Filesystem Utilities - Statistics and Cleanup")
 
@@ -559,9 +587,11 @@ fr fr Test cleanup
 assert_true(delete_file(util_file))
 assert_true(remove_dir(util_dir))
 
-fr fr ================================
-fr fr Comprehensive Integration Tests
-fr fr ================================
+no cap
+================================
+Comprehensive Integration Tests
+================================
+on god
 
 test_start("Integration - Complete Filesystem Workflow")
 
@@ -606,9 +636,11 @@ fr fr Clean up
 assert_true(delete_file(workflow_file))
 assert_true(delete_file(workflow_moved))
 
-fr fr ================================
-fr fr Test Summary and Validation
-fr fr ================================
+no cap
+================================
+Test Summary and Validation
+================================
+on god
 
 test_start("Filesystem Module - Final Validation")
 
@@ -634,15 +666,19 @@ assert_true(final_stats["directories"] >= 0)
 assert_true(final_stats["metadata_entries"] >= 0)
 assert_true(final_stats["open_handles"] >= 0)
 
-fr fr ================================
-fr fr Test Summary
-fr fr ================================
+no cap
+================================
+Test Summary
+================================
+on god
 
 print_test_summary()
 
-fr fr ================================
-fr fr Utility Functions for Testing
-fr fr ================================
+no cap
+================================
+Utility Functions for Testing
+================================
+on god
 
 fr fr Helper function to test both interpretation and compilation modes
 slay test_filesystem_comprehensive() lit { fr fr This function provides a comprehensive test that can be used fr fr to verify the filesystem module works identically in both modes fr fr Test basic file operations

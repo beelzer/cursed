@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Simple Arithmetic Test
-fr fr Tests: Basic integer arithmetic operations
-fr fr Expected: Identical results in both modes
+no cap
+Simple Arithmetic Test
+Tests: Basic integer arithmetic operations
+Expected: Identical results in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Simple Arithmetic Test ===")

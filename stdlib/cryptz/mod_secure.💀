@@ -1,15 +1,19 @@
-fr fr ==================================================================
-fr fr PRODUCTION-GRADE CRYPTOGRAPHIC MODULE - FIPS COMPLIANT
-fr fr ==================================================================
-fr fr NO SIMPLIFIED OR PLACEHOLDER IMPLEMENTATIONS
-fr fr ALL FUNCTIONS USE REAL CRYPTOGRAPHIC ALGORITHMS
-fr fr ==================================================================
+no cap
+==================================================================
+PRODUCTION-GRADE CRYPTOGRAPHIC MODULE - FIPS COMPLIANT
+==================================================================
+NO SIMPLIFIED OR PLACEHOLDER IMPLEMENTATIONS
+ALL FUNCTIONS USE REAL CRYPTOGRAPHIC ALGORITHMS
+==================================================================
+on god
 
 yeet "vibez"
 
-fr fr ==================================================================
-fr fr AES-256 IMPLEMENTATION - NIST FIPS 197 COMPLIANT
-fr fr ==================================================================
+no cap
+==================================================================
+AES-256 IMPLEMENTATION - NIST FIPS 197 COMPLIANT
+==================================================================
+on god
 
 fr fr AES S-box for SubBytes transformation (FIPS 197 Table 4)
 sus AES_SBOX normie[256] = [
@@ -205,9 +209,11 @@ slay aes_encrypt_block(plaintext normie[value], key normie[value], ciphertext no
     damn based
 }
 
-fr fr ==================================================================
-fr fr SHA-256 IMPLEMENTATION - FIPS 180-4 COMPLIANT
-fr fr ==================================================================
+no cap
+==================================================================
+SHA-256 IMPLEMENTATION - FIPS 180-4 COMPLIANT
+==================================================================
+on god
 
 fr fr SHA-256 constants - FIPS 180-4 Section 4.2.2
 sus SHA256_K normie[64] = [
@@ -343,9 +349,11 @@ slay sha256_hash(message tea) tea {
     damn result
 }
 
-fr fr ==================================================================
-fr fr HMAC-SHA256 IMPLEMENTATION - RFC 2104 COMPLIANT 
-fr fr ==================================================================
+no cap
+==================================================================
+HMAC-SHA256 IMPLEMENTATION - RFC 2104 COMPLIANT 
+==================================================================
+on god
 
 fr fr HMAC-SHA256 for OAuth signature verification
 slay hmac_sha256(key tea, message tea) tea {
@@ -398,9 +406,11 @@ slay hmac_sha256(key tea, message tea) tea {
     damn sha256_hash(outer_msg)
 }
 
-fr fr ==================================================================
-fr fr SECURE RANDOM NUMBER GENERATOR - USING SYSTEM ENTROPY
-fr fr ==================================================================
+no cap
+==================================================================
+SECURE RANDOM NUMBER GENERATOR - USING SYSTEM ENTROPY
+==================================================================
+on god
 
 fr fr Cryptographically secure random bytes (no hardcoded constants)
 slay secure_random_bytes(count normie) normie[value]{
@@ -428,9 +438,11 @@ slay secure_random_bytes(count normie) normie[value]{
     damn bytes
 }
 
-fr fr ==================================================================
-fr fr UTILITY FUNCTIONS FOR CRYPTOGRAPHIC OPERATIONS
-fr fr ==================================================================
+no cap
+==================================================================
+UTILITY FUNCTIONS FOR CRYPTOGRAPHIC OPERATIONS
+==================================================================
+on god
 
 slay to_hex(value normie, width normie) tea {
     sus hex_chars tea = "0123456789abcdef"
@@ -462,9 +474,11 @@ slay hex_char_value(c tea) normie {
     damn 0
 }
 
-fr fr ==================================================================
-fr fr PRODUCTION API - NO PLACEHOLDER IMPLEMENTATIONS
-fr fr ==================================================================
+no cap
+==================================================================
+PRODUCTION API - NO PLACEHOLDER IMPLEMENTATIONS
+==================================================================
+on god
 
 fr fr AES-256-CBC Encryption with PKCS#7 padding
 slay aes_encrypt_cbc(plaintext tea, key tea, iv tea) tea {
@@ -547,9 +561,11 @@ slay oauth_verify_signature(message tea, signature tea, secret tea) lit {
     damn diff == 0
 }
 
-fr fr ==================================================================
-fr fr PRODUCTION EXPORTS - VERIFIED SECURE IMPLEMENTATIONS ONLY
-fr fr ==================================================================
+no cap
+==================================================================
+PRODUCTION EXPORTS - VERIFIED SECURE IMPLEMENTATIONS ONLY
+==================================================================
+on god
 
 fr fr Export secure AES-256-CBC encryption
 slay encrypt_aes256(data tea, key tea) tea {

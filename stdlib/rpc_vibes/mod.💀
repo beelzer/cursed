@@ -1,9 +1,11 @@
 fr fr CURSED RPC Vibes Module - Remote Procedure Call System
 fr fr Pure CURSED implementation demonstrating RPC concepts
 
-fr fr ================================
-fr fr Core RPC Message Types
-fr fr ================================
+no cap
+================================
+Core RPC Message Types
+================================
+on god
 
 fr fr Create JSON-RPC 2.0 request message
 slay rpc_create_request(request_id tea, method_name tea, parameters tea) tea {
@@ -20,9 +22,11 @@ slay rpc_create_error(error_id tea, error_code normie, error_message tea) tea {
     damn "{\"jsonrpc\":\"2.0\",\"id\":\"" + error_id + "\",\"error\":{\"code\":" + rpc_int_to_string(error_code) + ",\"message\":\"" + error_message + "\"}}"
 }
 
-fr fr ================================
-fr fr RPC Method Registry
-fr fr ================================
+no cap
+================================
+RPC Method Registry
+================================
+on god
 
 sus registered_method_name tea = ""
 sus registered_method_handler tea = ""
@@ -57,9 +61,11 @@ slay rpc_get_registered_count() normie {
     damn total_registered_methods
 }
 
-fr fr ================================
-fr fr RPC Method Execution
-fr fr ================================
+no cap
+================================
+RPC Method Execution
+================================
+on god
 
 fr fr Execute RPC method (built-in methods for demonstration)
 slay rpc_execute_method(method_name tea, method_params tea) tea {
@@ -81,9 +87,11 @@ slay rpc_execute_method(method_name tea, method_params tea) tea {
     damn "null"
 }
 
-fr fr ================================
-fr fr RPC Request Processing
-fr fr ================================
+no cap
+================================
+RPC Request Processing
+================================
+on god
 
 fr fr Process RPC request and return response
 slay rpc_process_request(request_json tea) tea {
@@ -112,9 +120,11 @@ slay rpc_validate_request(request_json tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr RPC Client Functions
-fr fr ================================
+no cap
+================================
+RPC Client Functions
+================================
+on god
 
 fr fr Make remote RPC call
 slay rpc_call_remote(server_url tea, method_name tea, method_params tea) tea {
@@ -150,9 +160,11 @@ slay rpc_generate_id() tea {
     damn "rpc_req_12345"
 }
 
-fr fr ================================
-fr fr RPC Connection Management
-fr fr ================================
+no cap
+================================
+RPC Connection Management
+================================
+on god
 
 fr fr Create connection configuration
 slay rpc_create_config(hostname tea, port_number normie) tea {
@@ -167,9 +179,11 @@ slay rpc_test_connection(config_string tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr RPC Statistics and Monitoring
-fr fr ================================
+no cap
+================================
+RPC Statistics and Monitoring
+================================
+on god
 
 sus stat_requests_sent normie = 0
 sus stat_requests_received normie = 0
@@ -221,9 +235,11 @@ slay rpc_get_errors_occurred() normie {
     damn stat_errors_occurred
 }
 
-fr fr ================================
-fr fr RPC Error Handling
-fr fr ================================
+no cap
+================================
+RPC Error Handling
+================================
+on god
 
 fr fr Check if response contains error
 slay rpc_has_error(response_json tea) lit {
@@ -267,9 +283,11 @@ slay rpc_get_internal_error_code() normie {
     damn -32603
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 fr fr Check if string contains substring (simplified implementation)
 slay rpc_contains_text(text_string tea, search_substring tea) lit {
@@ -352,9 +370,11 @@ slay rpc_int_to_string(number_value normie) tea {
     damn "unknown"
 }
 
-fr fr ================================
-fr fr RPC Protocol Compliance
-fr fr ================================
+no cap
+================================
+RPC Protocol Compliance
+================================
+on god
 
 fr fr Get JSON-RPC version
 slay rpc_get_version() tea {

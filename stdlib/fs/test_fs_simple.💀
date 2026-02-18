@@ -4,9 +4,11 @@ fr fr Basic test suite for filesystem operations
 yeet "testz"
 yeet "fs"
 
-fr fr ================================
-fr fr Basic File Operations Tests
-fr fr ================================
+no cap
+================================
+Basic File Operations Tests
+================================
+on god
 
 slay test_basic_file_operations() {
     test_start("Basic File Operations")
@@ -96,9 +98,11 @@ slay test_error_handling() {
     assert_false(delete_nonexistent)
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 test_basic_file_operations()
 test_directory_operations()

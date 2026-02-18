@@ -1,7 +1,9 @@
-fr fr ==========================================
-fr fr CURSED Enhanced Configuration Management (configz)
-fr fr Advanced configuration framework with validation, schemas, and type safety
-fr fr ==========================================
+no cap
+==========================================
+CURSED Enhanced Configuration Management (configz)
+Advanced configuration framework with validation, schemas, and type safety
+==========================================
+on god
 
 yeet "testz"
 yeet "stringz" 
@@ -9,42 +11,52 @@ yeet "jsonz"
 yeet "envz"
 yeet "arrayz"
 
-fr fr ==========================================
-fr fr Configuration Schema Types
-fr fr ==========================================
+no cap
+==========================================
+Configuration Schema Types
+==========================================
+on god
 
 fr fr Note: Struct definitions commented out for now due to parsing issues
 fr fr These would be implemented when struct syntax is fully supported
 
-fr fr squad ConfigSchema {
-fr fr     spill name tea
-fr fr     spill required_keys tea[value]
-fr fr     spill optional_keys tea[value]
-fr fr     spill default_values tea[value]
-fr fr     spill validators tea[value]
-fr fr     spill nested_schemas tea[value]
-fr fr }
+no cap
+squad ConfigSchema {
+    spill name tea
+    spill required_keys tea[value]
+    spill optional_keys tea[value]
+    spill default_values tea[value]
+    spill validators tea[value]
+    spill nested_schemas tea[value]
+}
+on god
 
-fr fr squad ConfigValue {
-fr fr     spill key tea
-fr fr     spill value tea
-fr fr     spill value_type tea
-fr fr     spill is_valid lit
-fr fr     spill source tea
-fr fr }
+no cap
+squad ConfigValue {
+    spill key tea
+    spill value tea
+    spill value_type tea
+    spill is_valid lit
+    spill source tea
+}
+on god
 
-fr fr squad ConfigContext {
-fr fr     spill values ConfigValue[value]
-fr fr     spill schema ConfigSchema
-fr fr     spill format tea
-fr fr     spill source_file tea
-fr fr     spill environment tea
-fr fr     spill validation_errors tea[value]
-fr fr }
+no cap
+squad ConfigContext {
+    spill values ConfigValue[value]
+    spill schema ConfigSchema
+    spill format tea
+    spill source_file tea
+    spill environment tea
+    spill validation_errors tea[value]
+}
+on god
 
-fr fr ==========================================
-fr fr Configuration Format Constants
-fr fr ==========================================
+no cap
+==========================================
+Configuration Format Constants
+==========================================
+on god
 
 slay format_json() tea { damn "json" }
 slay format_yaml() tea { damn "yaml" }
@@ -54,9 +66,11 @@ slay format_env() tea { damn "env" }
 slay format_xml() tea { damn "xml" }
 slay format_properties() tea { damn "properties" }
 
-fr fr ==========================================
-fr fr Advanced Configuration Parsing
-fr fr ==========================================
+no cap
+==========================================
+Advanced Configuration Parsing
+==========================================
+on god
 
 slay parse_json_advanced(content tea) ConfigContext {
     fr fr Advanced JSON parsing with type detection and validation
@@ -157,9 +171,11 @@ slay parse_env_advanced(content tea) ConfigContext {
     damn ctx
 }
 
-fr fr ==========================================
-fr fr Configuration Schema Management
-fr fr ==========================================
+no cap
+==========================================
+Configuration Schema Management
+==========================================
+on god
 
 slay create_schema(name tea) ConfigSchema {
     fr fr Create a new configuration schema
@@ -238,9 +254,11 @@ slay validate_against_schema(ctx ConfigContext, schema ConfigSchema) ConfigConte
     damn ctx
 }
 
-fr fr ==========================================
-fr fr Environment Variable Integration
-fr fr ==========================================
+no cap
+==========================================
+Environment Variable Integration
+==========================================
+on god
 
 slay apply_environment_substitution(ctx ConfigContext) ConfigContext {
     fr fr Replace ${VAR} and $VAR patterns with environment values
@@ -310,9 +328,11 @@ slay load_environment_config() ConfigContext {
     damn ctx
 }
 
-fr fr ==========================================
-fr fr Configuration Merging and Layering
-fr fr ==========================================
+no cap
+==========================================
+Configuration Merging and Layering
+==========================================
+on god
 
 slay merge_configurations(base_ctx ConfigContext, override_ctx ConfigContext) ConfigContext {
     fr fr Merge two configurations with override precedence
@@ -360,9 +380,11 @@ slay create_configuration_layers(file_configs ConfigContext[value], env_config C
     damn result_ctx
 }
 
-fr fr ==========================================
-fr fr Configuration Validation
-fr fr ==========================================
+no cap
+==========================================
+Configuration Validation
+==========================================
+on god
 
 slay validate_configuration(ctx ConfigContext) ConfigContext {
     fr fr Validate all configuration values
@@ -432,9 +454,11 @@ slay validate_value_against_rule(value tea, rule tea) lit {
     damn based fr fr Default: accept all values
 }
 
-fr fr ==========================================
-fr fr Type Conversion and Detection
-fr fr ==========================================
+no cap
+==========================================
+Type Conversion and Detection
+==========================================
+on god
 
 slay detect_value_type(value tea) tea {
     fr fr Detect the type of a configuration value
@@ -492,9 +516,11 @@ slay get_typed_value(ctx ConfigContext, key tea, default_type tea) tea {
     damn value
 }
 
-fr fr ==========================================
-fr fr Configuration File Operations
-fr fr ==========================================
+no cap
+==========================================
+Configuration File Operations
+==========================================
+on god
 
 slay auto_detect_format(content tea) tea {
     fr fr Enhanced format detection with multiple heuristics
@@ -571,9 +597,11 @@ slay detect_format_from_filename(filename tea) tea {
     damn "auto"
 }
 
-fr fr ==========================================
-fr fr High-Level Configuration API
-fr fr ==========================================
+no cap
+==========================================
+High-Level Configuration API
+==========================================
+on god
 
 slay load_config_with_defaults(config_files tea[value], default_schema ConfigSchema) ConfigContext {
     fr fr Load configuration with multiple files and defaults
@@ -649,9 +677,11 @@ slay get_validation_errors(ctx ConfigContext) tea[value]{
     damn ctx.validation_errors
 }
 
-fr fr ==========================================
-fr fr Utility Functions for String Operations
-fr fr ==========================================
+no cap
+==========================================
+Utility Functions for String Operations
+==========================================
+on god
 
 slay trim_whitespace(str tea) tea {
     fr fr Remove leading and trailing whitespace
@@ -735,9 +765,11 @@ slay string_after(str tea, delimiter tea) tea {
     damn ""
 }
 
-fr fr ==========================================
-fr fr Value Type Validation Functions
-fr fr ==========================================
+no cap
+==========================================
+Value Type Validation Functions
+==========================================
+on god
 
 slay is_valid_boolean(value tea) lit {
     fr fr Check if value is a valid boolean
@@ -786,9 +818,11 @@ slay is_object_value(value tea) lit {
     damn (string_starts_with(value, "{") && string_ends_with(value, "}"))
 }
 
-fr fr ==========================================
-fr fr Configuration Context Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Configuration Context Helper Functions
+==========================================
+on god
 
 slay has_configuration_key(ctx ConfigContext, key tea) lit {
     fr fr Check if configuration has a key
@@ -839,9 +873,11 @@ slay set_configuration_value(ctx ConfigContext, key tea, value tea, source tea) 
     damn ctx
 }
 
-fr fr ==========================================
-fr fr Array Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Array Helper Functions
+==========================================
+on god
 
 slay append_string(arr tea[value], item tea) tea[value]{
     fr fr Append string to array (simplified)
@@ -867,9 +903,11 @@ slay add_error(errors tea[value], error_msg tea) tea[value]{
     damn errors
 }
 
-fr fr ==========================================
-fr fr Environment and System Functions
-fr fr ==========================================
+no cap
+==========================================
+Environment and System Functions
+==========================================
+on god
 
 slay detect_environment() tea {
     fr fr Detect current environment (dev, test, prod)
@@ -896,9 +934,11 @@ slay get_env_value(name tea) tea {
     damn ""
 }
 
-fr fr ==========================================
-fr fr File I/O Simulation Functions
-fr fr ==========================================
+no cap
+==========================================
+File I/O Simulation Functions
+==========================================
+on god
 
 slay read_file_content(filename tea) tea {
     fr fr Read file content (simulated)
@@ -914,9 +954,11 @@ slay read_file_content(filename tea) tea {
     damn "{}"
 }
 
-fr fr ==========================================
-fr fr Parsing Helper Functions (Simplified)
-fr fr ==========================================
+no cap
+==========================================
+Parsing Helper Functions (Simplified)
+==========================================
+on god
 
 slay is_valid_json(content tea) lit {
     fr fr Check if content is valid JSON
@@ -1000,9 +1042,11 @@ slay parse_array_value(value tea) tea[value]{
     damn result
 }
 
-fr fr ==========================================
-fr fr Additional Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+Additional Utility Functions
+==========================================
+on god
 
 slay extract_env_patterns(input tea) tea[value]{
     fr fr Extract ${VAR} and $VAR patterns from input

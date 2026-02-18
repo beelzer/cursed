@@ -1,14 +1,18 @@
 yeet "testz"
 yeet "elliptic_curve_tea"
 
-fr fr ========================================
-fr fr CURSED Elliptic Curve Library Test Suite
-fr fr Comprehensive testing of all elliptic curve operations
-fr fr ========================================
+no cap
+========================================
+CURSED Elliptic Curve Library Test Suite
+Comprehensive testing of all elliptic curve operations
+========================================
+on god
 
-fr fr ================================
-fr fr Basic Curve Operations Tests
-fr fr ================================
+no cap
+================================
+Basic Curve Operations Tests
+================================
+on god
 
 slay test_curve_initialization() {
     test_start("curve_initialization_test")
@@ -162,9 +166,11 @@ slay test_scalar_base_multiplication() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Standard Curves Tests
-fr fr ================================
+no cap
+================================
+Standard Curves Tests
+================================
+on god
 
 slay test_p224_curve() {
     test_start("p224_curve_test")
@@ -258,9 +264,11 @@ slay test_p521_curve() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Key Generation Tests
-fr fr ================================
+no cap
+================================
+Key Generation Tests
+================================
+on god
 
 slay test_key_generation() {
     test_start("key_generation_test")
@@ -285,9 +293,11 @@ slay test_key_generation() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Point Marshaling Tests
-fr fr ================================
+no cap
+================================
+Point Marshaling Tests
+================================
+on god
 
 slay test_point_marshaling() {
     test_start("point_marshaling_test")
@@ -312,9 +322,11 @@ slay test_point_marshaling() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Enhanced Curves Tests
-fr fr ================================
+no cap
+================================
+Enhanced Curves Tests
+================================
+on god
 
 slay test_edwards25519_curve() {
     test_start("edwards25519_curve_test")
@@ -394,9 +406,11 @@ slay test_constant_time_p256() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Custom Curve Tests
-fr fr ================================
+no cap
+================================
+Custom Curve Tests
+================================
+on god
 
 slay test_custom_curve() {
     test_start("custom_curve_test")
@@ -425,9 +439,11 @@ slay test_custom_curve() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Utility Function Tests
-fr fr ================================
+no cap
+================================
+Utility Function Tests
+================================
+on god
 
 slay test_modular_inverse() {
     test_start("modular_inverse_test")
@@ -465,9 +481,11 @@ slay test_hex_conversion() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Integration Tests
-fr fr ================================
+no cap
+================================
+Integration Tests
+================================
+on god
 
 slay test_ecdh_key_agreement() {
     test_start("ecdh_key_agreement_test")
@@ -530,9 +548,11 @@ slay test_multi_curve_compatibility() {
     print_test_summary()
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 fr fr Run all tests
 test_curve_initialization()

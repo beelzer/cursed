@@ -1,15 +1,19 @@
-fr fr ===== PRODUCTION CRYPTOGRAPHIC FUNCTIONS =====
-fr fr RFC-compliant implementations with constant-time security
-fr fr These replace all placeholder crypto functions with real implementations
+no cap
+===== PRODUCTION CRYPTOGRAPHIC FUNCTIONS =====
+RFC-compliant implementations with constant-time security
+These replace all placeholder crypto functions with real implementations
+on god
 
 yeet "mathz"
 yeet "stringz"
 yeet "arrayz"
 
-fr fr ===== DEPRECATED MD5 REMOVED FOR SECURITY =====
-fr fr MD5 is cryptographically broken due to collision vulnerabilities
-fr fr CVE-2008-1447, RFC 6151 - MD5 considered harmful
-fr fr Use SHA-256 or SHA-3 instead for security-critical applications
+no cap
+===== DEPRECATED MD5 REMOVED FOR SECURITY =====
+MD5 is cryptographically broken due to collision vulnerabilities
+CVE-2008-1447, RFC 6151 - MD5 considered harmful
+Use SHA-256 or SHA-3 instead for security-critical applications
+on god
 
 fr fr MD5 padding constants
 sus MD5_BLOCK_SIZE drip = 64

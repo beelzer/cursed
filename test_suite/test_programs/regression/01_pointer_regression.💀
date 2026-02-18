@@ -3,9 +3,11 @@ vibe main
 yeet "vibez"
 yeet "mathz"
 
-fr fr Pointer Regression Test
-fr fr Tests: Ensure pointer functionality doesn't break other features
-fr fr Expected: Identical results in both modes
+no cap
+Pointer Regression Test
+Tests: Ensure pointer functionality doesn't break other features
+Expected: Identical results in both modes
+on god
 
 slay math_with_pointers() {
     sus a normie = mathz.abs(-42)

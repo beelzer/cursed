@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Comprehensive Control Flow Test  
-fr fr Tests: if/else chains, nested conditions, while loops
-fr fr Expected: All control structures work identically in both modes
+no cap
+Comprehensive Control Flow Test  
+Tests: if/else chains, nested conditions, while loops
+Expected: All control structures work identically in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Comprehensive Control Flow Test ===")

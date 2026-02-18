@@ -4,9 +4,11 @@ fr fr Real-world scenarios for advanced error handling
 yeet "testz"
 yeet ".enterprise_recovery"
 
-fr fr ================================
-fr fr E-commerce Order Processing Demo
-fr fr ================================
+no cap
+================================
+E-commerce Order Processing Demo
+================================
+on god
 
 slay demo_ecommerce_order_processing() {
     vibez.spill("🛒 E-commerce Order Processing with Advanced Error Recovery")
@@ -47,9 +49,11 @@ slay demo_ecommerce_order_processing() {
     }
     sus shipping_cb circuit_breaker = new_enterprise_circuit_breaker("shipping_service", shipping_config)
     
-    fr fr ================================
-    fr fr Scenario 1: Successful Order Flow
-    fr fr ================================
+    no cap
+    ================================
+    Scenario 1: Successful Order Flow
+    ================================
+    on god
     
     vibez.spill("\n📦 Scenario 1: Successful Order Processing")
     sus order_correlation correlation_id = new_correlation_id()
@@ -120,9 +124,11 @@ slay demo_ecommerce_order_processing() {
     global_tracer.finish_span(order_span.span_id, enhanced_error{})
     vibez.spill("🎉 Order successfully processed with full tracing!")
     
-    fr fr ================================
-    fr fr Scenario 2: Payment Service Failure with Recovery
-    fr fr ================================
+    no cap
+    ================================
+    Scenario 2: Payment Service Failure with Recovery
+    ================================
+    on god
     
     vibez.spill("\n💳 Scenario 2: Payment Service Failures with Circuit Breaker")
     
@@ -198,9 +204,11 @@ slay demo_ecommerce_order_processing() {
     
     global_tracer.finish_span(failed_order_span.span_id, enhanced_error{})
     
-    fr fr ================================
-    fr fr Scenario 3: Multi-Service Cascade Failure
-    fr fr ================================
+    no cap
+    ================================
+    Scenario 3: Multi-Service Cascade Failure
+    ================================
+    on god
     
     vibez.spill("\n⛓️ Scenario 3: Cascade Failure Across Multiple Services")
     
@@ -271,9 +279,11 @@ slay demo_ecommerce_order_processing() {
     vibez.spill("   Services Affected: " + string(len(global_error_metrics.errors_by_service)))
     vibez.spill("   Error Categories: " + string(len(global_error_metrics.errors_by_category)))
     
-    fr fr ================================
-    fr fr Scenario 4: Error Batch Processing and Recovery
-    fr fr ================================
+    no cap
+    ================================
+    Scenario 4: Error Batch Processing and Recovery
+    ================================
+    on god
     
     vibez.spill("\n🔄 Scenario 4: Error Batch Processing and Automated Recovery")
     
@@ -289,9 +299,11 @@ slay demo_ecommerce_order_processing() {
     vibez.spill("   Escalations Created: " + string(batch_result.escalations_created))
     vibez.spill("   Processing Duration: " + string(batch_result.processing_duration_ms) + "ms")
     
-    fr fr ================================
-    fr fr Scenario 5: Distributed Tracing Export
-    fr fr ================================
+    no cap
+    ================================
+    Scenario 5: Distributed Tracing Export
+    ================================
+    on god
     
     vibez.spill("\n🔍 Scenario 5: Distributed Tracing Export")
     
@@ -309,9 +321,11 @@ slay demo_ecommerce_order_processing() {
     vibez.spill("✅ Demonstrated: Production-ready error handling patterns")
 }
 
-fr fr ================================
-fr fr Financial Services Demo
-fr fr ================================
+no cap
+================================
+Financial Services Demo
+================================
+on god
 
 slay demo_financial_services_error_handling() {
     vibez.spill("\n🏦 Financial Services - High-Availability Error Handling")
@@ -393,9 +407,11 @@ slay demo_financial_services_error_handling() {
     vibez.spill("🏛️ Financial services error handling demo complete")
 }
 
-fr fr ================================
-fr fr Healthcare System Demo
-fr fr ================================
+no cap
+================================
+Healthcare System Demo
+================================
+on god
 
 slay demo_healthcare_error_handling() {
     vibez.spill("\n🏥 Healthcare System - HIPAA-Compliant Error Handling")
@@ -476,9 +492,11 @@ slay demo_healthcare_error_handling() {
     vibez.spill("🏥 Healthcare error handling demo complete")
 }
 
-fr fr ================================
-fr fr Main Demo Runner
-fr fr ================================
+no cap
+================================
+Main Demo Runner
+================================
+on god
 
 slay run_enterprise_error_recovery_demos() {
     vibez.spill("🚀 Enterprise Error Recovery Patterns - Production Demos")

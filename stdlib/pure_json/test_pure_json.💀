@@ -3,9 +3,11 @@ yeet "pure_json"
 
 test_start("Pure CURSED JSON Parser Comprehensive Tests")
 
-fr fr ================================
-fr fr Basic JSON Value Tests
-fr fr ================================
+no cap
+================================
+Basic JSON Value Tests
+================================
+on god
 
 test_start("JsonString creation and methods")
 sus json_str JsonString = JsonString{value: "hello world"}
@@ -33,9 +35,11 @@ assert_eq_string(json_null.get_type(), "null")
 assert_true(json_null.is_null())
 assert_false(json_null.as_boolean())
 
-fr fr ================================
-fr fr JSON Parser Tests
-fr fr ================================
+no cap
+================================
+JSON Parser Tests
+================================
+on god
 
 test_start("Parse simple string")
 (string_result, string_error) := json_parse("\"hello\"")
@@ -105,9 +109,11 @@ sus nested_json tea = "{\"users\": [{\"name\": \"Alice\", \"active\": true}, {\"
 assert_eq_string(nested_error, "")
 assert_eq_string(nested_result.get_type(), "object")
 
-fr fr ================================
-fr fr JSON String Escaping Tests
-fr fr ================================
+no cap
+================================
+JSON String Escaping Tests
+================================
+on god
 
 test_start("Parse escaped string")
 (escaped_result, escaped_error) := json_parse("\"Hello\\nWorld\"")
@@ -125,9 +131,11 @@ assert_true(string_contains(escaped_output, "\\n"))
 assert_true(string_starts_with(escaped_output, "\""))
 assert_true(string_ends_with(escaped_output, "\""))
 
-fr fr ================================
-fr fr JSON Serialization Tests
-fr fr ================================
+no cap
+================================
+JSON Serialization Tests
+================================
+on god
 
 test_start("Stringify string value")
 sus str_value JsonValue = json_create_string("test")
@@ -170,9 +178,11 @@ assert_true(string_contains(arr_output, "1"))
 assert_true(string_contains(arr_output, "2"))
 assert_true(string_contains(arr_output, "3"))
 
-fr fr ================================
-fr fr High-Level API Tests
-fr fr ================================
+no cap
+================================
+High-Level API Tests
+================================
+on god
 
 test_start("json_decode and json_encode roundtrip")
 sus original_json tea = "{\"message\": \"Hello\", \"count\": 42}"
@@ -202,9 +212,11 @@ sus test_array JsonValue = json_create_array()
 assert_true(len(bounds_error) > 0)
 assert_true(out_of_bounds.is_null())
 
-fr fr ================================
-fr fr Error Handling Tests
-fr fr ================================
+no cap
+================================
+Error Handling Tests
+================================
+on god
 
 test_start("Parse invalid JSON - unclosed string")
 (invalid_str_result, invalid_str_error) := json_parse("\"unclosed string")
@@ -230,9 +242,11 @@ test_start("Parse whitespace only")
 (whitespace_result, whitespace_error) := json_parse("   \n\t  ")
 assert_true(len(whitespace_error) > 0)
 
-fr fr ================================
-fr fr Complex Structure Tests
-fr fr ================================
+no cap
+================================
+Complex Structure Tests
+================================
+on god
 
 test_start("Complex nested object parsing")
 sus complex_json tea = "{\"data\": {\"users\": [{\"id\": 1, \"name\": \"Alice\", \"settings\": {\"theme\": \"dark\", \"notifications\": true}}]}}"
@@ -284,9 +298,11 @@ assert_eq_string(elem4.get_type(), "object")
 assert_eq_string(elem5_error, "")
 assert_eq_string(elem5.get_type(), "array")
 
-fr fr ================================
-fr fr Utility Function Tests
-fr fr ================================
+no cap
+================================
+Utility Function Tests
+================================
+on god
 
 test_start("Number parsing utility")
 assert_true(json_is_digit("5"))
@@ -304,9 +320,11 @@ assert_true(num1 > 0.0)
 assert_true(num2 > 0.0)
 assert_true(num3 < 0.0)
 
-fr fr ================================
-fr fr Performance and Edge Cases
-fr fr ================================
+no cap
+================================
+Performance and Edge Cases
+================================
+on god
 
 test_start("Large JSON structure")
 sus large_array tea = "["

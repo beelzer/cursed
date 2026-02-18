@@ -1,11 +1,13 @@
-fr fr! Comprehensive Zero-Knowledge Proof Demo for CURSED
-fr fr! 
-fr fr! This example demonstrates the complete ZK functionality including:
-fr fr! - Commitment schemes (Pedersen, Hash, Polynomial)
-fr fr! - Proof protocols (Schnorr, Range proofs, PLONK, STARKs)
-fr fr! - Privacy-preserving applications (Anonymous credentials, PSI)
-fr fr! - Circuit construction and verification
-fr fr! - Zero-knowledge virtual machine execution
+no cap
+! Comprehensive Zero-Knowledge Proof Demo for CURSED
+! 
+! This example demonstrates the complete ZK functionality including:
+! - Commitment schemes (Pedersen, Hash, Polynomial)
+! - Proof protocols (Schnorr, Range proofs, PLONK, STARKs)
+! - Privacy-preserving applications (Anonymous credentials, PSI)
+! - Circuit construction and verification
+! - Zero-knowledge virtual machine execution
+on god
 
 yeet "stdlib::crypto::zk_enhanced"
 yeet "stdlib::io"

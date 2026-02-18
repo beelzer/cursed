@@ -1,12 +1,14 @@
-fr fr/ fr fr Secure Messaging System - End-to-End Encryption periodt
-fr fr/ 
-fr fr/ This example demonstrates a complete secure messaging system using CURSED crypto:
-fr fr/ - X25519 key exchange for perfect forward secrecy
-fr fr/ - ChaCha20-Poly1305 for message encryption
-fr fr/ - Ed25519 for message authentication and identity verification
-fr fr/ - Secure key derivation and management
-fr fr/ 
-fr fr/ Usage: cursed examples/secure_messaging.💀
+no cap
+/ fr fr Secure Messaging System - End-to-End Encryption periodt
+/ 
+/ This example demonstrates a complete secure messaging system using CURSED crypto:
+/ - X25519 key exchange for perfect forward secrecy
+/ - ChaCha20-Poly1305 for message encryption
+/ - Ed25519 for message authentication and identity verification
+/ - Secure key derivation and management
+/ 
+/ Usage: cursed examples/secure_messaging.💀
+on god
 
 yeet "stdlib::crypto"
 yeet "stdlib::io"

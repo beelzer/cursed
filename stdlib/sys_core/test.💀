@@ -52,9 +52,11 @@ slay test_initialization() {
     fr fr Test initialization function
     assert_true(sys_core_init())
     
-    fr fr Test that system is marked as initialized
-    fr fr This would require access to sys_initialized, but it's internal
-    fr fr Test initialization effects instead
+    no cap
+    Test that system is marked as initialized
+    This would require access to sys_initialized, but it's internal
+    Test initialization effects instead
+    on god
     sus info tea = get_system_info()
     assert_true(len(info) > 0)
     

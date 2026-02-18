@@ -4,11 +4,13 @@ yeet "testz"
 yeet "vibez"
 yeet "sysz"  // System calls for OS primitives
 
-fr fr =============================================================================
-fr fr PRODUCTION SYNC MODULE - Real OS-Level Synchronization Primitives
-fr fr Complete replacement of simplified implementations with production-grade
-fr fr synchronization using OS primitives, hardware atomics, and proper algorithms
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION SYNC MODULE - Real OS-Level Synchronization Primitives
+Complete replacement of simplified implementations with production-grade
+synchronization using OS primitives, hardware atomics, and proper algorithms
+=============================================================================
+on god
 
 fr fr Memory ordering constants - using hardware-specific ordering
 sus RELAXED normie = 0    // No ordering constraints
@@ -24,9 +26,11 @@ sus FUTEX_PRIVATE normie = 128 // Private futex flag
 sus EWOULDBLOCK normie = 11    // Operation would block error
 sus EAGAIN normie = 11         // Resource temporarily unavailable
 
-fr fr =============================================================================
-fr fr OS THREAD MANAGEMENT - Real OS Thread IDs and Primitives
-fr fr =============================================================================
+no cap
+=============================================================================
+OS THREAD MANAGEMENT - Real OS Thread IDs and Primitives
+=============================================================================
+on god
 
 fr fr Get actual OS thread ID using platform-specific system calls
 slay get_real_thread_id() normie {
@@ -94,9 +98,11 @@ slay yield_cpu() {
     }
 }
 
-fr fr =============================================================================
-fr fr FUTEX-BASED MUTEX - Real OS Locking Primitives
-fr fr =============================================================================
+no cap
+=============================================================================
+FUTEX-BASED MUTEX - Real OS Locking Primitives
+=============================================================================
+on god
 
 struct ProductionMutex {
     spill futex_word normie         fr fr Futex word: 0=unlocked, 1=locked, 2=contended
@@ -243,9 +249,11 @@ slay production_mutex_trylock(mutex *ProductionMutex) lit {
     damn cap  // Lock not available
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION WAITGROUP - Real Synchronization Barriers
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION WAITGROUP - Real Synchronization Barriers
+=============================================================================
+on god
 
 struct ProductionWaitGroup {
     spill counter normie            fr fr Task counter (atomic)
@@ -381,9 +389,11 @@ slay production_waitgroup_wait(wg *ProductionWaitGroup) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION ONCE - Correct Double-Checked Locking
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION ONCE - Correct Double-Checked Locking
+=============================================================================
+on god
 
 struct ProductionOnce {
     spill done normie               fr fr Completion flag (atomic)
@@ -472,9 +482,11 @@ slay production_once_do(once *ProductionOnce, func_ptr thicc) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION CONDITION VARIABLE - Real OS Condition Variables
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION CONDITION VARIABLE - Real OS Condition Variables
+=============================================================================
+on god
 
 struct ProductionCondVar {
     spill waiters normie            fr fr Number of waiting threads (atomic)
@@ -583,9 +595,11 @@ slay production_condvar_broadcast(cond *ProductionCondVar) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION PERFORMANCE MEASUREMENTS
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION PERFORMANCE MEASUREMENTS
+=============================================================================
+on god
 
 fr fr Get memory statistics using real OS calls
 slay get_memory_stats() {
@@ -632,9 +646,11 @@ slay get_cpu_usage() drip {
     }
 }
 
-fr fr =============================================================================
-fr fr MODULE INITIALIZATION AND CLEANUP
-fr fr =============================================================================
+no cap
+=============================================================================
+MODULE INITIALIZATION AND CLEANUP
+=============================================================================
+on god
 
 fr fr Initialize production sync module
 slay sync_production_init() lit {

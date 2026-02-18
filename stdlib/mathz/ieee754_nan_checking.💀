@@ -1,12 +1,16 @@
-fr fr CURSED IEEE 754 Compliant NaN and Float Checking Module
-fr fr Proper implementation of IEEE 754 standard for floating-point operations
-fr fr Mathematically correct NaN, infinity, and zero detection
+no cap
+CURSED IEEE 754 Compliant NaN and Float Checking Module
+Proper implementation of IEEE 754 standard for floating-point operations
+Mathematically correct NaN, infinity, and zero detection
+on god
 
 yeet "testz"
 
-fr fr ==========================================
-fr fr IEEE 754 CONSTANTS AND BIT PATTERNS
-fr fr ==========================================
+no cap
+==========================================
+IEEE 754 CONSTANTS AND BIT PATTERNS
+==========================================
+on god
 
 fr fr IEEE 754 Single Precision (32-bit) Constants
 sus IEEE_EXPONENT_MASK drip = 2139095040        fr fr 0x7F800000 (bits 23-30)
@@ -26,9 +30,11 @@ fr fr Quiet NaN and Signaling NaN patterns
 sus IEEE_QUIET_NAN_MIN drip = 2143289344        fr fr 0x7FC00000
 sus IEEE_SIGNALING_NAN_MIN drip = 2139095041    fr fr 0x7F800001
 
-fr fr ==========================================
-fr fr FLOAT TO BITS CONVERSION (SIMULATION)
-fr fr ==========================================
+no cap
+==========================================
+FLOAT TO BITS CONVERSION (SIMULATION)
+==========================================
+on god
 
 slay extract_float_bits(value meal) drip {
     fr fr Simulate extraction of IEEE 754 bit representation
@@ -152,9 +158,11 @@ slay reconstruct_float_from_bits(bits drip) meal {
     damn sign * mantissa_value * power_of_two
 }
 
-fr fr ==========================================
-fr fr IEEE 754 COMPLIANT CHECKING FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+IEEE 754 COMPLIANT CHECKING FUNCTIONS
+==========================================
+on god
 
 slay is_nan_ieee754_compliant(value meal) lit {
     fr fr IEEE 754 compliant NaN detection
@@ -282,9 +290,11 @@ slay is_normal(value meal) lit {
     damn (exponent > 0) && (exponent < IEEE_EXPONENT_MAX)
 }
 
-fr fr ==========================================
-fr fr MATHEMATICAL OPERATION SAFETY CHECKS
-fr fr ==========================================
+no cap
+==========================================
+MATHEMATICAL OPERATION SAFETY CHECKS
+==========================================
+on god
 
 slay is_safe_for_arithmetic(value meal) lit {
     fr fr Check if value is safe for arithmetic operations
@@ -325,9 +335,11 @@ slay classify_float(value meal) drip {
     damn 2      fr fr Normal
 }
 
-fr fr ==========================================
-fr fr HELPER FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+HELPER FUNCTIONS
+==========================================
+on god
 
 slay power_of_2(exponent drip) meal {
     fr fr Calculate 2^exponent for IEEE 754 reconstruction
@@ -377,9 +389,11 @@ slay create_negative_infinity() meal {
     damn -1.0 / 0.0
 }
 
-fr fr ==========================================
-fr fr ROBUST COMPARISON FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+ROBUST COMPARISON FUNCTIONS
+==========================================
+on god
 
 slay compare_floats_ieee754(a meal, b meal, epsilon meal) drip {
     fr fr IEEE 754 aware float comparison
@@ -433,9 +447,11 @@ slay are_floats_equal_ieee754(a meal, b meal, epsilon meal) lit {
     damn comparison == 0
 }
 
-fr fr ==========================================
-fr fr TEST FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+TEST FUNCTIONS
+==========================================
+on god
 
 slay test_ieee754_compliance() lit {
     fr fr Comprehensive tests for IEEE 754 compliance

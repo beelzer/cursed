@@ -1,12 +1,14 @@
-fr fr fr fr Connection pooling example - efficient database resource management periodt
-fr fr
-fr fr This example demonstrates:
-fr fr - Connection pool setup and configuration
-fr fr - Acquiring and releasing connections
-fr fr - Pool statistics monitoring
-fr fr - Concurrent connection usage
-fr fr - Pool health checking and maintenance
-fr fr - Error handling and connection recovery
+no cap
+fr fr Connection pooling example - efficient database resource management periodt
+
+This example demonstrates:
+- Connection pool setup and configuration
+- Acquiring and releasing connections
+- Pool statistics monitoring
+- Concurrent connection usage
+- Pool health checking and maintenance
+- Error handling and connection recovery
+on god
 
 sus main() {
     println!("🏊‍♂️ Connection Pool Management Example");

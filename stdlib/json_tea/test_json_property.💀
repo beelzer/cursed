@@ -6,9 +6,11 @@ fr fr Property-based tests for JSON module
 testz.set_test_suite("JSON Property-Based Tests")
 testz.set_verbose_mode(based)
 
-fr fr ===============================
-fr fr JSON Roundtrip Properties
-fr fr ===============================
+no cap
+===============================
+JSON Roundtrip Properties
+===============================
+on god
 
 testz.test_start("JSON encoding/decoding roundtrip")
 testz.property_test_start("JSON roundtrip consistency", 100)
@@ -28,9 +30,11 @@ bestie i := 0; i < 100; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr JSON Structure Validation
-fr fr ===============================
+no cap
+===============================
+JSON Structure Validation
+===============================
+on god
 
 testz.test_start("JSON structure validation properties")
 testz.property_test_start("Valid JSON structure", 50)
@@ -53,9 +57,11 @@ bestie i := 0; i < 50; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr JSON Array Properties
-fr fr ===============================
+no cap
+===============================
+JSON Array Properties
+===============================
+on god
 
 testz.test_start("JSON array properties")
 testz.property_test_start("JSON array structure", 50)
@@ -78,9 +84,11 @@ bestie i := 0; i < 50; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr JSON Number Properties
-fr fr ===============================
+no cap
+===============================
+JSON Number Properties
+===============================
+on god
 
 testz.test_start("JSON number encoding properties")
 testz.property_test_start("JSON number consistency", 50)
@@ -101,9 +109,11 @@ bestie i := 0; i < 50; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr JSON Escape Sequence Properties
-fr fr ===============================
+no cap
+===============================
+JSON Escape Sequence Properties
+===============================
+on god
 
 testz.test_start("JSON escape sequence properties")
 testz.property_test_start("Escape sequence handling", 30)
@@ -124,9 +134,11 @@ bestie i := 0; i < 30; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr JSON Nesting Properties
-fr fr ===============================
+no cap
+===============================
+JSON Nesting Properties
+===============================
+on god
 
 testz.test_start("JSON nesting properties")
 testz.property_test_start("Nested structure validation", 25)
@@ -150,9 +162,11 @@ bestie i := 0; i < 25; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr JSON Fuzz Testing
-fr fr ===============================
+no cap
+===============================
+JSON Fuzz Testing
+===============================
+on god
 
 testz.test_start("JSON parsing fuzz testing")
 testz.property_test_start("Random JSON parsing stability", 100)
@@ -171,9 +185,11 @@ bestie i := 0; i < 100; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr Helper Functions
-fr fr ===============================
+no cap
+===============================
+Helper Functions
+===============================
+on god
 
 slay count_character(text tea, char tea) normie { fr fr Simplified character counting
     sus count normie = 0

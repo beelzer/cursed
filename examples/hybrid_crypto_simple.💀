@@ -1,11 +1,13 @@
 #!/usr/bin/env cursed
-fr fr/ fr fr Simple Hybrid Cryptography Example
-fr fr/ 
-fr fr/ This example shows the most common hybrid cryptography use cases:
-fr fr/ - Secure key generation
-fr fr/ - Message encryption/decryption  
-fr fr/ - Digital signatures
-fr fr/ - Secure messaging between parties
+no cap
+/ fr fr Simple Hybrid Cryptography Example
+/ 
+/ This example shows the most common hybrid cryptography use cases:
+/ - Secure key generation
+/ - Message encryption/decryption  
+/ - Digital signatures
+/ - Secure messaging between parties
+on god
 
 yeet "stdlib::crypto_pqc::hybrid_crypto"
 yeet "stdlib::io"

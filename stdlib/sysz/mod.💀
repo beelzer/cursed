@@ -3,11 +3,13 @@ yeet "memory"
 yeet "vibez"
 yeet "runtime_os_bridge"
 
-fr fr =============================================================================
-fr fr SYSZ MODULE - OS System Calls and Platform Abstraction Layer
-fr fr Provides unified interface to OS-specific system calls and primitives
-fr fr Used by production sync and concurrency modules for real OS integration
-fr fr =============================================================================
+no cap
+=============================================================================
+SYSZ MODULE - OS System Calls and Platform Abstraction Layer
+Provides unified interface to OS-specific system calls and primitives
+Used by production sync and concurrency modules for real OS integration
+=============================================================================
+on god
 
 fr fr Platform detection constants
 sus PLATFORM_LINUX normie = 1
@@ -37,9 +39,11 @@ sus FUTEX_WAKE normie = 1
 sus FUTEX_PRIVATE_FLAG normie = 128
 sus CLOCK_MONOTONIC normie = 1
 
-fr fr =============================================================================
-fr fr PLATFORM DETECTION - Compile-time and Runtime Detection
-fr fr =============================================================================
+no cap
+=============================================================================
+PLATFORM DETECTION - Compile-time and Runtime Detection
+=============================================================================
+on god
 
 fr fr Get current platform (compile-time detection)
 slay get_current_platform() normie {
@@ -135,9 +139,11 @@ slay platform_is_arm() lit {
     damn cap
 }
 
-fr fr =============================================================================
-fr fr LINUX SYSTEM CALLS - Direct syscall interface
-fr fr =============================================================================
+no cap
+=============================================================================
+LINUX SYSTEM CALLS - Direct syscall interface
+=============================================================================
+on god
 
 fr fr Low-level system call wrapper - Direct OS integration
 slay syscall(syscall_number normie, arg1 thicc, arg2 thicc, arg3 thicc, arg4 thicc, arg5 thicc, arg6 thicc) thicc {
@@ -238,9 +244,11 @@ slay linux_get_nproc() normie {
     damn 4  // Simulated CPU count
 }
 
-fr fr =============================================================================
-fr fr WINDOWS SYSTEM CALLS - WinAPI wrappers
-fr fr =============================================================================
+no cap
+=============================================================================
+WINDOWS SYSTEM CALLS - WinAPI wrappers
+=============================================================================
+on god
 
 fr fr Windows thread ID
 slay windows_get_current_thread_id() normie {
@@ -299,9 +307,11 @@ slay windows_wake_by_address_all(address thicc) {
     fr fr In real implementation: WakeByAddressAll()
 }
 
-fr fr =============================================================================
-fr fr MACOS/DARWIN SYSTEM CALLS - BSD/Mach wrappers
-fr fr =============================================================================
+no cap
+=============================================================================
+MACOS/DARWIN SYSTEM CALLS - BSD/Mach wrappers
+=============================================================================
+on god
 
 fr fr Darwin thread ID
 slay darwin_pthread_threadid_np() normie {
@@ -344,9 +354,11 @@ slay darwin_ulock_wake(flags normie, address thicc, value normie) normie {
     damn 0  // Simulated success
 }
 
-fr fr =============================================================================
-fr fr MEMORY MANAGEMENT - Virtual memory operations
-fr fr =============================================================================
+no cap
+=============================================================================
+MEMORY MANAGEMENT - Virtual memory operations
+=============================================================================
+on god
 
 fr fr Allocate virtual memory with specific protection
 slay allocate_virtual_memory(size normie, protection normie) thicc {
@@ -369,15 +381,19 @@ slay free_virtual_memory(address thicc, size normie) {
     memory.free_aligned(address)
 }
 
-fr fr =============================================================================
-fr fr THREAD MANAGEMENT - OS thread operations
-fr fr =============================================================================
+no cap
+=============================================================================
+THREAD MANAGEMENT - OS thread operations
+=============================================================================
+on god
 
 fr fr Set thread CPU affinity
 slay set_thread_affinity(thread_handle thicc, cpu_id normie) normie {
-    fr fr Linux: sched_setaffinity()
-    fr fr Windows: SetThreadAffinityMask()  
-    fr fr macOS: thread_policy_set() with THREAD_AFFINITY_POLICY
+    no cap
+    Linux: sched_setaffinity()
+    Windows: SetThreadAffinityMask()  
+    macOS: thread_policy_set() with THREAD_AFFINITY_POLICY
+    on god
     damn 0  // Simulated success
 }
 
@@ -398,15 +414,19 @@ slay get_thread_local_storage(key tea) thicc {
     damn 0  // Simulated null
 }
 
-fr fr =============================================================================
-fr fr CPU AND TIMING OPERATIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+CPU AND TIMING OPERATIONS
+=============================================================================
+on god
 
 fr fr CPU pause instruction for spin loops
 slay cpu_pause() {
-    fr fr x86/x64: pause instruction
-    fr fr ARM: yield instruction
-    fr fr Simulated - in real implementation would be inline assembly
+    no cap
+    x86/x64: pause instruction
+    ARM: yield instruction
+    Simulated - in real implementation would be inline assembly
+    on god
 }
 
 fr fr Microsecond sleep
@@ -456,25 +476,31 @@ slay get_monotonic_time_ns() thicc {
     }
 }
 
-fr fr =============================================================================
-fr fr ASSEMBLY CONTEXT SWITCHING STUBS
-fr fr =============================================================================
+no cap
+=============================================================================
+ASSEMBLY CONTEXT SWITCHING STUBS
+=============================================================================
+on god
 
 fr fr Save x86-64 CPU context (would be implemented in assembly)
 slay asm_save_x86_64_context(context thicc) {
-    fr fr In real implementation would save all registers:
-    fr fr movq %rax, 0(context)
-    fr fr movq %rbx, 8(context)  
-    fr fr ... save all GPRs, XMM registers, flags, etc.
+    no cap
+    In real implementation would save all registers:
+    movq %rax, 0(context)
+    movq %rbx, 8(context)  
+    ... save all GPRs, XMM registers, flags, etc.
+    on god
     vibez.spill("💾 Simulated x86-64 context save")
 }
 
 fr fr Restore x86-64 CPU context (would be implemented in assembly)
 slay asm_restore_x86_64_context(context thicc) {
-    fr fr In real implementation would restore all registers:
-    fr fr movq 0(context), %rax
-    fr fr movq 8(context), %rbx
-    fr fr ... restore all GPRs, XMM registers, flags, etc.
+    no cap
+    In real implementation would restore all registers:
+    movq 0(context), %rax
+    movq 8(context), %rbx
+    ... restore all GPRs, XMM registers, flags, etc.
+    on god
     vibez.spill("📥 Simulated x86-64 context restore")
 }
 
@@ -518,9 +544,11 @@ slay pthread_self_hash() normie {
     damn 42424242  // Simulated hash
 }
 
-fr fr =============================================================================
-fr fr MODULE INITIALIZATION
-fr fr =============================================================================
+no cap
+=============================================================================
+MODULE INITIALIZATION
+=============================================================================
+on god
 
 fr fr Initialize system call interface
 slay sysz_init() lit {

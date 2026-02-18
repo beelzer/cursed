@@ -1,8 +1,10 @@
-fr fr ================================
-fr fr CURSED Testing Framework v6.0 - Enhanced Edition
-fr fr Advanced testing framework with property-based testing, fuzzing, and coverage
-fr fr Supports enterprise-grade testing patterns and comprehensive analysis
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework v6.0 - Enhanced Edition
+Advanced testing framework with property-based testing, fuzzing, and coverage
+Supports enterprise-grade testing patterns and comprehensive analysis
+================================
+on god
 
 yeet "vibez"
 yeet "mathz"
@@ -12,9 +14,11 @@ yeet "filez"
 yeet "timez"
 yeet "concurrenz"
 
-fr fr ================================
-fr fr Core Framework State
-fr fr ================================
+no cap
+================================
+Core Framework State
+================================
+on god
 
 fr fr Enhanced test execution state
 sus test_count normie = 0
@@ -42,9 +46,11 @@ sus fuzz_iterations normie = 1000
 sus fuzz_crash_count normie = 0
 sus fuzz_corpus [FuzzInput] = []
 
-fr fr ================================
-fr fr Enhanced Data Structures
-fr fr ================================
+no cap
+================================
+Enhanced Data Structures
+================================
+on god
 
 struct TestResult {
     test_name tea
@@ -131,9 +137,11 @@ struct TestPerformance {
     io_operations normie
 }
 
-fr fr ================================
-fr fr Property-Based Testing System
-fr fr ================================
+no cap
+================================
+Property-Based Testing System
+================================
+on god
 
 struct PropertyTestDetails {
     iterations_run normie
@@ -359,9 +367,11 @@ slay generate_shrink_candidates(value tea, generator PropertyGenerator) [tea] {
     damn candidates
 }
 
-fr fr ================================
-fr fr Fuzzing System
-fr fr ================================
+no cap
+================================
+Fuzzing System
+================================
+on god
 
 struct FuzzInput {
     input_data tea
@@ -556,9 +566,11 @@ slay mutate_arithmetic(input tea) tea {
     damn replace_char_at(input, position, new_char)
 }
 
-fr fr ================================
-fr fr Coverage Analysis System
-fr fr ================================
+no cap
+================================
+Coverage Analysis System
+================================
+on god
 
 slay enable_coverage_tracking() {
     coverage_enabled = based
@@ -709,9 +721,11 @@ slay export_coverage_lcov(output_file tea) {
     vibez.spill("📊 Coverage exported to:", output_file)
 }
 
-fr fr ================================
-fr fr Parallel Test Execution Enhancement
-fr fr ================================
+no cap
+================================
+Parallel Test Execution Enhancement
+================================
+on god
 
 struct ParallelTestConfig {
     max_workers normie
@@ -801,9 +815,11 @@ slay execute_test_in_worker(worker TestWorker, test_name tea, config ParallelTes
     damn result
 }
 
-fr fr ================================
-fr fr Performance Profiling and Analysis
-fr fr ================================
+no cap
+================================
+Performance Profiling and Analysis
+================================
+on god
 
 slay enable_performance_tracking() {
     performance_tracking = based
@@ -867,9 +883,11 @@ slay generate_performance_report() tea {
     damn report
 }
 
-fr fr ================================
-fr fr Enhanced Test Reporting
-fr fr ================================
+no cap
+================================
+Enhanced Test Reporting
+================================
+on god
 
 slay generate_comprehensive_report() tea {
     sus report tea = "================================\n"
@@ -935,9 +953,11 @@ slay export_junit_xml(output_file tea) {
     vibez.spill("📄 JUnit XML report exported to:", output_file)
 }
 
-fr fr ================================
-fr fr Utility Functions and Helpers
-fr fr ================================
+no cap
+================================
+Utility Functions and Helpers
+================================
+on god
 
 slay create_empty_coverage_data() CoverageData {
     damn CoverageData{
@@ -1020,9 +1040,11 @@ slay write_file(filename tea, content tea) {
     fr fr Would write actual file in real implementation
 }
 
-fr fr ================================
-fr fr Main Test Runner Functions
-fr fr ================================
+no cap
+================================
+Main Test Runner Functions
+================================
+on god
 
 slay run_enhanced_test_suite() {
     vibez.spill("🚀 CURSED Testing Framework v6.0 - Enhanced Edition")

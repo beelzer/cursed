@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Boundary Conditions Test - Edge Values  
-fr fr Tests: Zero values, extreme inputs, boundary arithmetic
-fr fr Expected: Graceful handling of all boundary conditions
+no cap
+Boundary Conditions Test - Edge Values  
+Tests: Zero values, extreme inputs, boundary arithmetic
+Expected: Graceful handling of all boundary conditions
+on god
 
 slay custom_abs(value normie) normie {
     lowkey value < 0 {

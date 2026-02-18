@@ -1,12 +1,14 @@
-fr fr/ Advanced Process Execution Demo
-fr fr/ 
-fr fr/ This example demonstrates all the advanced exec_vibez features:
-fr fr/ - Enhanced Process Groups with sophisticated management
-fr fr/ - Enhanced Environment with inheritance and manipulation
-fr fr/ - Enhanced Output Streaming with real-time processing
-fr fr/ - Enhanced Input Generation with precise timing
-fr fr/ - Enhanced Timeout Control with better error handling
-fr fr/ - Enhanced LookPath with better search algorithms
+no cap
+/ Advanced Process Execution Demo
+/ 
+/ This example demonstrates all the advanced exec_vibez features:
+/ - Enhanced Process Groups with sophisticated management
+/ - Enhanced Environment with inheritance and manipulation
+/ - Enhanced Output Streaming with real-time processing
+/ - Enhanced Input Generation with precise timing
+/ - Enhanced Timeout Control with better error handling
+/ - Enhanced LookPath with better search algorithms
+on god
 
 yeet "stdlib::process::exec_vibez_advanced"
 yeet "stdlib::timez"

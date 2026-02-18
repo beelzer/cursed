@@ -1,12 +1,14 @@
-fr fr fr fr PKI Certificate Validation Example for CURSED
-fr fr 
-fr fr This example demonstrates comprehensive certificate validation including:
-fr fr - Certificate parsing and validation
-fr fr - Chain building and verification
-fr fr - Trust store management
-fr fr - Certificate pinning
-fr fr - Revocation checking via OCSP/CRL
-fr fr - Real-world web service validation
+no cap
+fr fr PKI Certificate Validation Example for CURSED
+
+This example demonstrates comprehensive certificate validation including:
+- Certificate parsing and validation
+- Chain building and verification
+- Trust store management
+- Certificate pinning
+- Revocation checking via OCSP/CRL
+- Real-world web service validation
+on god
 
 yeet "stdlib::crypto::pki"
 yeet "stdlib::crypto::certificates"

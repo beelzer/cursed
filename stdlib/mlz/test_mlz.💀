@@ -222,9 +222,11 @@ sus means meal[value]
 sus stds meal[value]
 (standardized, means, stds) = standardize_features_simple(std_features, 3, 2)
 
-fr fr Check means and standard deviations
-fr fr Feature 0: [1, 2, 3] -> mean=2
-fr fr Feature 1: [10, 20, 30] -> mean=20
+no cap
+Check means and standard deviations
+Feature 0: [1, 2, 3] -> mean=2
+Feature 1: [10, 20, 30] -> mean=20
+on god
 assert_near(means[0], 2.0, 0.001)
 assert_near(means[1], 20.0, 0.001)
 

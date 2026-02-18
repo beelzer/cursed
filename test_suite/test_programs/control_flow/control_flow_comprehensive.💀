@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Test: Comprehensive control flow structures
-fr fr Purpose: Validate all control flow constructs work correctly
-fr fr Expected: All control flow should execute in proper sequence
+no cap
+Test: Comprehensive control flow structures
+Purpose: Validate all control flow constructs work correctly
+Expected: All control flow should execute in proper sequence
+on god
 
 slay main_character() normie {
     vibez.spill("=== Testing Control Flow ===")

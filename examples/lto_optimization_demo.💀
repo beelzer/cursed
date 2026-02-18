@@ -1,11 +1,13 @@
-fr fr CURSED Link-Time Optimization (LTO) Demo
-fr fr 
-fr fr This example demonstrates the LTO system's capabilities including:
-fr fr - Cross-module function inlining
-fr fr - Whole-program dead code elimination  
-fr fr - Global variable optimization
-fr fr - Constant propagation across modules
-fr fr - Inter-procedural optimization
+no cap
+CURSED Link-Time Optimization (LTO) Demo
+
+This example demonstrates the LTO system's capabilities including:
+- Cross-module function inlining
+- Whole-program dead code elimination  
+- Global variable optimization
+- Constant propagation across modules
+- Inter-procedural optimization
+on god
 
 sus main() -> i32 {
     println("🔧 CURSED LTO Optimization Demo")?;

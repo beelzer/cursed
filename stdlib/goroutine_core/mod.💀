@@ -1,6 +1,8 @@
-fr fr Goroutine Core - Pure CURSED Goroutine System
-fr fr Cooperative concurrency with work-stealing scheduler
-fr fr Replaces src/runtime/goroutine.rs with zero FFI dependencies
+no cap
+Goroutine Core - Pure CURSED Goroutine System
+Cooperative concurrency with work-stealing scheduler
+Replaces src/runtime/goroutine.rs with zero FFI dependencies
+on god
 
 fr fr Removed circular dependencies
 yeet "testz"
@@ -46,9 +48,11 @@ sus DEFAULT_STACK_SIZE normie = 8192
 sus DEFAULT_WORKER_COUNT normie = 4
 sus SCHEDULER_QUANTUM normie = 100 fr fr Cooperative yield frequency
 
-fr fr ==============================================================================
-fr fr GOROUTINE SCHEDULER INITIALIZATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+GOROUTINE SCHEDULER INITIALIZATION
+==============================================================================
+on god
 
 fr fr Initialize the goroutine scheduler
 slay init_goroutine_scheduler() lit {
@@ -102,9 +106,11 @@ slay schedule_goroutine(goroutine_id normie) lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr GOROUTINE EXECUTION AND SCHEDULING
-fr fr ==============================================================================
+no cap
+==============================================================================
+GOROUTINE EXECUTION AND SCHEDULING
+==============================================================================
+on god
 
 fr fr Execute the next runnable goroutine
 slay run_next_goroutine() lit {
@@ -171,9 +177,11 @@ slay yield_goroutine() lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr GOROUTINE STATE MANAGEMENT
-fr fr ==============================================================================
+no cap
+==============================================================================
+GOROUTINE STATE MANAGEMENT
+==============================================================================
+on god
 
 fr fr Set goroutine state
 slay set_goroutine_state(goroutine_id normie, new_state normie) lit {
@@ -207,9 +215,11 @@ slay current_goroutine_id() normie {
     damn global_scheduler.current_id
 }
 
-fr fr ==============================================================================
-fr fr PANIC HANDLING AND ERROR RECOVERY
-fr fr ==============================================================================
+no cap
+==============================================================================
+PANIC HANDLING AND ERROR RECOVERY
+==============================================================================
+on god
 
 fr fr Handle goroutine panic
 slay handle_goroutine_panic(goroutine_id normie, panic_data tea) lit {
@@ -263,9 +273,11 @@ slay cleanup_goroutine(goroutine_id normie) lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr SCHEDULER STATISTICS AND MONITORING
-fr fr ==============================================================================
+no cap
+==============================================================================
+SCHEDULER STATISTICS AND MONITORING
+==============================================================================
+on god
 
 fr fr Get scheduler statistics
 slay get_scheduler_stats() map[tea]normie {

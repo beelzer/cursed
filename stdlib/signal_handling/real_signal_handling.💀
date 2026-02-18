@@ -1,6 +1,8 @@
-fr fr CURSED Real Signal Handling - OS Integration Module
-fr fr Replaces simulation with actual operating system signal handling
-fr fr Provides simple interface for basic signal operations
+no cap
+CURSED Real Signal Handling - OS Integration Module
+Replaces simulation with actual operating system signal handling
+Provides simple interface for basic signal operations
+on god
 
 yeet "errorz"
 
@@ -36,9 +38,11 @@ extern slay cursed_real_signal_wait_sync(timeout_ms normie) normie
 extern slay cursed_real_signal_is_blocked(signal normie) lit
 extern slay cursed_real_signal_cleanup() lit
 
-fr fr =============================================================================
-fr fr REAL SIGNAL SYSTEM OPERATIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL SYSTEM OPERATIONS
+=============================================================================
+on god
 
 slay signal_init() lit {
     fr fr Initialize native signal handling platform
@@ -201,9 +205,11 @@ slay signal_is_blocked(signal normie) lit {
     damn cursed_real_signal_is_blocked(signal)
 }
 
-fr fr =============================================================================
-fr fr SIGNAL HANDLER EXECUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL HANDLER EXECUTION
+=============================================================================
+on god
 
 fr fr Called when a signal is received
 slay signal_invoke_handler(signal normie) {
@@ -247,9 +253,11 @@ slay signal_default_action(signal normie) {
     }
 }
 
-fr fr =============================================================================
-fr fr SIGNAL INFORMATION AND UTILITIES
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL INFORMATION AND UTILITIES
+=============================================================================
+on god
 
 slay signal_get_stats_handlers_registered() normie {
     damn signal_handlers_registered
@@ -299,9 +307,11 @@ slay signal_can_be_caught(signal normie) lit {
     }
 }
 
-fr fr =============================================================================
-fr fr GRACEFUL SHUTDOWN HELPERS
-fr fr =============================================================================
+no cap
+=============================================================================
+GRACEFUL SHUTDOWN HELPERS
+=============================================================================
+on god
 
 slay signal_setup_graceful_shutdown(cleanup_handler SignalHandlerType) lit {
     fr fr Register handlers for common shutdown signals
@@ -328,9 +338,11 @@ slay signal_setup_graceful_shutdown(cleanup_handler SignalHandlerType) lit {
     damn success
 }
 
-fr fr =============================================================================
-fr fr CLEANUP AND SHUTDOWN
-fr fr =============================================================================
+no cap
+=============================================================================
+CLEANUP AND SHUTDOWN
+=============================================================================
+on god
 
 slay signal_cleanup() {
     lowkey !signal_system_active {
@@ -357,9 +369,11 @@ slay signal_cleanup() {
     vibez.spill("Real signal system cleaned up")
 }
 
-fr fr =============================================================================
-fr fr HELPER FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+HELPER FUNCTIONS
+=============================================================================
+on god
 
 slay string(value normie) tea {
     fr fr Simplified string conversion - should use real implementation

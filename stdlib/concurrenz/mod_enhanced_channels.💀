@@ -3,9 +3,11 @@ yeet "error_drip"
 yeet "memory"
 yeet "testz"
 
-fr fr Enhanced Channel Operations Module - Production-Ready Concurrency
-fr fr Features: Deadlock prevention, buffered channels, select statements, proper cleanup
-fr fr Memory safety validated, race-condition free implementation
+no cap
+Enhanced Channel Operations Module - Production-Ready Concurrency
+Features: Deadlock prevention, buffered channels, select statements, proper cleanup
+Memory safety validated, race-condition free implementation
+on god
 
 fr fr Memory ordering constants
 sus RELAXED normie = 0
@@ -80,9 +82,11 @@ sus global_channel_registry []*EnhancedChannel = 0
 sus global_registry_size normie = 0
 sus global_registry_capacity normie = 1000
 
-fr fr =============================================================================
-fr fr ENHANCED CHANNEL OPERATIONS - Production-ready with deadlock prevention
-fr fr =============================================================================
+no cap
+=============================================================================
+ENHANCED CHANNEL OPERATIONS - Production-ready with deadlock prevention
+=============================================================================
+on god
 
 fr fr Create enhanced channel with deadlock prevention
 slay create_enhanced_channel(capacity normie) *EnhancedChannel {
@@ -440,9 +444,11 @@ slay enhanced_buffered_channel_receive(ch *EnhancedChannel) (normie, lit) {
     damn (0, cap)  fr fr Should never reach here
 }
 
-fr fr =============================================================================
-fr fr SELECT STATEMENT RUNTIME - Advanced multi-channel operations
-fr fr =============================================================================
+no cap
+=============================================================================
+SELECT STATEMENT RUNTIME - Advanced multi-channel operations
+=============================================================================
+on god
 
 fr fr Create select context for multi-channel operations
 slay create_select_context(channel_count normie) *SelectContext {
@@ -662,9 +668,11 @@ slay select_try_send_enhanced(ch *EnhancedChannel, data normie) lit {
     damn cap  fr fr Channel full
 }
 
-fr fr =============================================================================
-fr fr CHANNEL MANAGEMENT - Closing and cleanup operations
-fr fr =============================================================================
+no cap
+=============================================================================
+CHANNEL MANAGEMENT - Closing and cleanup operations
+=============================================================================
+on god
 
 fr fr Close channel with proper cleanup and notification
 slay enhanced_channel_close(ch *EnhancedChannel) lit {
@@ -777,9 +785,11 @@ slay enhanced_channel_cleanup(ch *EnhancedChannel) {
     }
 }
 
-fr fr =============================================================================
-fr fr DEADLOCK DETECTION AND PREVENTION
-fr fr =============================================================================
+no cap
+=============================================================================
+DEADLOCK DETECTION AND PREVENTION
+=============================================================================
+on god
 
 fr fr Register channel for global deadlock detection
 slay register_channel_for_deadlock_detection(ch *EnhancedChannel) {
@@ -862,9 +872,11 @@ slay check_for_deadlocks() lit {
     damn cap  fr fr No deadlock detected
 }
 
-fr fr =============================================================================
-fr fr UTILITY FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+UTILITY FUNCTIONS
+=============================================================================
+on god
 
 fr fr Get current time in milliseconds (simplified implementation)
 slay get_current_time_ms() thicc {
@@ -877,12 +889,14 @@ slay get_current_time_ms() thicc {
 
 fr fr Enhanced runtime yield with goroutine scheduler integration
 slay runtime_yield() {
-    fr fr In production, this would:
-    fr fr 1. Save current goroutine context
-    fr fr 2. Switch to scheduler
-    fr fr 3. Pick next runnable goroutine from queue
-    fr fr 4. Restore context and resume execution
-    fr fr This provides a cooperative yielding point
+    no cap
+    In production, this would:
+    1. Save current goroutine context
+    2. Switch to scheduler
+    3. Pick next runnable goroutine from queue
+    4. Restore context and resume execution
+    This provides a cooperative yielding point
+    on god
     atomic_drip.compiler_fence()  fr fr Prevent compiler optimizations
 }
 
@@ -893,9 +907,11 @@ slay configure_deadlock_prevention(max_wait_time normie, max_total_waiters normi
     global_deadlock_config.prevention_enabled = enabled
 }
 
-fr fr =============================================================================
-fr fr COMPATIBILITY LAYER - Go-style channel operations
-fr fr =============================================================================
+no cap
+=============================================================================
+COMPATIBILITY LAYER - Go-style channel operations
+=============================================================================
+on god
 
 fr fr Create Go-style make(chan int, buffer_size)
 slay make_chan(buffer_size normie) *EnhancedChannel {

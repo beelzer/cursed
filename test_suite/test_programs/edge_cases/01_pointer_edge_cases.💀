@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Pointer Edge Cases Test
-fr fr Tests: Edge cases and boundary conditions with pointers
-fr fr Expected: Identical results in both modes
+no cap
+Pointer Edge Cases Test
+Tests: Edge cases and boundary conditions with pointers
+Expected: Identical results in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Pointer Edge Cases ===")

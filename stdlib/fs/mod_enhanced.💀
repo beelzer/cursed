@@ -1,15 +1,19 @@
-fr fr CURSED Enhanced Filesystem Module - Production Implementation  
-fr fr Complete file system operations with proper OS integration and security
-fr fr Pure CURSED implementation with comprehensive error handling and real OS calls
+no cap
+CURSED Enhanced Filesystem Module - Production Implementation  
+Complete file system operations with proper OS integration and security
+Pure CURSED implementation with comprehensive error handling and real OS calls
+on god
 
 yeet "vibez"
 yeet "envz"
 yeet "platformz"
 yeet "stringz"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like FileInfo squad {
     name tea
@@ -110,9 +114,11 @@ sus open_files map[normie]FileHandle
 sus active_locks map[tea]FileLock
 sus fs_initialized lit = false
 
-fr fr ================================
-fr fr Platform Detection and Initialization
-fr fr ================================
+no cap
+================================
+Platform Detection and Initialization
+================================
+on god
 
 slay init_filesystem() lit {
     lowkey fs_initialized {
@@ -201,9 +207,11 @@ slay initialize_file_tables() {
     active_locks = make(map[tea]FileLock)
 }
 
-fr fr ================================
-fr fr Real OS Integration Functions
-fr fr ================================
+no cap
+================================
+Real OS Integration Functions
+================================
+on god
 
 slay syscall_stat(path tea) FileMetadata {
     init_filesystem()
@@ -325,9 +333,11 @@ slay generic_stat(path tea) FileMetadata {
     damn metadata
 }
 
-fr fr ================================
-fr fr Enhanced File Operations
-fr fr ================================
+no cap
+================================
+Enhanced File Operations
+================================
+on god
 
 slay read_file(path tea) tea {
     init_filesystem()
@@ -482,9 +492,11 @@ slay delete_file(path tea) lit {
     damn unlink_file_real(path)
 }
 
-fr fr ================================
-fr fr Enhanced File Existence and Checks
-fr fr ================================
+no cap
+================================
+Enhanced File Existence and Checks
+================================
+on god
 
 slay file_exists(path tea) lit {
     init_filesystem()
@@ -522,9 +534,11 @@ slay get_file_size_real(path tea) thicc {
     damn metadata.size
 }
 
-fr fr ================================
-fr fr Enhanced Directory Operations  
-fr fr ================================
+no cap
+================================
+Enhanced Directory Operations  
+================================
+on god
 
 slay create_dir(path tea) lit {
     init_filesystem()
@@ -633,9 +647,11 @@ slay list_directory_real(path tea) DirEntry[value]{
     damn entries
 }
 
-fr fr ================================
-fr fr Enhanced File Locking
-fr fr ================================
+no cap
+================================
+Enhanced File Locking
+================================
+on god
 
 slay lock_file(path tea) lit {
     init_filesystem()
@@ -781,9 +797,11 @@ slay unlock_file_real(path tea) lit {
     damn success
 }
 
-fr fr ================================
-fr fr Enhanced Platform Detection
-fr fr ================================
+no cap
+================================
+Enhanced Platform Detection
+================================
+on god
 
 slay detect_comprehensive_platform() tea {
     fr fr Get comprehensive platform information
@@ -824,9 +842,11 @@ slay get_platform_capabilities() map[tea]lit {
     damn capabilities
 }
 
-fr fr ================================
-fr fr Enhanced Environment Variable Expansion
-fr fr ================================
+no cap
+================================
+Enhanced Environment Variable Expansion
+================================
+on god
 
 slay expand_environment_variables(path tea) tea {
     init_filesystem()
@@ -967,9 +987,11 @@ slay get_default_env_value(var_name tea) tea {
     damn ""
 }
 
-fr fr ================================
-fr fr Low-level System Call Implementations
-fr fr ================================
+no cap
+================================
+Low-level System Call Implementations
+================================
+on god
 
 fr fr These would be actual system calls in production
 fr fr Currently providing mock implementations that simulate real behavior
@@ -1040,9 +1062,11 @@ slay write_file_content(fd normie, content tea) lit {
     damn simulate_write_content(handle.path, content)
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay validate_path(path tea) lit {
     init_filesystem()
@@ -1452,9 +1476,11 @@ slay get_file_extension(path tea) tea {
     damn stringz.substring(basename, last_dot, stringz.length(basename))
 }
 
-fr fr ================================
-fr fr Module Cleanup
-fr fr ================================
+no cap
+================================
+Module Cleanup
+================================
+on god
 
 slay cleanup_filesystem() lit {
     fr fr Close all open files

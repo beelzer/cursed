@@ -1,14 +1,16 @@
-fr fr! Comprehensive PKI (Public Key Infrastructure) Demo
-fr fr! 
-fr fr! This example demonstrates the full capabilities of the CURSED PKI system:
-fr fr! - X.509 certificate parsing and validation
-fr fr! - Certificate Authority (CA) operations
-fr fr! - Certificate chain validation and path building
-fr fr! - Certificate revocation and CRL management
-fr fr! - OCSP certificate status checking
-fr fr! - Trust store management
-fr fr! - Key generation and CSR creation
-fr fr! - Multiple signature algorithms support
+no cap
+! Comprehensive PKI (Public Key Infrastructure) Demo
+! 
+! This example demonstrates the full capabilities of the CURSED PKI system:
+! - X.509 certificate parsing and validation
+! - Certificate Authority (CA) operations
+! - Certificate chain validation and path building
+! - Certificate revocation and CRL management
+! - OCSP certificate status checking
+! - Trust store management
+! - Key generation and CSR creation
+! - Multiple signature algorithms support
+on god
 
 yeet "stdlib::packages::crypto_pki"
 yeet "stdlib::io"

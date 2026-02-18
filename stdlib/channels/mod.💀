@@ -1,6 +1,8 @@
-fr fr channels - Advanced Channel Operations Module
-fr fr Extended channel functionality beyond basic concurrenz module
-fr fr Provides buffered channels, select operations, and channel utilities
+no cap
+channels - Advanced Channel Operations Module
+Extended channel functionality beyond basic concurrenz module
+Provides buffered channels, select operations, and channel utilities
+on god
 
 yeet "core"
 yeet "concurrenz" 

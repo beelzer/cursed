@@ -1,7 +1,9 @@
-fr fr/ CURSED Networking Showcase
-fr fr/ 
-fr fr/ This example demonstrates the comprehensive networking capabilities
-fr fr/ of the CURSED programming language standard library.
+no cap
+/ CURSED Networking Showcase
+/ 
+/ This example demonstrates the comprehensive networking capabilities
+/ of the CURSED programming language standard library.
+on god
 
 yeet "stdlib::net"
 yeet "stdlib::io"

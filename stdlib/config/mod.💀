@@ -1,13 +1,17 @@
 yeet "testz"
 
-fr fr ==========================================
-fr fr CURSED Config Module - Pure CURSED Implementation  
-fr fr Multi-Format Configuration Management
-fr fr ==========================================
+no cap
+==========================================
+CURSED Config Module - Pure CURSED Implementation  
+Multi-Format Configuration Management
+==========================================
+on god
 
-fr fr ==========================================
-fr fr Core Configuration Functions
-fr fr ==========================================
+no cap
+==========================================
+Core Configuration Functions
+==========================================
+on god
 
 fr fr Configuration format types
 slay format_json() tea { damn "json" }
@@ -16,9 +20,11 @@ slay format_toml() tea { damn "toml" }
 slay format_ini() tea { damn "ini" }
 slay format_env() tea { damn "env" }
 
-fr fr ==========================================
-fr fr Environment Variable Functions
-fr fr ==========================================
+no cap
+==========================================
+Environment Variable Functions
+==========================================
+on god
 
 slay get_env(key tea) tea { fr fr Get environment variable value with expanded support
     fr fr Common system environment variables
@@ -113,9 +119,11 @@ slay expand_env_vars(input tea) tea { fr fr Expand environment variables in stri
     damn result
 }
 
-fr fr ==========================================
-fr fr Format Detection Functions
-fr fr ==========================================
+no cap
+==========================================
+Format Detection Functions
+==========================================
+on god
 
 slay detect_format(content tea) tea { fr fr Auto-detect configuration format
     sus trimmed tea = string_trim(content) fr fr Check for JSON
@@ -162,9 +170,11 @@ slay detect_format_from_filename(filename tea) tea { fr fr Detect format from fi
     damn format_json() fr fr Default
 }
 
-fr fr ==========================================
-fr fr Simple JSON Configuration Parser
-fr fr ==========================================
+no cap
+==========================================
+Simple JSON Configuration Parser
+==========================================
+on god
 
 slay parse_json_config(content tea) tea { fr fr Parse JSON configuration (basic validation)
     sus trimmed tea = string_trim(content)
@@ -174,9 +184,11 @@ slay parse_json_config(content tea) tea { fr fr Parse JSON configuration (basic 
     damn "{}"
 }
 
-fr fr ==========================================
-fr fr INI Configuration Parser
-fr fr ==========================================
+no cap
+==========================================
+INI Configuration Parser
+==========================================
+on god
 
 slay parse_ini_config(content tea) tea { fr fr Parse INI format configuration (simplified)
     sus result tea = "{"
@@ -193,9 +205,11 @@ slay parse_ini_config(content tea) tea { fr fr Parse INI format configuration (s
     damn result
 }
 
-fr fr ==========================================
-fr fr YAML Configuration Parser (Basic)
-fr fr ==========================================
+no cap
+==========================================
+YAML Configuration Parser (Basic)
+==========================================
+on god
 
 slay parse_yaml_config(content tea) tea { fr fr Basic YAML parser (simplified)
     sus result tea = "{"
@@ -208,9 +222,11 @@ slay parse_yaml_config(content tea) tea { fr fr Basic YAML parser (simplified)
     damn result
 }
 
-fr fr ==========================================
-fr fr TOML Configuration Parser (Basic)
-fr fr ==========================================
+no cap
+==========================================
+TOML Configuration Parser (Basic)
+==========================================
+on god
 
 slay parse_toml_config(content tea) tea { fr fr Basic TOML parser (simplified)
     sus result tea = "{"
@@ -223,9 +239,11 @@ slay parse_toml_config(content tea) tea { fr fr Basic TOML parser (simplified)
     damn result
 }
 
-fr fr ==========================================
-fr fr Environment Configuration Parser
-fr fr ==========================================
+no cap
+==========================================
+Environment Configuration Parser
+==========================================
+on god
 
 slay parse_env_config(content tea) tea { fr fr Parse environment file format (KEY=VALUE)
     sus result tea = "{"
@@ -243,9 +261,11 @@ slay parse_env_config(content tea) tea { fr fr Parse environment file format (KE
     damn result
 }
 
-fr fr ==========================================
-fr fr Main Configuration Functions
-fr fr ==========================================
+no cap
+==========================================
+Main Configuration Functions
+==========================================
+on god
 
 slay load_config(content tea, format tea) tea { fr fr Load configuration from content string
     sus expanded tea = expand_env_vars(content)
@@ -294,9 +314,11 @@ slay load_config_from_file(filename tea) tea { fr fr Load configuration from fil
     damn "{}"
 }
 
-fr fr ==========================================
-fr fr Configuration Validation Functions
-fr fr ==========================================
+no cap
+==========================================
+Configuration Validation Functions
+==========================================
+on god
 
 slay validate_config(config tea, schema tea) lit { fr fr Basic configuration validation
     damn validate(config)
@@ -343,9 +365,11 @@ slay set_config_value(config tea, key tea, value tea) tea { fr fr Set value in c
     }
 }
 
-fr fr ==========================================
-fr fr Configuration Merging Functions
-fr fr ==========================================
+no cap
+==========================================
+Configuration Merging Functions
+==========================================
+on god
 
 slay merge_configs(config1 tea, config2 tea) tea { fr fr Merge two configurations (simplified)
     bestie config1 == "{}" {
@@ -358,9 +382,11 @@ slay merge_configs(config1 tea, config2 tea) tea { fr fr Merge two configuration
     damn "{\"merged\":\"true\",\"config1\":\"present\",\"config2\":\"present\"}"
 }
 
-fr fr ==========================================
-fr fr High-Level API Functions
-fr fr ==========================================
+no cap
+==========================================
+High-Level API Functions
+==========================================
+on god
 
 slay parse(content tea) tea { fr fr Main parse function with auto-detection
     damn load_config_auto(content)
@@ -393,9 +419,11 @@ slay expand_variables(content tea) tea { fr fr Expand environment variables
     damn expand_env_vars(content)
 }
 
-fr fr ==========================================
-fr fr Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+Utility Functions
+==========================================
+on god
 
 slay string_length(str tea) normie { fr fr String length function
     sus count normie = 0

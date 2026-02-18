@@ -4,9 +4,11 @@ fr fr Tests all functionality in filesystem_complete module
 yeet "testz"
 yeet "filesystem_complete"
 
-fr fr ==============================================================================
-fr fr CORE FILE OPERATIONS TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+CORE FILE OPERATIONS TESTS
+==============================================================================
+on god
 
 slay test_file_open_close() {
     test_start("file open/close operations") fr fr Test opening existing file
@@ -58,9 +60,11 @@ slay test_file_open_with_flags() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr FILE READ/WRITE TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+FILE READ/WRITE TESTS
+==============================================================================
+on god
 
 slay test_file_read_write() {
     test_start("file read/write operations") fr fr Test writing to file
@@ -135,9 +139,11 @@ slay test_file_truncate() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr HIGH-LEVEL FILE OPERATIONS TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+HIGH-LEVEL FILE OPERATIONS TESTS
+==============================================================================
+on god
 
 slay test_read_write_file() {
     test_start("high-level read/write file operations") fr fr Test writing file
@@ -179,9 +185,11 @@ slay test_append_file() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr DIRECTORY OPERATIONS TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+DIRECTORY OPERATIONS TESTS
+==============================================================================
+on god
 
 slay test_directory_operations() {
     test_start("directory operations") fr fr Test creating directory
@@ -227,9 +235,11 @@ slay test_directory_listing() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr FILE INFO AND METADATA TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+FILE INFO AND METADATA TESTS
+==============================================================================
+on god
 
 slay test_file_stat() {
     test_start("file stat operations") fr fr Test stat operation
@@ -267,9 +277,11 @@ slay test_file_permissions() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr PATH MANIPULATION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PATH MANIPULATION TESTS
+==============================================================================
+on god
 
 slay test_path_operations() {
     test_start("path manipulation operations") fr fr Test path joining
@@ -320,9 +332,11 @@ slay test_path_validation() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr SYMLINKS AND HARD LINKS TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+SYMLINKS AND HARD LINKS TESTS
+==============================================================================
+on god
 
 slay test_symlink_operations() {
     test_start("symlink operations") fr fr Test creating symlink
@@ -340,9 +354,11 @@ slay test_symlink_operations() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr TEMPORARY FILES TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+TEMPORARY FILES TESTS
+==============================================================================
+on god
 
 slay test_temp_operations() {
     test_start("temporary file operations") fr fr Test creating temporary file
@@ -360,9 +376,11 @@ slay test_temp_operations() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr BUFFERED I/O TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+BUFFERED I/O TESTS
+==============================================================================
+on god
 
 slay test_buffered_reader() {
     test_start("buffered reader operations")
@@ -443,9 +461,11 @@ slay test_custom_buffer_sizes() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr ADVANCED OPERATIONS TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+ADVANCED OPERATIONS TESTS
+==============================================================================
+on god
 
 slay test_file_locking() {
     test_start("file locking operations")
@@ -489,9 +509,11 @@ slay test_copy_with_metadata() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr FILE SYSTEM MONITORING TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+FILE SYSTEM MONITORING TESTS
+==============================================================================
+on god
 
 slay test_file_watching() {
     test_start("file watching operations") fr fr Test file watching setup
@@ -528,9 +550,11 @@ slay test_file_finding() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTION TESTS
+==============================================================================
+on god
 
 slay test_path_validation_utils() {
     test_start("path validation utilities") fr fr Test path validation
@@ -570,9 +594,11 @@ slay test_module_info() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr ERROR HANDLING TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+ERROR HANDLING TESTS
+==============================================================================
+on god
 
 slay test_error_conditions() {
     test_start("error condition handling") fr fr Test opening non-existent file
@@ -609,9 +635,11 @@ slay test_permission_errors() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr STRESS AND EDGE CASE TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+STRESS AND EDGE CASE TESTS
+==============================================================================
+on god
 
 slay test_large_file_operations() {
     test_start("large file operations")
@@ -656,9 +684,11 @@ slay test_concurrent_operations() {
     print_test_summary()
 }
 
-fr fr ==============================================================================
-fr fr MAIN TEST RUNNER
-fr fr ==============================================================================
+no cap
+==============================================================================
+MAIN TEST RUNNER
+==============================================================================
+on god
 
 slay main_character() {
     vibez.spill("=== CURSED Filesystem Complete Module Tests ===")

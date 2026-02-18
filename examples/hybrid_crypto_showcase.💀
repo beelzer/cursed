@@ -1,9 +1,11 @@
 #!/usr/bin/env cursed
-fr fr/ fr fr Comprehensive Hybrid Cryptography Showcase for CURSED Language
-fr fr/ 
-fr fr/ This example demonstrates the complete hybrid cryptography capabilities
-fr fr/ that combine classical and post-quantum cryptographic algorithms for
-fr fr/ maximum security against both current and future quantum threats.
+no cap
+/ fr fr Comprehensive Hybrid Cryptography Showcase for CURSED Language
+/ 
+/ This example demonstrates the complete hybrid cryptography capabilities
+/ that combine classical and post-quantum cryptographic algorithms for
+/ maximum security against both current and future quantum threats.
+on god
 
 yeet "stdlib::crypto_pqc::hybrid_crypto"
 yeet "stdlib::crypto_pqc::pqc_core"

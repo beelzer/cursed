@@ -1,6 +1,8 @@
-fr fr ===== COMPREHENSIVE SECURITY VALIDATION TEST SUITE =====
-fr fr Validates all critical cryptographic security fixes
-fr fr Tests FIPS 140-2 compliance and resistance to known attacks
+no cap
+===== COMPREHENSIVE SECURITY VALIDATION TEST SUITE =====
+Validates all critical cryptographic security fixes
+Tests FIPS 140-2 compliance and resistance to known attacks
+on god
 
 yeet "vibez"
 yeet "cryptz"
@@ -9,9 +11,11 @@ yeet "stringz"
 yeet "blockchainz"
 yeet "emailz"
 
-fr fr ================================================================
-fr fr TEST SUITE 1: SHA-256 FIPS 180-4 COMPLIANCE VALIDATION
-fr fr ================================================================
+no cap
+================================================================
+TEST SUITE 1: SHA-256 FIPS 180-4 COMPLIANCE VALIDATION
+================================================================
+on god
 
 slay test_sha256_nist_vectors() {
     vibez.spill("Testing SHA-256 NIST compliance...")
@@ -54,9 +58,11 @@ slay test_sha256_security_properties() {
     vibez.spill("✅ SHA-256 security properties: PASSED")
 }
 
-fr fr ================================================================
-fr fr TEST SUITE 2: ECDSA NIST P-256 CRYPTOGRAPHIC VALIDATION
-fr fr ================================================================
+no cap
+================================================================
+TEST SUITE 2: ECDSA NIST P-256 CRYPTOGRAPHIC VALIDATION
+================================================================
+on god
 
 slay test_ecdsa_nist_p256_compliance() {
     vibez.spill("Testing ECDSA NIST P-256 compliance...")
@@ -105,9 +111,11 @@ slay test_ecdsa_signature_forgery_resistance() {
     vibez.spill("✅ ECDSA forgery resistance: PASSED")
 }
 
-fr fr ================================================================
-fr fr TEST SUITE 3: HMAC-SHA256 RFC 2104 COMPLIANCE VALIDATION
-fr fr ================================================================
+no cap
+================================================================
+TEST SUITE 3: HMAC-SHA256 RFC 2104 COMPLIANCE VALIDATION
+================================================================
+on god
 
 slay test_hmac_sha256_rfc_vectors() {
     vibez.spill("Testing HMAC-SHA256 RFC compliance...")
@@ -159,9 +167,11 @@ slay test_hmac_timing_attack_resistance() {
     vibez.spill("✅ HMAC timing attack resistance: PASSED")
 }
 
-fr fr ================================================================
-fr fr TEST SUITE 4: BLOCKCHAIN TRANSACTION VALIDATION SECURITY
-fr fr ================================================================
+no cap
+================================================================
+TEST SUITE 4: BLOCKCHAIN TRANSACTION VALIDATION SECURITY
+================================================================
+on god
 
 slay test_blockchain_transaction_security() {
     vibez.spill("Testing blockchain transaction validation...")
@@ -234,9 +244,11 @@ slay test_blockchain_double_spend_prevention() {
     vibez.spill("✅ Double-spend prevention: PASSED")
 }
 
-fr fr ================================================================
-fr fr TEST SUITE 5: EMAIL SECURITY (HMAC-SHA256 vs XOR)
-fr fr ================================================================
+no cap
+================================================================
+TEST SUITE 5: EMAIL SECURITY (HMAC-SHA256 vs XOR)
+================================================================
+on god
 
 slay test_email_hmac_security() {
     vibez.spill("Testing email HMAC-SHA256 security...")
@@ -261,9 +273,11 @@ slay test_email_hmac_security() {
     vibez.spill("✅ Email HMAC-SHA256 security: PASSED")
 }
 
-fr fr ================================================================
-fr fr TEST SUITE 6: SIDE-CHANNEL ATTACK RESISTANCE
-fr fr ================================================================
+no cap
+================================================================
+TEST SUITE 6: SIDE-CHANNEL ATTACK RESISTANCE
+================================================================
+on god
 
 slay test_constant_time_operations() {
     vibez.spill("Testing constant-time cryptographic operations...")
@@ -291,9 +305,11 @@ slay test_constant_time_operations() {
     vibez.spill("✅ Constant-time operations: PASSED")
 }
 
-fr fr ================================================================
-fr fr TEST SUITE 7: CRYPTOGRAPHIC ENTROPY AND RANDOMNESS
-fr fr ================================================================
+no cap
+================================================================
+TEST SUITE 7: CRYPTOGRAPHIC ENTROPY AND RANDOMNESS
+================================================================
+on god
 
 slay test_secure_random_generation() {
     vibez.spill("Testing secure random number generation...")
@@ -316,9 +332,11 @@ slay test_secure_random_generation() {
     vibez.spill("✅ Secure random generation: PASSED")
 }
 
-fr fr ================================================================
-fr fr MAIN SECURITY VALIDATION TEST RUNNER
-fr fr ================================================================
+no cap
+================================================================
+MAIN SECURITY VALIDATION TEST RUNNER
+================================================================
+on god
 
 slay main_character() {
     vibez.spill("🔒 CURSED CRYPTOGRAPHIC SECURITY VALIDATION SUITE")

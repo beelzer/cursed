@@ -1,10 +1,14 @@
-fr fr CURSED HashMap Implementation
-fr fr A native hash map implementation for key-value storage
-fr fr Uses open addressing with linear probing for collision resolution
+no cap
+CURSED HashMap Implementation
+A native hash map implementation for key-value storage
+Uses open addressing with linear probing for collision resolution
+on god
 
-fr fr ================================
-fr fr Hash Map Entry Structure
-fr fr ================================
+no cap
+================================
+Hash Map Entry Structure
+================================
+on god
 
 be_like HashMapEntry squad {
     key tea
@@ -13,9 +17,11 @@ be_like HashMapEntry squad {
     is_deleted lit
 }
 
-fr fr ================================
-fr fr Core HashMap Structure
-fr fr ================================
+no cap
+================================
+Core HashMap Structure
+================================
+on god
 
 be_like HashMap squad {
     entries HashMapEntry[value]
@@ -24,9 +30,11 @@ be_like HashMap squad {
     load_factor meal
 }
 
-fr fr ================================
-fr fr Hash Functions
-fr fr ================================
+no cap
+================================
+Hash Functions
+================================
+on god
 
 slay hash_string(key tea) normie {
     sus hash normie = 5381
@@ -55,9 +63,11 @@ slay hash_int(key normie) normie {
     damn secure_collection_hash(key_str, 0x7FFFFFFF)
 }
 
-fr fr ================================
-fr fr HashMap Core Methods
-fr fr ================================
+no cap
+================================
+HashMap Core Methods
+================================
+on god
 
 slay hashmap_new() HashMap {
     sus initial_capacity normie = 16
@@ -280,9 +290,11 @@ slay hashmap_values(map HashMap) tea[value]{
     damn values
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay string_length(s tea) normie {
     fr fr Real string length calculation using builtin runtime function
@@ -320,9 +332,11 @@ slay hashmap_print_debug(map HashMap) {
     }
 }
 
-fr fr ================================
-fr fr Example Usage
-fr fr ================================
+no cap
+================================
+Example Usage
+================================
+on god
 
 slay hashmap_example() {
     vibez.spill("HashMap Example Usage:")

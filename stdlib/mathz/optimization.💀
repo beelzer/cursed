@@ -1,8 +1,10 @@
-fr fr =============================================================================
-fr fr CURSED MATHZ OPTIMIZATION MODULE
-fr fr Version: 1.0.0 - Numerical Optimization and Root Finding
-fr fr Advanced algorithms for optimization, root finding, and numerical analysis
-fr fr =============================================================================
+no cap
+=============================================================================
+CURSED MATHZ OPTIMIZATION MODULE
+Version: 1.0.0 - Numerical Optimization and Root Finding
+Advanced algorithms for optimization, root finding, and numerical analysis
+=============================================================================
+on god
 
 yeet "../mathz/ieee754_compliant.💀"
 yeet "../mathz/advanced_functions.💀"
@@ -406,10 +408,12 @@ slay polynomial_fit_quadratic(x_values tea[value], y_values tea[value], n drip, 
         damn cringe  fr fr Need at least 3 points for quadratic fit
     }
     
-    fr fr Set up normal equations for y = ax² + bx + c
-    fr fr Σy = aΣx² + bΣx + cn
-    fr fr Σxy = aΣx³ + bΣx² + cΣx
-    fr fr Σx²y = aΣx⁴ + bΣx³ + cΣx²
+    no cap
+    Set up normal equations for y = ax² + bx + c
+    Σy = aΣx² + bΣx + cn
+    Σxy = aΣx³ + bΣx² + cΣx
+    Σx²y = aΣx⁴ + bΣx³ + cΣx²
+    on god
     
     sus sum_1 tea = runtime_int_to_float(n)
     sus sum_x tea = "0.0"
@@ -438,9 +442,11 @@ slay polynomial_fit_quadratic(x_values tea[value], y_values tea[value], n drip, 
         i = i + 1
     }
     
-    fr fr Solve 3x3 system using Cramer's rule
-    fr fr Matrix: [sum_x4, sum_x3, sum_x2; sum_x3, sum_x2, sum_x; sum_x2, sum_x, sum_1]
-    fr fr RHS: [sum_x2y, sum_xy, sum_y]
+    no cap
+    Solve 3x3 system using Cramer's rule
+    Matrix: [sum_x4, sum_x3, sum_x2; sum_x3, sum_x2, sum_x; sum_x2, sum_x, sum_1]
+    RHS: [sum_x2y, sum_xy, sum_y]
+    on god
     
     sus matrix tea[value] = [sum_x4, sum_x3, sum_x2, sum_x3, sum_x2, sum_x, sum_x2, sum_x, sum_1]
     sus det tea = determinant_3x3(matrix)
@@ -542,8 +548,10 @@ slay test_optimization_functions() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr END OF OPTIMIZATION MODULE - Complete Numerical Analysis Toolkit
-fr fr Root finding, optimization, differentiation, curve fitting
-fr fr Total: 30+ advanced numerical methods
-fr fr =============================================================================
+no cap
+=============================================================================
+END OF OPTIMIZATION MODULE - Complete Numerical Analysis Toolkit
+Root finding, optimization, differentiation, curve fitting
+Total: 30+ advanced numerical methods
+=============================================================================
+on god

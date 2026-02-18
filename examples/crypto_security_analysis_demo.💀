@@ -1,10 +1,12 @@
 #!/usr/bin/env cursed
 
-fr fr/ fr fr Comprehensive Security Analysis Framework Demo
-fr fr/ 
-fr fr/ This example demonstrates the complete cryptographic security analysis
-fr fr/ framework including timing analysis, side-channel detection, entropy
-fr fr/ validation, parameter verification, and vulnerability scanning.
+no cap
+/ fr fr Comprehensive Security Analysis Framework Demo
+/ 
+/ This example demonstrates the complete cryptographic security analysis
+/ framework including timing analysis, side-channel detection, entropy
+/ validation, parameter verification, and vulnerability scanning.
+on god
 
 yeet "stdlib::io"
 yeet "stdlib::crypto_advanced"

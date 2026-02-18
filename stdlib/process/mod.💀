@@ -5,12 +5,14 @@ yeet "arrayz"
 yeet "mathz"
 yeet "concurrenz"
 
-fr fr ========================================
-fr fr CURSED Process Management Module (procesz)
-fr fr 100% Pure CURSED Implementation
-fr fr Real Process Control & Execution
-fr fr Cross-Platform Process Management
-fr fr ========================================
+no cap
+========================================
+CURSED Process Management Module (procesz)
+100% Pure CURSED Implementation
+Real Process Control & Execution
+Cross-Platform Process Management
+========================================
+on god
 
 fr fr Enhanced process representation with real execution support
 be_like Process squad {
@@ -309,9 +311,11 @@ slay monitor_process(process Process, options ProcessOptions) {
     }
 }
 
-fr fr ==============================================================================
-fr fr PROCESS COMMUNICATION AND I/O
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS COMMUNICATION AND I/O
+==============================================================================
+on god
 
 fr fr Create pipe for inter-process communication  
 slay create_pipe() PipeHandle {
@@ -394,9 +398,11 @@ slay write_process_input(process Process, input tea) normie {
     damn write_to_pipe(process.stdin_pipe, input)
 }
 
-fr fr ==============================================================================
-fr fr ENHANCED COMMAND EXECUTION
-fr fr ==============================================================================
+no cap
+==============================================================================
+ENHANCED COMMAND EXECUTION
+==============================================================================
+on god
 
 fr fr Execute command and wait for completion
 slay exec(command tea, args tea[value]) CommandResult {
@@ -463,9 +469,11 @@ slay kill_process(process Process) lit {
     damn cap  fr fr process not running
 }
 
-fr fr ==============================================================================
-fr fr SIGNAL HANDLING AND PROCESS CONTROL
-fr fr ==============================================================================
+no cap
+==============================================================================
+SIGNAL HANDLING AND PROCESS CONTROL
+==============================================================================
+on god
 
 fr fr Get signal information
 slay get_signal_info(signal normie) SignalInfo {
@@ -857,9 +865,11 @@ slay (pipe Pipe) close() lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr ENHANCED PROCESS MONITORING
-fr fr ==============================================================================
+no cap
+==============================================================================
+ENHANCED PROCESS MONITORING
+==============================================================================
+on god
 
 fr fr Update process statistics in real-time
 slay update_process_stats(process Process) {
@@ -1295,9 +1305,11 @@ slay get_current_timestamp() normie {
     damn 1735934400 + mathz.random() * 10000  fr fr Current timestamp with variation
 }
 
-fr fr ==============================================================================
-fr fr ENHANCED HELPER FUNCTIONS  
-fr fr ==============================================================================
+no cap
+==============================================================================
+ENHANCED HELPER FUNCTIONS  
+==============================================================================
+on god
 
 fr fr Escape shell argument to prevent injection
 slay escape_shell_arg(arg tea) tea {

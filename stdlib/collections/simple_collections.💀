@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Collections Library v3.0 SIMPLIFIED
-fr fr Production-grade data structures with runtime compatibility
-fr fr Simplified implementations that work with current CURSED runtime
-fr fr ========================================
+no cap
+========================================
+CURSED Collections Library v3.0 SIMPLIFIED
+Production-grade data structures with runtime compatibility
+Simplified implementations that work with current CURSED runtime
+========================================
+on god
 
-fr fr ================================
-fr fr Dynamic Array (Vector) Implementation
-fr fr ================================
+no cap
+================================
+Dynamic Array (Vector) Implementation
+================================
+on god
 
 be_like DynamicArray squad {
     data extra[value]
@@ -107,9 +111,11 @@ slay Vec_clear(vec DynamicArray) DynamicArray {
     damn vec
 }
 
-fr fr ================================
-fr fr Simple HashMap Implementation
-fr fr ================================
+no cap
+================================
+Simple HashMap Implementation
+================================
+on god
 
 be_like SimpleHashEntry squad {
     key tea
@@ -268,9 +274,11 @@ slay HashMap_values(map SimpleHashMap) extra[value]{
     damn []  fr fr Default for larger sizes
 }
 
-fr fr ================================
-fr fr Enhanced Array Operations
-fr fr ================================
+no cap
+================================
+Enhanced Array Operations
+================================
+on god
 
 slay Array_safe_get(arr extra[value], index normie, default_value extra) extra {
     lowkey index >= 0 && index < len(arr) {
@@ -337,9 +345,11 @@ slay Array_slice(arr extra[value], start normie, end normie) extra[value]{
     damn arr  fr fr Default for larger slices
 }
 
-fr fr ================================
-fr fr Testing Functions
-fr fr ================================
+no cap
+================================
+Testing Functions
+================================
+on god
 
 slay test_simple_collections() {
     vibez.spill("Testing Simple Collections...")

@@ -1,11 +1,15 @@
-fr fr ================================
-fr fr CURSED Testing Framework - Complete Self-Contained Version
-fr fr All testing functions included in one file
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework - Complete Self-Contained Version
+All testing functions included in one file
+================================
+on god
 
-fr fr ================================
-fr fr Test Framework Core State
-fr fr ================================
+no cap
+================================
+Test Framework Core State
+================================
+on god
 
 fr fr Global test state
 sus test_count normie = 0
@@ -13,9 +17,11 @@ sus test_passed normie = 0
 sus test_failed normie = 0
 sus current_test_name tea = ""
 
-fr fr ================================
-fr fr Core Test Functions
-fr fr ================================
+no cap
+================================
+Core Test Functions
+================================
+on god
 
 slay test_start(name tea) {
     test_count = test_count + 1
@@ -33,9 +39,11 @@ slay test_fail(message tea) {
     vibez.spill("  ✗ FAIL: " + message)
 }
 
-fr fr ================================
-fr fr Basic Assertion Functions
-fr fr ================================
+no cap
+================================
+Basic Assertion Functions
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     lowkey actual == expected {
@@ -77,9 +85,11 @@ slay assert_false(value lit) {
     }
 }
 
-fr fr ================================
-fr fr Advanced Assertion Functions
-fr fr ================================
+no cap
+================================
+Advanced Assertion Functions
+================================
+on god
 
 slay assert_ne_int(actual normie, expected normie) {
     lowkey actual != expected {
@@ -121,9 +131,11 @@ slay assert_in_range(actual normie, min normie, max normie) {
     }
 }
 
-fr fr ================================
-fr fr Test Summary Functions
-fr fr ================================
+no cap
+================================
+Test Summary Functions
+================================
+on god
 
 slay print_test_summary() {
     vibez.spill("")
@@ -163,9 +175,11 @@ slay reset_test_state() {
     current_test_name = ""
 }
 
-fr fr ================================
-fr fr Test Suite: Basic Assertions
-fr fr ================================
+no cap
+================================
+Test Suite: Basic Assertions
+================================
+on god
 
 slay test_integer_assertions() {
     test_start("test_integer_assertions")
@@ -280,9 +294,11 @@ slay test_boolean_assertions() {
     assert_true(!cap)
 }
 
-fr fr ================================
-fr fr Test Suite: Advanced Features
-fr fr ================================
+no cap
+================================
+Test Suite: Advanced Features
+================================
+on god
 
 slay test_variable_declarations() {
     test_start("test_variable_declarations")
@@ -372,9 +388,11 @@ slay test_comparison_operations() {
     assert_false((2 + 3) != 5)
 }
 
-fr fr ================================
-fr fr Test Suite: Edge Cases
-fr fr ================================
+no cap
+================================
+Test Suite: Edge Cases
+================================
+on god
 
 slay test_edge_cases() {
     test_start("test_edge_cases")
@@ -408,9 +426,11 @@ slay test_edge_cases() {
     assert_false(based != based)
 }
 
-fr fr ================================
-fr fr Test Suite: Complex Expressions
-fr fr ================================
+no cap
+================================
+Test Suite: Complex Expressions
+================================
+on god
 
 slay test_complex_expressions() {
     test_start("test_complex_expressions")
@@ -440,9 +460,11 @@ slay test_complex_expressions() {
     assert_false(((5 < 3) || (2 > 4)) && based)
 }
 
-fr fr ================================
-fr fr Test Suite: Framework Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Framework Testing
+================================
+on god
 
 slay test_framework_functionality() {
     test_start("test_framework_functionality")
@@ -472,9 +494,11 @@ slay test_framework_functionality() {
     assert_true(test_count > initial_count)
 }
 
-fr fr ================================
-fr fr Test Suite: Comprehensive Validation
-fr fr ================================
+no cap
+================================
+Test Suite: Comprehensive Validation
+================================
+on god
 
 slay test_comprehensive_validation() {
     test_start("test_comprehensive_validation")
@@ -534,9 +558,11 @@ slay test_comprehensive_validation() {
     assert_false(flag == opposite)
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("🧪 Starting CURSED Testing Framework - Complete Self-Contained Tests...")

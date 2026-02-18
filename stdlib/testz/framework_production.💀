@@ -1,12 +1,16 @@
-fr fr ================================
-fr fr CURSED Testing Framework v5.0 - Production Ready
-fr fr Complete testing framework with comprehensive assertion library
-fr fr Supports test discovery, execution, and multiple output formats
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework v5.0 - Production Ready
+Complete testing framework with comprehensive assertion library
+Supports test discovery, execution, and multiple output formats
+================================
+on god
 
-fr fr ================================
-fr fr Global Test State
-fr fr ================================
+no cap
+================================
+Global Test State
+================================
+on god
 
 sus test_count normie = 0
 sus test_passed normie = 0
@@ -24,9 +28,11 @@ sus config_tap_output lit = cap
 sus config_html_output lit = cap
 sus config_timeout normie = 5000
 
-fr fr ================================
-fr fr Configuration Functions
-fr fr ================================
+no cap
+================================
+Configuration Functions
+================================
+on god
 
 slay enable_verbose_output() {
     config_verbose = based
@@ -52,9 +58,11 @@ slay set_timeout(seconds normie) {
     config_timeout = seconds
 }
 
-fr fr ================================
-fr fr Test Lifecycle Functions
-fr fr ================================
+no cap
+================================
+Test Lifecycle Functions
+================================
+on god
 
 slay suite_start(name tea) {
     current_suite_name = name
@@ -109,9 +117,11 @@ slay test_error(message tea) {
     vibez.spill("  ⚠ ERROR: " + message)
 }
 
-fr fr ================================
-fr fr Basic Assertion Functions
-fr fr ================================
+no cap
+================================
+Basic Assertion Functions
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     lowkey actual == expected {
@@ -153,9 +163,11 @@ slay assert_false(value lit) {
     }
 }
 
-fr fr ================================
-fr fr Advanced Assertion Functions
-fr fr ================================
+no cap
+================================
+Advanced Assertion Functions
+================================
+on god
 
 slay assert_ne_int(actual normie, expected normie) {
     lowkey actual != expected {
@@ -213,9 +225,11 @@ slay assert_in_range(actual normie, min normie, max normie) {
     }
 }
 
-fr fr ================================
-fr fr Float Assertion Functions
-fr fr ================================
+no cap
+================================
+Float Assertion Functions
+================================
+on god
 
 slay assert_eq_float(actual meal, expected meal) {
     sus tolerance meal = 0.000001
@@ -244,9 +258,11 @@ slay assert_eq_float_with_tolerance(actual meal, expected meal, tolerance meal) 
     }
 }
 
-fr fr ================================
-fr fr String Assertion Functions
-fr fr ================================
+no cap
+================================
+String Assertion Functions
+================================
+on god
 
 fr fr ===== BOYER-MOORE STRING SEARCH ALGORITHM =====
 
@@ -507,9 +523,11 @@ slay assert_string_ends_with(text tea, suffix tea) {
     }
 }
 
-fr fr ================================
-fr fr Nil Assertion Functions
-fr fr ================================
+no cap
+================================
+Nil Assertion Functions
+================================
+on god
 
 slay assert_nil(value tea) {
     lowkey value == "cringe" {
@@ -527,9 +545,11 @@ slay assert_not_nil(value tea) {
     }
 }
 
-fr fr ================================
-fr fr Performance Testing Functions
-fr fr ================================
+no cap
+================================
+Performance Testing Functions
+================================
+on god
 
 slay benchmark_start() normie {
     damn 0
@@ -544,9 +564,11 @@ slay benchmark_end(start_time normie) {
     }
 }
 
-fr fr ================================
-fr fr Report Generation Functions
-fr fr ================================
+no cap
+================================
+Report Generation Functions
+================================
+on god
 
 slay generate_json_report() tea {
     sus json_output tea = "{\n"
@@ -604,9 +626,11 @@ slay generate_html_report() tea {
     damn html_output
 }
 
-fr fr ================================
-fr fr Test Summary and Reporting
-fr fr ================================
+no cap
+================================
+Test Summary and Reporting
+================================
+on god
 
 slay print_test_summary() {
     vibez.spill("")
@@ -644,9 +668,11 @@ slay print_test_summary() {
     vibez.spill("==================================================")
 }
 
-fr fr ================================
-fr fr Test State Management
-fr fr ================================
+no cap
+================================
+Test State Management
+================================
+on god
 
 slay reset_test_state() {
     test_count = 0
@@ -706,9 +732,11 @@ slay run_all_tests() normie {
     }
 }
 
-fr fr ================================
-fr fr Test Discovery Functions
-fr fr ================================
+no cap
+================================
+Test Discovery Functions
+================================
+on god
 
 slay discover_tests(pattern tea) normie {
     vibez.spill("🔍 Discovering tests with pattern: " + pattern)
@@ -732,9 +760,11 @@ slay should_run_test(test_name tea, pattern tea) lit {
     damn based  fr fr Default: run all tests
 }
 
-fr fr ================================
-fr fr Demo Test Suites
-fr fr ================================
+no cap
+================================
+Demo Test Suites
+================================
+on god
 
 slay test_basic_assertions() {
     test_start("test_basic_assertions")
@@ -824,9 +854,11 @@ slay test_comprehensive_validation() {
     test_end()
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("🧪 Starting CURSED Testing Framework v5.0 - Production Ready")

@@ -1,11 +1,13 @@
-fr fr! Enhanced Post-Quantum Cryptography Showcase
-fr fr! 
-fr fr! This example demonstrates the complete PQC ecosystem including:
-fr fr! - Real algorithm implementations (Kyber, NTRU, FrodoKEM, Dilithium, XMSS)
-fr fr! - Performance benchmarking and analysis
-fr fr! - Security level comparisons
-fr fr! - Hybrid classical+PQC protocols
-fr fr! - Integration with existing crypto infrastructure
+no cap
+! Enhanced Post-Quantum Cryptography Showcase
+! 
+! This example demonstrates the complete PQC ecosystem including:
+! - Real algorithm implementations (Kyber, NTRU, FrodoKEM, Dilithium, XMSS)
+! - Performance benchmarking and analysis
+! - Security level comparisons
+! - Hybrid classical+PQC protocols
+! - Integration with existing crypto infrastructure
+on god
 
 yeet "stdlib::crypto_pqc"
 

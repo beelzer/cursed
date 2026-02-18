@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "configz"
 
-fr fr ==========================================
-fr fr Basic Configuration Management Tests
-fr fr Simplified tests without array syntax
-fr fr ==========================================
+no cap
+==========================================
+Basic Configuration Management Tests
+Simplified tests without array syntax
+==========================================
+on god
 
 slay test_basic_functionality() {
     test_start("Basic Configuration Functions")

@@ -1,15 +1,19 @@
-fr fr OS Primitives Module - Real Operating System Integration
-fr fr Production-ready OS calls, timing, and threading primitives for CURSED concurrency
-fr fr Replaces all simplified/placeholder implementations with actual OS integration
+no cap
+OS Primitives Module - Real Operating System Integration
+Production-ready OS calls, timing, and threading primitives for CURSED concurrency
+Replaces all simplified/placeholder implementations with actual OS integration
+on god
 
 yeet "atomic_drip"
 yeet "memory"
 yeet "error_drip"
 yeet "runtime_os_bridge"
 
-fr fr =============================================================================
-fr fr REAL TIMING PRIMITIVES - High-Resolution OS Timing
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL TIMING PRIMITIVES - High-Resolution OS Timing
+=============================================================================
+on god
 
 fr fr High-resolution timestamp structure
 struct Timespec {
@@ -113,9 +117,11 @@ slay os_thread_yield() {
     }
 }
 
-fr fr =============================================================================
-fr fr REAL THREADING PRIMITIVES - OS Thread Management
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL THREADING PRIMITIVES - OS Thread Management
+=============================================================================
+on god
 
 fr fr Thread attributes structure
 struct ThreadAttributes {
@@ -284,9 +290,11 @@ slay set_thread_affinity(thread *OSThread, cpu_mask thicc) normie {
     }
 }
 
-fr fr =============================================================================
-fr fr REAL SYNCHRONIZATION PRIMITIVES - OS Futex/Mutex/Condition Variables
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SYNCHRONIZATION PRIMITIVES - OS Futex/Mutex/Condition Variables
+=============================================================================
+on god
 
 fr fr OS Mutex structure with real OS handle
 struct OSMutex {
@@ -451,9 +459,11 @@ slay unlock_os_mutex(mutex *OSMutex) normie {
     }
 }
 
-fr fr =============================================================================
-fr fr REAL CONDITION VARIABLES - OS Blocking Primitives
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL CONDITION VARIABLES - OS Blocking Primitives
+=============================================================================
+on god
 
 fr fr OS Condition Variable structure
 struct OSCondVar {
@@ -620,9 +630,11 @@ slay broadcast_os_condition(cond *OSCondVar) normie {
     }
 }
 
-fr fr =============================================================================
-fr fr REAL SYSTEM INFORMATION - OS Detection and Hardware Info
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SYSTEM INFORMATION - OS Detection and Hardware Info
+=============================================================================
+on god
 
 fr fr CPU Information structure
 struct CPUInfo {
@@ -728,9 +740,11 @@ slay get_current_thread_id() thicc {
     }
 }
 
-fr fr =============================================================================
-fr fr PLATFORM DETECTION AND LOW-LEVEL OPERATIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+PLATFORM DETECTION AND LOW-LEVEL OPERATIONS
+=============================================================================
+on god
 
 fr fr Platform detection functions
 slay is_linux() lit {
@@ -771,9 +785,11 @@ slay read_timestamp_counter() thicc {
     damn 0  fr fr Placeholder - would return actual TSC value
 }
 
-fr fr =============================================================================
-fr fr ERROR CODES AND CONSTANTS
-fr fr =============================================================================
+no cap
+=============================================================================
+ERROR CODES AND CONSTANTS
+=============================================================================
+on god
 
 fr fr Thread states
 sus THREAD_CREATED normie = 0
@@ -804,9 +820,11 @@ sus SYS_GETTID normie = 186
 fr fr sysconf constants
 sus _SC_NPROCESSORS_ONLN normie = 84
 
-fr fr =============================================================================
-fr fr SYSCALL WRAPPERS - Direct OS Integration
-fr fr =============================================================================
+no cap
+=============================================================================
+SYSCALL WRAPPERS - Direct OS Integration
+=============================================================================
+on god
 
 fr fr Direct system call wrappers - Real OS integration
 slay syscall_clock_gettime(clock_id normie, ts *Timespec) normie {
@@ -845,9 +863,11 @@ slay get_errno() normie {
     damn errno_value
 }
 
-fr fr =============================================================================
-fr fr WINDOWS API WRAPPERS - Win32 Integration
-fr fr =============================================================================
+no cap
+=============================================================================
+WINDOWS API WRAPPERS - Win32 Integration
+=============================================================================
+on god
 
 fr fr Windows API function wrappers - Real Win32 integration
 slay win32_create_thread(security thicc, stack_size normie, start_addr thicc, 
@@ -908,9 +928,11 @@ slay win32_wake_all_condition_variable(cv thicc) {
     fr fr Placeholder - would call WakeAllConditionVariable
 }
 
-fr fr =============================================================================
-fr fr PTHREAD WRAPPERS - POSIX Thread Integration
-fr fr =============================================================================
+no cap
+=============================================================================
+PTHREAD WRAPPERS - POSIX Thread Integration
+=============================================================================
+on god
 
 fr fr POSIX thread function wrappers (would use actual pthread APIs)
 slay pthread_create(thread *thicc, attr *pthread_attr_t, start_routine thicc, arg thicc) normie {
@@ -967,9 +989,11 @@ slay pthread_cond_broadcast(cond *pthread_cond_t) normie {
     damn -1  fr fr Placeholder - would call pthread_cond_broadcast
 }
 
-fr fr =============================================================================
-fr fr UTILITY FUNCTIONS FOR PLATFORM-SPECIFIC CODE
-fr fr =============================================================================
+no cap
+=============================================================================
+UTILITY FUNCTIONS FOR PLATFORM-SPECIFIC CODE
+=============================================================================
+on god
 
 fr fr Linux-specific CPU information
 slay get_linux_physical_cores() normie {

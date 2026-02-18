@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Regression test validates correct CURSED keyword usage and syntax
-fr fr Tests canonical keywords vs deprecated forms to ensure parser correctness
-fr fr Validates 'highkey' instead of 'else' and proper 'periodt' usage
+no cap
+Regression test validates correct CURSED keyword usage and syntax
+Tests canonical keywords vs deprecated forms to ensure parser correctness
+Validates 'highkey' instead of 'else' and proper 'periodt' usage
+on god
 
 slay main_character() {
     vibez.spill("=== Keyword Regression Test ===");

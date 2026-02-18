@@ -1,8 +1,10 @@
-fr fr Comprehensive Post-Quantum Cryptography Hybrid System Demo
-fr fr 
-fr fr This example demonstrates the hybrid cryptographic system that combines
-fr fr classical and post-quantum algorithms for maximum security during the
-fr fr post-quantum transition period.
+no cap
+Comprehensive Post-Quantum Cryptography Hybrid System Demo
+
+This example demonstrates the hybrid cryptographic system that combines
+classical and post-quantum algorithms for maximum security during the
+post-quantum transition period.
+on god
 
 yeet "stdlib::crypto_pqc::hybrid"
 yeet "stdlib::io"

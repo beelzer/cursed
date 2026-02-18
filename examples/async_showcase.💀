@@ -1,6 +1,8 @@
-fr fr/ Comprehensive demonstration of async/await functionality in CURSED
-fr fr/ This example showcases the full async/await runtime system with
-fr fr/ futures, promises, timers, channels, and integration with goroutines.
+no cap
+/ Comprehensive demonstration of async/await functionality in CURSED
+/ This example showcases the full async/await runtime system with
+/ futures, promises, timers, channels, and integration with goroutines.
+on god
 
 yeet "stdlib::async"
 yeet "stdlib::io"

@@ -1,14 +1,18 @@
 yeet "crypto"
 
-fr fr ========================================
-fr fr CURSED Pure Elliptic Curve Library v1.0
-fr fr Production-ready FFI-free elliptic curve implementation
-fr fr Secure, maintainable, and performant
-fr fr ========================================
+no cap
+========================================
+CURSED Pure Elliptic Curve Library v1.0
+Production-ready FFI-free elliptic curve implementation
+Secure, maintainable, and performant
+========================================
+on god
 
-fr fr ================================
-fr fr Core Constants and Types
-fr fr ================================
+no cap
+================================
+Core Constants and Types
+================================
+on god
 
 fr fr Simplified curve parameters for demonstration
 fr fr P-256 curve parameters (simplified for demo)
@@ -39,9 +43,11 @@ sus P521_B normie = 5
 sus P521_GX normie = 13
 sus P521_GY normie = 17
 
-fr fr ================================
-fr fr Current Curve State
-fr fr ================================
+no cap
+================================
+Current Curve State
+================================
+on god
 
 sus current_curve_p normie = 0
 sus current_curve_n normie = 0
@@ -55,9 +61,11 @@ fr fr Result storage for point operations
 sus result_x normie = 0
 sus result_y normie = 0
 
-fr fr ================================
-fr fr Curve Configuration Functions
-fr fr ================================
+no cap
+================================
+Curve Configuration Functions
+================================
+on god
 
 slay elliptic_curve_set_params(p normie, n normie, b normie, gx normie, gy normie, bitsize normie, name tea) {
     current_curve_p = p
@@ -105,9 +113,11 @@ slay elliptic_curve_get_result_y() normie {
     damn result_y
 }
 
-fr fr ================================
-fr fr Curve Operations
-fr fr ================================
+no cap
+================================
+Curve Operations
+================================
+on god
 
 fr fr Check if point is on curve: y² = x³ + ax + b (for a = -3)
 slay elliptic_curve_is_on_curve(x normie, y normie) lit {
@@ -286,9 +296,11 @@ slay elliptic_curve_scalar_base_mult(k normie) {
     elliptic_curve_scalar_mult(current_curve_gx, current_curve_gy, k)
 }
 
-fr fr ================================
-fr fr Modular Arithmetic Helpers
-fr fr ================================
+no cap
+================================
+Modular Arithmetic Helpers
+================================
+on god
 
 fr fr Simplified modular inverse
 slay modular_inverse(a normie, m normie) normie {
@@ -313,9 +325,11 @@ slay modular_inverse(a normie, m normie) normie {
     damn 1  // Default
 }
 
-fr fr ================================
-fr fr Standard Curves
-fr fr ================================
+no cap
+================================
+Standard Curves
+================================
+on god
 
 slay elliptic_curve_p224() {
     elliptic_curve_set_params(P224_P, P224_N, P224_B, P224_GX, P224_GY, 224, "P-224")
@@ -333,9 +347,11 @@ slay elliptic_curve_p521() {
     elliptic_curve_set_params(P521_P, P521_N, P521_B, P521_GX, P521_GY, 521, "P-521")
 }
 
-fr fr ================================
-fr fr Key Generation
-fr fr ================================
+no cap
+================================
+Key Generation
+================================
+on god
 
 slay elliptic_curve_generate_key() {
     fr fr Generate private key (simplified random)
@@ -348,9 +364,11 @@ slay elliptic_curve_generate_key() {
     fr fr Public key coordinates are in result_x and result_y
 }
 
-fr fr ================================
-fr fr Point Marshaling/Unmarshaling
-fr fr ================================
+no cap
+================================
+Point Marshaling/Unmarshaling
+================================
+on god
 
 slay elliptic_curve_marshal(x normie, y normie) tea {
     fr fr Uncompressed point format: 0x04 || x || y (simplified)
@@ -374,9 +392,11 @@ slay elliptic_curve_unmarshal(data tea) {
     result_y = 5678  // Simplified
 }
 
-fr fr ================================
-fr fr Enhanced Curve Support
-fr fr ================================
+no cap
+================================
+Enhanced Curve Support
+================================
+on god
 
 slay elliptic_curve_edwards25519() {
     fr fr Ed25519 curve parameters (simplified)
@@ -404,9 +424,11 @@ slay elliptic_curve_new_curve(p normie, n normie, b normie, gx normie, gy normie
     elliptic_curve_set_params(p, n, b, gx, gy, bitsize, name)
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay integer_to_hex(value normie) tea {
     fr fr Convert integer to hex string (simplified)
@@ -515,9 +537,11 @@ slay tea(value normie) tea {
     damn "unknown"  // Default
 }
 
-fr fr ================================
-fr fr Module Initialization
-fr fr ================================
+no cap
+================================
+Module Initialization
+================================
+on god
 
 fr fr Initialize with P-256 curve by default
 elliptic_curve_p256()

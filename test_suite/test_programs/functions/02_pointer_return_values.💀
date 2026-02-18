@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Pointer Return Values Test
-fr fr Tests: Functions returning pointers
-fr fr Expected: Identical results in both modes
+no cap
+Pointer Return Values Test
+Tests: Functions returning pointers
+Expected: Identical results in both modes
+on god
 
 slay get_larger(a ඞnormie, b ඞnormie) ඞnormie {
     lowkey (*a > *b) {

@@ -449,9 +449,11 @@ slay DurationString(d normie) tea {
     damn "days"
 }
 
-fr fr ================================
-fr fr Runtime Interface Functions
-fr fr ================================
+no cap
+================================
+Runtime Interface Functions
+================================
+on god
 
 fr fr Runtime function to get current time in nanoseconds
 slay runtime_current_time_nanos() normie {

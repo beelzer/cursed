@@ -1,6 +1,8 @@
-fr fr CURSED Optimization Showcase
-fr fr This example demonstrates various optimization opportunities
-fr fr in the CURSED programming language that our compiler can detect and optimize.
+no cap
+CURSED Optimization Showcase
+This example demonstrates various optimization opportunities
+in the CURSED programming language that our compiler can detect and optimize.
+on god
 
 fr fr Import the standard library
 yeet "stdlib::math::basic"

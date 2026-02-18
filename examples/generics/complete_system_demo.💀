@@ -1,10 +1,12 @@
-fr fr! Complete Generic System Demonstration for CURSED Language
-fr fr! 
-fr fr! This example showcases all advanced generic features working together:
-fr fr! - Associated types and higher-kinded types
-fr fr! - Variance and type safety
-fr fr! - Performance optimization
-fr fr! - Real-world application patterns
+no cap
+! Complete Generic System Demonstration for CURSED Language
+! 
+! This example showcases all advanced generic features working together:
+! - Associated types and higher-kinded types
+! - Variance and type safety
+! - Performance optimization
+! - Real-world application patterns
+on god
 
 fr fr Higher-kinded types with associated types
 collab Functor<F> {

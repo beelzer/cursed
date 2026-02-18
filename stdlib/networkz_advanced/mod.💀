@@ -3,11 +3,13 @@ yeet "httpz_v2"
 yeet "stringz"
 yeet "concurrenz"
 
-fr fr ========================================
-fr fr CURSED Advanced Networking Module (networkz_advanced)
-fr fr Modern Web Protocols - HTTP/2, WebSocket, TLS Integration
-fr fr P1 Issue #33 Fixed: HTTP/2 framing parser now wired into advanced networking API
-fr fr ========================================
+no cap
+========================================
+CURSED Advanced Networking Module (networkz_advanced)
+Modern Web Protocols - HTTP/2, WebSocket, TLS Integration
+P1 Issue #33 Fixed: HTTP/2 framing parser now wired into advanced networking API
+========================================
+on god
 
 fr fr HTTP/2 Connection Pool for High Performance
 be_like HTTP2ConnectionPool squad {
@@ -44,9 +46,11 @@ be_like TLSConfig squad {
     spill server_name tea           fr fr SNI server name
 }
 
-fr fr =============================================================================
-fr fr HTTP/2 INTEGRATION - WIRING HTTP/2 PARSER INTO ADVANCED NETWORKING
-fr fr =============================================================================
+no cap
+=============================================================================
+HTTP/2 INTEGRATION - WIRING HTTP/2 PARSER INTO ADVANCED NETWORKING
+=============================================================================
+on god
 
 slay http2_advanced_client_create() AdvancedHTTPClient {
     fr fr Initialize HTTP/2 connection pool
@@ -193,9 +197,11 @@ slay http2_assemble_response(frames httpz_v2[value].HTTP2Frame) tea {
     damn response
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET INTEGRATION FOR MODERN WEB PROTOCOLS
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET INTEGRATION FOR MODERN WEB PROTOCOLS
+=============================================================================
+on god
 
 slay websocket_upgrade_request(url tea, protocols tea[value]) tea {
     fr fr Create WebSocket upgrade request with HTTP/1.1 compatibility
@@ -252,9 +258,11 @@ slay websocket_parse_frame(data tea) WebSocketFrame {
     damn frame
 }
 
-fr fr =============================================================================
-fr fr URL PARSING FOR ADVANCED NETWORKING
-fr fr =============================================================================
+no cap
+=============================================================================
+URL PARSING FOR ADVANCED NETWORKING
+=============================================================================
+on god
 
 be_like URLComponents squad {
     spill scheme tea      fr fr http, https, ws, wss
@@ -345,9 +353,11 @@ slay extract_path_from_url(url tea) tea {
     damn components.path
 }
 
-fr fr =============================================================================
-fr fr HIGH-LEVEL ADVANCED NETWORKING API
-fr fr =============================================================================
+no cap
+=============================================================================
+HIGH-LEVEL ADVANCED NETWORKING API
+=============================================================================
+on god
 
 fr fr HTTP/2 GET with advanced features
 slay http2_get(url tea, headers tea[20], header_count normie) tea {
@@ -419,9 +429,11 @@ slay websocket_close_connection(ws_id normie, code normie, reason tea) lit {
     damn networkz.tcp_close(ws_id)
 }
 
-fr fr =============================================================================
-fr fr ADVANCED NETWORKING UTILITIES
-fr fr =============================================================================
+no cap
+=============================================================================
+ADVANCED NETWORKING UTILITIES
+=============================================================================
+on god
 
 slay is_http2_url(url tea) lit {
     sus components URLComponents = parse_advanced_url(url)
@@ -491,9 +503,11 @@ slay connection_multiplexing_demo() {
     vibez.spill("🎯 Advanced networking demo completed!")
 }
 
-fr fr =============================================================================
-fr fr HELPER FUNCTIONS FOR ARRAY/STRING OPERATIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+HELPER FUNCTIONS FOR ARRAY/STRING OPERATIONS
+=============================================================================
+on god
 
 slay append(arr httpz_v2[value].HTTP2Frame, item httpz_v2.HTTP2Frame) httpz_v2[value].HTTP2Frame {
     fr fr Simulate array append (would be built-in in production)

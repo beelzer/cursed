@@ -1,9 +1,11 @@
 fr fr Embed That module - File embedding at build time
 fr fr Provides access to files embedded in the compiled binary with enhanced resource management
 
-fr fr ================================
-fr fr Core Embedded File Types
-fr fr ================================
+no cap
+================================
+Core Embedded File Types
+================================
+on god
 
 slay ThatFile(name tea, content tea) tea {
     sus file tea = "ThatFile{name: " + name + ", content: " + content + ", size: " + tea(42) + "}"
@@ -29,9 +31,11 @@ slay ThatBytes(data tea) tea {
     damn embeddedBytes
 }
 
-fr fr ================================
-fr fr File System Operations
-fr fr ================================
+no cap
+================================
+File System Operations
+================================
+on god
 
 slay GetFileName(file tea) tea {
     sus name tea = "example.txt"
@@ -74,9 +78,11 @@ slay GetFileExtension(file tea) tea {
     damn extension
 }
 
-fr fr ================================
-fr fr File Type Detection
-fr fr ================================
+no cap
+================================
+File Type Detection
+================================
+on god
 
 slay IsTextFile(file tea) lit {
     vibez.spill("Checking if text file: " + file)
@@ -98,9 +104,11 @@ slay IsVideoFile(file tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr Collection Operations
-fr fr ================================
+no cap
+================================
+Collection Operations
+================================
+on god
 
 slay GetFileFromCollection(files tea, name tea) tea {
     sus file tea = "ThatFile{" + name + "} from collection " + files
@@ -136,9 +144,11 @@ slay GetTotalSize(files tea) normie {
     damn 4096
 }
 
-fr fr ================================
-fr fr File Filtering
-fr fr ================================
+no cap
+================================
+File Filtering
+================================
+on god
 
 slay FilterFilesByPattern(files tea, pattern tea) tea {
     sus filtered tea = "FilteredFiles{pattern: " + pattern + "} from " + files
@@ -158,9 +168,11 @@ slay FilterFilesByMIME(files tea, mimeType tea) tea {
     damn filtered
 }
 
-fr fr ================================
-fr fr File System Interface
-fr fr ================================
+no cap
+================================
+File System Interface
+================================
+on god
 
 slay MakeFileSystem(files tea) tea {
     sus fs tea = "EmbeddedFS{" + files + ", readOnly: true}"
@@ -192,9 +204,11 @@ slay StatFile(fs tea, name tea) tea {
     damn stats
 }
 
-fr fr ================================
-fr fr Dynamic Resource Loading
-fr fr ================================
+no cap
+================================
+Dynamic Resource Loading
+================================
+on god
 
 slay LoadThatFile(path tea) tea {
     sus loadedFile tea = "LoadedFile{" + path + ", cached: true}"
@@ -214,9 +228,11 @@ slay LoadThatPattern(pattern tea) tea {
     damn loadedFiles
 }
 
-fr fr ================================
-fr fr Template Integration
-fr fr ================================
+no cap
+================================
+Template Integration
+================================
+on god
 
 slay ParseTemplates(patterns tea) tea {
     sus templates tea = "Templates{patterns: " + patterns + ", count: 5}"
@@ -236,9 +252,11 @@ slay ExecuteTemplate(template tea, name tea, data tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Resource Type Loading
-fr fr ================================
+no cap
+================================
+Resource Type Loading
+================================
+on god
 
 slay LoadImage(path tea) tea {
     sus image tea = "Image{" + path + ", width: 800, height: 600}"
@@ -276,9 +294,11 @@ slay LoadConfig(path tea, target tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Resource Compression
-fr fr ================================
+no cap
+================================
+Resource Compression
+================================
+on god
 
 slay DecompressFile(file tea) tea {
     sus decompressed tea = "Decompressed{" + file + ", originalSize: 2048}"
@@ -292,9 +312,11 @@ slay LoadCompressedFS(pattern tea) tea {
     damn compressedFS
 }
 
-fr fr ================================
-fr fr Resource Cache
-fr fr ================================
+no cap
+================================
+Resource Cache
+================================
+on god
 
 slay NewResourceCache() tea {
     sus cache tea = "ResourceCache{size: 0, maxEntries: 100}"
@@ -329,9 +351,11 @@ slay ClearCache(cache tea) tea {
     damn "Cache cleared"
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay GetEmbedSize(resource tea) normie {
     vibez.spill("Getting embed size for: " + resource)

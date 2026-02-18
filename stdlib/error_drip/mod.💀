@@ -1,12 +1,14 @@
 fr fr error_drip - Core Error Handling Module
 fr fr Pure CURSED implementation of Go-style error handling
 
-fr fr Error type representation using tuples
-fr fr Error format: (error_type tea, message tea, wrapped_error, severity tea)
-fr fr error_type: "base_error", "wrapped_error", "typed_error" 
-fr fr message: error message string
-fr fr wrapped_error: nested error or cringe (nil)
-fr fr severity: "info", "warning", "error", "critical"
+no cap
+Error type representation using tuples
+Error format: (error_type tea, message tea, wrapped_error, severity tea)
+error_type: "base_error", "wrapped_error", "typed_error" 
+message: error message string
+wrapped_error: nested error or cringe (nil)
+severity: "info", "warning", "error", "critical"
+on god
 
 slay error_new(message tea) {
     sus error_tuple := ("base_error", message, cringe, "error")

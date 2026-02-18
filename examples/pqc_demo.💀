@@ -1,14 +1,16 @@
-fr fr Post-Quantum Cryptography Demo for CURSED Language
-fr fr 
-fr fr This demo showcases all post-quantum cryptographic algorithms
-fr fr available in the CURSED standard library, including:
-fr fr - Kyber Key Encapsulation Mechanism (KEM)
-fr fr - Dilithium Digital Signatures
-fr fr - SPHINCS+ Hash-based Signatures
-fr fr - Falcon Compact Signatures
-fr fr - NTRU Encryption
-fr fr
-fr fr Run with: cursed examples/pqc_demo.💀
+no cap
+Post-Quantum Cryptography Demo for CURSED Language
+
+This demo showcases all post-quantum cryptographic algorithms
+available in the CURSED standard library, including:
+- Kyber Key Encapsulation Mechanism (KEM)
+- Dilithium Digital Signatures
+- SPHINCS+ Hash-based Signatures
+- Falcon Compact Signatures
+- NTRU Encryption
+
+Run with: cursed examples/pqc_demo.💀
+on god
 
 yeet "stdlib::crypto::pqc"
 yeet "stdlib::io"

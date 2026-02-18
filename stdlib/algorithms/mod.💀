@@ -1,9 +1,11 @@
 fr fr CURSED Standard Library - Efficient Algorithms Module
 fr fr O(n log n) sorting algorithms and advanced data structures
 
-fr fr ================================
-fr fr QuickSort Implementation (O(n log n) average, O(n²) worst case)
-fr fr ================================
+no cap
+================================
+QuickSort Implementation (O(n log n) average, O(n²) worst case)
+================================
+on god
 
 slay quick_sort_integers(arr normie[value]) normie[value]{
     sus length normie = len(arr)
@@ -54,9 +56,11 @@ slay quick_sort_partition_hoare(arr normie[value], low normie, high normie) norm
     }
 }
 
-fr fr ================================
-fr fr MergeSort Implementation (O(n log n) guaranteed)
-fr fr ================================
+no cap
+================================
+MergeSort Implementation (O(n log n) guaranteed)
+================================
+on god
 
 slay merge_sort_integers(arr normie[value]) normie[value]{
     sus length normie = len(arr)
@@ -118,9 +122,11 @@ slay merge_arrays(arr normie[value], temp normie[value], left normie, mid normie
     }
 }
 
-fr fr ================================
-fr fr HeapSort Implementation (O(n log n) guaranteed, in-place)
-fr fr ================================
+no cap
+================================
+HeapSort Implementation (O(n log n) guaranteed, in-place)
+================================
+on god
 
 slay heap_sort_integers(arr normie[value]) normie[value]{
     sus length normie = len(arr)
@@ -171,10 +177,12 @@ slay heapify(arr normie[value], n normie, i normie) {
     }
 }
 
-fr fr ================================
-fr fr Insertion Sort (O(n²) worst case, O(n) best case)
-fr fr Best for small arrays (< 16 elements)
-fr fr ================================
+no cap
+================================
+Insertion Sort (O(n²) worst case, O(n) best case)
+Best for small arrays (< 16 elements)
+================================
+on god
 
 slay insertion_sort_integers(arr normie[value]) normie[value]{
     sus length normie = len(arr)
@@ -198,10 +206,12 @@ slay insertion_sort_integers(arr normie[value]) normie[value]{
     damn result
 }
 
-fr fr ================================
-fr fr TimSort Implementation (Hybrid Merge Sort + Insertion Sort)
-fr fr Optimized for partially sorted data
-fr fr ================================
+no cap
+================================
+TimSort Implementation (Hybrid Merge Sort + Insertion Sort)
+Optimized for partially sorted data
+================================
+on god
 
 slay tim_sort_integers(arr normie[value]) normie[value]{
     sus length normie = len(arr)
@@ -302,9 +312,11 @@ slay merge_ranges(arr normie[value], left normie, mid normie, right normie) {
     }
 }
 
-fr fr ================================
-fr fr String Searching Algorithms
-fr fr ================================
+no cap
+================================
+String Searching Algorithms
+================================
+on god
 
 fr fr Boyer-Moore string search (O(mn) worst case, O(n/m) best case)
 slay boyer_moore_search(text tea, pattern tea) normie {
@@ -373,9 +385,11 @@ slay kmp_search(text tea, pattern tea) normie {
     damn -1  fr fr Pattern not found
 }
 
-fr fr ================================
-fr fr Binary Search Tree Operations
-fr fr ================================
+no cap
+================================
+Binary Search Tree Operations
+================================
+on god
 
 squad TreeNode {
     sus value normie
@@ -413,9 +427,11 @@ slay binary_search_tree_search(root TreeNode, value normie) lit {
     }
 }
 
-fr fr ================================
-fr fr Graph Algorithms
-fr fr ================================
+no cap
+================================
+Graph Algorithms
+================================
+on god
 
 fr fr Depth-First Search
 slay depth_first_search(graph normie[value][value], start normie, visited lit[value]) {
@@ -452,9 +468,11 @@ slay breadth_first_search(graph normie[value][value], start normie) normie[value
     damn result
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay copy_array_integers(arr normie[value]) normie[value]{
     sus length normie = len(arr)

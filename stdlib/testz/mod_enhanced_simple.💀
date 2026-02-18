@@ -1,19 +1,23 @@
-fr fr CURSED Testing Framework v3.0 - Enhanced Simple Edition
-fr fr Pure CURSED enhanced testing framework with Gen Z slang
-fr fr fr fr Features:
-fr fr - Basic assertions (working)
-fr fr - Property-based testing (simplified)
-fr fr - Benchmarking (basic)
-fr fr - Multiple output formats (JSON, XML, HTML, TAP)
-fr fr - Test discovery (basic)
-fr fr - Coverage reporting (basic)
-fr fr - Performance regression testing (basic)
-fr fr - Mock system (basic)
-fr fr - Parallel execution (basic)
+no cap
+CURSED Testing Framework v3.0 - Enhanced Simple Edition
+Pure CURSED enhanced testing framework with Gen Z slang
+fr fr Features:
+- Basic assertions (working)
+- Property-based testing (simplified)
+- Benchmarking (basic)
+- Multiple output formats (JSON, XML, HTML, TAP)
+- Test discovery (basic)
+- Coverage reporting (basic)
+- Performance regression testing (basic)
+- Mock system (basic)
+- Parallel execution (basic)
+on god
 
-fr fr ================================
-fr fr Core Framework State
-fr fr ================================
+no cap
+================================
+Core Framework State
+================================
+on god
 
 fr fr Test execution counters
 sus test_count normie = 0
@@ -41,9 +45,11 @@ sus xml_output lit = cap
 sus html_output lit = cap
 sus tap_output lit = cap
 
-fr fr ================================
-fr fr Basic Test Lifecycle Functions
-fr fr ================================
+no cap
+================================
+Basic Test Lifecycle Functions
+================================
+on god
 
 slay test_start(name tea) {
     current_test_name = name
@@ -80,9 +86,11 @@ slay suite_end() {
     vibez.spill("")
 }
 
-fr fr ================================
-fr fr Basic Assertion Functions
-fr fr ================================
+no cap
+================================
+Basic Assertion Functions
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     current_assertion_name = "assert_eq_int"
@@ -190,9 +198,11 @@ slay assert_eq_float(actual meal, expected meal) {
     }
 }
 
-fr fr ================================
-fr fr Advanced Assertion Functions
-fr fr ================================
+no cap
+================================
+Advanced Assertion Functions
+================================
+on god
 
 slay assert_ne_int(actual normie, expected normie) {
     current_assertion_name = "assert_ne_int"
@@ -250,9 +260,11 @@ slay assert_in_range(actual normie, min normie, max normie) {
     }
 }
 
-fr fr ================================
-fr fr Performance Testing Functions
-fr fr ================================
+no cap
+================================
+Performance Testing Functions
+================================
+on god
 
 slay benchmark_start() normie {
     damn get_current_time()
@@ -310,9 +322,11 @@ slay benchmark_function(name tea, iterations normie) {
     test_end()
 }
 
-fr fr ================================
-fr fr Property-Based Testing Functions
-fr fr ================================
+no cap
+================================
+Property-Based Testing Functions
+================================
+on god
 
 slay property_test_int(name tea, min_val normie, max_val normie, iterations normie) {
     test_start("property_" + name)
@@ -341,9 +355,11 @@ slay property_test_int(name tea, min_val normie, max_val normie, iterations norm
     test_end()
 }
 
-fr fr ================================
-fr fr Mock System Functions
-fr fr ================================
+no cap
+================================
+Mock System Functions
+================================
+on god
 
 slay create_mock(name tea) normie {
     vibez.spill("  🎭 Created mock: " + name)
@@ -359,9 +375,11 @@ slay mock_verify_called(mock_id normie, expected_calls normie) {
     vibez.spill("  🎭 Mock " + tea(mock_id) + " verified " + tea(expected_calls) + " calls")
 }
 
-fr fr ================================
-fr fr Test Discovery Functions
-fr fr ================================
+no cap
+================================
+Test Discovery Functions
+================================
+on god
 
 slay discover_test_files(directory tea) normie {
     vibez.spill("  🔍 Discovering tests in: " + directory)
@@ -388,9 +406,11 @@ slay run_test_suite(directory tea) {
     suite_end()
 }
 
-fr fr ================================
-fr fr Configuration Functions
-fr fr ================================
+no cap
+================================
+Configuration Functions
+================================
+on god
 
 slay enable_verbose() {
     verbose_mode = based
@@ -432,9 +452,11 @@ slay disable_coverage() {
     vibez.spill("  📊 Coverage mode disabled")
 }
 
-fr fr ================================
-fr fr Output Format Functions
-fr fr ================================
+no cap
+================================
+Output Format Functions
+================================
+on god
 
 slay enable_json_output() {
     json_output = based
@@ -515,9 +537,11 @@ slay generate_tap_report() {
     }
 }
 
-fr fr ================================
-fr fr Coverage Analysis Functions
-fr fr ================================
+no cap
+================================
+Coverage Analysis Functions
+================================
+on god
 
 slay analyze_coverage() {
     lowkey coverage_mode {
@@ -538,9 +562,11 @@ slay report_coverage_gaps() {
     }
 }
 
-fr fr ================================
-fr fr Performance Regression Testing
-fr fr ================================
+no cap
+================================
+Performance Regression Testing
+================================
+on god
 
 slay check_performance_regression(test_name tea, current_time normie, baseline_time normie, threshold normie) {
     test_start("performance_regression_" + test_name)
@@ -565,9 +591,11 @@ slay check_performance_regression(test_name tea, current_time normie, baseline_t
     test_end()
 }
 
-fr fr ================================
-fr fr Parallel Test Execution
-fr fr ================================
+no cap
+================================
+Parallel Test Execution
+================================
+on god
 
 slay run_tests_in_parallel(test_names [tea]) {
     lowkey parallel_mode {
@@ -593,17 +621,21 @@ slay run_tests_in_parallel(test_names [tea]) {
     }
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay get_current_time() normie {
     damn 1000
 }
 
-fr fr ================================
-fr fr Test Summary and Reporting
-fr fr ================================
+no cap
+================================
+Test Summary and Reporting
+================================
+on god
 
 slay print_test_summary() {
     vibez.spill("")
@@ -646,9 +678,11 @@ slay print_test_summary() {
     vibez.spill("════════════════════════════════════════════════════════════════")
 }
 
-fr fr ================================
-fr fr State Management Functions
-fr fr ================================
+no cap
+================================
+State Management Functions
+================================
+on god
 
 slay reset_test_state() {
     test_count = 0

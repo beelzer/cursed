@@ -4,9 +4,11 @@ yeet "networking_complete"
 fr fr Comprehensive Networking Module Test Suite
 fr fr Enterprise-grade testing for all networking components
 
-fr fr =============================================================================
-fr fr TCP SOCKET TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+TCP SOCKET TESTS
+=============================================================================
+on god
 
 slay test_tcp_socket_operations() {
     test_start("TCP Socket Operations") fr fr Test TCP socket creation
@@ -49,9 +51,11 @@ slay test_tcp_socket_operations() {
     assert_eq_int(connect_sock.fd, -1)
 }
 
-fr fr =============================================================================
-fr fr UDP SOCKET TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+UDP SOCKET TESTS
+=============================================================================
+on god
 
 slay test_udp_socket_operations() {
     test_start("UDP Socket Operations") fr fr Test UDP socket creation
@@ -81,9 +85,11 @@ slay test_udp_socket_operations() {
     assert_eq_int(sender_addr.port, 8080)
 }
 
-fr fr =============================================================================
-fr fr DNS RESOLUTION TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+DNS RESOLUTION TESTS
+=============================================================================
+on god
 
 slay test_dns_resolution() {
     test_start("DNS Resolution") fr fr Test A record resolution
@@ -118,9 +124,11 @@ slay test_dns_resolution() {
     assert_eq_string(unknown_hostname, "unknown.host")
 }
 
-fr fr =============================================================================
-fr fr SSL/TLS TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+SSL/TLS TESTS
+=============================================================================
+on god
 
 slay test_ssl_tls_operations() {
     test_start("SSL/TLS Operations") fr fr Test SSL context creation
@@ -149,9 +157,11 @@ slay test_ssl_tls_operations() {
     assert_eq_string(decrypted, plaintext)
 }
 
-fr fr =============================================================================
-fr fr HTTP UTILITIES TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+HTTP UTILITIES TESTS
+=============================================================================
+on god
 
 slay test_http_utilities() {
     test_start("HTTP Utilities") fr fr Test HTTP request creation
@@ -199,9 +209,11 @@ slay test_http_utilities() {
     assert_true(stringz.contains(serialized, "{\"status\":\"success\"}"))
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET TESTS
+=============================================================================
+on god
 
 slay test_websocket_implementation() {
     test_start("WebSocket Implementation") fr fr Test WebSocket key generation
@@ -232,9 +244,11 @@ slay test_websocket_implementation() {
     assert_true(stringz.contains(handshake_response, "Sec-WebSocket-Accept:"))
 }
 
-fr fr =============================================================================
-fr fr ADVANCED PROTOCOL TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+ADVANCED PROTOCOL TESTS
+=============================================================================
+on god
 
 slay test_advanced_protocols() {
     test_start("Advanced Network Protocols") fr fr Test SMTP email sending
@@ -255,9 +269,11 @@ slay test_advanced_protocols() {
     assert_eq_string(traceroute_results[2], "93.184.216.34")
 }
 
-fr fr =============================================================================
-fr fr NETWORK UTILITIES TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+NETWORK UTILITIES TESTS
+=============================================================================
+on god
 
 slay test_network_utilities() {
     test_start("Network Utilities") fr fr Test IP address validation
@@ -287,9 +303,11 @@ slay test_network_utilities() {
     assert_eq_string(public_ip, "203.0.113.1")
 }
 
-fr fr =============================================================================
-fr fr MODULE VALIDATION TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+MODULE VALIDATION TESTS
+=============================================================================
+on god
 
 slay test_module_validation() {
     test_start("Module Validation and Status") fr fr Test module information
@@ -303,9 +321,11 @@ slay test_module_validation() {
     assert_eq_lit(validation_result, based)
 }
 
-fr fr =============================================================================
-fr fr COMPREHENSIVE INTEGRATION TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+COMPREHENSIVE INTEGRATION TESTS
+=============================================================================
+on god
 
 slay test_networking_integration() {
     test_start("Networking Integration Tests") fr fr Test TCP server-client integration
@@ -360,9 +380,11 @@ slay test_networking_integration() {
     assert_eq_lit(tcp_socket_close(&dns_tcp_sock), based)
 }
 
-fr fr =============================================================================
-fr fr PERFORMANCE AND STRESS TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+PERFORMANCE AND STRESS TESTS
+=============================================================================
+on god
 
 slay test_networking_performance() {
     test_start("Networking Performance Tests") fr fr Test multiple concurrent connections
@@ -405,9 +427,11 @@ slay test_networking_performance() {
     }
 }
 
-fr fr =============================================================================
-fr fr ERROR HANDLING AND EDGE CASES
-fr fr =============================================================================
+no cap
+=============================================================================
+ERROR HANDLING AND EDGE CASES
+=============================================================================
+on god
 
 slay test_networking_error_handling() {
     test_start("Networking Error Handling") fr fr Test connection to invalid address
@@ -438,9 +462,11 @@ slay test_networking_error_handling() {
     }
 }
 
-fr fr =============================================================================
-fr fr MAIN TEST EXECUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+MAIN TEST EXECUTION
+=============================================================================
+on god
 
 slay run_all_networking_tests() {
     vibez.spill("Starting Comprehensive Networking Module Tests...") fr fr Core networking tests

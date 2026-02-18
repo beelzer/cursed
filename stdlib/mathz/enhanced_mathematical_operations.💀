@@ -1,12 +1,16 @@
-fr fr CURSED Enhanced Mathematical Operations Module
-fr fr Mathematically correct implementations with proper algorithms
-fr fr IEEE 754 compliant, robust statistical functions, Euclidean algorithms
+no cap
+CURSED Enhanced Mathematical Operations Module
+Mathematically correct implementations with proper algorithms
+IEEE 754 compliant, robust statistical functions, Euclidean algorithms
+on god
 
 yeet "testz"
 
-fr fr ==========================================
-fr fr IEEE 754 COMPLIANT FLOAT OPERATIONS
-fr fr ==========================================
+no cap
+==========================================
+IEEE 754 COMPLIANT FLOAT OPERATIONS
+==========================================
+on god
 
 sus IEEE_754_NAN_EXPONENT_MASK drip = 2139095040     fr fr 0x7F800000
 sus IEEE_754_NAN_MANTISSA_MASK drip = 8388607        fr fr 0x007FFFFF
@@ -82,9 +86,11 @@ slay cast_float_to_bits(x meal) drip {
     damn sign | (exponent << 23) | (mantissa & IEEE_754_NAN_MANTISSA_MASK)
 }
 
-fr fr ==========================================
-fr fr EUCLIDEAN ALGORITHM FOR GCD/LCM
-fr fr ==========================================
+no cap
+==========================================
+EUCLIDEAN ALGORITHM FOR GCD/LCM
+==========================================
+on god
 
 slay gcd_euclidean(a drip, b drip) drip {
     fr fr Classic Euclidean algorithm for Greatest Common Divisor
@@ -153,9 +159,11 @@ slay lcm_euclidean(a drip, b drip) drip {
     damn abs_product / gcd_val
 }
 
-fr fr ==========================================
-fr fr PROPER SORTING-BASED STATISTICAL FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+PROPER SORTING-BASED STATISTICAL FUNCTIONS
+==========================================
+on god
 
 slay quicksort_partition(arr meal[value], low drip, high drip) drip {
     fr fr Partition function for quicksort
@@ -265,9 +273,11 @@ slay quartiles(values meal[value], count drip) meal[value]{
     damn result
 }
 
-fr fr ==========================================
-fr fr ROBUST STATISTICAL FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+ROBUST STATISTICAL FUNCTIONS
+==========================================
+on god
 
 slay mean_robust(values meal[value], count drip) meal {
     fr fr Arithmetic mean with overflow protection
@@ -402,9 +412,11 @@ slay kurtosis(values meal[value], count drip) meal {
     damn fourth_moment / valid_count.(meal) - 3.0  fr fr Excess kurtosis
 }
 
-fr fr ==========================================
-fr fr ENHANCED MATHEMATICAL FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED MATHEMATICAL FUNCTIONS
+==========================================
+on god
 
 slay sqrt_newton_raphson(x meal) meal {
     fr fr Newton-Raphson method for square root
@@ -472,9 +484,11 @@ slay ceil_int(x meal) drip {
     damn int_part + 1
 }
 
-fr fr ==========================================
-fr fr ADVANCED STATISTICAL MEASURES
-fr fr ==========================================
+no cap
+==========================================
+ADVANCED STATISTICAL MEASURES
+==========================================
+on god
 
 slay coefficient_of_variation(values meal[value], count drip) meal {
     fr fr Coefficient of Variation (CV) = std_dev / mean
@@ -515,9 +529,11 @@ slay mad_median_absolute_deviation(values meal[value], count drip) meal {
     damn median_proper_sorting(deviations, count)
 }
 
-fr fr ==========================================
-fr fr CORRELATION AND COVARIANCE
-fr fr ==========================================
+no cap
+==========================================
+CORRELATION AND COVARIANCE
+==========================================
+on god
 
 slay covariance(x_values meal[value], y_values meal[value], count drip) meal {
     fr fr Sample covariance using Welford's method for numerical stability
@@ -564,9 +580,11 @@ slay correlation_pearson(x_values meal[value], y_values meal[value], count drip)
     damn cov / (x_std * y_std)
 }
 
-fr fr ==========================================
-fr fr HYPOTHESIS TESTING SUPPORT
-fr fr ==========================================
+no cap
+==========================================
+HYPOTHESIS TESTING SUPPORT
+==========================================
+on god
 
 slay t_statistic_one_sample(values meal[value], count drip, population_mean meal) meal {
     fr fr One-sample t-statistic
@@ -603,9 +621,11 @@ slay chi_square_goodness_of_fit(observed drip[value], expected drip[value], coun
     damn chi_square
 }
 
-fr fr ==========================================
-fr fr TEST FUNCTIONS FOR VALIDATION
-fr fr ==========================================
+no cap
+==========================================
+TEST FUNCTIONS FOR VALIDATION
+==========================================
+on god
 
 slay test_enhanced_mathematical_operations() lit {
     fr fr Comprehensive tests for all enhanced functions

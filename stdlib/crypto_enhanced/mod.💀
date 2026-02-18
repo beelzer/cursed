@@ -1,13 +1,17 @@
-fr fr CURSED Enhanced Crypto Module v3.0  
-fr fr Comprehensive crypto functions with MD5, simplified encryption, and extended random generation
-fr fr Pure CURSED implementation with security considerations
+no cap
+CURSED Enhanced Crypto Module v3.0  
+Comprehensive crypto functions with MD5, simplified encryption, and extended random generation
+Pure CURSED implementation with security considerations
+on god
 
 yeet "testz"
 yeet "../crypto/mod.💀" fr fr Import base crypto functionality
 
-fr fr ================================
-fr fr MD5 Implementation
-fr fr ================================
+no cap
+================================
+MD5 Implementation
+================================
+on god
 
 fr fr MD5 constants
 sus md5_init_hash [normie] = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476]
@@ -111,9 +115,11 @@ slay hash_md5(data tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Simplified Encryption/Decryption
-fr fr ================================
+no cap
+================================
+Simplified Encryption/Decryption
+================================
+on god
 
 slay encrypt_simple(data tea, key tea) tea {
     fr fr Simple XOR-based encryption with key expansion
@@ -141,9 +147,11 @@ slay decrypt_simple(data tea, key tea) tea {
     damn encrypt_simple(data, key)
 }
 
-fr fr ================================
-fr fr Enhanced Random Generation
-fr fr ================================
+no cap
+================================
+Enhanced Random Generation
+================================
+on god
 
 slay generate_random(length drip) tea {
     fr fr Generate random string using secure PRNG
@@ -163,9 +171,11 @@ slay generate_random(length drip) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Enhanced Hash Functions
-fr fr ================================
+no cap
+================================
+Enhanced Hash Functions
+================================
+on god
 
 slay hash_sha256(data tea) tea {
     fr fr Use the existing SHA-256 implementation from crypto module
@@ -185,9 +195,11 @@ slay simple_hash(data tea) normie {
     damn hash
 }
 
-fr fr ================================
-fr fr Entropy Sources for Security
-fr fr ================================
+no cap
+================================
+Entropy Sources for Security
+================================
+on god
 
 slay current_time() normie {
     fr fr Simulate getting current timestamp
@@ -204,9 +216,11 @@ slay process_entropy() normie {
     damn 1000 + (generate_random_u32() % 64536)
 }
 
-fr fr ================================
-fr fr Enhanced Utility Functions
-fr fr ================================
+no cap
+================================
+Enhanced Utility Functions
+================================
+on god
 
 slay enhanced_string_length(s tea) normie {
     sus count normie = 0
@@ -287,9 +301,11 @@ slay enhanced_u32_to_hex_le(value normie) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Module Status and Initialization
-fr fr ================================
+no cap
+================================
+Module Status and Initialization
+================================
+on god
 
 vibez.spill("🔐 CURSED Enhanced Crypto Library v3.0 Loaded")
 vibez.spill("✅ MD5 hashing implementation")

@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "config"
 
-fr fr ==========================================
-fr fr CURSED Config Library Test Suite
-fr fr Multi-Format Configuration Management Tests
-fr fr ==========================================
+no cap
+==========================================
+CURSED Config Library Test Suite
+Multi-Format Configuration Management Tests
+==========================================
+on god
 
 slay test_format_detection() {
     test_start("Config Format Detection") fr fr Test JSON detection

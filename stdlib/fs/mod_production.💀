@@ -1,13 +1,17 @@
-fr fr CURSED Filesystem Module - Production Implementation
-fr fr Complete file system operations with robust Unicode support
-fr fr Pure CURSED implementation with comprehensive error handling
+no cap
+CURSED Filesystem Module - Production Implementation
+Complete file system operations with robust Unicode support
+Pure CURSED implementation with comprehensive error handling
+on god
 
 yeet "stringz"
 yeet "vibez"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like FileInfo squad {
     name tea
@@ -65,9 +69,11 @@ be_like PathInfo squad {
     components tea[value]
 }
 
-fr fr ================================
-fr fr Unicode-Aware String Operations
-fr fr ================================
+no cap
+================================
+Unicode-Aware String Operations
+================================
+on god
 
 slay utf8_byte_length(s tea) thicc { fr fr Calculate actual UTF-8 byte length
     lowkey s == "" {
@@ -208,9 +214,11 @@ slay bytes_to_string_utf8(data byte[value]) tea { fr fr Convert UTF-8 bytes to s
     damn result
 }
 
-fr fr ================================
-fr fr Comprehensive Path Operations
-fr fr ================================
+no cap
+================================
+Comprehensive Path Operations
+================================
+on god
 
 slay normalize_path(path tea) tea { fr fr Normalize path separators and resolve . and ..
     lowkey path == "" {
@@ -316,9 +324,11 @@ slay join_path(base tea, component tea) tea { fr fr Join paths with proper separ
     damn normalized_base + "/" + normalized_component
 }
 
-fr fr ================================
-fr fr System Call Interface
-fr fr ================================
+no cap
+================================
+System Call Interface
+================================
+on god
 
 slay system_open(path tea, flags normie, mode normie) normie { fr fr Open file with system call
     fr fr Platform-specific file opening
@@ -369,9 +379,11 @@ slay system_stat(path tea) (FileMetadata, lit) { fr fr Get file statistics
     damn metadata, true
 }
 
-fr fr ================================
-fr fr Core File Operations
-fr fr ================================
+no cap
+================================
+Core File Operations
+================================
+on god
 
 slay read_file(path tea) tea { fr fr Read file contents as string
     sus bytes_data byte[value] = read_file_bytes(path)
@@ -511,9 +523,11 @@ slay delete_file(path tea) lit { fr fr Delete file
     damn result == 0
 }
 
-fr fr ================================
-fr fr Directory Operations
-fr fr ================================
+no cap
+================================
+Directory Operations
+================================
+on god
 
 slay create_dir(path tea) lit { fr fr Create directory
     lowkey path == "" {
@@ -602,9 +616,11 @@ slay list_dir(path tea) DirEntry[value]{ fr fr List directory contents
     damn entries
 }
 
-fr fr ================================
-fr fr File Information Functions
-fr fr ================================
+no cap
+================================
+File Information Functions
+================================
+on god
 
 slay file_exists(path tea) lit { fr fr Check if file exists
     sus _, ok := system_stat(get_absolute_path(path))
@@ -661,9 +677,11 @@ slay get_file_metadata(path tea) FileMetadata { fr fr Get comprehensive file met
     damn metadata
 }
 
-fr fr ================================
-fr fr Path Utility Functions  
-fr fr ================================
+no cap
+================================
+Path Utility Functions  
+================================
+on god
 
 slay get_parent_dir(path tea) tea { fr fr Get parent directory of path
     sus info PathInfo = parse_path(path)
@@ -689,9 +707,11 @@ slay get_current_directory() tea { fr fr Get current working directory
     damn posix_getcwd()
 }
 
-fr fr ================================
-fr fr Helper Functions for System Calls
-fr fr ================================
+no cap
+================================
+Helper Functions for System Calls
+================================
+on god
 
 fr fr These would be implemented as external system calls or intrinsics
 slay posix_open(path tea, flags normie, mode normie) normie {
@@ -753,9 +773,11 @@ slay posix_getcwd() tea {
     damn "/current/directory"  fr fr Placeholder
 }
 
-fr fr ================================
-fr fr Stat Result Accessors
-fr fr ================================
+no cap
+================================
+Stat Result Accessors
+================================
+on god
 
 fr fr These would access the last stat() result
 slay get_stat_size() thicc { damn 0 }
@@ -769,9 +791,11 @@ slay get_stat_mode() normie { damn 420 }
 slay get_stat_uid() normie { damn 1000 }
 slay get_stat_gid() normie { damn 1000 }
 
-fr fr ================================
-fr fr String Utility Functions
-fr fr ================================
+no cap
+================================
+String Utility Functions
+================================
+on god
 
 slay get_char_code_at(s tea, index thicc) normie {
     fr fr Get Unicode code point at character index

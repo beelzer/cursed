@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Simple Pointer Array Test
-fr fr Tests: Basic array pointer access
-fr fr Expected: Identical results in both modes
+no cap
+Simple Pointer Array Test
+Tests: Basic array pointer access
+Expected: Identical results in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Simple Pointer Array Test ===")

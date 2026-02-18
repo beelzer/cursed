@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Operator Precedence Test
-fr fr Tests: Mathematical operator precedence
-fr fr Expected: Operations follow standard precedence rules
+no cap
+Operator Precedence Test
+Tests: Mathematical operator precedence
+Expected: Operations follow standard precedence rules
+on god
 
 slay main_character() {
     vibez.spill("=== Operator Precedence Test ===")

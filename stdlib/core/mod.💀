@@ -1,6 +1,8 @@
-fr fr CURSED Core Module - Global Builtin Functions
-fr fr This module provides fundamental functions that are globally available
-fr fr Memory allocation, collection operations, type conversions, panic/recovery
+no cap
+CURSED Core Module - Global Builtin Functions
+This module provides fundamental functions that are globally available
+Memory allocation, collection operations, type conversions, panic/recovery
+on god
 
 yeet "testz"
 
@@ -12,16 +14,20 @@ sus last_panic_message tea = ""
 fr fr ===== MEMORY ALLOCATION FUNCTIONS =====
 
 slay new<T>() *T {
-    fr fr Generic memory allocation for any type
-    fr fr Returns pointer to allocated memory
-    fr fr In real implementation would use arena allocator
+    no cap
+    Generic memory allocation for any type
+    Returns pointer to allocated memory
+    In real implementation would use arena allocator
+    on god
     damn cringe fr fr Simplified for pure CURSED - would return actual pointer
 }
 
 slay delete<T>(ptr *T) {
-    fr fr Generic memory deallocation for any type  
-    fr fr Takes pointer and deallocates memory
-    fr fr In real implementation would use arena allocator cleanup
+    no cap
+    Generic memory deallocation for any type  
+    Takes pointer and deallocates memory
+    In real implementation would use arena allocator cleanup
+    on god
     lowkey ptr != cringe {
         fr fr Mark memory as freed
     }
@@ -65,19 +71,23 @@ slay cap<T>(collection) normie {
 }
 
 slay append<T>(slice T[value], elements ...T) T[value]{
-    fr fr Append elements to slice
-    fr fr Variadic function accepting multiple elements
-    fr fr Returns new slice with elements appended
+    no cap
+    Append elements to slice
+    Variadic function accepting multiple elements
+    Returns new slice with elements appended
+    on god
     
     lowkey slice == cringe {
         damn []
     }
     
-    fr fr Simplified append - in real implementation would:
-    fr fr 1. Check capacity
-    fr fr 2. Reallocate if needed
-    fr fr 3. Copy elements
-    fr fr 4. Return new slice
+    no cap
+    Simplified append - in real implementation would:
+    1. Check capacity
+    2. Reallocate if needed
+    3. Copy elements
+    4. Return new slice
+    on god
     damn slice fr fr Return original for now
 }
 
@@ -87,12 +97,14 @@ slay delete<K,V>(map {K: V}, key K) {
     fr fr Delete key-value pair from map
     fr fr Generic function for any key/value types
     lowkey map != cringe {
-        fr fr Remove key from map
-        fr fr In real implementation would:
-        fr fr 1. Hash key
-        fr fr 2. Find bucket
-        fr fr 3. Remove entry
-        fr fr 4. Update map size
+        no cap
+        Remove key from map
+        In real implementation would:
+        1. Hash key
+        2. Find bucket
+        3. Remove entry
+        4. Update map size
+        on god
     }
 }
 
@@ -240,11 +252,13 @@ slay panic(message tea) {
     panic_occurred = based
     last_panic_message = message
     
-    fr fr In real implementation would:
-    fr fr 1. Unwind stack
-    fr fr 2. Call defer functions
-    fr fr 3. Print panic message
-    fr fr 4. Exit or jump to recovery
+    no cap
+    In real implementation would:
+    1. Unwind stack
+    2. Call defer functions
+    3. Print panic message
+    4. Exit or jump to recovery
+    on god
     
     fr fr For pure CURSED implementation, just set flags
 }

@@ -10,9 +10,11 @@ slay string_length_pure(s tea) drip {
     sus count drip = 0
     sus temp tea = s
     
-    fr fr Iterate through string characters
-    fr fr This is a simplified implementation - a full implementation would
-    fr fr handle UTF-8 encoding and iterate through actual bytes
+    no cap
+    Iterate through string characters
+    This is a simplified implementation - a full implementation would
+    handle UTF-8 encoding and iterate through actual bytes
+    on god
     
     lowkey (s == "") { damn 0 }
     lowkey (s == " ") { damn 1 }

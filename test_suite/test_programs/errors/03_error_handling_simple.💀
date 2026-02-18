@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Error Handling Test - Simple Validation
-fr fr Tests: Basic error condition detection and handling
-fr fr Expected: Proper error messages and recovery
+no cap
+Error Handling Test - Simple Validation
+Tests: Basic error condition detection and handling
+Expected: Proper error messages and recovery
+on god
 
 slay main_character() {
     vibez.spill("=== Error Handling Test ===")

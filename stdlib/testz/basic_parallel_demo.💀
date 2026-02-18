@@ -1,7 +1,9 @@
-fr fr ================================
-fr fr Basic Parallel Test Runner Demo
-fr fr Simple demonstration of parallelism concepts
-fr fr ================================
+no cap
+================================
+Basic Parallel Test Runner Demo
+Simple demonstration of parallelism concepts
+================================
+on god
 
 sus parallel_enabled lit = based
 sus worker_count drip = 4
@@ -10,9 +12,11 @@ sus memory_limit_mb drip = 512
 sus verbose_output lit = based
 sus fail_fast lit = cringe
 
-fr fr ================================
-fr fr Configuration Demo
-fr fr ================================
+no cap
+================================
+Configuration Demo
+================================
+on god
 
 sus test_passed drip = 0
 sus test_failed drip = 0

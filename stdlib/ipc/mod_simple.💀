@@ -11,9 +11,11 @@ sus IPC_TYPE_PIPE tea = "named_pipe"
 sus IPC_TYPE_QUEUE tea = "message_queue"
 sus MSG_PRIORITY_NORMAL normie = 5
 
-fr fr ==============================================================================
-fr fr INITIALIZATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+INITIALIZATION
+==============================================================================
+on god
 
 fr fr Initialize IPC subsystem
 slay init_ipc() lit {
@@ -24,9 +26,11 @@ slay init_ipc() lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr NAMED PIPES - SIMPLIFIED
-fr fr ==============================================================================
+no cap
+==============================================================================
+NAMED PIPES - SIMPLIFIED
+==============================================================================
+on god
 
 fr fr Create named pipe (simplified - just increment counter)
 slay create_named_pipe(name tea, buffer_size normie) lit {
@@ -59,9 +63,11 @@ slay read_from_pipe(name tea) tea {
     damn "echo_data" fr fr Simplified - return fixed data
 }
 
-fr fr ==============================================================================
-fr fr MESSAGE QUEUES - SIMPLIFIED
-fr fr ==============================================================================
+no cap
+==============================================================================
+MESSAGE QUEUES - SIMPLIFIED
+==============================================================================
+on god
 
 fr fr Create message queue (simplified)
 slay create_message_queue(name tea, max_size normie) lit {
@@ -98,9 +104,11 @@ slay receive_message(queue_name tea) map {
     damn simple_msg
 }
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTIONS
+==============================================================================
+on god
 
 fr fr Get module info
 slay get_module_info() tea {

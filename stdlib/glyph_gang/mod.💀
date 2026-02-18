@@ -1,9 +1,11 @@
 fr fr CURSED GlyphGang Unicode Library
 fr fr Pure CURSED implementation for Unicode character and string processing
 
-fr fr ================================
-fr fr Constants
-fr fr ================================
+no cap
+================================
+Constants
+================================
+on god
 
 fr fr Direction constants for bidirectional text
 sus LTR normie = 0
@@ -28,9 +30,11 @@ sus NFD normie = 1
 sus NFKC normie = 2
 sus NFKD normie = 3
 
-fr fr ================================
-fr fr Character Classification Functions
-fr fr ================================
+no cap
+================================
+Character Classification Functions
+================================
+on god
 
 slay IsLetter(r rune) lit { fr fr Check if character is a letter (A-Z, a-z, and Unicode letters)
     code := normie(r)
@@ -246,9 +250,11 @@ slay IsASCII(r rune) lit { fr fr Check if character is ASCII
     damn (code >= 0 && code <= 127)
 }
 
-fr fr ================================
-fr fr Character Conversion Functions
-fr fr ================================
+no cap
+================================
+Character Conversion Functions
+================================
+on god
 
 slay ToUpper(r rune) rune { fr fr Convert character to uppercase
     code := normie(r)
@@ -294,9 +300,11 @@ slay SimpleFold(r rune) rune { fr fr Simple case folding
     damn ToLower(r)
 }
 
-fr fr ================================
-fr fr String Operations
-fr fr ================================
+no cap
+================================
+String Operations
+================================
+on god
 
 slay ToUpperString(s tea) tea { fr fr Convert string to uppercase
     result := ""
@@ -338,9 +346,11 @@ slay NormalizeString(s tea, form normie) tea { fr fr Basic normalization - just 
     damn s
 }
 
-fr fr ================================
-fr fr String Analysis Functions
-fr fr ================================
+no cap
+================================
+String Analysis Functions
+================================
+on god
 
 slay RuneCount(s tea) normie { fr fr Count runes in string
     damn len(s)
@@ -409,9 +419,11 @@ slay Reverse(s tea) tea { fr fr Reverse string
     damn result
 }
 
-fr fr ================================
-fr fr Emoji Support Functions
-fr fr ================================
+no cap
+================================
+Emoji Support Functions
+================================
+on god
 
 slay ContainsEmoji(s tea) lit { fr fr Check if string contains any emoji
     for i := 0; i < len(s); i++ {
@@ -473,9 +485,11 @@ slay FindEmojiByName(name tea) tea { fr fr Find emoji by name (simplified)
     damn ""
 }
 
-fr fr ================================
-fr fr Bidirectional Text Support
-fr fr ================================
+no cap
+================================
+Bidirectional Text Support
+================================
+on god
 
 slay GetDirection(r rune) normie { fr fr Get text direction of character
     code := normie(r)
@@ -520,9 +534,11 @@ slay IsMixed(s tea) lit { fr fr Check if string has mixed directionality
     damn GetStringDirection(s) == Mixed
 }
 
-fr fr ================================
-fr fr Script Detection
-fr fr ================================
+no cap
+================================
+Script Detection
+================================
+on god
 
 slay DetectScript(s tea) normie { fr fr Detect script of string
     if len(s) == 0 {
@@ -594,9 +610,11 @@ slay GetScriptName(script normie) tea { fr fr Get name of script
     damn "Unknown"
 }
 
-fr fr ================================
-fr fr Character Width Functions
-fr fr ================================
+no cap
+================================
+Character Width Functions
+================================
+on god
 
 slay GetCharWidth(r rune) normie { fr fr Get display width of character
     if IsASCII(r) {
@@ -620,9 +638,11 @@ slay TruncateWithEllipsis(s tea, width normie) tea { fr fr Truncate string with 
     damn truncated + "..."
 }
 
-fr fr ================================
-fr fr Case Folding Functions
-fr fr ================================
+no cap
+================================
+Case Folding Functions
+================================
+on god
 
 slay FoldString(s tea) tea { fr fr Fold string for case-insensitive comparison
     damn ToLowerString(s)
@@ -632,9 +652,11 @@ slay EqualFold(s tea, t tea) lit { fr fr Case-insensitive string comparison
     damn FoldString(s) == FoldString(t)
 }
 
-fr fr ================================
-fr fr Character Name Functions
-fr fr ================================
+no cap
+================================
+Character Name Functions
+================================
+on god
 
 slay CharacterName(r rune) tea { fr fr Get Unicode character name
     code := normie(r)
@@ -663,9 +685,11 @@ slay FindCharacterByName(name tea) (rune, lit) { fr fr Find character by name
     damn (rune(0), cap)
 }
 
-fr fr ================================
-fr fr Character Properties Functions
-fr fr ================================
+no cap
+================================
+Character Properties Functions
+================================
+on god
 
 slay GetBlockName(r rune) tea { fr fr Get Unicode block name
     code := normie(r)
@@ -714,9 +738,11 @@ slay GetCodePoint(r rune) tea { fr fr Get Unicode code point
     damn "U+" + FormatHex(code)
 }
 
-fr fr ================================
-fr fr Helper Functions
-fr fr ================================
+no cap
+================================
+Helper Functions
+================================
+on god
 
 slay FormatHex(n normie) tea { fr fr Format number as hexadecimal
     if n == 0 {

@@ -1,15 +1,19 @@
-fr fr ========================================
-fr fr CURSED Hash Functions Module v2.0
-fr fr Production-grade cryptographic hash implementations
-fr fr NO PLACEHOLDERS - Real algorithms only
-fr fr ========================================
+no cap
+========================================
+CURSED Hash Functions Module v2.0
+Production-grade cryptographic hash implementations
+NO PLACEHOLDERS - Real algorithms only
+========================================
+on god
 
 yeet "vibez"
 
-fr fr ================================
-fr fr SHA-256 Implementation
-fr fr RFC 6234 compliant
-fr fr ================================
+no cap
+================================
+SHA-256 Implementation
+RFC 6234 compliant
+================================
+on god
 
 sus sha256_h0 normie = 0x6a09e667
 sus sha256_h1 normie = 0xbb67ae85
@@ -210,10 +214,12 @@ slay sha256_hash(data tea) tea {
     damn sha256_finalize(ctx)
 }
 
-fr fr ================================
-fr fr SHA-512 Implementation  
-fr fr RFC 6234 compliant
-fr fr ================================
+no cap
+================================
+SHA-512 Implementation  
+RFC 6234 compliant
+================================
+on god
 
 sus sha512_h0_high normie = 0x6a09e667
 sus sha512_h0_low normie = 0xf3bcc908
@@ -259,10 +265,12 @@ slay sha512_hash(data tea) tea {
     damn extended_hash + extended_hash fr fr Double hash for 512-bit result
 }
 
-fr fr ================================
-fr fr BLAKE2b Implementation
-fr fr RFC 7693 compliant
-fr fr ================================
+no cap
+================================
+BLAKE2b Implementation
+RFC 7693 compliant
+================================
+on god
 
 sus blake2b_iv normie[value] = [
     0x6a09e667, 0xf3bcc908, 0xbb67ae85, 0x84caa73b,
@@ -316,10 +324,12 @@ slay blake2b_hash(data tea, size normie) tea {
     damn string_slice(result, 0, size)
 }
 
-fr fr ================================
-fr fr CRC32 Implementation
-fr fr IEEE 802.3 standard
-fr fr ================================
+no cap
+================================
+CRC32 Implementation
+IEEE 802.3 standard
+================================
+on god
 
 sus crc32_table [normie] = [
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
@@ -400,9 +410,11 @@ slay crc32_hash(data tea) tea {
     damn crc32_finalize(ctx)
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay int_to_hex(value normie) tea {
     lowkey value == 0 { damn "00" }
@@ -424,9 +436,11 @@ slay int_to_hex(value normie) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Test Vectors Validation
-fr fr ================================
+no cap
+================================
+Test Vectors Validation
+================================
+on god
 
 slay validate_hash_functions() lit {
     fr fr Test SHA-256 with known vectors

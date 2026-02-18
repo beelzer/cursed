@@ -1,8 +1,10 @@
-fr fr ================================
-fr fr CURSED Testing Framework v7.0 - Real Production Implementation
-fr fr Complete enterprise-grade testing framework with REAL implementations
-fr fr All simplified functions replaced with actual working code
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework v7.0 - Real Production Implementation
+Complete enterprise-grade testing framework with REAL implementations
+All simplified functions replaced with actual working code
+================================
+on god
 
 yeet "timez"      fr fr Real timing functions
 yeet "cryptz"     fr fr Cryptographically secure random
@@ -12,9 +14,11 @@ yeet "procesz"    fr fr Real process management
 yeet "vibez"      fr fr I/O operations
 yeet "reflectz"   fr fr Runtime reflection and stack traces
 
-fr fr ================================
-fr fr Core Framework State
-fr fr ================================
+no cap
+================================
+Core Framework State
+================================
+on god
 
 fr fr Test execution state
 sus test_count normie = 0
@@ -40,9 +44,11 @@ fr fr Error handling state for panic recovery
 sus panic_recovery_enabled lit = based
 sus current_panic_handler tea = ""
 
-fr fr ================================
-fr fr Data Structures with Full Implementation
-fr fr ================================
+no cap
+================================
+Data Structures with Full Implementation
+================================
+on god
 
 struct TestResult {
     test_name tea
@@ -128,9 +134,11 @@ struct TestDiscoveryResult {
     discovery_time normie
 }
 
-fr fr ================================
-fr fr Real Time Integration Functions
-fr fr ================================
+no cap
+================================
+Real Time Integration Functions
+================================
+on god
 
 slay get_current_time() normie {
     fr fr Real implementation using timez module
@@ -155,9 +163,11 @@ slay sleep_ms(duration normie) {
     timez.sleep_milliseconds(duration)
 }
 
-fr fr ================================
-fr fr Real Random Generation with Cryptz
-fr fr ================================
+no cap
+================================
+Real Random Generation with Cryptz
+================================
+on god
 
 slay random_int_range(min_val normie, max_val normie) normie {
     fr fr Cryptographically secure random using cryptz
@@ -201,9 +211,11 @@ slay bytes_to_int(bytes [normie]) normie {
     damn result
 }
 
-fr fr ================================
-fr fr Real Pattern Matching with Regexz
-fr fr ================================
+no cap
+================================
+Real Pattern Matching with Regexz
+================================
+on god
 
 slay should_run_test(test_name tea, pattern tea) lit {
     fr fr Real pattern matching using regexz
@@ -256,9 +268,11 @@ slay match_test_pattern(filename tea, pattern tea) lit {
     damn filename.contains(pattern)
 }
 
-fr fr ================================
-fr fr Real Test Discovery with Filez
-fr fr ================================
+no cap
+================================
+Real Test Discovery with Filez
+================================
+on god
 
 slay discover_tests(directory tea) TestDiscoveryResult {
     fr fr Real file system scanning using filez
@@ -342,9 +356,11 @@ struct ProcessResult {
     execution_time normie
 }
 
-fr fr ================================
-fr fr Real Error Handling and Panic Recovery
-fr fr ================================
+no cap
+================================
+Real Error Handling and Panic Recovery
+================================
+on god
 
 slay assert_throws(test_function tea, expected_error tea) {
     current_assertion_name = "assert_throws"
@@ -456,9 +472,11 @@ slay handle_test_failure() {
     }
 }
 
-fr fr ================================
-fr fr TestResult Factory Functions with Real Data
-fr fr ================================
+no cap
+================================
+TestResult Factory Functions with Real Data
+================================
+on god
 
 slay create_pass_result(assertion_name tea, message tea) TestResult {
     sus execution_time normie = get_current_time() - test_start_time
@@ -540,9 +558,11 @@ slay create_error_result(assertion_name tea, message tea, error_details tea) Tes
     }
 }
 
-fr fr ================================
-fr fr Real Performance and Memory Tracking
-fr fr ================================
+no cap
+================================
+Real Performance and Memory Tracking
+================================
+on god
 
 slay get_performance_metrics() PerformanceMetrics {
     fr fr Real performance metrics collection
@@ -621,9 +641,11 @@ slay get_stack_trace() tea {
     }
 }
 
-fr fr ================================
-fr fr Real Stack Trace Analysis Functions  
-fr fr ================================
+no cap
+================================
+Real Stack Trace Analysis Functions  
+================================
+on god
 
 slay get_runtime_stack_info() tea {
     fr fr Use reflectz to get runtime stack information
@@ -728,9 +750,11 @@ slay generate_basic_stack_trace() tea {
     damn basic
 }
 
-fr fr ================================
-fr fr Configuration Functions with Real Implementation
-fr fr ================================
+no cap
+================================
+Configuration Functions with Real Implementation
+================================
+on god
 
 slay create_default_config() TestConfig {
     damn TestConfig{
@@ -798,9 +822,11 @@ slay serialize_config_to_json(test_config TestConfig) tea {
     damn json
 }
 
-fr fr ================================
-fr fr Real Test Lifecycle Functions
-fr fr ================================
+no cap
+================================
+Real Test Lifecycle Functions
+================================
+on god
 
 slay test_start(name tea) {
     current_test_name = name
@@ -898,9 +924,11 @@ slay calculate_coverage_data() CoverageData {
     }
 }
 
-fr fr ================================
-fr fr Enhanced Assertion Functions
-fr fr ================================
+no cap
+================================
+Enhanced Assertion Functions
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     current_assertion_name = "assert_eq_int"
@@ -980,9 +1008,11 @@ slay show_string_diff(expected tea, actual tea) {
     }
 }
 
-fr fr ================================
-fr fr Advanced Mock System with Real Tracking
-fr fr ================================
+no cap
+================================
+Advanced Mock System with Real Tracking
+================================
+on god
 
 slay create_mock(name tea) MockFunction {
     lowkey config.verbose {
@@ -1110,9 +1140,11 @@ slay mock_verify_call_history(mock MockFunction, expected_args [tea]) {
     }
 }
 
-fr fr ================================
-fr fr Real Report Generation with File Output
-fr fr ================================
+no cap
+================================
+Real Report Generation with File Output
+================================
+on god
 
 slay generate_json_report() tea {
     sus json_content tea = create_comprehensive_json_report()
@@ -1211,9 +1243,11 @@ slay calculate_pass_rate() normie {
     damn (test_passed * 100) / test_count
 }
 
-fr fr ================================
-fr fr Real Test Summary with Enhanced Reporting
-fr fr ================================
+no cap
+================================
+Real Test Summary with Enhanced Reporting
+================================
+on god
 
 slay print_test_summary() {
     sus suite_time normie = calculate_total_suite_time()
@@ -1346,9 +1380,11 @@ slay print_detailed_failure_report() {
     }
 }
 
-fr fr ================================
-fr fr Additional Report Formats
-fr fr ================================
+no cap
+================================
+Additional Report Formats
+================================
+on god
 
 slay generate_junit_report() {
     sus xml_content tea = create_junit_xml()
@@ -1543,9 +1579,11 @@ slay escape_xml_string(str tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Real Performance and Coverage Analysis
-fr fr ================================
+no cap
+================================
+Real Performance and Coverage Analysis
+================================
+on god
 
 slay get_performance_metrics() PerformanceMetrics {
     fr fr Real performance metrics collection
@@ -1678,9 +1716,11 @@ slay serialize_config_to_json(config TestConfig) tea {
     damn json
 }
 
-fr fr ================================
-fr fr Main Test Runner with Real Implementation
-fr fr ================================
+no cap
+================================
+Main Test Runner with Real Implementation
+================================
+on god
 
 slay run_all_tests() normie {
     fr fr Run comprehensive test suite
@@ -1721,9 +1761,11 @@ slay run_all_discovered_tests(directory tea) normie {
     damn total_exit_code
 }
 
-fr fr ================================
-fr fr State Management and Cleanup
-fr fr ================================
+no cap
+================================
+State Management and Cleanup
+================================
+on god
 
 slay reset_test_state() {
     test_count = 0
@@ -1752,17 +1794,21 @@ slay cleanup_test_resources() {
         vibez.spill("🧹 Cleaning up test resources...")
     }
     
-    fr fr In real implementation, this would clean up:
-    fr fr - Temporary files
-    fr fr - Mock objects
-    fr fr - Network connections
-    fr fr - Database connections
-    fr fr - Memory allocations
+    no cap
+    In real implementation, this would clean up:
+    - Temporary files
+    - Mock objects
+    - Network connections
+    - Database connections
+    - Memory allocations
+    on god
 }
 
-fr fr ================================
-fr fr Export Functions - All Real Implementations Ready
-fr fr ================================
+no cap
+================================
+Export Functions - All Real Implementations Ready
+================================
+on god
 
 vibez.spill("🚀 CURSED Testing Framework v7.0 - Real Production Implementation loaded!")
 vibez.spill("✨ All simplified implementations replaced with real functionality!")

@@ -1,12 +1,14 @@
-fr fr/ MongoDB Database Demo - CURSED Programming Language
-fr fr/ 
-fr fr/ This example demonstrates comprehensive MongoDB operations including:
-fr fr/ - Connection management with configuration
-fr fr/ - CRUD operations (Create, Read, Update, Delete)
-fr fr/ - Query building and filtering
-fr fr/ - Index management and aggregation pipelines
-fr fr/ - Collection management and database operations
-fr fr/ - Error handling and async operations
+no cap
+/ MongoDB Database Demo - CURSED Programming Language
+/ 
+/ This example demonstrates comprehensive MongoDB operations including:
+/ - Connection management with configuration
+/ - CRUD operations (Create, Read, Update, Delete)
+/ - Query building and filtering
+/ - Index management and aggregation pipelines
+/ - Collection management and database operations
+/ - Error handling and async operations
+on god
 
 yeet "stdlib::packages::db_nosql"
 yeet "stdlib::io"

@@ -1,9 +1,11 @@
 yeet "testz"
 yeet "asn1_mood"
 
-fr fr Comprehensive ASN.1 Module Test Suite
-fr fr Tests all ASN.1 encoding/decoding functionality
-fr fr Uses testz v2.0 testing framework
+no cap
+Comprehensive ASN.1 Module Test Suite
+Tests all ASN.1 encoding/decoding functionality
+Uses testz v2.0 testing framework
+on god
 
 fr fr Test ASN.1 tag creation
 slay test_asn1_tag_creation() {

@@ -4,9 +4,11 @@ yeet "collections"
 yeet "error_drip"
 yeet "dropz"
 
-fr fr Compiler Core Module - Essential components for self-hosting compiler
-fr fr Provides lexical analysis, parsing, AST manipulation, symbol tables, type system, 
-fr fr code generation, and error reporting infrastructure
+no cap
+Compiler Core Module - Essential components for self-hosting compiler
+Provides lexical analysis, parsing, AST manipulation, symbol tables, type system, 
+code generation, and error reporting infrastructure
+on god
 
 fr fr Token types for lexical analysis
 facts TokenType {

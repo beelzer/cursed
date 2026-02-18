@@ -235,8 +235,10 @@ slay demonstrateWebServer() {
     vibez.spill("📊 Visit /api/stats for statistics")
     vibez.spill("📁 Static files served from /static/")
     
-    fr fr In a real application, you would call:
-    fr fr glowup_http.Serve(":8080", router)
-    fr fr For this demo, we just show the setup
+    no cap
+    In a real application, you would call:
+    glowup_http.Serve(":8080", router)
+    For this demo, we just show the setup
+    on god
     vibez.spill("💡 Web server setup complete (not actually starting in demo)")
 }

@@ -1,13 +1,17 @@
-fr fr ================================
-fr fr CURSED Parallel Test Runner with Environment Support
-fr fr Advanced parallelism control, resource management, and configuration
-fr fr ================================
+no cap
+================================
+CURSED Parallel Test Runner with Environment Support
+Advanced parallelism control, resource management, and configuration
+================================
+on god
 
 yeet "testz"
 
-fr fr ================================
-fr fr Environment Variable Support
-fr fr ================================
+no cap
+================================
+Environment Variable Support
+================================
+on god
 
 struct EnvironmentConfig {
     cursed_test_parallel lit
@@ -94,9 +98,11 @@ slay get_env_bool(key tea, default_value lit) lit {
     damn default_value
 }
 
-fr fr ================================
-fr fr Parallelism Control System
-fr fr ================================
+no cap
+================================
+Parallelism Control System
+================================
+on god
 
 struct ParallelismConfig {
     execution_mode tea  fr fr "sequential", "parallel", "adaptive"
@@ -185,9 +191,11 @@ slay initialize_resource_manager(parallel_config ParallelismConfig) ResourceMana
     }
 }
 
-fr fr ================================
-fr fr Worker Pool Management
-fr fr ================================
+no cap
+================================
+Worker Pool Management
+================================
+on god
 
 struct WorkerPool {
     workers [WorkerState]
@@ -281,9 +289,11 @@ slay create_performance_metrics() PerformanceMetrics {
     }
 }
 
-fr fr ================================
-fr fr Test Execution Strategies
-fr fr ================================
+no cap
+================================
+Test Execution Strategies
+================================
+on god
 
 slay execute_tests_sequential(test_tasks [TestTask], env_config EnvironmentConfig) [TestExecutionResult] {
     vibez.spill("🔄 Executing", len(test_tasks), "tests sequentially...")
@@ -364,9 +374,11 @@ slay execute_tests_adaptive(test_tasks [TestTask], parallel_config ParallelismCo
     }
 }
 
-fr fr ================================
-fr fr Resource Management
-fr fr ================================
+no cap
+================================
+Resource Management
+================================
+on god
 
 slay monitor_resources(resource_manager ResourceManager, worker_pool WorkerPool) ResourceManager {
     fr fr Update resource usage statistics
@@ -458,9 +470,11 @@ slay calculate_worker_score(worker WorkerState, task TestTask, resource_manager 
     damn base_score
 }
 
-fr fr ================================
-fr fr Test Task Management
-fr fr ================================
+no cap
+================================
+Test Task Management
+================================
+on god
 
 slay create_test_task(test_file tea, test_name tea, task_id normie) TestTask {
     damn TestTask{
@@ -546,9 +560,11 @@ slay execute_with_worker_pool(worker_pool WorkerPool, resource_manager ResourceM
     damn results
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay execute_single_test(task TestTask, env_config EnvironmentConfig) TestExecutionResult {
     sus start_time normie = get_current_timestamp()
@@ -591,9 +607,11 @@ slay execute_task_with_worker(task TestTask, worker_id normie, env_config Enviro
 }
 
 slay cleanup_test_environment(task TestTask) {
-    fr fr Cleanup any resources used by the test
-    fr fr In real implementation, would clean temp files, connections, etc.
-    fr fr For now, just a placeholder
+    no cap
+    Cleanup any resources used by the test
+    In real implementation, would clean temp files, connections, etc.
+    For now, just a placeholder
+    on god
 }
 
 slay print_parallel_execution_summary(worker_pool WorkerPool, resource_manager ResourceManager, total_time normie) {
@@ -609,9 +627,11 @@ slay print_parallel_execution_summary(worker_pool WorkerPool, resource_manager R
     vibez.spill("═══════════════════════════════════")
 }
 
-fr fr ================================
-fr fr Configuration and Main Entry Point
-fr fr ================================
+no cap
+================================
+Configuration and Main Entry Point
+================================
+on god
 
 struct ParallelTestRunnerConfig {
     env_config EnvironmentConfig
@@ -684,9 +704,11 @@ slay main_character() {
     }
 }
 
-fr fr ================================
-fr fr Helper Functions (Simplified implementations)
-fr fr ================================
+no cap
+================================
+Helper Functions (Simplified implementations)
+================================
+on god
 
 slay append_worker_state(workers [WorkerState], worker WorkerState) [WorkerState] {
     fr fr Simplified append - in real implementation would handle dynamic arrays

@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Overflow Edge Cases Test
-fr fr Tests: Integer overflow promotion and edge values
-fr fr Expected: No crashes, proper type promotion
+no cap
+Overflow Edge Cases Test
+Tests: Integer overflow promotion and edge values
+Expected: No crashes, proper type promotion
+on god
 
 slay main_character() {
     vibez.spill("=== Overflow Edge Cases Test ===")

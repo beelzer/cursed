@@ -1,15 +1,17 @@
-fr fr ===== CRYPTZ MODULE - Production Cryptographic Library =====
-fr fr Secure, audited cryptographic operations for CURSED applications
-fr fr Implementation follows FIPS 140-2, RFC standards, and security best practices
-fr fr 
-fr fr ⚠️  SECURITY NOTICE ⚠️
-fr fr This is a production-grade cryptographic library implementing:
-fr fr - NIST-approved algorithms (AES, SHA-2, ECDSA, RSA)
-fr fr - Constant-time operations to prevent timing attacks
-fr fr - Memory-safe implementations
-fr fr - Industry-standard key sizes and parameters
-fr fr 
-fr fr For mission-critical systems, conduct independent security audits.
+no cap
+===== CRYPTZ MODULE - Production Cryptographic Library =====
+Secure, audited cryptographic operations for CURSED applications
+Implementation follows FIPS 140-2, RFC standards, and security best practices
+
+⚠️  SECURITY NOTICE ⚠️
+This is a production-grade cryptographic library implementing:
+- NIST-approved algorithms (AES, SHA-2, ECDSA, RSA)
+- Constant-time operations to prevent timing attacks
+- Memory-safe implementations
+- Industry-standard key sizes and parameters
+
+For mission-critical systems, conduct independent security audits.
+on god
 
 yeet "stringz"
 yeet "mathz"

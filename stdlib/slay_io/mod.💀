@@ -1,9 +1,11 @@
 fr fr Slay IO module - Buffered I/O operations
 fr fr Provides efficient reading and writing with internal buffering for optimal performance
 
-fr fr ================================
-fr fr Buffered Reader Functions
-fr fr ================================
+no cap
+================================
+Buffered Reader Functions
+================================
+on god
 
 slay NewSlayReader(reader tea) tea {
     sus bufferedReader tea = "SlayReader{" + reader + ", buffer: 4096}"
@@ -57,9 +59,11 @@ slay ReaderSize(reader tea) normie {
     damn 4096
 }
 
-fr fr ================================
-fr fr Buffered Writer Functions
-fr fr ================================
+no cap
+================================
+Buffered Writer Functions
+================================
+on god
 
 slay NewSlayWriter(writer tea) tea {
     sus bufferedWriter tea = "SlayWriter{" + writer + ", buffer: 4096}"
@@ -108,9 +112,11 @@ slay WriterSize(writer tea) normie {
     damn 4096
 }
 
-fr fr ================================
-fr fr Scanner Functions
-fr fr ================================
+no cap
+================================
+Scanner Functions
+================================
+on god
 
 slay NewSlayScanner(reader tea) tea {
     sus scanner tea = "SlayScanner{" + reader + ", position:0}"
@@ -166,9 +172,11 @@ slay SetScanBuffer(scanner tea, buffer tea, maxSize normie) tea {
     damn "Buffer set"
 }
 
-fr fr ================================
-fr fr Scanner Split Functions
-fr fr ================================
+no cap
+================================
+Scanner Split Functions
+================================
+on god
 
 slay ScanLines(data tea, atEOF lit) tea {
     vibez.spill("Scanning lines from data, EOF: " + tea(atEOF))
@@ -190,9 +198,11 @@ slay ScanBytesData(data tea, atEOF lit) tea {
     damn "Bytes{0x48, 0x65, 0x6C, 0x6C, 0x6F}"
 }
 
-fr fr ================================
-fr fr ReadWriter Functions
-fr fr ================================
+no cap
+================================
+ReadWriter Functions
+================================
+on god
 
 slay NewSlayReadWriter(reader tea, writer tea) tea {
     sus readWriter tea = "SlayReadWriter{reader: " + reader + ", writer: " + writer + "}"
@@ -205,9 +215,11 @@ slay ReadWriteData(readWriter tea, data tea) tea {
     damn "Data processed"
 }
 
-fr fr ================================
-fr fr Special Phrase Reader
-fr fr ================================
+no cap
+================================
+Special Phrase Reader
+================================
+on god
 
 slay NewSlayPhraseReader(reader tea) tea {
     sus phraseReader tea = "SlayPhraseReader{" + reader + ", phrases: GenZ}"
@@ -227,9 +239,11 @@ slay ExpandPhrase(phrase tea) tea {
     damn expanded
 }
 
-fr fr ================================
-fr fr I/O Utility Functions
-fr fr ================================
+no cap
+================================
+I/O Utility Functions
+================================
+on god
 
 slay CopyData(writer tea, reader tea) normie {
     vibez.spill("Copying data from " + reader + " to " + writer)
@@ -251,9 +265,11 @@ slay DiscardData(reader tea, count normie) normie {
     damn count
 }
 
-fr fr ================================
-fr fr Buffer Management
-fr fr ================================
+no cap
+================================
+Buffer Management
+================================
+on god
 
 slay GetDefaultBufferSize() normie {
     damn 4096
@@ -268,9 +284,11 @@ slay OptimalBufferSize(operation tea) normie {
     damn 8192
 }
 
-fr fr ================================
-fr fr Performance Monitoring
-fr fr ================================
+no cap
+================================
+Performance Monitoring
+================================
+on god
 
 slay GetReaderStats(reader tea) tea {
     sus stats tea = "ReaderStats{bytes: 1024, operations: 42, efficiency: 95%}"

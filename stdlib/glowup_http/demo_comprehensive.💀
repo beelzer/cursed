@@ -9,9 +9,11 @@ vibez.spill("=" * 50)
 fr fr Initialize the framework
 glowup_http_main()
 
-fr fr =============================================================================
-fr fr 1. HTTP SERVER DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+1. HTTP SERVER DEMO
+=============================================================================
+on god
 
 vibez.spill("📡 HTTP Server Demo")
 vibez.spill("-" * 20)
@@ -56,9 +58,11 @@ sus missing_req HttpRequest = http_request_new(METHOD_GET, "/missing")
 sus missing_resp HttpResponse = http_handle_request(missing_req)
 vibez.spill("GET /missing: " + http_int_to_string(missing_resp.status_code) + " - " + missing_resp.body)
 
-fr fr =============================================================================
-fr fr 2. HTTP CLIENT DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+2. HTTP CLIENT DEMO
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("📱 HTTP Client Demo")
@@ -89,9 +93,11 @@ vibez.spill("PUT: " + http_int_to_string(put_resp.status_code) + " - " + put_res
 sus delete_resp HttpResponse = http_client_delete("https://api.example.com/users/1")
 vibez.spill("DELETE: " + http_int_to_string(delete_resp.status_code) + " - " + delete_resp.body)
 
-fr fr =============================================================================
-fr fr 3. WEBSOCKET DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+3. WEBSOCKET DEMO
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("🔌 WebSocket Demo")
@@ -124,9 +130,11 @@ websocket_send_binary("Binary message content")
 websocket_ping()
 websocket_pong()
 
-fr fr =============================================================================
-fr fr 4. MIDDLEWARE DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+4. MIDDLEWARE DEMO
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("🛡️ Middleware Demo")
@@ -149,9 +157,11 @@ fr fr Test authentication middleware
 sus auth_result lit = http_middleware_auth(middleware_req)
 vibez.spill("Authentication result: " + (auth_result ? "authorized" : "unauthorized"))
 
-fr fr =============================================================================
-fr fr 5. SESSION & COOKIE DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+5. SESSION & COOKIE DEMO
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("🍪 Session & Cookie Demo")
@@ -172,9 +182,11 @@ vibez.spill("Cookie set: " + cookie_header)
 sus cookie_value tea = cookie_get("Cookie: session_id=" + session_id, "session_id")
 vibez.spill("Cookie retrieved: " + cookie_value)
 
-fr fr =============================================================================
-fr fr 6. TEMPLATE & JSON DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+6. TEMPLATE & JSON DEMO
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("📄 Template & JSON Demo")
@@ -193,9 +205,11 @@ vibez.spill("JSON parsed: " + parsed_json)
 sus json_string tea = json_stringify("demo_object")
 vibez.spill("JSON stringified: " + json_string)
 
-fr fr =============================================================================
-fr fr 7. URL UTILITIES DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+7. URL UTILITIES DEMO
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("🌐 URL Utilities Demo")
@@ -212,9 +226,11 @@ vibez.spill("URL encoded: " + encoded_url)
 sus decoded_url tea = url_decode("hello%20world")
 vibez.spill("URL decoded: " + decoded_url)
 
-fr fr =============================================================================
-fr fr 8. ADVANCED FEATURES DEMO
-fr fr =============================================================================
+no cap
+=============================================================================
+8. ADVANCED FEATURES DEMO
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("⚡ Advanced Features Demo")
@@ -236,9 +252,11 @@ vibez.spill("OK: " + http_int_to_string(HTTP_OK))
 vibez.spill("Created: " + http_int_to_string(HTTP_CREATED))
 vibez.spill("Not Found: " + http_int_to_string(HTTP_NOT_FOUND))
 
-fr fr =============================================================================
-fr fr 9. PERFORMANCE & LOAD TESTING
-fr fr =============================================================================
+no cap
+=============================================================================
+9. PERFORMANCE & LOAD TESTING
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("🚀 Performance Test")
@@ -259,9 +277,11 @@ bestie j := 0; j < 5; j++ {
     websocket_send_text(msg)
 }
 
-fr fr =============================================================================
-fr fr 10. FINAL SUMMARY
-fr fr =============================================================================
+no cap
+=============================================================================
+10. FINAL SUMMARY
+=============================================================================
+on god
 
 vibez.spill("")
 vibez.spill("✅ Demo Complete - All Features Tested")

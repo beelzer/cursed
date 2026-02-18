@@ -1,9 +1,11 @@
 fr fr fs_test_vibe Module - Functional Implementation
 fr fr Filesystem testing utilities for CURSED programs
 
-fr fr ================================
-fr fr Core Functions (No Complex Types)
-fr fr ================================
+no cap
+================================
+Core Functions (No Complex Types)
+================================
+on god
 
 fr fr Create a simple filesystem test result
 slay create_fs_test_result(success lit, message tea) tea {

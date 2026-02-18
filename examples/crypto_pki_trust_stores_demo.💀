@@ -1,14 +1,16 @@
-fr fr fr fr PKI Trust Stores Demo - Real Certificate Validation
-fr fr 
-fr fr This program demonstrates comprehensive PKI trust store functionality:
-fr fr - Trust store management and configuration
-fr fr - Certificate validation and chain building
-fr fr - System trust store integration
-fr fr - Trust policy enforcement and validation
-fr fr - Revocation checking with CRL and OCSP
-fr fr - Cross-platform trust store support
-fr fr - Import/export functionality
-fr fr - Real cryptographic validation
+no cap
+fr fr PKI Trust Stores Demo - Real Certificate Validation
+
+This program demonstrates comprehensive PKI trust store functionality:
+- Trust store management and configuration
+- Certificate validation and chain building
+- System trust store integration
+- Trust policy enforcement and validation
+- Revocation checking with CRL and OCSP
+- Cross-platform trust store support
+- Import/export functionality
+- Real cryptographic validation
+on god
 
 yeet "stdlib::crypto_pki::trust_stores"
 yeet "stdlib::crypto_pki::types"

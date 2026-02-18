@@ -7,9 +7,11 @@ yeet "encode_mood"
 fr fr Comprehensive Networking Module - Pure CURSED Implementation
 fr fr Enterprise-grade networking with TCP/UDP, DNS, SSL/TLS, WebSocket, HTTP
 
-fr fr =============================================================================
-fr fr CORE NETWORKING TYPES AND CONSTANTS
-fr fr =============================================================================
+no cap
+=============================================================================
+CORE NETWORKING TYPES AND CONSTANTS
+=============================================================================
+on god
 
 be_like SocketType = normie
 facts {
@@ -74,9 +76,11 @@ be_like WebSocketFrame = struct {
     is_masked lit
 }
 
-fr fr =============================================================================
-fr fr TCP SOCKET OPERATIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+TCP SOCKET OPERATIONS
+=============================================================================
+on god
 
 slay tcp_socket_create() Socket {
     sus sock Socket
@@ -135,9 +139,11 @@ slay tcp_socket_close(sock *Socket) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr UDP SOCKET OPERATIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+UDP SOCKET OPERATIONS
+=============================================================================
+on god
 
 slay udp_socket_create() Socket {
     sus sock Socket
@@ -171,9 +177,11 @@ slay udp_socket_recvfrom(sock *Socket, buffer_size normie) (tea, NetworkAddress)
     damn ("", addr)
 }
 
-fr fr =============================================================================
-fr fr DNS RESOLUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+DNS RESOLUTION
+=============================================================================
+on god
 
 slay dns_system_resolve_ipv4(hostname tea) tea { fr fr System DNS resolution for IPv4
     fr fr In a real implementation, this would call getaddrinfo() or similar
@@ -200,9 +208,11 @@ slay dns_resolve_a(hostname tea) tea { fr fr Pure CURSED DNS A record resolution
         damn "127.0.0.1"
     }
     
-    fr fr Real DNS resolution logic (placeholder for system calls)
-    fr fr In production, this would use getaddrinfo() or similar system calls
-    fr fr For now, return common public DNS for testing
+    no cap
+    Real DNS resolution logic (placeholder for system calls)
+    In production, this would use getaddrinfo() or similar system calls
+    For now, return common public DNS for testing
+    on god
     vibe_check (stringz.contains(hostname, ".")) {
         fr fr Valid FQDN pattern detected, attempt real resolution
         damn dns_system_resolve_ipv4(hostname)
@@ -251,9 +261,11 @@ slay dns_reverse_lookup(ip tea) tea { fr fr Pure CURSED reverse DNS lookup
     damn "unknown.host"
 }
 
-fr fr =============================================================================
-fr fr SSL/TLS IMPLEMENTATION
-fr fr =============================================================================
+no cap
+=============================================================================
+SSL/TLS IMPLEMENTATION
+=============================================================================
+on god
 
 slay ssl_context_create() SSLContext {
     sus ctx SSLContext
@@ -297,9 +309,11 @@ slay ssl_decrypt_data(encrypted_data tea, ctx SSLContext) tea { fr fr Pure CURSE
     damn decrypted
 }
 
-fr fr =============================================================================
-fr fr HTTP UTILITIES
-fr fr =============================================================================
+no cap
+=============================================================================
+HTTP UTILITIES
+=============================================================================
+on god
 
 slay http_request_create(method tea, url tea) HTTPRequest {
     sus req HTTPRequest
@@ -393,9 +407,11 @@ slay http_serialize_response(resp HTTPResponse) tea { fr fr Pure CURSED HTTP res
     damn response
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET IMPLEMENTATION
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET IMPLEMENTATION
+=============================================================================
+on god
 
 slay websocket_generate_key() tea { fr fr Pure CURSED WebSocket key generation
     sus key = crypto.generate_random_string(16)
@@ -449,9 +465,11 @@ slay websocket_handshake_response(client_key tea) tea { fr fr Pure CURSED WebSoc
     damn response
 }
 
-fr fr =============================================================================
-fr fr ADVANCED NETWORK PROTOCOLS
-fr fr =============================================================================
+no cap
+=============================================================================
+ADVANCED NETWORK PROTOCOLS
+=============================================================================
+on god
 
 slay smtp_send_email(server tea, port normie, from tea, to tea, subject tea, body tea) lit { fr fr Pure CURSED SMTP email sending
     sus sock = tcp_socket_create()
@@ -521,9 +539,11 @@ slay traceroute_host(hostname tea, max_hops normie) [30]tea { fr fr Pure CURSED 
     damn hops
 }
 
-fr fr =============================================================================
-fr fr NETWORK UTILITIES AND HELPERS
-fr fr =============================================================================
+no cap
+=============================================================================
+NETWORK UTILITIES AND HELPERS
+=============================================================================
+on god
 
 slay ip_address_validate(ip tea) lit { fr fr Pure CURSED IP address validation
     sus parts = stringz.split(ip, ".")
@@ -609,9 +629,11 @@ slay get_public_ip() tea { fr fr Pure CURSED public IP detection
     damn "0.0.0.0"
 }
 
-fr fr =============================================================================
-fr fr MODULE VALIDATION AND STATUS
-fr fr =============================================================================
+no cap
+=============================================================================
+MODULE VALIDATION AND STATUS
+=============================================================================
+on god
 
 slay networking_module_info() tea {
     damn "CURSED Networking Module v3.0 - Complete TCP/UDP/DNS/SSL/HTTP/WebSocket Implementation"

@@ -1,13 +1,17 @@
-fr fr ==========================================
-fr fr ENHANCED STRING OPERATIONS - Complete Implementation
-fr fr Advanced string processing with proper algorithms and UTF-8 support
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED STRING OPERATIONS - Complete Implementation
+Advanced string processing with proper algorithms and UTF-8 support
+==========================================
+on god
 
 yeet "vibez"
 
-fr fr ==========================================
-fr fr Enhanced String Splitting Implementation
-fr fr ==========================================
+no cap
+==========================================
+Enhanced String Splitting Implementation
+==========================================
+on god
 
 squad StringSplitResult {
     sus parts tea[value]
@@ -140,9 +144,11 @@ slay string_split_with_quotes(input tea, delimiter tea, quote_char tea) StringSp
     damn result
 }
 
-fr fr ==========================================
-fr fr Environment Variable Expansion
-fr fr ==========================================
+no cap
+==========================================
+Environment Variable Expansion
+==========================================
+on god
 
 squad EnvExpansionResult {
     sus expanded_text tea
@@ -338,9 +344,11 @@ slay expand_simple_variable(input tea, start_pos drip) VarExpansionResult {
     damn result
 }
 
-fr fr ==========================================
-fr fr Efficient Array Operations
-fr fr ==========================================
+no cap
+==========================================
+Efficient Array Operations
+==========================================
+on god
 
 slay array_join_strings(strings tea[value], separator tea) tea {
     fr fr Efficiently join array of strings with separator
@@ -436,9 +444,11 @@ slay array_unique_strings(strings tea[value]) tea[value]{
     damn unique
 }
 
-fr fr ==========================================
-fr fr Advanced Pattern Matching
-fr fr ==========================================
+no cap
+==========================================
+Advanced Pattern Matching
+==========================================
+on god
 
 squad PatternMatchResult {
     sus matches lit
@@ -545,9 +555,11 @@ slay glob_match_recursive(input tea, pattern tea, input_pos drip, pattern_pos dr
     }
 }
 
-fr fr ==========================================
-fr fr String Transformation Functions
-fr fr ==========================================
+no cap
+==========================================
+String Transformation Functions
+==========================================
+on god
 
 slay string_to_kebab_case(input tea) tea {
     fr fr Convert string to kebab-case (lowercase with hyphens)
@@ -634,9 +646,11 @@ slay string_to_camel_case(input tea) tea {
     damn result
 }
 
-fr fr ==========================================
-fr fr Character Classification Functions
-fr fr ==========================================
+no cap
+==========================================
+Character Classification Functions
+==========================================
+on god
 
 slay is_var_name_start(char tea) lit {
     fr fr Check if character can start a variable name
@@ -696,9 +710,11 @@ slay to_uppercase_char(char tea) tea {
     damn char
 }
 
-fr fr ==========================================
-fr fr Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+Utility Functions
+==========================================
+on god
 
 slay char_to_ascii(char tea) drip {
     fr fr Convert character to ASCII value

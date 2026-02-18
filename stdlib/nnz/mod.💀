@@ -1211,9 +1211,11 @@ slay gpu_select_best_device(devices GPUDevice[value]) GPUDevice {
 }
 
 slay gpu_check_cuda_runtime() lit {
-    fr fr Check if CUDA runtime is available
-    fr fr In real implementation, would dlopen libcuda.so/nvcuda.dll and check functions
-    fr fr For now, simulate availability based on environment or config
+    no cap
+    Check if CUDA runtime is available
+    In real implementation, would dlopen libcuda.so/nvcuda.dll and check functions
+    For now, simulate availability based on environment or config
+    on god
     damn based  fr fr Assume CUDA is available for demonstration
 }
 
@@ -1396,12 +1398,14 @@ slay gpu_matrix_multiply_optimized(a meal[value], b meal[value], c meal[value], 
 }
 
 slay gpu_launch_cuda_matmul_kernel(buffer_a GPUBuffer, buffer_b GPUBuffer, buffer_c GPUBuffer, m drip, n drip, k drip) cringe {
-    fr fr Launch CUDA matrix multiplication kernel
-    fr fr In real implementation, this would:
-    fr fr 1. Load CUDA kernel from embedded PTX code
-    fr fr 2. Configure grid and block dimensions
-    fr fr 3. Launch kernel with cuLaunchKernel
-    fr fr 4. Synchronize with cuStreamSynchronize
+    no cap
+    Launch CUDA matrix multiplication kernel
+    In real implementation, this would:
+    1. Load CUDA kernel from embedded PTX code
+    2. Configure grid and block dimensions
+    3. Launch kernel with cuLaunchKernel
+    4. Synchronize with cuStreamSynchronize
+    on god
     
     vibez.spill("Launching CUDA matrix multiplication kernel (", m, "×", k, ") × (", k, "×", n, ")")
     
@@ -1412,14 +1416,16 @@ slay gpu_launch_cuda_matmul_kernel(buffer_a GPUBuffer, buffer_b GPUBuffer, buffe
 }
 
 slay gpu_launch_opencl_matmul_kernel(buffer_a GPUBuffer, buffer_b GPUBuffer, buffer_c GPUBuffer, m drip, n drip, k drip) cringe {
-    fr fr Launch OpenCL matrix multiplication kernel
-    fr fr In real implementation, this would:
-    fr fr 1. Create OpenCL program from source
-    fr fr 2. Build program for device
-    fr fr 3. Create kernel object
-    fr fr 4. Set kernel arguments
-    fr fr 5. Enqueue kernel execution
-    fr fr 6. Wait for completion
+    no cap
+    Launch OpenCL matrix multiplication kernel
+    In real implementation, this would:
+    1. Create OpenCL program from source
+    2. Build program for device
+    3. Create kernel object
+    4. Set kernel arguments
+    5. Enqueue kernel execution
+    6. Wait for completion
+    on god
     
     vibez.spill("Launching OpenCL matrix multiplication kernel (", m, "×", k, ") × (", k, "×", n, ")")
     

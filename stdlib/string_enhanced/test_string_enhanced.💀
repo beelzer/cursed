@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "string_enhanced"
 
-fr fr ================================
-fr fr String Enhanced Module Tests
-fr fr Comprehensive testing of advanced string operations
-fr fr ================================
+no cap
+================================
+String Enhanced Module Tests
+Comprehensive testing of advanced string operations
+================================
+on god
 
 test_start("String Intern Test")
 sus intern StringIntern = StringIntern_new()

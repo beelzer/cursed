@@ -1,11 +1,13 @@
-fr fr CURSED Array Operations Module - Essential Array Functions
-fr fr Pure CURSED implementation for maximum compatibility
-fr fr 
-fr fr NOTE: CURSED has excellent built-in array support:
-fr fr - Array creation: sus arr drip[value] = [1, 2, 3]
-fr fr - Array indexing: arr[0], arr[1], etc.
-fr fr - Array length: len(arr) (built-in function)
-fr fr - Array types: drip[value] for integers, tea[value] for strings
+no cap
+CURSED Array Operations Module - Essential Array Functions
+Pure CURSED implementation for maximum compatibility
+
+NOTE: CURSED has excellent built-in array support:
+- Array creation: sus arr drip[value] = [1, 2, 3]
+- Array indexing: arr[0], arr[1], etc.
+- Array length: len(arr) (built-in function)
+- Array types: drip[value] for integers, tea[value] for strings
+on god
 
 fr fr ===== ARRAY ARITHMETIC =====
 

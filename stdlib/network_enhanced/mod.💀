@@ -1,13 +1,17 @@
-fr fr CURSED Enhanced Network Module v3.0
-fr fr Extended networking with URL parsing, email validation, and enhanced HTTP functions
-fr fr Pure CURSED implementation for self-hosting compatibility
+no cap
+CURSED Enhanced Network Module v3.0
+Extended networking with URL parsing, email validation, and enhanced HTTP functions
+Pure CURSED implementation for self-hosting compatibility
+on god
 
 yeet "testz"
 yeet "../net/mod.💀" fr fr Import base networking functionality
 
-fr fr ================================
-fr fr Enhanced HTTP Functions  
-fr fr ================================
+no cap
+================================
+Enhanced HTTP Functions  
+================================
+on god
 
 slay http_get(url tea) tea {
     fr fr Enhanced HTTP GET with better response handling
@@ -96,9 +100,11 @@ slay enhanced_http_request(method tea, url tea, headers tea, body tea) HTTPRespo
     damn response
 }
 
-fr fr ================================
-fr fr URL Parsing
-fr fr ================================
+no cap
+================================
+URL Parsing
+================================
+on god
 
 be_like URLParts squad {
     scheme tea    fr fr http, https, ftp, etc
@@ -200,9 +206,11 @@ slay parse_url(url tea) URLParts {
     damn parts
 }
 
-fr fr ================================
-fr fr Email Validation
-fr fr ================================
+no cap
+================================
+Email Validation
+================================
+on god
 
 slay validate_email(email tea) lit {
     fr fr Basic email validation - simplified for pure CURSED
@@ -281,9 +289,11 @@ slay validate_email_chars(part tea) lit {
     damn based
 }
 
-fr fr ================================
-fr fr Domain Extraction
-fr fr ================================
+no cap
+================================
+Domain Extraction
+================================
+on god
 
 slay get_domain(url tea) tea {
     fr fr Extract domain from URL
@@ -291,9 +301,11 @@ slay get_domain(url tea) tea {
     damn url_parts.host
 }
 
-fr fr ================================
-fr fr Enhanced Utility Functions
-fr fr ================================
+no cap
+================================
+Enhanced Utility Functions
+================================
+on god
 
 slay enhanced_string_length(s tea) normie {
     fr fr Enhanced string length calculation
@@ -449,9 +461,11 @@ slay string_to_number(s tea) normie {
     damn result
 }
 
-fr fr ================================
-fr fr Module Status Report
-fr fr ================================
+no cap
+================================
+Module Status Report
+================================
+on god
 
 vibez.spill("🌐 CURSED Enhanced Network Library v3.0 Loaded")
 vibez.spill("✅ Enhanced HTTP GET/POST functions")

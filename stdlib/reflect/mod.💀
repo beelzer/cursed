@@ -1,16 +1,20 @@
-fr fr Reflection module - Complete runtime type information and introspection
-fr fr Critical for self-hosting and dynamic behavior
-fr fr Enhanced with full metaprogramming capabilities
+no cap
+Reflection module - Complete runtime type information and introspection
+Critical for self-hosting and dynamic behavior
+Enhanced with full metaprogramming capabilities
+on god
 
 yeet "testz"
 yeet "stringz"
 yeet "fmt"
 yeet "mathz"
 
-fr fr Extended Type information structures
-fr fr TypeInfo represents complete runtime type information
-fr fr Enhanced structure: (kind, name, size, fields, methods, generics, attributes)
-fr fr Kind: 0=int, 1=string, 2=bool, 3=float, 4=struct, 5=array, 6=func, 7=interface, 8=generic, 9=ptr
+no cap
+Extended Type information structures
+TypeInfo represents complete runtime type information
+Enhanced structure: (kind, name, size, fields, methods, generics, attributes)
+Kind: 0=int, 1=string, 2=bool, 3=float, 4=struct, 5=array, 6=func, 7=interface, 8=generic, 9=ptr
+on god
 
 fr fr Enhanced type kinds
 sus TYPE_INT := 0
@@ -24,9 +28,11 @@ sus TYPE_INTERFACE := 7
 sus TYPE_GENERIC := 8
 sus TYPE_PTR := 9
 
-fr fr Method information structure: (name, params, return_type, is_public)
-fr fr Field information structure: (name, type, offset, is_public, attributes)
-fr fr Generic parameter structure: (name, constraints, default_type)
+no cap
+Method information structure: (name, params, return_type, is_public)
+Field information structure: (name, type, offset, is_public, attributes)
+Generic parameter structure: (name, constraints, default_type)
+on god
 
 squad TypeInfo {
     kind normie
@@ -477,11 +483,13 @@ slay call_method(value Value, method_name tea, args Value[value]) Value {
         damn invalid_value()
     }
 
-    fr fr Simplified method calling - in real implementation this would:
-    fr fr 1. Validate argument types against method signature
-    fr fr 2. Set up stack frame
-    fr fr 3. Call function pointer
-    fr fr 4. Handle return value
+    no cap
+    Simplified method calling - in real implementation this would:
+    1. Validate argument types against method signature
+    2. Set up stack frame
+    3. Call function pointer
+    4. Handle return value
+    on god
 
     fr fr Built-in method implementations
     bestie method_name == "len" {

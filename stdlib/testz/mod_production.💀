@@ -1,12 +1,16 @@
-fr fr ================================
-fr fr CURSED Testing Framework v5.0 - Production Ready
-fr fr Complete enterprise-grade testing framework written in CURSED
-fr fr Supports comprehensive test discovery, execution, and reporting
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework v5.0 - Production Ready
+Complete enterprise-grade testing framework written in CURSED
+Supports comprehensive test discovery, execution, and reporting
+================================
+on god
 
-fr fr ================================
-fr fr Core Framework State
-fr fr ================================
+no cap
+================================
+Core Framework State
+================================
+on god
 
 fr fr Test execution state
 sus test_count normie = 0
@@ -28,9 +32,11 @@ sus suite_results [SuiteResult] = []
 fr fr Configuration
 sus config TestConfig = create_default_config()
 
-fr fr ================================
-fr fr Data Structures
-fr fr ================================
+no cap
+================================
+Data Structures
+================================
+on god
 
 struct TestResult {
     test_name tea
@@ -82,9 +88,11 @@ struct MockFunction {
     configured lit
 }
 
-fr fr ================================
-fr fr Configuration Functions
-fr fr ================================
+no cap
+================================
+Configuration Functions
+================================
+on god
 
 slay create_default_config() TestConfig {
     damn TestConfig{
@@ -141,9 +149,11 @@ slay enable_xml_output() {
     config.xml_output = based
 }
 
-fr fr ================================
-fr fr TestResult Factory Functions
-fr fr ================================
+no cap
+================================
+TestResult Factory Functions
+================================
+on god
 
 slay TestResult.pass(test_name tea, assertion_name tea, message tea) TestResult {
     damn TestResult{
@@ -205,9 +215,11 @@ slay TestResult.error(test_name tea, assertion_name tea, message tea, error_deta
     }
 }
 
-fr fr ================================
-fr fr Test Lifecycle Functions
-fr fr ================================
+no cap
+================================
+Test Lifecycle Functions
+================================
+on god
 
 slay suite_start(name tea) {
     current_suite_name = name
@@ -258,9 +270,11 @@ slay test_skip(reason tea) {
     vibez.spill("  ⚠ SKIP: " + reason)
 }
 
-fr fr ================================
-fr fr Basic Assertion Functions
-fr fr ================================
+no cap
+================================
+Basic Assertion Functions
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     current_assertion_name = "assert_eq_int"
@@ -402,9 +416,11 @@ slay assert_false(value lit) {
     }
 }
 
-fr fr ================================
-fr fr Advanced Assertion Functions
-fr fr ================================
+no cap
+================================
+Advanced Assertion Functions
+================================
+on god
 
 slay assert_ne_int(actual normie, expected normie) {
     current_assertion_name = "assert_ne_int"
@@ -546,9 +562,11 @@ slay assert_in_range(actual normie, min normie, max normie) {
     }
 }
 
-fr fr ================================
-fr fr Float Assertion Functions
-fr fr ================================
+no cap
+================================
+Float Assertion Functions
+================================
+on god
 
 slay assert_eq_float(actual meal, expected meal) {
     current_assertion_name = "assert_eq_float"
@@ -617,9 +635,11 @@ slay assert_eq_float_with_tolerance(actual meal, expected meal, tolerance meal) 
     }
 }
 
-fr fr ================================
-fr fr String Assertion Functions
-fr fr ================================
+no cap
+================================
+String Assertion Functions
+================================
+on god
 
 slay assert_string_contains(haystack tea, needle tea) {
     current_assertion_name = "assert_string_contains"
@@ -767,9 +787,11 @@ slay assert_string_ends_with(text tea, suffix tea) {
     }
 }
 
-fr fr ================================
-fr fr Array Assertion Functions
-fr fr ================================
+no cap
+================================
+Array Assertion Functions
+================================
+on god
 
 slay assert_array_eq_int(actual [normie], expected [normie]) {
     current_assertion_name = "assert_array_eq_int"
@@ -922,9 +944,11 @@ slay assert_array_length(array [normie], expected_length normie) {
     }
 }
 
-fr fr ================================
-fr fr Nil Assertion Functions
-fr fr ================================
+no cap
+================================
+Nil Assertion Functions
+================================
+on god
 
 slay assert_nil(value tea) {
     current_assertion_name = "assert_nil"
@@ -982,9 +1006,11 @@ slay assert_not_nil(value tea) {
     }
 }
 
-fr fr ================================
-fr fr Performance Testing Functions
-fr fr ================================
+no cap
+================================
+Performance Testing Functions
+================================
+on god
 
 slay benchmark_start() normie {
     damn get_current_time()
@@ -1004,9 +1030,11 @@ slay get_current_time() normie {
     damn 0
 }
 
-fr fr ================================
-fr fr Mock Testing Functions
-fr fr ================================
+no cap
+================================
+Mock Testing Functions
+================================
+on god
 
 slay create_mock(name tea) MockFunction {
     damn MockFunction{
@@ -1041,9 +1069,11 @@ slay mock_call(mock MockFunction) tea {
     }
 }
 
-fr fr ================================
-fr fr Error Handling Functions
-fr fr ================================
+no cap
+================================
+Error Handling Functions
+================================
+on god
 
 slay assert_throws(expected_error tea) {
     current_assertion_name = "assert_throws"
@@ -1087,9 +1117,11 @@ slay expect_panic(function_name tea) {
     }
 }
 
-fr fr ================================
-fr fr Test Filtering Functions
-fr fr ================================
+no cap
+================================
+Test Filtering Functions
+================================
+on god
 
 slay should_run_test(test_name tea, pattern tea) lit {
     fr fr Simplified pattern matching - would need actual implementation
@@ -1104,9 +1136,11 @@ slay should_run_test(test_name tea, pattern tea) lit {
     damn based
 }
 
-fr fr ================================
-fr fr Report Generation Functions
-fr fr ================================
+no cap
+================================
+Report Generation Functions
+================================
+on god
 
 slay generate_json_report() tea {
     sus json_output tea = "{\n"
@@ -1303,9 +1337,11 @@ slay get_timestamp() tea {
     damn "2025-01-07T12:00:00Z"
 }
 
-fr fr ================================
-fr fr Test Summary and Reporting
-fr fr ================================
+no cap
+================================
+Test Summary and Reporting
+================================
+on god
 
 slay print_test_summary() {
     vibez.spill("")
@@ -1370,9 +1406,11 @@ slay print_test_summary() {
     vibez.spill("==================================================")
 }
 
-fr fr ================================
-fr fr Test State Management
-fr fr ================================
+no cap
+================================
+Test State Management
+================================
+on god
 
 slay reset_test_state() {
     test_count = 0
@@ -1416,9 +1454,11 @@ struct TestStatistics {
     pass_rate normie
 }
 
-fr fr ================================
-fr fr Test Discovery Functions
-fr fr ================================
+no cap
+================================
+Test Discovery Functions
+================================
+on god
 
 slay discover_tests(directory tea) [tea] {
     fr fr Simplified test discovery - would need actual implementation
@@ -1454,9 +1494,11 @@ slay run_all_discovered_tests(directory tea) normie {
     damn total_exit_code
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay run_all_tests() normie {
     print_test_summary()
@@ -1485,9 +1527,11 @@ slay run_all_tests() normie {
     }
 }
 
-fr fr ================================
-fr fr Export Functions
-fr fr ================================
+no cap
+================================
+Export Functions
+================================
+on god
 
 fr fr Note: CURSED module export system not fully implemented
 fr fr All functions are available globally when this module is imported

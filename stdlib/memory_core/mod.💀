@@ -1,6 +1,8 @@
-fr fr Memory Core - Pure CURSED Memory Management System
-fr fr Garbage collection and heap management without FFI dependencies  
-fr fr Replaces src/runtime/memory.rs and src/runtime/gc.rs
+no cap
+Memory Core - Pure CURSED Memory Management System
+Garbage collection and heap management without FFI dependencies  
+Replaces src/runtime/memory.rs and src/runtime/gc.rs
+on god
 
 fr fr Removed circular dependency on runtime_core
 yeet "testz"
@@ -60,9 +62,11 @@ sus DEFAULT_GC_THRESHOLD normie = 524288 fr fr 512KB
 sus MAX_HEAP_SIZE normie = 134217728 fr fr 128MB
 sus GC_COLLECTION_INTERVAL normie = 1000 fr fr Objects allocated between GC runs
 
-fr fr ==============================================================================
-fr fr MEMORY MANAGEMENT INITIALIZATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+MEMORY MANAGEMENT INITIALIZATION
+==============================================================================
+on god
 
 fr fr Initialize memory management system
 slay init_memory_system() lit {
@@ -85,9 +89,11 @@ slay init_memory_system() lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr MEMORY ALLOCATION AND DEALLOCATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+MEMORY ALLOCATION AND DEALLOCATION
+==============================================================================
+on god
 
 fr fr Allocate memory object
 slay allocate_memory(size normie, alloc_type normie) normie {
@@ -159,9 +165,11 @@ slay get_memory_object(object_id normie) MemoryObject {
     damn empty
 }
 
-fr fr ==============================================================================
-fr fr REFERENCE COUNTING
-fr fr ==============================================================================
+no cap
+==============================================================================
+REFERENCE COUNTING
+==============================================================================
+on god
 
 fr fr Increment reference count
 slay inc_ref_count(object_id normie) lit {
@@ -203,9 +211,11 @@ slay get_ref_count(object_id normie) normie {
     damn memory_obj.ref_count
 }
 
-fr fr ==============================================================================
-fr fr GARBAGE COLLECTION
-fr fr ==============================================================================
+no cap
+==============================================================================
+GARBAGE COLLECTION
+==============================================================================
+on god
 
 fr fr Check if garbage collection should run
 slay should_run_gc() lit {
@@ -295,9 +305,11 @@ slay compact_memory() lit { fr fr Reset free list
     damn based
 }
 
-fr fr ==============================================================================
-fr fr MEMORY PRESSURE AND MONITORING
-fr fr ==============================================================================
+no cap
+==============================================================================
+MEMORY PRESSURE AND MONITORING
+==============================================================================
+on god
 
 fr fr Check memory pressure
 slay check_memory_pressure() lit {

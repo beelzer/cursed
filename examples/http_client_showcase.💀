@@ -1,8 +1,10 @@
-fr fr/ Comprehensive HTTP Client Showcase
-fr fr/ 
-fr fr/ This example demonstrates the enhanced HTTP client capabilities
-fr fr/ including JSON serialization, query parameters, authentication,
-fr fr/ and various HTTP methods.
+no cap
+/ Comprehensive HTTP Client Showcase
+/ 
+/ This example demonstrates the enhanced HTTP client capabilities
+/ including JSON serialization, query parameters, authentication,
+/ and various HTTP methods.
+on god
 
 yeet "stdlib::net::http::client"
 yeet "stdlib::collections::HashMap"

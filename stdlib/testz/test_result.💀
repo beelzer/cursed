@@ -1,9 +1,11 @@
 fr fr CURSED TestResult Integration
 fr fr Enhanced testing framework using TestResult type system
 
-fr fr ================================
-fr fr TestResult Integration
-fr fr ================================
+no cap
+================================
+TestResult Integration
+================================
+on god
 
 fr fr Global test state using TestResult system
 sus current_suite TestSuite = TestSuite.new("default")
@@ -12,9 +14,11 @@ sus current_test_name tea = ""
 sus current_assertion_name tea = ""
 sus test_start_time normie = 0
 
-fr fr ================================
-fr fr Enhanced Test Functions
-fr fr ================================
+no cap
+================================
+Enhanced Test Functions
+================================
+on god
 
 slay test_start_enhanced(name tea) {
     current_test_name = name
@@ -64,9 +68,11 @@ slay test_error_enhanced(message tea) {
     vibez.spill("  ⚠ ERROR: " + message)
 }
 
-fr fr ================================
-fr fr Enhanced Assertion Functions
-fr fr ================================
+no cap
+================================
+Enhanced Assertion Functions
+================================
+on god
 
 slay assert_eq_int_enhanced(actual normie, expected normie) {
     test_assertion_start("assert_eq_int")
@@ -150,9 +156,11 @@ slay assert_nil_enhanced(value *void) {
     }
 }
 
-fr fr ================================
-fr fr Test Suite Management
-fr fr ================================
+no cap
+================================
+Test Suite Management
+================================
+on god
 
 slay create_test_suite(suite_name tea) {
     current_suite = TestSuite.new(suite_name)
@@ -180,9 +188,11 @@ slay finalize_test_suite() {
     }
 }
 
-fr fr ================================
-fr fr Enhanced Test Reporting
-fr fr ================================
+no cap
+================================
+Enhanced Test Reporting
+================================
+on god
 
 slay print_test_report() {
     sus console_report tea = test_report.to_console()
@@ -215,9 +225,11 @@ slay is_test_run_successful() lit {
     damn test_report.is_successful()
 }
 
-fr fr ================================
-fr fr Test Utilities
-fr fr ================================
+no cap
+================================
+Test Utilities
+================================
+on god
 
 slay benchmark_test(test_name tea, operation slay()) {
     test_start_enhanced(test_name)
@@ -262,9 +274,11 @@ slay expect_panic(test_name tea, operation slay()) {
     }
 }
 
-fr fr ================================
-fr fr Test Data Utilities
-fr fr ================================
+no cap
+================================
+Test Data Utilities
+================================
+on god
 
 slay create_test_array_int(size normie) [normie] {
     sus arr [normie]
@@ -282,9 +296,11 @@ slay create_test_struct_data() (tea, normie, lit) {
     damn ("test_struct", 42, based)
 }
 
-fr fr ================================
-fr fr Compatibility Functions
-fr fr ================================
+no cap
+================================
+Compatibility Functions
+================================
+on god
 
 fr fr Provide backward compatibility with existing testz functions
 slay test_start(name tea) {
@@ -341,9 +357,11 @@ slay reset_test_state() {
     current_assertion_name = ""
 }
 
-fr fr ================================
-fr fr Advanced Test Features
-fr fr ================================
+no cap
+================================
+Advanced Test Features
+================================
+on god
 
 slay test_with_timeout(test_name tea, timeout_ms normie, operation slay()) {
     test_start_enhanced(test_name)
@@ -427,9 +445,11 @@ slay get_memory_usage_mb() normie {
     damn simulated_usage
 }
 
-fr fr ================================
-fr fr Export functions for external use
-fr fr ================================
+no cap
+================================
+Export functions for external use
+================================
+on god
 
 fr fr Note: CURSED export system not fully implemented yet
 fr fr Functions are available globally when this module is imported

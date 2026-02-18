@@ -1,12 +1,16 @@
-fr fr CURSED String Algorithms Module - Production Implementation
-fr fr Advanced string processing with Unicode support and efficient algorithms
-fr fr Boyer-Moore, KMP, Rabin-Karp, and other optimized string algorithms
+no cap
+CURSED String Algorithms Module - Production Implementation
+Advanced string processing with Unicode support and efficient algorithms
+Boyer-Moore, KMP, Rabin-Karp, and other optimized string algorithms
+on god
 
 yeet "mathz"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like StringView squad {
     data tea
@@ -65,9 +69,11 @@ be_like UnicodeInfo squad {
     titlecase_mapping normie
 }
 
-fr fr ================================
-fr fr Unicode Processing Constants
-fr fr ================================
+no cap
+================================
+Unicode Processing Constants
+================================
+on god
 
 facts UNICODE_CATEGORY_LETTER normie = 1
 facts UNICODE_CATEGORY_DIGIT normie = 2
@@ -86,9 +92,11 @@ facts SEARCH_ALGORITHM_KMP normie = 1
 facts SEARCH_ALGORITHM_BOYER_MOORE normie = 2
 facts SEARCH_ALGORITHM_RABIN_KARP normie = 3
 
-fr fr ================================
-fr fr Unicode Support Functions
-fr fr ================================
+no cap
+================================
+Unicode Support Functions
+================================
+on god
 
 slay get_utf8_char_length(first_byte normie) normie { fr fr Get UTF-8 character length from first byte
     lowkey (first_byte & 0x80) == 0 {
@@ -246,9 +254,11 @@ slay is_ascii_punctuation(code_point normie) lit { fr fr Check if ASCII punctuat
          (code_point >= 123 && code_point <= 126)    fr fr {|}~
 }
 
-fr fr ================================
-fr fr String Length and Indexing
-fr fr ================================
+no cap
+================================
+String Length and Indexing
+================================
+on god
 
 slay string_char_count(s tea) thicc { fr fr Count Unicode characters
     lowkey s == "" {
@@ -351,9 +361,11 @@ slay char_index_to_byte_index(s tea, char_index thicc) thicc { fr fr Convert cha
     damn byte_pos
 }
 
-fr fr ================================
-fr fr Advanced String Searching
-fr fr ================================
+no cap
+================================
+Advanced String Searching
+================================
+on god
 
 slay compile_search_pattern(pattern tea, algorithm normie) StringPattern { fr fr Compile search pattern
     sus compiled StringPattern = {
@@ -735,9 +747,11 @@ slay naive_search(text tea, pattern tea) StringSearchResult { fr fr Naive string
     damn result
 }
 
-fr fr ================================
-fr fr String Case Conversion
-fr fr ================================
+no cap
+================================
+String Case Conversion
+================================
+on god
 
 slay to_lowercase_advanced(s tea) tea { fr fr Advanced lowercase conversion
     lowkey s == "" {
@@ -838,9 +852,11 @@ slay to_titlecase(s tea) tea { fr fr Convert to title case
     damn result
 }
 
-fr fr ================================
-fr fr Advanced String Splitting
-fr fr ================================
+no cap
+================================
+Advanced String Splitting
+================================
+on god
 
 slay split_advanced(s tea, delimiter tea, options StringSplitOptions) tea[value]{ fr fr Advanced string splitting
     sus result tea[value] = []
@@ -985,9 +1001,11 @@ slay split_whitespace(s tea) tea[value]{ fr fr Split on any whitespace
     damn result
 }
 
-fr fr ================================
-fr fr String Trimming and Padding
-fr fr ================================
+no cap
+================================
+String Trimming and Padding
+================================
+on god
 
 slay trim_whitespace(s tea) tea { fr fr Trim Unicode whitespace
     damn trim_left_whitespace(trim_right_whitespace(s))
@@ -1096,9 +1114,11 @@ slay pad_center(s tea, total_width thicc, pad_char tea) tea { fr fr Center strin
     damn string_concat(string_concat(left_padding, s), right_padding)
 }
 
-fr fr ================================
-fr fr String Comparison
-fr fr ================================
+no cap
+================================
+String Comparison
+================================
+on god
 
 slay compare_strings_advanced(s1 tea, s2 tea, options StringCompareOptions) normie { fr fr Advanced string comparison
     lowkey s1 == s2 {
@@ -1205,9 +1225,11 @@ slay numeric_string_compare(s1 tea, s2 tea) normie { fr fr Compare strings with 
     damn 0
 }
 
-fr fr ================================
-fr fr Utility Helper Functions
-fr fr ================================
+no cap
+================================
+Utility Helper Functions
+================================
+on god
 
 slay characters_equal(c1 tea, c2 tea, case_sensitive lit) lit { fr fr Compare characters
     lowkey case_sensitive {
@@ -1280,9 +1302,11 @@ slay substring_from_byte(s tea, start_byte thicc, end_byte thicc) tea { fr fr Ex
     damn s
 }
 
-fr fr ================================
-fr fr Placeholder Functions
-fr fr ================================
+no cap
+================================
+Placeholder Functions
+================================
+on god
 
 slay get_byte_at(s tea, pos thicc) normie { damn 65 }
 slay char_from_byte(b normie) tea { damn "A" }

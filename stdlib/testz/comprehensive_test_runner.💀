@@ -2,9 +2,11 @@ yeet "testz"
 yeet "stringz"
 yeet "vibez"
 
-fr fr ===============================
-fr fr Comprehensive Stdlib Test Runner
-fr fr ===============================
+no cap
+===============================
+Comprehensive Stdlib Test Runner
+===============================
+on god
 
 fr fr Test execution configuration
 sus test_execution_mode tea = "comprehensive" fr fr Options: fast, comprehensive, critical, parallel
@@ -33,9 +35,11 @@ sus module_results tea = ""
 sus failed_modules tea = ""
 sus coverage_results tea = ""
 
-fr fr ===============================
-fr fr Module Test Execution Functions
-fr fr ===============================
+no cap
+===============================
+Module Test Execution Functions
+===============================
+on god
 
 slay execute_module_tests(module_name tea) {
     vibez.spill("🧪 Testing module: " + module_name)
@@ -153,9 +157,11 @@ slay execute_performance_tests(module_name tea) {
     testz.benchmark_end()
 }
 
-fr fr ===============================
-fr fr Property Test Implementations
-fr fr ===============================
+no cap
+===============================
+Property Test Implementations
+===============================
+on god
 
 slay test_string_properties() {
     sus a tea = testz.random_string(10)
@@ -189,9 +195,11 @@ slay test_generic_properties() { fr fr Generic property tests that apply to any 
     testz.assert_false(cap) fr fr Basic boolean logic works
 }
 
-fr fr ===============================
-fr fr Test Suite Execution
-fr fr ===============================
+no cap
+===============================
+Test Suite Execution
+===============================
+on god
 
 slay run_critical_modules_only() {
     vibez.spill("🎯 Running tests for critical modules only...")
@@ -245,9 +253,11 @@ slay run_fast_smoke_tests() {
     execute_module_tests("json_tea")
 }
 
-fr fr ===============================
-fr fr Coverage Analysis
-fr fr ===============================
+no cap
+===============================
+Coverage Analysis
+===============================
+on god
 
 slay calculate_coverage_metrics() {
     vibez.spill("📊 Calculating test coverage metrics...")
@@ -269,9 +279,11 @@ slay calculate_coverage_metrics() {
     }
 }
 
-fr fr ===============================
-fr fr Parallel Execution Support
-fr fr ===============================
+no cap
+===============================
+Parallel Execution Support
+===============================
+on god
 
 slay run_parallel_tests() {
     fr fr parallel_execution {
@@ -282,9 +294,11 @@ slay run_parallel_tests() {
     }
 }
 
-fr fr ===============================
-fr fr Utility Functions
-fr fr ===============================
+no cap
+===============================
+Utility Functions
+===============================
+on god
 
 slay is_critical_module(module_name tea) lit {
     damn stringz.Contains(critical_modules, module_name)
@@ -320,9 +334,11 @@ slay set_execution_mode(mode tea) {
     }
 }
 
-fr fr ===============================
-fr fr Test Reporting
-fr fr ===============================
+no cap
+===============================
+Test Reporting
+===============================
+on god
 
 slay print_comprehensive_report() {
     vibez.spill("")
@@ -359,9 +375,11 @@ slay print_comprehensive_report() {
     vibez.spill("================================================")
 }
 
-fr fr ===============================
-fr fr Main Test Execution
-fr fr ===============================
+no cap
+===============================
+Main Test Execution
+===============================
+on god
 
 fr fr Configure test execution
 testz.set_verbose_mode(verbose_output)

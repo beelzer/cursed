@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "net_protocols"
 
-fr fr ================================
-fr fr Network Protocols Module Tests
-fr fr Comprehensive testing of TLS, SSH, FTP, SMTP
-fr fr ================================
+no cap
+================================
+Network Protocols Module Tests
+Comprehensive testing of TLS, SSH, FTP, SMTP
+================================
+on god
 
 test_start("Net Protocols Initialization Test")
 sus init_result lit = net_protocols_initialize()

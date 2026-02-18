@@ -112,9 +112,11 @@ sus signal_handling_enabled lit = based
 sus signal_mask *SignalMask
 sus default_signal_actions normie[64]
 
-fr fr =============================================================================
-fr fr SIGNAL HANDLER REGISTRATION AND MANAGEMENT
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL HANDLER REGISTRATION AND MANAGEMENT
+=============================================================================
+on god
 
 fr fr Initialize signal handling system
 slay initialize_signal_system() {
@@ -210,9 +212,11 @@ slay signal_default(signal_num normie) *ErrorInstance {
     damn 0
 }
 
-fr fr =============================================================================
-fr fr SIGNAL DELIVERY AND DISPATCH
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL DELIVERY AND DISPATCH
+=============================================================================
+on god
 
 fr fr Simulate signal delivery (in real implementation this would be from OS)
 slay deliver_signal(signal_num normie, sender_pid normie) *ErrorInstance {
@@ -331,9 +335,11 @@ slay execute_default_action(signal_num normie) *ErrorInstance {
     damn 0
 }
 
-fr fr =============================================================================
-fr fr SIGNAL MASKING AND BLOCKING
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL MASKING AND BLOCKING
+=============================================================================
+on god
 
 fr fr Create a new signal mask
 slay create_signal_mask() *SignalMask {
@@ -459,9 +465,11 @@ slay signal_mask_restore(mask *SignalMask) *ErrorInstance {
     damn 0
 }
 
-fr fr =============================================================================
-fr fr SIGNAL QUEUE MANAGEMENT
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL QUEUE MANAGEMENT
+=============================================================================
+on god
 
 fr fr Create signal queue
 slay create_signal_queue(max_size normie) *SignalQueue {
@@ -552,9 +560,11 @@ slay clear_signal_queue() {
     mutex_unlock(signal_queue.mutex)
 }
 
-fr fr =============================================================================
-fr fr PROCESS COMMUNICATION
-fr fr =============================================================================
+no cap
+=============================================================================
+PROCESS COMMUNICATION
+=============================================================================
+on god
 
 fr fr Send signal to another process
 slay send_signal_to_process(target_pid normie, signal_num normie) *ErrorInstance {
@@ -629,9 +639,11 @@ slay close_process_comm(comm *ProcessComm) {
     close(comm.response_channel)
 }
 
-fr fr =============================================================================
-fr fr SIGNAL STATISTICS AND MONITORING
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL STATISTICS AND MONITORING
+=============================================================================
+on god
 
 fr fr Create signal statistics structure
 slay create_signal_stats() *SignalStats {
@@ -700,9 +712,11 @@ slay reset_signal_statistics() {
     }
 }
 
-fr fr =============================================================================
-fr fr SIGNAL NAME UTILITIES
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL NAME UTILITIES
+=============================================================================
+on god
 
 fr fr Get signal name from number
 slay signal_name(signal_num normie) tea {
@@ -776,9 +790,11 @@ slay signal_number(name tea) normie {
     }
 }
 
-fr fr =============================================================================
-fr fr SETUP AND CLEANUP FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+SETUP AND CLEANUP FUNCTIONS
+=============================================================================
+on god
 
 fr fr Setup default signal actions
 slay setup_default_signal_actions() {

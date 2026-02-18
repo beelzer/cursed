@@ -30,9 +30,11 @@ slay test_bmp_decoding() {
         0x00, 0x00, 0x00, 0x00  fr fr Important colors (0)
     ]
     
-    fr fr Pixel data: 2x2 image with padding
-    fr fr Row 1 (bottom): Red (BGR: 00,00,FF), Green (BGR: 00,FF,00) + 2 padding bytes
-    fr fr Row 2 (top): Blue (BGR: FF,00,00), White (BGR: FF,FF,FF) + 2 padding bytes
+    no cap
+    Pixel data: 2x2 image with padding
+    Row 1 (bottom): Red (BGR: 00,00,FF), Green (BGR: 00,FF,00) + 2 padding bytes
+    Row 2 (top): Blue (BGR: FF,00,00), White (BGR: FF,FF,FF) + 2 padding bytes
+    on god
     sus pixel_data byte[value] = [
         0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, fr fr Red, Green + padding
         0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00  fr fr Blue, White + padding

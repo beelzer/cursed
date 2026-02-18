@@ -1,13 +1,17 @@
-fr fr CURSED Real Process Module - Production Implementation with Real Syscalls
-fr fr Complete process management using actual system calls
-fr fr Replaces mock operations with real process spawning and management
+no cap
+CURSED Real Process Module - Production Implementation with Real Syscalls
+Complete process management using actual system calls
+Replaces mock operations with real process spawning and management
+on god
 
 yeet "testz"
 yeet "runtime_os_bridge"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like Process squad {
     process_id normie
@@ -45,9 +49,11 @@ facts SIGINT normie = 2
 facts SIGUSR1 normie = 10
 facts SIGUSR2 normie = 12
 
-fr fr ================================
-fr fr Pure CURSED Process Implementation
-fr fr ================================
+no cap
+================================
+Pure CURSED Process Implementation
+================================
+on god
 
 yeet "memory/bootstrap"
 
@@ -215,14 +221,18 @@ slay cursed_env_set(name_ptr [*:0]normie, value_ptr [*:0]normie) normie {
     damn 0
 }
 
-fr fr ================================
-fr fr Real System Call Implementations  
-fr fr ================================
+no cap
+================================
+Real System Call Implementations  
+================================
+on god
 
 slay cursed_setrlimit(resource normie, soft_limit thicc, hard_limit thicc) normie {
-    fr fr Real setrlimit implementation using Linux syscall number 160 
-    fr fr resource: 0=CPU, 1=FSIZE, 2=DATA, 3=STACK, 4=CORE, 5=RSS, 6=NPROC, 7=NOFILE, 8=MEMLOCK, 9=AS
-    fr fr Returns 0 on success, -1 on error
+    no cap
+    Real setrlimit implementation using Linux syscall number 160 
+    resource: 0=CPU, 1=FSIZE, 2=DATA, 3=STACK, 4=CORE, 5=RSS, 6=NPROC, 7=NOFILE, 8=MEMLOCK, 9=AS
+    Returns 0 on success, -1 on error
+    on god
     
     fr fr For simulation, validate parameters and return success for reasonable limits
     lowkey resource < 0 || resource > 15 {
@@ -370,9 +380,11 @@ slay cursed_waitpid(pid normie, status [*]normie, options normie) normie {
     damn result  fr fr Return actual waitpid result
 }
 
-fr fr ================================
-fr fr Process Management
-fr fr ================================
+no cap
+================================
+Process Management
+================================
+on god
 
 slay process_spawn(command tea, args tea[value]) Process {
     sus empty_process Process = {
@@ -457,9 +469,11 @@ slay process_is_running(process *Process) lit {
     damn process.is_running
 }
 
-fr fr ================================
-fr fr Environment Variables
-fr fr ================================
+no cap
+================================
+Environment Variables
+================================
+on god
 
 slay env_get(name tea) tea {
     lowkey name == "" {
@@ -519,9 +533,11 @@ slay env_get_all() EnvironmentVar[value]{
     damn env_vars
 }
 
-fr fr ================================
-fr fr System Information
-fr fr ================================
+no cap
+================================
+System Information
+================================
+on god
 
 slay get_current_pid() normie {
     fr fr Use real getpid() syscall
@@ -584,9 +600,11 @@ slay get_system_info() ProcessInfo {
     damn info
 }
 
-fr fr ================================
-fr fr Process Execution Utilities
-fr fr ================================
+no cap
+================================
+Process Execution Utilities
+================================
+on god
 
 slay execute_command(command tea) normie {
     sus args tea[value] = tea[value]{command}
@@ -617,9 +635,11 @@ slay run_background(command tea, args tea[value]) Process {
     damn process_spawn(command, args)
 }
 
-fr fr ================================
-fr fr Signal Handling
-fr fr ================================
+no cap
+================================
+Signal Handling
+================================
+on god
 
 slay send_signal(pid normie, signal normie) lit {
     fr fr Would use kill() syscall directly with system PID
@@ -653,9 +673,11 @@ slay signal_name(signal normie) tea {
     }
 }
 
-fr fr ================================
-fr fr Working Directory Management
-fr fr ================================
+no cap
+================================
+Working Directory Management
+================================
+on god
 
 slay change_dir(path tea) lit {
     fr fr Would need chdir() syscall
@@ -670,9 +692,11 @@ slay get_working_dir() tea {
     damn env_get("PWD")
 }
 
-fr fr ================================
-fr fr Process Monitoring
-fr fr ================================
+no cap
+================================
+Process Monitoring
+================================
+on god
 
 slay get_process_info(pid normie) ProcessInfo {
     sus info ProcessInfo = {
@@ -704,9 +728,11 @@ slay process_exists(pid normie) lit {
     damn send_signal(pid, 0)
 }
 
-fr fr ================================
-fr fr Resource Management
-fr fr ================================
+no cap
+================================
+Resource Management
+================================
+on god
 
 slay get_memory_usage() thicc {
     fr fr Read from /proc/self/status or use getrusage() for real memory usage
@@ -744,9 +770,11 @@ slay set_cpu_limit(limit meal) lit {
     damn result == 0
 }
 
-fr fr ================================
-fr fr Pure CURSED Utility Functions
-fr fr ================================
+no cap
+================================
+Pure CURSED Utility Functions
+================================
+on god
 
 slay string_to_cstring(s tea) [*:0]normie {
     lowkey s == "" {
@@ -864,9 +892,11 @@ slay append(arr tea[value], item tea) tea[value]{
     damn new_arr
 }
 
-fr fr ================================
-fr fr Error Handling
-fr fr ================================
+no cap
+================================
+Error Handling
+================================
+on god
 
 be_like ProcessError squad {
     message tea
@@ -891,18 +921,22 @@ slay handle_process_error(error ProcessError) lit {
     damn false
 }
 
-fr fr ================================
-fr fr Advanced Process Management
-fr fr ================================
+no cap
+================================
+Advanced Process Management
+================================
+on god
 
 slay daemonize() lit {
-    fr fr Would implement proper daemon creation:
-    fr fr 1. Fork and exit parent
-    fr fr 2. Create new session (setsid)
-    fr fr 3. Fork again and exit parent
-    fr fr 4. Change working directory
-    fr fr 5. Close file descriptors
-    fr fr 6. Redirect stdout/stderr
+    no cap
+    Would implement proper daemon creation:
+    1. Fork and exit parent
+    2. Create new session (setsid)
+    3. Fork again and exit parent
+    4. Change working directory
+    5. Close file descriptors
+    6. Redirect stdout/stderr
+    on god
     
     fr fr For now, just return success
     damn true

@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "configz"
 
-fr fr ==========================================
-fr fr CURSED Enhanced Configuration Management Tests (Simplified)
-fr fr Test suite for configz module (simplified version)
-fr fr ==========================================
+no cap
+==========================================
+CURSED Enhanced Configuration Management Tests (Simplified)
+Test suite for configz module (simplified version)
+==========================================
+on god
 
 slay run_all_tests() {
     fr fr Run comprehensive test suite for configz module
@@ -40,9 +42,11 @@ slay run_all_tests() {
     print_test_summary()
 }
 
-fr fr ==========================================
-fr fr Format Detection Tests
-fr fr ==========================================
+no cap
+==========================================
+Format Detection Tests
+==========================================
+on god
 
 slay test_format_detection() {
     test_start("Configuration Format Detection")
@@ -70,9 +74,11 @@ slay test_format_detection() {
     vibez.spill("✓ Format detection tests passed")
 }
 
-fr fr ==========================================
-fr fr Environment Variable Tests
-fr fr ==========================================
+no cap
+==========================================
+Environment Variable Tests
+==========================================
+on god
 
 slay test_environment_variables() {
     test_start("Environment Variable Handling")
@@ -100,9 +106,11 @@ slay test_environment_variables() {
     vibez.spill("✓ Environment variable tests passed")
 }
 
-fr fr ==========================================
-fr fr Configuration Parsing Tests
-fr fr ==========================================
+no cap
+==========================================
+Configuration Parsing Tests
+==========================================
+on god
 
 slay test_configuration_parsing() {
     test_start("Configuration Parsing")
@@ -130,9 +138,11 @@ slay test_configuration_parsing() {
     vibez.spill("✓ Configuration parsing tests passed")
 }
 
-fr fr ==========================================
-fr fr Configuration Loading Tests
-fr fr ==========================================
+no cap
+==========================================
+Configuration Loading Tests
+==========================================
+on god
 
 slay test_configuration_loading() {
     test_start("Configuration Loading")
@@ -157,9 +167,11 @@ slay test_configuration_loading() {
     vibez.spill("✓ Configuration loading tests passed")
 }
 
-fr fr ==========================================
-fr fr Value Access Tests
-fr fr ==========================================
+no cap
+==========================================
+Value Access Tests
+==========================================
+on god
 
 slay test_value_access() {
     test_start("Configuration Value Access")
@@ -190,9 +202,11 @@ slay test_value_access() {
     vibez.spill("✓ Value access tests passed")
 }
 
-fr fr ==========================================
-fr fr Validation Tests
-fr fr ==========================================
+no cap
+==========================================
+Validation Tests
+==========================================
+on god
 
 slay test_validation() {
     test_start("Configuration Validation")
@@ -224,9 +238,11 @@ slay test_validation() {
     vibez.spill("✓ Validation tests passed")
 }
 
-fr fr ==========================================
-fr fr Type Detection and Conversion Tests
-fr fr ==========================================
+no cap
+==========================================
+Type Detection and Conversion Tests
+==========================================
+on god
 
 slay test_type_conversion() {
     test_start("Type Detection and Conversion")
@@ -255,9 +271,11 @@ slay test_type_conversion() {
     vibez.spill("✓ Type conversion tests passed")
 }
 
-fr fr ==========================================
-fr fr Configuration Merging Tests
-fr fr ==========================================
+no cap
+==========================================
+Configuration Merging Tests
+==========================================
+on god
 
 slay test_configuration_merging() {
     test_start("Configuration Merging")
@@ -282,9 +300,11 @@ slay test_configuration_merging() {
     vibez.spill("✓ Configuration merging tests passed")
 }
 
-fr fr ==========================================
-fr fr High-Level API Tests
-fr fr ==========================================
+no cap
+==========================================
+High-Level API Tests
+==========================================
+on god
 
 slay test_high_level_api() {
     test_start("High-Level Configuration API")
@@ -320,9 +340,11 @@ slay test_high_level_api() {
     vibez.spill("✓ High-level API tests passed")
 }
 
-fr fr ==========================================
-fr fr Environment Context Tests
-fr fr ==========================================
+no cap
+==========================================
+Environment Context Tests
+==========================================
+on god
 
 slay test_environment_context() {
     test_start("Environment Context Detection")
@@ -338,9 +360,11 @@ slay test_environment_context() {
     vibez.spill("✓ Environment context tests passed")
 }
 
-fr fr ==========================================
-fr fr Schema Tests (Simplified)
-fr fr ==========================================
+no cap
+==========================================
+Schema Tests (Simplified)
+==========================================
+on god
 
 slay test_simple_schema() {
     test_start("Simple Schema Validation")
@@ -359,9 +383,11 @@ slay test_simple_schema() {
     vibez.spill("✓ Simple schema tests passed")
 }
 
-fr fr ==========================================
-fr fr Integration Tests
-fr fr ==========================================
+no cap
+==========================================
+Integration Tests
+==========================================
+on god
 
 slay test_integration_scenarios() {
     test_start("Integration Test Scenarios")
@@ -392,9 +418,11 @@ slay test_integration_scenarios() {
     vibez.spill("✓ Integration scenarios passed")
 }
 
-fr fr ==========================================
-fr fr Edge Case Tests
-fr fr ==========================================
+no cap
+==========================================
+Edge Case Tests
+==========================================
+on god
 
 slay test_edge_cases() {
     test_start("Edge Case Handling")
@@ -421,9 +449,11 @@ slay test_edge_cases() {
     vibez.spill("✓ Edge case tests passed")
 }
 
-fr fr ==========================================
-fr fr Performance Tests
-fr fr ==========================================
+no cap
+==========================================
+Performance Tests
+==========================================
+on god
 
 slay test_performance() {
     test_start("Performance Characteristics")
@@ -450,9 +480,11 @@ slay test_performance() {
     vibez.spill("✓ Performance tests completed")
 }
 
-fr fr ==========================================
-fr fr Security Tests
-fr fr ==========================================
+no cap
+==========================================
+Security Tests
+==========================================
+on god
 
 slay test_security() {
     test_start("Security Considerations")
@@ -475,9 +507,11 @@ slay test_security() {
     vibez.spill("✓ Security tests completed")
 }
 
-fr fr ==========================================
-fr fr Test Execution
-fr fr ==========================================
+no cap
+==========================================
+Test Execution
+==========================================
+on god
 
 fr fr Run main test suite
 run_all_tests()

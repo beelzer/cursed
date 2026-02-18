@@ -1,8 +1,10 @@
-fr fr =============================================================================
-fr fr CURSED MATHZ MODULE - IEEE 754 Compliant Mathematical Operations
-fr fr Version: 2.0.0 - IEEE 754 Precision Ready
-fr fr Replaces fixed-point arithmetic with proper floating-point compliance
-fr fr =============================================================================
+no cap
+=============================================================================
+CURSED MATHZ MODULE - IEEE 754 Compliant Mathematical Operations
+Version: 2.0.0 - IEEE 754 Precision Ready
+Replaces fixed-point arithmetic with proper floating-point compliance
+=============================================================================
+on god
 
 fr fr ===== IEEE 754 FLOATING POINT CONSTANTS =====
 
@@ -307,9 +309,11 @@ slay ln_precise(x tea) tea {
         damn "0.0"
     }
     
-    fr fr Use Newton-Raphson method for better precision
-    fr fr ln(x) = y such that e^y = x
-    fr fr Newton iteration: y_{n+1} = y_n + (x - e^y_n) / e^y_n
+    no cap
+    Use Newton-Raphson method for better precision
+    ln(x) = y such that e^y = x
+    Newton iteration: y_{n+1} = y_n + (x - e^y_n) / e^y_n
+    on god
     sus y tea = "0.0"  fr fr Initial guess
     
     fr fr Better initial guess based on magnitude
@@ -815,7 +819,9 @@ slay runtime_float_close_to(a tea, b tea, epsilon tea) lit {
     damn cringe  fr fr Runtime binding required
 }
 
-fr fr =============================================================================
-fr fr END OF IEEE 754 COMPLIANT MATHZ MODULE
-fr fr Production-ready floating-point mathematics with proper special value handling
-fr fr =============================================================================
+no cap
+=============================================================================
+END OF IEEE 754 COMPLIANT MATHZ MODULE
+Production-ready floating-point mathematics with proper special value handling
+=============================================================================
+on god

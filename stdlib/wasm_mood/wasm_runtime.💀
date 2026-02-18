@@ -766,26 +766,32 @@ slay wasm_generate_code_section(ast drip, opt_level drip) normie[value]{
 }
 
 slay wasm_optimize_for_size(binary normie[value]) normie[value]{
-    fr fr Apply size optimizations
-    fr fr - Remove debug info
-    fr fr - Compress constants
-    fr fr - Eliminate dead code
+    no cap
+    Apply size optimizations
+    - Remove debug info
+    - Compress constants
+    - Eliminate dead code
+    on god
     damn binary fr fr Simplified - return as-is for now
 }
 
 slay wasm_optimize_for_speed(binary normie[value]) normie[value]{
-    fr fr Apply speed optimizations  
-    fr fr - Inline small functions
-    fr fr - Unroll small loops
-    fr fr - Optimize memory access patterns
+    no cap
+    Apply speed optimizations  
+    - Inline small functions
+    - Unroll small loops
+    - Optimize memory access patterns
+    on god
     damn binary fr fr Simplified - return as-is for now
 }
 
 slay wasm_optimize_aggressive(binary normie[value]) normie[value]{
-    fr fr Apply aggressive optimizations
-    fr fr - Whole-program optimization
-    fr fr - Advanced vectorization
-    fr fr - Profile-guided optimization
+    no cap
+    Apply aggressive optimizations
+    - Whole-program optimization
+    - Advanced vectorization
+    - Profile-guided optimization
+    on god
     damn binary fr fr Simplified - return as-is for now
 }
 

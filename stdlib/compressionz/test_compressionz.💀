@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "compressionz"
 
-fr fr ==========================================
-fr fr CURSED Enhanced Compression Test Suite
-fr fr Testing GZIP, ZSTD, LZ4 implementations
-fr fr ==========================================
+no cap
+==========================================
+CURSED Enhanced Compression Test Suite
+Testing GZIP, ZSTD, LZ4 implementations
+==========================================
+on god
 
 slay test_compression_algorithms() {
     test_start("Enhanced Compression Algorithms Test Suite")
@@ -262,9 +264,11 @@ slay test_edge_cases() {
     vibez.spill("Edge cases completed successfully")
 }
 
-fr fr ==========================================
-fr fr Main Test Function
-fr fr ==========================================
+no cap
+==========================================
+Main Test Function
+==========================================
+on god
 
 test_compression_algorithms()
 test_edge_cases()

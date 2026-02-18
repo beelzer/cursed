@@ -195,11 +195,13 @@ slay get_backtrace_addresses(max_frames normie) uintptr[value]{
 
 fr fr Resolve symbol from memory address
 slay resolve_symbol_from_address(addr uintptr) tea {
-    fr fr Real implementation would use:
-    fr fr - addr2line utility
-    fr fr - DWARF debugging information
-    fr fr - Symbol tables from ELF files
-    fr fr - backtrace_symbols() function
+    no cap
+    Real implementation would use:
+    - addr2line utility
+    - DWARF debugging information
+    - Symbol tables from ELF files
+    - backtrace_symbols() function
+    on god
     
     fr fr For demonstration, generate meaningful symbol names
     yo addr >= 0x400000 && addr < 0x401000 {

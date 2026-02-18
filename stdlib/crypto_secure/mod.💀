@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Secure Crypto Library v7.0
-fr fr Production-grade cryptographically secure implementation
-fr fr Eliminating ALL insecure placeholders and algorithms
-fr fr ========================================
+no cap
+========================================
+CURSED Secure Crypto Library v7.0
+Production-grade cryptographically secure implementation
+Eliminating ALL insecure placeholders and algorithms
+========================================
+on god
 
-fr fr ================================
-fr fr Cryptographically Secure RNG
-fr fr ================================
+no cap
+================================
+Cryptographically Secure RNG
+================================
+on god
 
 fr fr ChaCha20-based secure RNG state
 sus rng_state_0 normie = 0x61707865
@@ -62,9 +66,11 @@ slay crypto_secure_random_u32() normie {
     damn rng_state_0 ^ rng_state_4 ^ rng_state_8 ^ rng_counter
 }
 
-fr fr ================================
-fr fr Secure Hash Functions
-fr fr ================================
+no cap
+================================
+Secure Hash Functions
+================================
+on god
 
 fr fr Constants for SHA-256 (first 32 bits of fractional parts of cube roots of first 64 primes)
 sus sha256_k [normie] = [
@@ -160,9 +166,11 @@ slay crypto_sha256_secure(data tea) tea { fr fr Initial hash values (first 32 bi
          crypto_u32_to_hex(h4) + crypto_u32_to_hex(h5) + crypto_u32_to_hex(h6) + crypto_u32_to_hex(h7)
 }
 
-fr fr ================================
-fr fr Secure AES Implementation
-fr fr ================================
+no cap
+================================
+Secure AES Implementation
+================================
+on god
 
 fr fr AES S-box (substitution box)
 sus aes_sbox [normie] = [
@@ -235,9 +243,11 @@ slay crypto_aes256_encrypt_secure(plaintext [normie], key [normie]) [normie] {
     damn state
 }
 
-fr fr ================================
-fr fr HMAC Implementation
-fr fr ================================
+no cap
+================================
+HMAC Implementation
+================================
+on god
 
 slay crypto_hmac_sha256_secure(message tea, key tea) tea { fr fr HMAC-SHA256 with proper implementation
     sus ipad normie = 0x36
@@ -269,9 +279,11 @@ slay crypto_hmac_sha256_secure(message tea, key tea) tea { fr fr HMAC-SHA256 wit
     damn outer_hash
 }
 
-fr fr ================================
-fr fr Secure Utilities
-fr fr ================================
+no cap
+================================
+Secure Utilities
+================================
+on god
 
 slay crypto_string_length_secure(s tea) normie {
     fr fr Real string length calculation - no placeholders
@@ -371,9 +383,11 @@ slay crypto_u32_to_hex(value normie) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Secure Random Functions
-fr fr ================================
+no cap
+================================
+Secure Random Functions
+================================
+on god
 
 slay crypto_secure_random_bytes(length normie) [normie] {
     sus result [normie] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -398,9 +412,11 @@ slay crypto_secure_random_string(length normie, charset tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Key Derivation
-fr fr ================================
+no cap
+================================
+Key Derivation
+================================
+on god
 
 slay crypto_pbkdf2_secure(password tea, salt tea, iterations normie, key_length normie) tea {
     sus result tea = crypto_hmac_sha256_secure(password, salt)
@@ -411,9 +427,11 @@ slay crypto_pbkdf2_secure(password tea, salt tea, iterations normie, key_length 
     damn result
 }
 
-fr fr ================================
-fr fr Constant-time Operations
-fr fr ================================
+no cap
+================================
+Constant-time Operations
+================================
+on god
 
 slay crypto_constant_time_compare(a tea, b tea) lit {
     sus len_a normie = crypto_string_length_secure(a)
@@ -442,16 +460,20 @@ slay crypto_constant_time_compare(a tea, b tea) lit {
     damn result == 0
 }
 
-fr fr ================================
-fr fr Module Initialization
-fr fr ================================
+no cap
+================================
+Module Initialization
+================================
+on god
 
 fr fr Initialize with high-entropy seed
 crypto_secure_seed(0x12345678, 0x9abcdef0, 0xfedcba98)
 
-fr fr ================================
-fr fr Post-Quantum Cryptography Integration
-fr fr ================================
+no cap
+================================
+Post-Quantum Cryptography Integration
+================================
+on god
 
 fr fr Import all PQC modules
 yeet "pqc_kyber"
@@ -531,9 +553,11 @@ slay crypto_pqc_get_security_level(algorithm_name tea) normie {
     damn 128 fr fr Default security level
 }
 
-fr fr ================================
-fr fr Hybrid Classical-PQC Functions
-fr fr ================================
+no cap
+================================
+Hybrid Classical-PQC Functions
+================================
+on god
 
 slay crypto_hybrid_kem_generate_keypair() [normie] { fr fr Generate both classical and post-quantum keys
     sus classical_key [normie] = crypto_secure_random_bytes(32)
@@ -559,9 +583,11 @@ slay crypto_hybrid_signature_generate_keypair() [normie] { fr fr Generate both E
     damn result
 }
 
-fr fr ================================
-fr fr Module Initialization
-fr fr ================================
+no cap
+================================
+Module Initialization
+================================
+on god
 
 fr fr Initialize with high-entropy seed
 crypto_secure_seed(0x12345678, 0x9abcdef0, 0xfedcba98)

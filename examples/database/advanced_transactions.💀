@@ -1,11 +1,13 @@
-fr fr fr fr Advanced transaction management example - showing ACID properties periodt
-fr fr
-fr fr This example demonstrates:
-fr fr - Transaction basics (begin, commit, rollback)
-fr fr - Savepoints for nested transactions
-fr fr - Error handling within transactions
-fr fr - Batch processing with transactions
-fr fr - Concurrent transaction scenarios
+no cap
+fr fr Advanced transaction management example - showing ACID properties periodt
+
+This example demonstrates:
+- Transaction basics (begin, commit, rollback)
+- Savepoints for nested transactions
+- Error handling within transactions
+- Batch processing with transactions
+- Concurrent transaction scenarios
+on god
 
 sus main() {
     // Setup test database with accounts table

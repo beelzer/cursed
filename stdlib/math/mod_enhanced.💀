@@ -1,12 +1,16 @@
-fr fr Enhanced Math Module - Complete Implementation
-fr fr Pure CURSED mathematical functions with comprehensive error handling
-fr fr FFI-free implementation for essential mathematical operations
+no cap
+Enhanced Math Module - Complete Implementation
+Pure CURSED mathematical functions with comprehensive error handling
+FFI-free implementation for essential mathematical operations
+on god
 
 yeet "error_core"
 
-fr fr ================================
-fr fr Mathematical Constants
-fr fr ================================
+no cap
+================================
+Mathematical Constants
+================================
+on god
 
 slay math_pi() meal {
     damn 3.141592653589793
@@ -40,9 +44,11 @@ slay math_ln_10() meal {
     damn 2.302585092994046
 }
 
-fr fr ================================
-fr fr Basic Operations
-fr fr ================================
+no cap
+================================
+Basic Operations
+================================
+on god
 
 slay math_abs(x meal) meal {
     lowkey x < 0.0 {
@@ -86,9 +92,11 @@ slay math_clamp_int(x normie, min_val normie, max_val normie) normie {
     else { damn x }
 }
 
-fr fr ================================
-fr fr Power and Root Functions
-fr fr ================================
+no cap
+================================
+Power and Root Functions
+================================
+on god
 
 slay math_sqrt(x meal) meal {
     lowkey x < 0.0 {
@@ -192,9 +200,11 @@ slay math_pow_int(base normie, exponent normie) normie {
     damn result
 }
 
-fr fr ================================
-fr fr Exponential and Logarithmic Functions
-fr fr ================================
+no cap
+================================
+Exponential and Logarithmic Functions
+================================
+on god
 
 slay math_exp(x meal) meal {
     lowkey x == 0.0 {
@@ -274,9 +284,11 @@ slay math_log(x meal, base meal) meal {
     damn math_ln(x) / math_ln(base)
 }
 
-fr fr ================================
-fr fr Trigonometric Functions
-fr fr ================================
+no cap
+================================
+Trigonometric Functions
+================================
+on god
 
 slay math_sin(x meal) meal { fr fr Normalize angle to [-π, π]
     bestie x > math_pi() {
@@ -387,9 +399,11 @@ slay math_atan2(y meal, x meal) meal {
     damn -math_pi() / 2.0
 }
 
-fr fr ================================
-fr fr Hyperbolic Functions
-fr fr ================================
+no cap
+================================
+Hyperbolic Functions
+================================
+on god
 
 slay math_sinh(x meal) meal { fr fr sinh(x) = (e^x - e^(-x)) / 2
     sus exp_x meal = math_exp(x)
@@ -414,9 +428,11 @@ slay math_tanh(x meal) meal { fr fr tanh(x) = sinh(x) / cosh(x)
     damn sinh_val / cosh_val
 }
 
-fr fr ================================
-fr fr Rounding and Comparison Functions
-fr fr ================================
+no cap
+================================
+Rounding and Comparison Functions
+================================
+on god
 
 slay math_floor(x meal) meal {
     sus int_part normie = normie(x)
@@ -467,9 +483,11 @@ slay math_remainder(x meal, y meal) meal {
     damn x - y * meal(rounded_quotient)
 }
 
-fr fr ================================
-fr fr Advanced Mathematical Functions
-fr fr ================================
+no cap
+================================
+Advanced Mathematical Functions
+================================
+on god
 
 slay math_factorial(n normie) normie {
     lowkey n < 0 {
@@ -548,9 +566,11 @@ slay math_fibonacci(n normie) normie {
     damn b
 }
 
-fr fr ================================
-fr fr Statistical Functions
-fr fr ================================
+no cap
+================================
+Statistical Functions
+================================
+on god
 
 slay math_sum(values meal[value]) meal {
     sus total meal = 0.0
@@ -600,9 +620,11 @@ slay math_median(values meal[value]) meal {
     }
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay math_sign(x meal) meal {
     lowkey x > 0.0 { damn 1.0 }
@@ -645,9 +667,11 @@ slay math_smoothstep(edge0 meal, edge1 meal, x meal) meal {
     damn t * t * (3.0 - 2.0 * t)
 }
 
-fr fr ================================
-fr fr Number Theory Functions
-fr fr ================================
+no cap
+================================
+Number Theory Functions
+================================
+on god
 
 slay math_is_prime(n normie) lit {
     lowkey n <= 1 {

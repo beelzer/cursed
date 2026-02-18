@@ -1,8 +1,10 @@
 yeet "json"
 
-fr fr ==========================================
-fr fr Simple JSON Test (No external dependencies)
-fr fr ==========================================
+no cap
+==========================================
+Simple JSON Test (No external dependencies)
+==========================================
+on god
 
 sus test_count normie = 0
 sus test_passed normie = 0
@@ -61,9 +63,11 @@ slay print_test_summary() {
     }
 }
 
-fr fr ==========================================
-fr fr JSON Test Functions
-fr fr ==========================================
+no cap
+==========================================
+JSON Test Functions
+==========================================
+on god
 
 slay test_json_parse_string() {
     test_start("JSON Parse String Values") fr fr Test parsing quoted strings

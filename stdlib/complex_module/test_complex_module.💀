@@ -1,10 +1,12 @@
 yeet "testz"
 yeet "complex_module"
 
-fr fr ================================
-fr fr Complex Module Tests
-fr fr Advanced functionality testing with dependencies
-fr fr ================================
+no cap
+================================
+Complex Module Tests
+Advanced functionality testing with dependencies
+================================
+on god
 
 test_start("Complex Data Structure Creation Test")
 sus data ComplexData = complex_data_new()
@@ -83,11 +85,13 @@ sus output normie[value] = complex_transform(input)
 
 assert_true(len(output) == len(input))
 
-fr fr Test transformation formula: x*x + x
-fr fr For input 1: 1*1 + 1 = 2
-fr fr For input 2: 2*2 + 2 = 6
-fr fr For input 3: 3*3 + 3 = 12
-fr fr For input 4: 4*4 + 4 = 20
+no cap
+Test transformation formula: x*x + x
+For input 1: 1*1 + 1 = 2
+For input 2: 2*2 + 2 = 6
+For input 3: 3*3 + 3 = 12
+For input 4: 4*4 + 4 = 20
+on god
 
 fr fr Note: Can't directly test array values without array access
 fr fr But can test that transformation produces different values

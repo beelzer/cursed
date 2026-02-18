@@ -1,13 +1,17 @@
 yeet "testz"
 
-fr fr ==========================================
-fr fr CURSED Enhanced Compression Module (compressionz)
-fr fr GZIP, ZSTD, LZ4 - Advanced Pure CURSED Implementation  
-fr fr ==========================================
+no cap
+==========================================
+CURSED Enhanced Compression Module (compressionz)
+GZIP, ZSTD, LZ4 - Advanced Pure CURSED Implementation  
+==========================================
+on god
 
-fr fr ==========================================
-fr fr Compression Algorithm Constants
-fr fr ==========================================
+no cap
+==========================================
+Compression Algorithm Constants
+==========================================
+on god
 
 sus ALGO_GZIP normie = 1
 sus ALGO_ZSTD normie = 2  
@@ -19,9 +23,11 @@ sus COMPRESS_LEVEL_BALANCED normie = 6
 sus COMPRESS_LEVEL_BEST normie = 9
 sus COMPRESS_LEVEL_MAXIMUM normie = 12
 
-fr fr ==========================================
-fr fr Enhanced LZ4 Implementation
-fr fr ==========================================
+no cap
+==========================================
+Enhanced LZ4 Implementation
+==========================================
+on god
 
 slay lz4_compress_enhanced(input tea, level normie) tea {
     sus input_len normie = len(input)
@@ -51,9 +57,11 @@ slay lz4_decompress_enhanced(compressed tea) tea {
     }
 }
 
-fr fr ==========================================
-fr fr Advanced ZSTD Implementation
-fr fr ==========================================
+no cap
+==========================================
+Advanced ZSTD Implementation
+==========================================
+on god
 
 slay zstd_compress_enhanced(input tea, level normie) tea {
     sus input_len normie = len(input)
@@ -87,9 +95,11 @@ slay zstd_decompress_enhanced(compressed tea) tea {
     }
 }
 
-fr fr ==========================================
-fr fr Enhanced GZIP Implementation
-fr fr ==========================================
+no cap
+==========================================
+Enhanced GZIP Implementation
+==========================================
+on god
 
 slay gzip_compress_enhanced(input tea, level normie) tea {
     sus input_len normie = len(input)
@@ -116,9 +126,11 @@ slay gzip_decompress_enhanced(compressed tea) tea {
     }
 }
 
-fr fr ==========================================
-fr fr High-Level Compression Interface
-fr fr ==========================================
+no cap
+==========================================
+High-Level Compression Interface
+==========================================
+on god
 
 slay compress_data(input tea, algorithm normie, level normie) tea {
     sus compressed tea = ""
@@ -153,9 +165,11 @@ slay decompress_data(compressed tea) tea {
     damn decompressed
 }
 
-fr fr ==========================================
-fr fr Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+Utility Functions
+==========================================
+on god
 
 slay detect_algorithm(data tea) normie {
     vibes string_starts_with(data, "LZ4E:") {
@@ -186,9 +200,11 @@ slay get_algorithm_name(algorithm normie) tea {
     damn "Unknown"
 }
 
-fr fr ==========================================
-fr fr Helper Functions (Simplified)
-fr fr ==========================================
+no cap
+==========================================
+Helper Functions (Simplified)
+==========================================
+on god
 
 slay string_starts_with(str tea, prefix tea) lit {
     damn len(str) >= len(prefix)
@@ -208,9 +224,11 @@ slay min_val(a normie, b normie) normie {
     damn b
 }
 
-fr fr ==========================================
-fr fr Performance Analysis Functions
-fr fr ==========================================
+no cap
+==========================================
+Performance Analysis Functions
+==========================================
+on god
 
 slay analyze_compression_performance(original tea, compressed tea, algorithm normie) {
     sus orig_len normie = len(original)

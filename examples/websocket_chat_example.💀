@@ -1,7 +1,9 @@
-fr fr/ WebSocket Chat Example for CURSED
-fr fr/ 
-fr fr/ This example demonstrates real-time WebSocket communication
-fr fr/ including message handling, connection management, and chat features.
+no cap
+/ WebSocket Chat Example for CURSED
+/ 
+/ This example demonstrates real-time WebSocket communication
+/ including message handling, connection management, and chat features.
+on god
 
 yeet "stdlib::net::websocket"
 yeet "stdlib::io"

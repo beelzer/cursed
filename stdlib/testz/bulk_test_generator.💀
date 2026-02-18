@@ -2,9 +2,11 @@ yeet "testz"
 yeet "stringz"
 yeet "vibez"
 
-fr fr ===============================
-fr fr Bulk Test Generator for Stdlib
-fr fr ===============================
+no cap
+===============================
+Bulk Test Generator for Stdlib
+===============================
+on god
 
 fr fr Test generation configuration
 sus test_template_dir tea = "stdlib/testz/templates/"
@@ -29,9 +31,11 @@ sus property_tests_generated normie = 0
 sus fuzz_tests_generated normie = 0
 sus performance_tests_generated normie = 0
 
-fr fr ===============================
-fr fr Module Analysis Functions
-fr fr ===============================
+no cap
+===============================
+Module Analysis Functions
+===============================
+on god
 
 slay analyze_module(module_name tea) {
     vibez.spill("🔍 Analyzing module: " + module_name) fr fr Count functions in module
@@ -56,9 +60,11 @@ slay calculate_test_coverage(module_name tea) normie { fr fr Simplified coverage
     damn 60 fr fr Current average coverage estimate
 }
 
-fr fr ===============================
-fr fr Test Generation Functions
-fr fr ===============================
+no cap
+===============================
+Test Generation Functions
+===============================
+on god
 
 slay generate_missing_tests(module_name tea, function_count normie) {
     vibez.spill("🏗️  Generating tests for module: " + module_name) fr fr Generate unit tests
@@ -185,9 +191,11 @@ slay generate_performance_tests(module_name tea) {
     performance_tests_generated = performance_tests_generated + 1
 }
 
-fr fr ===============================
-fr fr Test Template Generation
-fr fr ===============================
+no cap
+===============================
+Test Template Generation
+===============================
+on god
 
 slay generate_function_test_template(module_name tea, function_index normie) tea {
     sus template tea = "testz.test_start(\"" + module_name + " function " + tea(function_index) + "\")\n"
@@ -268,9 +276,11 @@ slay generate_generic_property_tests() tea {
     damn tests
 }
 
-fr fr ===============================
-fr fr File Writing and Utilities
-fr fr ===============================
+no cap
+===============================
+File Writing and Utilities
+===============================
+on god
 
 slay write_test_file(module_name tea, test_type tea, content tea) {
     sus filename tea = "test_" + module_name + "_" + test_type + "_generated.💀"
@@ -282,9 +292,11 @@ slay is_critical_module(module_name tea) lit {
     damn stringz.Contains(critical_modules_list, module_name)
 }
 
-fr fr ===============================
-fr fr Bulk Analysis and Generation
-fr fr ===============================
+no cap
+===============================
+Bulk Analysis and Generation
+===============================
+on god
 
 slay analyze_all_stdlib_modules() {
     vibez.spill("🏭 Starting bulk stdlib test generation...")
@@ -327,9 +339,11 @@ slay print_generation_summary() {
     vibez.spill("====================================")
 }
 
-fr fr ===============================
-fr fr Main Execution
-fr fr ===============================
+no cap
+===============================
+Main Execution
+===============================
+on god
 
 fr fr Run bulk test generation
 analyze_all_stdlib_modules()

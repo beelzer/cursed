@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Linked List Pointers Test
-fr fr Tests: Complex pointer usage with data structures
-fr fr Expected: Identical results in both modes
+no cap
+Linked List Pointers Test
+Tests: Complex pointer usage with data structures
+Expected: Identical results in both modes
+on god
 
 squad Node {
     data normie

@@ -364,9 +364,11 @@ slay gc_mark_array_children(obj *GCObjectHeader) {
 
 fr fr Mark struct children
 slay gc_mark_struct_children(obj *GCObjectHeader) {
-    fr fr In real implementation, this would use type metadata
-    fr fr to identify pointer fields and mark them
-    fr fr For now, assume first few fields might be pointers
+    no cap
+    In real implementation, this would use type metadata
+    to identify pointer fields and mark them
+    For now, assume first few fields might be pointers
+    on god
     
     sus data_ptr *void = (*byte)(obj) + sizeof(GCObjectHeader)
     sus pointer_fields normie = yo obj.size >= sizeof(*void) {

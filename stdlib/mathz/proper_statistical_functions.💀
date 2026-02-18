@@ -1,12 +1,16 @@
-fr fr CURSED Proper Statistical Functions Module
-fr fr Mathematically correct and robust statistical implementations
-fr fr Includes proper sorting-based median, robust variance, and advanced statistics
+no cap
+CURSED Proper Statistical Functions Module
+Mathematically correct and robust statistical implementations
+Includes proper sorting-based median, robust variance, and advanced statistics
+on god
 
 yeet "testz"
 
-fr fr ==========================================
-fr fr SORTING ALGORITHMS FOR STATISTICAL FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+SORTING ALGORITHMS FOR STATISTICAL FUNCTIONS
+==========================================
+on god
 
 slay insertion_sort(arr meal[value], count drip) lit {
     fr fr Simple insertion sort for small arrays
@@ -101,9 +105,11 @@ slay copy_array(source meal[value], dest meal[value], count drip) lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr PROPER MEDIAN CALCULATION
-fr fr ==========================================
+no cap
+==========================================
+PROPER MEDIAN CALCULATION
+==========================================
+on god
 
 slay median_sorting_based(values meal[value], count drip) meal {
     fr fr Mathematically correct median using proper sorting
@@ -177,9 +183,11 @@ slay quartiles_proper(values meal[value], count drip) meal[value]{
     damn result
 }
 
-fr fr ==========================================
-fr fr ROBUST STATISTICAL MEASURES
-fr fr ==========================================
+no cap
+==========================================
+ROBUST STATISTICAL MEASURES
+==========================================
+on god
 
 slay mean_arithmetic_stable(values meal[value], count drip) meal {
     fr fr Numerically stable mean using Kahan summation
@@ -261,9 +269,11 @@ slay standard_deviation_population(values meal[value], count drip) meal {
     damn sqrt_stable(variance_val)
 }
 
-fr fr ==========================================
-fr fr ADVANCED STATISTICAL MEASURES
-fr fr ==========================================
+no cap
+==========================================
+ADVANCED STATISTICAL MEASURES
+==========================================
+on god
 
 slay skewness_proper(values meal[value], count drip) meal {
     fr fr Sample skewness using the standard unbiased formula
@@ -346,9 +356,11 @@ slay moment_central(values meal[value], count drip, order drip) meal {
     damn moment / count.(meal)
 }
 
-fr fr ==========================================
-fr fr ROBUST STATISTICS (OUTLIER RESISTANT)
-fr fr ==========================================
+no cap
+==========================================
+ROBUST STATISTICS (OUTLIER RESISTANT)
+==========================================
+on god
 
 slay median_absolute_deviation(values meal[value], count drip) meal {
     fr fr MAD - robust measure of variability
@@ -434,9 +446,11 @@ slay winsorized_mean(values meal[value], count drip, trim_fraction meal) meal {
     damn sum / count.(meal)
 }
 
-fr fr ==========================================
-fr fr HELPER FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+HELPER FUNCTIONS
+==========================================
+on god
 
 slay abs_float_stable(x meal) meal {
     lowkey (x < 0.0) {
@@ -517,9 +531,11 @@ slay ceil_proper(x meal) drip {
     damn int_part + 1
 }
 
-fr fr ==========================================
-fr fr TEST FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+TEST FUNCTIONS
+==========================================
+on god
 
 slay test_statistical_functions() lit {
     fr fr Test proper statistical implementations

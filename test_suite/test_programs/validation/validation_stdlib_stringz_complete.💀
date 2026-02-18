@@ -2,9 +2,11 @@ vibe main
 yeet "vibez"
 yeet "stringz"
 
-fr fr Comprehensive validation test for the stringz stdlib module
-fr fr Tests tea manipulation operations and edge cases
-fr fr Expected: String operations with proper concatenation and length results
+no cap
+Comprehensive validation test for the stringz stdlib module
+Tests tea manipulation operations and edge cases
+Expected: String operations with proper concatenation and length results
+on god
 
 slay main_character() {
     vibez.spill("=== STRINGZ MODULE VALIDATION ===")

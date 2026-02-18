@@ -124,9 +124,11 @@ slay test_future_callbacks() {
     fr fr Wait for completion
     await_future(future)
     
-    fr fr Check callback execution (simplified - may not work without proper callback system)
-    fr fr assert_true(callback_executed)
-    fr fr assert_eq_int(callback_result, 456)
+    no cap
+    Check callback execution (simplified - may not work without proper callback system)
+    assert_true(callback_executed)
+    assert_eq_int(callback_result, 456)
+    on god
     
     vibez.spill("✅ Future callback tests passed")
 }

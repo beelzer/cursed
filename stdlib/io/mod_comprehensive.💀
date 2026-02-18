@@ -1,13 +1,17 @@
-fr fr CURSED I/O Module - Comprehensive Implementation
-fr fr Complete I/O operations with proper error handling and buffering
-fr fr Pure CURSED implementation with robust file and stream operations
+no cap
+CURSED I/O Module - Comprehensive Implementation
+Complete I/O operations with proper error handling and buffering
+Pure CURSED implementation with robust file and stream operations
+on god
 
 yeet "stringz"
 yeet "vibez"
 
-fr fr ================================
-fr fr Core Constants and Flags
-fr fr ================================
+no cap
+================================
+Core Constants and Flags
+================================
+on god
 
 fr fr File opening flags (POSIX compatible)
 fact O_RDONLY normie = 0
@@ -51,9 +55,11 @@ fact ErrTooManyFiles tea = "too many open files"
 fact ErrDiskFull tea = "disk full"
 fact ErrIOError tea = "input/output error"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like FileDescriptor squad {
     fd normie
@@ -117,9 +123,11 @@ be_like StreamPosition squad {
     column_number thicc
 }
 
-fr fr ================================
-fr fr Low-Level File Operations
-fr fr ================================
+no cap
+================================
+Low-Level File Operations
+================================
+on god
 
 slay open_file(path tea, flags normie, mode normie) (*FileDescriptor, IOError) { fr fr Open file with comprehensive error handling
     lowkey path == "" {
@@ -298,9 +306,11 @@ slay flush_file(file_desc *FileDescriptor) IOError { fr fr Flush file buffers to
     damn empty_error
 }
 
-fr fr ================================
-fr fr Buffered I/O Operations
-fr fr ================================
+no cap
+================================
+Buffered I/O Operations
+================================
+on god
 
 slay create_buffered_reader(file_desc *FileDescriptor, buffer_size thicc) *BufferedReader { fr fr Create buffered reader
     lowkey file_desc == null {
@@ -479,9 +489,11 @@ slay flush_buffered_writer(writer *BufferedWriter) IOError { fr fr Flush buffere
     damn empty_error
 }
 
-fr fr ================================
-fr fr High-Level File Operations
-fr fr ================================
+no cap
+================================
+High-Level File Operations
+================================
+on god
 
 slay read_entire_file(path tea) (tea, IOError) { fr fr Read entire file as string
     sus bytes_data, error := read_entire_file_bytes(path)
@@ -667,9 +679,11 @@ slay copy_file_comprehensive(source_path tea, dest_path tea, buffer_size thicc) 
     damn flush_error
 }
 
-fr fr ================================
-fr fr File Information Operations
-fr fr ================================
+no cap
+================================
+File Information Operations
+================================
+on god
 
 slay get_file_info_comprehensive(path tea) (FileInfo, IOError) { fr fr Get comprehensive file information
     lowkey path == "" {
@@ -732,9 +746,11 @@ slay is_regular_file_comprehensive(path tea) lit { fr fr Check if path is regula
     damn info.is_file
 }
 
-fr fr ================================
-fr fr Directory Operations
-fr fr ================================
+no cap
+================================
+Directory Operations
+================================
+on god
 
 slay create_directory_comprehensive(path tea, mode normie) IOError { fr fr Create directory with comprehensive error handling
     lowkey path == "" {
@@ -810,9 +826,11 @@ slay remove_directory_comprehensive(path tea) IOError { fr fr Remove directory w
     damn empty_error
 }
 
-fr fr ================================
-fr fr Error Handling Utilities
-fr fr ================================
+no cap
+================================
+Error Handling Utilities
+================================
+on god
 
 slay create_io_error(operation tea, path tea, message tea, error_code normie) IOError { fr fr Create I/O error
     sus error IOError = {
@@ -852,9 +870,11 @@ slay is_permission_error(error_code normie) lit { fr fr Check if error is permis
     damn false
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay min_thicc(a thicc, b thicc) thicc { fr fr Return minimum of two values
     lowkey a < b {
@@ -880,9 +900,11 @@ slay contains_invalid_path_chars(path tea) lit { fr fr Check for invalid path ch
     damn false
 }
 
-fr fr ================================
-fr fr System Call Interface (Placeholders)
-fr fr ================================
+no cap
+================================
+System Call Interface (Placeholders)
+================================
+on god
 
 fr fr These would be implemented as actual system calls
 slay syscall_open(path tea, flags normie, mode normie) normie { damn -1 }

@@ -3,9 +3,11 @@ yeet "vibez"
 yeet "mathz"
 yeet "stringz"
 
-fr fr Regression test for tea handling and float precision bugs
-fr fr Tests edge cases that previously caused compilation or runtime issues
-fr fr Expected: Proper handling of tea operations and float calculations
+no cap
+Regression test for tea handling and float precision bugs
+Tests edge cases that previously caused compilation or runtime issues
+Expected: Proper handling of tea operations and float calculations
+on god
 
 slay main_character() {
     vibez.spill("=== STRING & FLOAT PRECISION REGRESSION ===")

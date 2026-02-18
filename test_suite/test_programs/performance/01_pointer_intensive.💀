@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Pointer Intensive Performance Test
-fr fr Tests: Heavy pointer usage for performance validation
-fr fr Expected: Identical results in both modes
+no cap
+Pointer Intensive Performance Test
+Tests: Heavy pointer usage for performance validation
+Expected: Identical results in both modes
+on god
 
 slay pointer_operations_loop() {
     sus values []normie = []normie{0}

@@ -1,6 +1,8 @@
-fr fr CURSED Formatter CLI - Complete Pure CURSED Implementation
-fr fr Replaces Rust formatter with comprehensive multiline string support
-fr fr Fixes Critical P1 Issue #20: Formatter round-trip breaks multiline string literals
+no cap
+CURSED Formatter CLI - Complete Pure CURSED Implementation
+Replaces Rust formatter with comprehensive multiline string support
+Fixes Critical P1 Issue #20: Formatter round-trip breaks multiline string literals
+on god
 
 yeet "stringz"
 yeet "arrayz"

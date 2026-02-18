@@ -3,9 +3,11 @@ yeet "enhanced_collections"
 
 test_start("Enhanced Collections Comprehensive Tests")
 
-fr fr ================================
-fr fr Generic Array Operations Tests
-fr fr ================================
+no cap
+================================
+Generic Array Operations Tests
+================================
+on god
 
 test_start("array_map functionality")
 sus numbers normie[value] = [1, 2, 3, 4, 5]
@@ -69,9 +71,11 @@ assert_eq_int(sorted[1], 2)
 assert_eq_int(sorted[2], 3)
 assert_eq_int(sorted[5], 9)
 
-fr fr ================================
-fr fr HashMap Tests
-fr fr ================================
+no cap
+================================
+HashMap Tests
+================================
+on god
 
 test_start("HashMap creation and basic operations")
 sus map HashMap<tea, normie> = HashMap_new<tea, normie>()
@@ -110,9 +114,11 @@ sus int_hash normie = HashMap_hash_int(42)
 assert_true(str_hash > 0)
 assert_true(int_hash > 0)
 
-fr fr ================================
-fr fr Thread-Safe Collections Tests  
-fr fr ================================
+no cap
+================================
+Thread-Safe Collections Tests  
+================================
+on god
 
 test_start("SafeArray creation and basic operations")
 sus safe_arr SafeArray<normie> = SafeArray_new<normie>()
@@ -137,9 +143,11 @@ assert_eq_int(val2, 30)
 (invalid_val, found_invalid) := SafeArray_get(append_arr, 10)
 assert_false(found_invalid)
 
-fr fr ================================
-fr fr Binary Tree Tests
-fr fr ================================
+no cap
+================================
+Binary Tree Tests
+================================
+on god
 
 test_start("BinaryTree creation and insertion")
 sus root *BinaryTree<normie> = BinaryTree_new<normie>(10)
@@ -185,9 +193,11 @@ assert_eq_int(visited_values[2], 3)
 assert_eq_int(visited_values[3], 4)
 assert_eq_int(visited_values[4], 6)
 
-fr fr ================================
-fr fr Error Handling Tests
-fr fr ================================
+no cap
+================================
+Error Handling Tests
+================================
+on god
 
 test_start("array_safe_get with valid index")
 sus safe_test_array normie[value] = [10, 20, 30]
@@ -206,9 +216,11 @@ sus test_error CollectionError = CollectionError_new("Test error message", "Test
 assert_eq_string(test_error.message, "Test error message")
 assert_eq_string(test_error.error_type, "TestError")
 
-fr fr ================================
-fr fr Performance and Edge Cases
-fr fr ================================
+no cap
+================================
+Performance and Edge Cases
+================================
+on god
 
 test_start("Large array operations")
 sus large_array normie[value] = []

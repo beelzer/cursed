@@ -117,9 +117,11 @@ extern slay cursed_native_signal_wait_sync(signal normie, timeout_ms normie) lit
 extern slay cursed_native_signal_is_safe_context() lit
 extern slay cursed_native_signal_cleanup() lit
 
-fr fr =============================================================================
-fr fr REAL SIGNAL SYSTEM INITIALIZATION
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL SYSTEM INITIALIZATION
+=============================================================================
+on god
 
 slay real_signal_init() lit {
     fr fr Initialize native OS signal handling
@@ -143,9 +145,11 @@ slay real_signal_init() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL HANDLER REGISTRATION
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL HANDLER REGISTRATION
+=============================================================================
+on god
 
 fr fr Register real signal handler - slide into actual OS signal DMs 💬
 slay signal_register_real_handler(signal normie, handler RealSignalHandler) RealSignalResult {
@@ -201,9 +205,11 @@ slay signal_unregister_real_handler(signal normie) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL SENDING AND IPC
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL SENDING AND IPC
+=============================================================================
+on god
 
 fr fr Send real signal to process - actual OS signal delivery 📨
 slay signal_send_real_process(pid normie, signal normie) lit {
@@ -239,9 +245,11 @@ slay signal_send_real_group(pgid normie, signal normie) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL MASKING AND BLOCKING
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL MASKING AND BLOCKING
+=============================================================================
+on god
 
 fr fr Block real signals - actual OS-level DND mode 🔕
 slay signal_block_real_mask(mask RealSignalMask) lit {
@@ -272,9 +280,11 @@ slay signal_unblock_real_mask(mask RealSignalMask) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL CHECKING AND WAITING
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL CHECKING AND WAITING
+=============================================================================
+on god
 
 fr fr Check real pending signals - see what's actually in your OS signal inbox 📬
 slay signal_check_real_pending() RealPendingSignals {
@@ -302,9 +312,11 @@ slay signal_wait_real_for(signal normie, timeout normie) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL HANDLER EXECUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL HANDLER EXECUTION
+=============================================================================
+on god
 
 fr fr This function is called by the native signal platform when a real signal arrives
 slay cursed_real_signal_callback(signal normie, context *SignalContext) {
@@ -324,9 +336,11 @@ slay cursed_real_signal_callback(signal normie, context *SignalContext) {
     }
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL UTILITIES
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL UTILITIES
+=============================================================================
+on god
 
 fr fr Create real signal mask - customize actual OS signal privacy settings 🛡️
 slay signal_create_real_mask() RealSignalMask {
@@ -402,9 +416,11 @@ slay signal_is_real_safe_handler(signal normie) lit {
     damn cursed_native_signal_is_safe_context()
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL SETUP AND CLEANUP
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL SETUP AND CLEANUP
+=============================================================================
+on god
 
 fr fr Real emergency signal setup - actual OS panic button configuration 🚨
 slay signal_setup_real_emergency_exit() lit {
@@ -481,9 +497,11 @@ slay signal_cleanup_real_system() {
     vibez.spill("Real signal system cleaned up - OS integration terminated 🧹")
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL HANDLING BEST PRACTICES
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL HANDLING BEST PRACTICES
+=============================================================================
+on god
 
 fr fr Real signal handling best practices info - educational content with OS focus 📚
 slay signal_get_real_best_practices() tea {
@@ -512,9 +530,11 @@ slay signal_boost_real_info() tea {
          "Vibe: Maximum signal handling energy with real OS power! 💪"
 }
 
-fr fr =============================================================================
-fr fr HELPER FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+HELPER FUNCTIONS
+=============================================================================
+on god
 
 slay process_exit(code normie) {
     vibez.spill("Process would exit with code " + code)

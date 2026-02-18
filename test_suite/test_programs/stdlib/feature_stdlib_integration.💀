@@ -3,9 +3,11 @@ vibe main
 yeet "mathz"
 yeet "vibez"
 
-fr fr Standard Library Integration Test
-fr fr Tests: Multiple stdlib modules working together
-fr fr Expected: All stdlib functions integrate correctly
+no cap
+Standard Library Integration Test
+Tests: Multiple stdlib modules working together
+Expected: All stdlib functions integrate correctly
+on god
 
 slay main_character() {
     vibez.spill("=== Stdlib Integration Test ===")

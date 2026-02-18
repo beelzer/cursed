@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Division Semantics Test
-fr fr Tests: Correct integer vs float division behavior
-fr fr Expected: Integer division returns integer, float division returns float
+no cap
+Division Semantics Test
+Tests: Correct integer vs float division behavior
+Expected: Integer division returns integer, float division returns float
+on god
 
 slay main_character() {
     vibez.spill("=== Division Semantics Test ===")

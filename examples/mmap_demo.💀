@@ -1,8 +1,10 @@
-fr fr/ Memory-mapped files demonstration for CURSED
-fr fr/ 
-fr fr/ This example shows how to use the memory-mapped files module
-fr fr/ for various use cases including file processing, IPC, and
-fr fr/ high-performance data manipulation.
+no cap
+/ Memory-mapped files demonstration for CURSED
+/ 
+/ This example shows how to use the memory-mapped files module
+/ for various use cases including file processing, IPC, and
+/ high-performance data manipulation.
+on god
 
 yeet "stdlib::process::mmap"
 yeet "stdlib::io"

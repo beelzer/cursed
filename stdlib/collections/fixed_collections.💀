@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Collections Library v3.0 FIXED
-fr fr Production-grade data structures with proper memory management
-fr fr Fixed HashMap and Array operations with runtime-backed implementations
-fr fr ========================================
+no cap
+========================================
+CURSED Collections Library v3.0 FIXED
+Production-grade data structures with proper memory management
+Fixed HashMap and Array operations with runtime-backed implementations
+========================================
+on god
 
-fr fr ================================
-fr fr Dynamic Array (Vector) with proper memory management
-fr fr ================================
+no cap
+================================
+Dynamic Array (Vector) with proper memory management
+================================
+on god
 
 be_like DynamicArray squad {
     data extra[value]
@@ -178,9 +182,11 @@ slay Vec_to_array(vec DynamicArray) extra[value]{
     damn result
 }
 
-fr fr ================================
-fr fr Simplified HashMap Implementation (CURSED-native)
-fr fr ================================
+no cap
+================================
+Simplified HashMap Implementation (CURSED-native)
+================================
+on god
 
 be_like SimpleHashMapEntry squad {
     key tea
@@ -424,9 +430,11 @@ slay HashMap_values(map FixedHashMap) extra[value]{
     damn values
 }
 
-fr fr ================================
-fr fr Enhanced Array Operations with bounds checking
-fr fr ================================
+no cap
+================================
+Enhanced Array Operations with bounds checking
+================================
+on god
 
 slay Array_safe_get(arr extra[value], index normie, default_value extra) extra {
     lowkey index >= 0 && index < len(arr) {
@@ -562,9 +570,11 @@ slay Array_slice(arr extra[value], start normie, end normie) extra[value]{
     damn result
 }
 
-fr fr ================================
-fr fr Utility Functions for proper string/char operations
-fr fr ================================
+no cap
+================================
+Utility Functions for proper string/char operations
+================================
+on god
 
 slay string_length_proper(s tea) normie {
     fr fr This would be implemented by the runtime
@@ -590,9 +600,11 @@ slay char_code_at(s tea, index normie) normie {
     damn 97  fr fr Default to 'a'
 }
 
-fr fr ================================
-fr fr Memory-Safe Collection Testing
-fr fr ================================
+no cap
+================================
+Memory-Safe Collection Testing
+================================
+on god
 
 slay test_collections_fixed() {
     vibez.spill("Testing Fixed Collections Implementation...")

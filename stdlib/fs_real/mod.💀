@@ -1,12 +1,16 @@
-fr fr CURSED Real Filesystem Module - Production Implementation with Real Syscalls
-fr fr Complete file system operations using actual system calls
-fr fr Replaces mock operations with real file I/O through Zig syscall interface
+no cap
+CURSED Real Filesystem Module - Production Implementation with Real Syscalls
+Complete file system operations using actual system calls
+Replaces mock operations with real file I/O through Zig syscall interface
+on god
 
 yeet "testz"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like FileInfo squad {
     name tea
@@ -51,9 +55,11 @@ facts MODE_WRITE normie = 1
 facts MODE_APPEND normie = 2
 facts MODE_READ_WRITE normie = 3
 
-fr fr ================================
-fr fr External Syscall Interface
-fr fr ================================
+no cap
+================================
+External Syscall Interface
+================================
+on god
 
 fr fr File operations
 outer slay cursed_file_open(path_ptr [*:0]normie, mode normie) normie
@@ -79,9 +85,11 @@ be_like FileStats squad {
     is_symlink lit
 }
 
-fr fr ================================
-fr fr Core File Operations
-fr fr ================================
+no cap
+================================
+Core File Operations
+================================
+on god
 
 slay read_file(path tea) tea {
     lowkey path == "" {
@@ -213,9 +221,11 @@ slay get_file_size(path tea) thicc {
     damn stats.size
 }
 
-fr fr ================================
-fr fr Directory Operations
-fr fr ================================
+no cap
+================================
+Directory Operations
+================================
+on god
 
 slay create_dir(path tea) lit {
     lowkey path == "" {
@@ -264,9 +274,11 @@ slay is_file(path tea) lit {
     damn stats.is_file
 }
 
-fr fr ================================
-fr fr File Metadata
-fr fr ================================
+no cap
+================================
+File Metadata
+================================
+on god
 
 slay get_file_metadata(path tea) FileMetadata {
     sus metadata FileMetadata = {
@@ -345,9 +357,11 @@ slay get_permissions(path tea) normie {
     damn stats.mode & 0o777
 }
 
-fr fr ================================
-fr fr Path Utilities
-fr fr ================================
+no cap
+================================
+Path Utilities
+================================
+on god
 
 slay join_path(base tea, component tea) tea {
     sus separator tea = "/"
@@ -404,9 +418,11 @@ slay get_extension(path tea) tea {
     damn substring(basename, last_dot, string_length(basename))
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 fr fr Convert CURSED string to C-style null-terminated string
 slay string_to_cstring(s tea) [*:0]normie {
@@ -494,9 +510,11 @@ slay substring(s tea, start normie, end normie) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Error Handling
-fr fr ================================
+no cap
+================================
+Error Handling
+================================
+on god
 
 be_like FileError squad {
     message tea

@@ -1,6 +1,8 @@
-fr fr vibe_life - Essential OS Functionality for CURSED Self-Hosting
-fr fr Pure CURSED implementation without FFI dependencies
-fr fr Provides command line, environment, process, and filesystem operations
+no cap
+vibe_life - Essential OS Functionality for CURSED Self-Hosting
+Pure CURSED implementation without FFI dependencies
+Provides command line, environment, process, and filesystem operations
+on god
 
 fr fr Global state for command line arguments (simulated)
 sus command_line_args [tea] = ["cursed", "program.💀"]
@@ -12,9 +14,11 @@ fr fr Environment variables storage (simulated)
 sus env_vars map = {}
 sus env_count normie = 0
 
-fr fr ==============================================================================
-fr fr COMMAND LINE ARGUMENT FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+COMMAND LINE ARGUMENT FUNCTIONS
+==============================================================================
+on god
 
 fr fr Get all command line arguments as array
 slay get_args() [tea] {
@@ -40,9 +44,11 @@ slay set_args(args [tea]) {
     arg_count = args.length()
 }
 
-fr fr ==============================================================================
-fr fr ENVIRONMENT VARIABLE FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+ENVIRONMENT VARIABLE FUNCTIONS
+==============================================================================
+on god
 
 fr fr Get environment variable by key
 slay get_env(key tea) tea {
@@ -79,9 +85,11 @@ slay unset_env(key tea) lit {
     damn cap
 }
 
-fr fr ==============================================================================
-fr fr PROCESS CONTROL FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS CONTROL FUNCTIONS
+==============================================================================
+on god
 
 fr fr Exit the process with given code
 slay exit(code normie) {
@@ -104,9 +112,11 @@ slay get_ppid() normie {
     damn 1000 fr fr Simulated PPID
 }
 
-fr fr ==============================================================================
-fr fr WORKING DIRECTORY FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+WORKING DIRECTORY FUNCTIONS
+==============================================================================
+on god
 
 fr fr Get current working directory
 slay get_cwd() tea {
@@ -168,9 +178,11 @@ slay basename(path tea) tea {
     damn path
 }
 
-fr fr ==============================================================================
-fr fr FILE SYSTEM OPERATIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+FILE SYSTEM OPERATIONS
+==============================================================================
+on god
 
 fr fr Simulated file system storage
 sus file_system map = {}
@@ -249,9 +261,11 @@ slay is_dir(path tea) lit {
     damn file_system.has_key(dir_marker)
 }
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTIONS
+==============================================================================
+on god
 
 fr fr Get current timestamp (simulated)
 slay get_timestamp() normie {

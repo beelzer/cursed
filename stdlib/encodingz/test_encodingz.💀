@@ -1,6 +1,8 @@
-fr fr ===== ENCODINGZ TEST SUITE - Comprehensive Encoding/Decoding Tests =====
-fr fr Tests for Base64, Hex, ASCII85, URL encoding, and streaming operations
-fr fr Covers edge cases, performance benchmarks, and production scenarios
+no cap
+===== ENCODINGZ TEST SUITE - Comprehensive Encoding/Decoding Tests =====
+Tests for Base64, Hex, ASCII85, URL encoding, and streaming operations
+Covers edge cases, performance benchmarks, and production scenarios
+on god
 
 yeet "testz"
 yeet "encodingz"

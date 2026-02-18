@@ -4,9 +4,11 @@ fr fr Demonstrates the enhanced configuration management system
 yeet "configz"
 yeet "vibez"
 
-fr fr ==========================================
-fr fr Demo: Enhanced TOML Parsing
-fr fr ==========================================
+no cap
+==========================================
+Demo: Enhanced TOML Parsing
+==========================================
+on god
 
 slay demo_toml_parsing() {
     vibez.spill("=== Enhanced TOML Parsing Demo ===")
@@ -119,9 +121,11 @@ region = "us-west-1"
     vibez.spill(json_output)
 }
 
-fr fr ==========================================
-fr fr Demo: String Processing Enhancements
-fr fr ==========================================
+no cap
+==========================================
+Demo: String Processing Enhancements
+==========================================
+on god
 
 slay demo_string_processing() {
     vibez.spill("\n=== String Processing Enhancement Demo ===")
@@ -171,9 +175,11 @@ slay demo_string_processing() {
     }
 }
 
-fr fr ==========================================
-fr fr Demo: Validation System
-fr fr ==========================================
+no cap
+==========================================
+Demo: Validation System
+==========================================
+on god
 
 slay demo_validation_system() {
     vibez.spill("\n=== Configuration Validation Demo ===")
@@ -221,9 +227,11 @@ slay demo_validation_system() {
     }
 }
 
-fr fr ==========================================
-fr fr Demo: Configuration Manager
-fr fr ==========================================
+no cap
+==========================================
+Demo: Configuration Manager
+==========================================
+on god
 
 slay demo_config_manager() {
     vibez.spill("\n=== Configuration Manager Demo ===")
@@ -282,9 +290,11 @@ slay demo_config_manager() {
     vibez.spill(debug_info)
 }
 
-fr fr ==========================================
-fr fr Main Demo Function
-fr fr ==========================================
+no cap
+==========================================
+Main Demo Function
+==========================================
+on god
 
 slay main_character() {
     vibez.spill("🚀 CURSED Enhanced Configuration System Demo")

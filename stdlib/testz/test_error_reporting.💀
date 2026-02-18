@@ -3,9 +3,11 @@ yeet "testz"
 
 fr fr Test error reporting capabilities of the enhanced testz framework
 
-fr fr ===============================
-fr fr Error Reporting Test Suite
-fr fr ===============================
+no cap
+===============================
+Error Reporting Test Suite
+===============================
+on god
 
 slay test_assertion_failures() {
     vibez.spill("❌ Testing assertion failure reporting...")
@@ -140,9 +142,11 @@ slay test_error_report_generation() {
     testz.test_end()
 }
 
-fr fr ===============================
-fr fr Main Error Reporting Test Runner
-fr fr ===============================
+no cap
+===============================
+Main Error Reporting Test Runner
+===============================
+on god
 
 slay main_character() {
     vibez.spill("🚀 Starting Enhanced Testz Error Reporting Tests")

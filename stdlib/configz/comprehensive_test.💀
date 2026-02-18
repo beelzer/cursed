@@ -5,9 +5,11 @@ yeet "configz"
 yeet "vibez"
 yeet "timez"
 
-fr fr ==========================================
-fr fr TOML Parser Testing
-fr fr ==========================================
+no cap
+==========================================
+TOML Parser Testing
+==========================================
+on god
 
 slay test_toml_parsing() lit {
     vibez.spill("=== Testing TOML Parser ===")
@@ -84,9 +86,11 @@ ip = "192.168.1.11"
     damn based
 }
 
-fr fr ==========================================
-fr fr Configuration Manager Testing
-fr fr ==========================================
+no cap
+==========================================
+Configuration Manager Testing
+==========================================
+on god
 
 slay test_config_manager() lit {
     vibez.spill("=== Testing Configuration Manager ===")
@@ -139,9 +143,11 @@ slay test_config_manager() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr Validation System Testing
-fr fr ==========================================
+no cap
+==========================================
+Validation System Testing
+==========================================
+on god
 
 slay test_validation_system() lit {
     vibez.spill("=== Testing Validation System ===")
@@ -204,9 +210,11 @@ slay test_validation_system() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr Hot Reload Testing
-fr fr ==========================================
+no cap
+==========================================
+Hot Reload Testing
+==========================================
+on god
 
 slay test_hot_reload_system() lit {
     vibez.spill("=== Testing Hot Reload System ===")
@@ -224,9 +232,11 @@ slay test_hot_reload_system() lit {
     fr fr Start monitoring
     hot_reload = hot_reload_start_monitoring(hot_reload)
     
-    fr fr Simulate file changes (in real usage, files would change externally)
-    fr fr hot_reload = hot_reload_scan_changes(hot_reload)
-    fr fr hot_reload = process_change_queue(hot_reload)
+    no cap
+    Simulate file changes (in real usage, files would change externally)
+    hot_reload = hot_reload_scan_changes(hot_reload)
+    hot_reload = process_change_queue(hot_reload)
+    on god
     
     fr fr Get statistics
     sus stats tea = hot_reload_get_statistics(hot_reload)
@@ -247,9 +257,11 @@ slay test_hot_reload_system() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr String Operation Testing
-fr fr ==========================================
+no cap
+==========================================
+String Operation Testing
+==========================================
+on god
 
 slay test_string_operations() lit {
     vibez.spill("=== Testing String Operations ===")
@@ -294,9 +306,11 @@ slay test_string_operations() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr URL and Email Validation Testing
-fr fr ==========================================
+no cap
+==========================================
+URL and Email Validation Testing
+==========================================
+on god
 
 slay test_url_email_validation() lit {
     vibez.spill("=== Testing URL and Email Validation ===")
@@ -349,9 +363,11 @@ slay test_url_email_validation() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr Main Test Runner
-fr fr ==========================================
+no cap
+==========================================
+Main Test Runner
+==========================================
+on god
 
 slay main_character() lit {
     vibez.spill("Starting CURSED Configuration System Comprehensive Tests\n")
@@ -418,9 +434,11 @@ slay main_character() lit {
     damn all_tests_passed
 }
 
-fr fr ==========================================
-fr fr Helper Functions for Testing
-fr fr ==========================================
+no cap
+==========================================
+Helper Functions for Testing
+==========================================
+on god
 
 fr fr Mock functions that would normally come from stdlib modules
 slay config_get_number(config ConfigManager, key tea) normie {

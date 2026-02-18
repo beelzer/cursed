@@ -7,9 +7,11 @@ yeet "real_goroutine_tracking"
 yeet "testz"
 yeet "vibez"
 
-fr fr =============================================================================
-fr fr REAL TIMING MECHANISM TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL TIMING MECHANISM TESTS
+=============================================================================
+on god
 
 fr fr Test high-resolution timestamp functionality
 slay test_real_timing_mechanisms() lit {
@@ -43,9 +45,11 @@ slay test_real_timing_mechanisms() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr REAL GOROUTINE TRACKING TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL GOROUTINE TRACKING TESTS
+=============================================================================
+on god
 
 fr fr Test goroutine ID tracking and context management
 slay test_real_goroutine_tracking() lit {
@@ -79,9 +83,11 @@ slay test_real_goroutine_tracking() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr OS PRIMITIVE INTEGRATION TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+OS PRIMITIVE INTEGRATION TESTS
+=============================================================================
+on god
 
 fr fr Test OS mutex functionality
 slay test_os_mutex_primitives() lit {
@@ -137,9 +143,11 @@ slay test_os_condition_primitives() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr ENHANCED CHANNEL OPERATIONS TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+ENHANCED CHANNEL OPERATIONS TESTS
+=============================================================================
+on god
 
 fr fr Test enhanced channel operations with real tracking
 slay test_enhanced_channel_operations() lit {
@@ -169,9 +177,11 @@ slay test_enhanced_channel_operations() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr PERFORMANCE MEASUREMENT TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+PERFORMANCE MEASUREMENT TESTS
+=============================================================================
+on god
 
 fr fr Test performance counter functionality
 slay test_performance_measurement() lit {
@@ -203,9 +213,11 @@ slay test_performance_measurement() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr THREADING INTEGRATION TESTS  
-fr fr =============================================================================
+no cap
+=============================================================================
+THREADING INTEGRATION TESTS  
+=============================================================================
+on god
 
 fr fr Test OS thread integration
 slay test_os_thread_integration() lit {
@@ -239,9 +251,11 @@ slay test_os_thread_integration() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr GOROUTINE STATE MANAGEMENT TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE STATE MANAGEMENT TESTS
+=============================================================================
+on god
 
 fr fr Test goroutine state tracking and transitions
 slay test_goroutine_state_management() lit {
@@ -276,9 +290,11 @@ slay test_goroutine_state_management() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr DEBUGGING AND INTROSPECTION TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+DEBUGGING AND INTROSPECTION TESTS
+=============================================================================
+on god
 
 fr fr Test debugging and introspection capabilities
 slay test_debugging_introspection() lit {
@@ -307,9 +323,11 @@ slay test_debugging_introspection() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr COMPREHENSIVE INTEGRATION TEST
-fr fr =============================================================================
+no cap
+=============================================================================
+COMPREHENSIVE INTEGRATION TEST
+=============================================================================
+on god
 
 fr fr Test comprehensive integration of all enhanced functionality
 slay test_comprehensive_integration() lit {
@@ -352,9 +370,11 @@ slay test_comprehensive_integration() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr MAIN TEST EXECUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+MAIN TEST EXECUTION
+=============================================================================
+on god
 
 fr fr Execute all enhanced concurrency tests
 slay run_all_enhanced_concurrency_tests() lit {

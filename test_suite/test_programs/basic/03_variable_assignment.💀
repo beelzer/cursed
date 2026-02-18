@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Variable Assignment Test
-fr fr Tests: Variable declarations and assignments
-fr fr Expected: Identical behavior in both modes
+no cap
+Variable Assignment Test
+Tests: Variable declarations and assignments
+Expected: Identical behavior in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Variable Assignment Test ===")

@@ -4,9 +4,11 @@ fr fr This example demonstrates the differences between type switches and regula
 yeet "stdlib::fmt"
 yeet "stdlib::strings"
 
-fr fr ================================================
-fr fr Regular Switch Examples
-fr fr ================================================
+no cap
+================================================
+Regular Switch Examples
+================================================
+on god
 
 slay demonstrate_regular_switch() {
     println("=== Regular Switch Examples ===")
@@ -53,9 +55,11 @@ slay demonstrate_regular_switch() {
     }
 }
 
-fr fr ================================================
-fr fr Type Switch Examples
-fr fr ================================================
+no cap
+================================================
+Type Switch Examples
+================================================
+on god
 
 slay demonstrate_type_switch() {
     println("\n=== Type Switch Examples ===")
@@ -103,9 +107,11 @@ slay demonstrate_type_switch() {
     }
 }
 
-fr fr ================================================
-fr fr Side-by-Side Comparison
-fr fr ================================================
+no cap
+================================================
+Side-by-Side Comparison
+================================================
+on god
 
 fr fr Regular switch: Processing HTTP status codes
 slay handle_http_status_regular(status_code int) {
@@ -168,9 +174,11 @@ slay demonstrate_side_by_side() {
     }
 }
 
-fr fr ================================================
-fr fr When to Use Each
-fr fr ================================================
+no cap
+================================================
+When to Use Each
+================================================
+on god
 
 fr fr Use regular switch: Known set of values
 slay process_day_of_week(day string) {
@@ -251,9 +259,11 @@ slay demonstrate_usage_guidelines() {
     }
 }
 
-fr fr ================================================
-fr fr Performance Comparison
-fr fr ================================================
+no cap
+================================================
+Performance Comparison
+================================================
+on god
 
 slay benchmark_regular_switch(value int) string {
     vibe_check value {
@@ -315,9 +325,11 @@ slay demonstrate_performance() {
     }
 }
 
-fr fr ================================================
-fr fr Error Handling Comparison
-fr fr ================================================
+no cap
+================================================
+Error Handling Comparison
+================================================
+on god
 
 fr fr Regular switch with error handling
 slay validate_grade_regular(grade string) error {
@@ -376,9 +388,11 @@ slay demonstrate_error_handling() {
     }
 }
 
-fr fr ================================================
-fr fr Summary and Best Practices
-fr fr ================================================
+no cap
+================================================
+Summary and Best Practices
+================================================
+on god
 
 slay print_comparison_summary() {
     println("\n=== Type Switch vs Regular Switch Summary ===")

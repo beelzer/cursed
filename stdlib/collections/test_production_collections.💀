@@ -1,7 +1,9 @@
-fr fr ========================================
-fr fr Production Collections Test Suite
-fr fr Comprehensive testing for all data structures and algorithms
-fr fr ========================================
+no cap
+========================================
+Production Collections Test Suite
+Comprehensive testing for all data structures and algorithms
+========================================
+on god
 
 yeet "testz"
 yeet "stdlib/collections/production_collections"
@@ -35,9 +37,11 @@ slay test_summary() {
     }
 }
 
-fr fr ================================
-fr fr Hash Table Tests
-fr fr ================================
+no cap
+================================
+Hash Table Tests
+================================
+on god
 
 slay test_hashmap_basic_operations() {
     sus map RobinHoodHashTable = HashMap_new()
@@ -106,9 +110,11 @@ slay test_hashmap_resize() {
     run_test("HashMap size after resize", HashMap_size(map) == 5)
 }
 
-fr fr ================================
-fr fr Sorting Algorithm Tests
-fr fr ================================
+no cap
+================================
+Sorting Algorithm Tests
+================================
+on god
 
 slay test_merge_sort() {
     fr fr Test empty array
@@ -190,9 +196,11 @@ slay test_insertion_sort() {
         result2[0] == 1 && result2[1] == 2)
 }
 
-fr fr ================================
-fr fr Statistics Tests
-fr fr ================================
+no cap
+================================
+Statistics Tests
+================================
+on god
 
 slay test_statistics_basic() {
     sus data normie[value] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -249,9 +257,11 @@ slay test_statistics_variance_and_std_dev() {
     run_test("Statistics std dev is sqrt of variance", std_dev * std_dev >= variance * 0.9)
 }
 
-fr fr ================================
-fr fr AVL Tree Tests
-fr fr ================================
+no cap
+================================
+AVL Tree Tests
+================================
+on god
 
 slay test_avl_tree_basic() {
     sus tree BalancedTree = Tree_new()
@@ -299,9 +309,11 @@ slay test_avl_tree_balancing() {
     run_test("AVL tree size after balanced inserts", tree.size == 5)
 }
 
-fr fr ================================
-fr fr Priority Queue Tests
-fr fr ================================
+no cap
+================================
+Priority Queue Tests
+================================
+on god
 
 slay test_priority_queue_basic() {
     sus pq PriorityQueue = PriorityQueue_new()
@@ -363,9 +375,11 @@ slay test_priority_queue_resize() {
     run_test("PriorityQueue extract after resize", extracted == "item")
 }
 
-fr fr ================================
-fr fr Performance Tests
-fr fr ================================
+no cap
+================================
+Performance Tests
+================================
+on god
 
 slay test_sorting_performance_comparison() {
     vibez.spill("\n=== Sorting Performance Comparison ===")
@@ -417,9 +431,11 @@ slay test_data_structure_complexity() {
     run_test("Priority Queue O(log n) operations work", pq_item == "item")
 }
 
-fr fr ================================
-fr fr Integration Tests
-fr fr ================================
+no cap
+================================
+Integration Tests
+================================
+on god
 
 slay test_combined_data_structures() {
     vibez.spill("\n=== Integration Test: Combined Data Structures ===")
@@ -462,9 +478,11 @@ slay test_sorting_with_statistics() {
     vibez.spill("✅ Successfully integrated sorting with statistical analysis")
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 fr fr Run all test suites
 vibez.spill("🚀 Starting Production Collections Test Suite")

@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Memory Allocation Test - Simple Patterns
-fr fr Tests: Basic array allocation and deallocation patterns
-fr fr Expected: Successful memory operations without leaks
+no cap
+Memory Allocation Test - Simple Patterns
+Tests: Basic array allocation and deallocation patterns
+Expected: Successful memory operations without leaks
+on god
 
 slay main_character() {
     vibez.spill("=== Memory Allocation Test ===")

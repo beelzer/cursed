@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Comprehensive stdlib validation test covering vibez output functionality
-fr fr Tests vibez output functions with various data types
-fr fr Validates consistent behavior across interpreter and compiled modes
+no cap
+Comprehensive stdlib validation test covering vibez output functionality
+Tests vibez output functions with various data types
+Validates consistent behavior across interpreter and compiled modes
+on god
 
 slay main_character() {
     vibez.spill("=== Comprehensive Stdlib Validation ===")

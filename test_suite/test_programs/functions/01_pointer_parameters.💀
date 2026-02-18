@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Pointer Parameters Test
-fr fr Tests: Passing pointers to functions
-fr fr Expected: Identical results in both modes
+no cap
+Pointer Parameters Test
+Tests: Passing pointers to functions
+Expected: Identical results in both modes
+on god
 
 slay modify_value(ptr ඞnormie) {
     *ptr = *ptr * 2

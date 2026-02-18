@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Test: Expression precedence and operator parsing
-fr fr Purpose: Ensure mathematical and logical operators follow correct precedence rules
-fr fr Expected: Operations should evaluate in proper order (*, / before +, -, etc.)
+no cap
+Test: Expression precedence and operator parsing
+Purpose: Ensure mathematical and logical operators follow correct precedence rules
+Expected: Operations should evaluate in proper order (*, / before +, -, etc.)
+on god
 
 slay main_character() {
     fr fr Arithmetic precedence tests

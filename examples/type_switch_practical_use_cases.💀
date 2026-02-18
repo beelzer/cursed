@@ -7,9 +7,11 @@ yeet "stdlib::time"
 yeet "stdlib::io"
 yeet "stdlib::net"
 
-fr fr ================================================
-fr fr 1. Configuration System
-fr fr ================================================
+no cap
+================================================
+1. Configuration System
+================================================
+on god
 
 fr fr Different configuration sources
 collab ConfigSource {
@@ -202,9 +204,11 @@ slay demonstrate_configuration_system() {
     }
 }
 
-fr fr ================================================
-fr fr 2. Message Queue System
-fr fr ================================================
+no cap
+================================================
+2. Message Queue System
+================================================
+on god
 
 collab Message {
     slay id() string
@@ -434,9 +438,11 @@ slay demonstrate_message_queue() {
     process_message_batch(messages)
 }
 
-fr fr ================================================
-fr fr 3. Database Query Builder
-fr fr ================================================
+no cap
+================================================
+3. Database Query Builder
+================================================
+on god
 
 collab QueryComponent {
     slay sql() string
@@ -620,9 +626,11 @@ slay demonstrate_query_builder() {
     }
 }
 
-fr fr ================================================
-fr fr 4. Event Processing System
-fr fr ================================================
+no cap
+================================================
+4. Event Processing System
+================================================
+on god
 
 collab Event {
     slay event_id() string

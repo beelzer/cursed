@@ -1,12 +1,14 @@
-fr fr/ fr fr CURSED Digital Signatures Demo - Comprehensive showcase bestie!
-fr fr/ 
-fr fr/ This program demonstrates all the digital signature capabilities of CURSED:
-fr fr/ - Ed25519, ECDSA, and RSA signatures
-fr fr/ - Key generation and management
-fr fr/ - Multi-signature schemes
-fr fr/ - Universal verification interface
-fr fr/ - Batch processing
-fr fr/ - Real-world use cases
+no cap
+/ fr fr CURSED Digital Signatures Demo - Comprehensive showcase bestie!
+/ 
+/ This program demonstrates all the digital signature capabilities of CURSED:
+/ - Ed25519, ECDSA, and RSA signatures
+/ - Key generation and management
+/ - Multi-signature schemes
+/ - Universal verification interface
+/ - Batch processing
+/ - Real-world use cases
+on god
 
 yeet "stdlib::crypto_signatures"
 yeet "stdlib::io"

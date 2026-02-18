@@ -3,9 +3,11 @@ yeet "collections"
 vibez.spill("🚀 CURSED Collections Library v3.0 Comprehensive Demo")
 vibez.spill("===============================================")
 
-fr fr ================================
-fr fr Vector (Dynamic Array) Demo
-fr fr ================================
+no cap
+================================
+Vector (Dynamic Array) Demo
+================================
+on god
 
 vibez.spill("\n📊 Vector (Dynamic Array) Operations:")
 
@@ -23,9 +25,11 @@ vibez.spill("✓ Element at index 1: " + element)
 sus sorted_vec [extra] = Collections_bubble_sort([3, 1, 4, 2])
 vibez.spill("✓ Sorted [3,1,4,2]: [1,2,3,4]")
 
-fr fr ================================
-fr fr HashMap Demo
-fr fr ================================
+no cap
+================================
+HashMap Demo
+================================
+on god
 
 vibez.spill("\n🗺️ HashMap Operations:")
 
@@ -41,9 +45,11 @@ vibez.spill("✓ Retrieved name: " + name)
 sus keys [tea] = Map_keys("hashmap_three_items")
 vibez.spill("✓ Keys: [name, age, city]")
 
-fr fr ================================
-fr fr Set Operations Demo
-fr fr ================================
+no cap
+================================
+Set Operations Demo
+================================
+on god
 
 vibez.spill("\n🎯 Set Operations:")
 
@@ -59,9 +65,11 @@ vibez.spill("✓ Contains 'apple': " + contains_apple)
 sus set_array [tea] = Set_to_array("set_three")
 vibez.spill("✓ Set as array: [apple, banana, cherry]")
 
-fr fr ================================
-fr fr Stack Operations Demo
-fr fr ================================
+no cap
+================================
+Stack Operations Demo
+================================
+on god
 
 vibez.spill("\n📚 Stack (LIFO) Operations:")
 
@@ -77,9 +85,11 @@ vibez.spill("✓ Top element: " + top)
 sus popped tea = Stack_pop("stack_two")
 vibez.spill("✓ Popped: " + popped)
 
-fr fr ================================
-fr fr Queue Operations Demo
-fr fr ================================
+no cap
+================================
+Queue Operations Demo
+================================
+on god
 
 vibez.spill("\n⚡ Queue (FIFO) Operations:")
 
@@ -95,9 +105,11 @@ vibez.spill("✓ Front element: " + front)
 sus dequeued tea = Queue_dequeue("queue_two")
 vibez.spill("✓ Dequeued: " + dequeued)
 
-fr fr ================================
-fr fr LinkedList Demo
-fr fr ================================
+no cap
+================================
+LinkedList Demo
+================================
+on god
 
 vibez.spill("\n🔗 LinkedList Operations:")
 
@@ -111,9 +123,11 @@ sus front_elem tea = List_front(list3)
 sus back_elem tea = List_back(list3)
 vibez.spill("✓ Front: " + front_elem + ", Back: " + back_elem)
 
-fr fr ================================
-fr fr Graph Algorithms Demo
-fr fr ================================
+no cap
+================================
+Graph Algorithms Demo
+================================
+on god
 
 vibez.spill("\n🌳 Graph Algorithms:")
 
@@ -128,9 +142,11 @@ sus bfs [tea] = Graph_bfs(graph3, "A")
 vibez.spill("✓ DFS from A: [A, B, C, D]")
 vibez.spill("✓ BFS from A: [A, B, C, D]")
 
-fr fr ================================
-fr fr Binary Search Tree Demo
-fr fr ================================
+no cap
+================================
+Binary Search Tree Demo
+================================
+on god
 
 vibez.spill("\n🌲 Binary Search Tree:")
 
@@ -147,9 +163,11 @@ vibez.spill("✓ Search 10: " + found_10 + ", Search 7: " + found_7)
 sus inorder [normie] = BST_inorder("bst_with_5_10")
 vibez.spill("✓ In-order traversal: [5, 10]")
 
-fr fr ================================
-fr fr Trie (Prefix Tree) Demo
-fr fr ================================
+no cap
+================================
+Trie (Prefix Tree) Demo
+================================
+on god
 
 vibez.spill("\n📝 Trie (Prefix Tree):")
 
@@ -166,9 +184,11 @@ vibez.spill("✓ Search 'cat': " + found_cat + ", Search 'dog': " + found_dog)
 sus starts_ca lit = Trie_starts_with("trie_with_car", "ca")
 vibez.spill("✓ Starts with 'ca': " + starts_ca)
 
-fr fr ================================
-fr fr Advanced Sorting Algorithms Demo
-fr fr ================================
+no cap
+================================
+Advanced Sorting Algorithms Demo
+================================
+on god
 
 vibez.spill("\n🔄 Advanced Sorting Algorithms:")
 
@@ -187,9 +207,11 @@ vibez.spill("✓ Merge sort: [12, 25, 34, 64]")
 sus heap_sorted [normie] = Collections_heap_sort(unsorted)
 vibez.spill("✓ Heap sort: [12, 25, 34, 64]")
 
-fr fr ================================
-fr fr Search Algorithms Demo
-fr fr ================================
+no cap
+================================
+Search Algorithms Demo
+================================
+on god
 
 vibez.spill("\n🔍 Search Algorithms:")
 
@@ -199,9 +221,11 @@ sus binary_result normie = Collections_binary_search(search_array, 5)
 vibez.spill("✓ Linear search for 5: index " + linear_result)
 vibez.spill("✓ Binary search for 5: index " + binary_result)
 
-fr fr ================================
-fr fr Performance Metrics Demo
-fr fr ================================
+no cap
+================================
+Performance Metrics Demo
+================================
+on god
 
 vibez.spill("\n📈 Performance Metrics:")
 
@@ -215,9 +239,11 @@ vibez.spill("✓ Array: [15, 3, 9, 1, 12]")
 vibez.spill("✓ Max: " + max_val + ", Min: " + min_val)
 vibez.spill("✓ Sum: " + sum_val + ", Average: " + avg_val)
 
-fr fr ================================
-fr fr Real-world Use Cases Demo
-fr fr ================================
+no cap
+================================
+Real-world Use Cases Demo
+================================
+on god
 
 vibez.spill("\n🎯 Real-world Use Cases:")
 

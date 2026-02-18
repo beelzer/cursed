@@ -714,9 +714,11 @@ slay validation_export_json(context ValidationContext) tea {
     damn json
 }
 
-fr fr ==========================================
-fr fr Validation Helper Functions - Real Implementation
-fr fr ==========================================
+no cap
+==========================================
+Validation Helper Functions - Real Implementation
+==========================================
+on god
 
 slay is_valid_url(url tea) lit {
     fr fr Check if URL is valid - RFC 3986 compliant validation

@@ -1,16 +1,18 @@
 #!/usr/bin/env cursed
 
-fr fr/ CURSED web_vibez HTTP Server Demo
-fr fr/ 
-fr fr/ This example demonstrates how to create and run an HTTP server
-fr fr/ using the CURSED web_vibez framework with the new server infrastructure.
-fr fr/ 
-fr fr/ Features demonstrated:
-fr fr/ - HTTP server creation and configuration
-fr fr/ - Router setup with multiple endpoints
-fr fr/ - Middleware integration
-fr fr/ - Request/response handling
-fr fr/ - Graceful server lifecycle management
+no cap
+/ CURSED web_vibez HTTP Server Demo
+/ 
+/ This example demonstrates how to create and run an HTTP server
+/ using the CURSED web_vibez framework with the new server infrastructure.
+/ 
+/ Features demonstrated:
+/ - HTTP server creation and configuration
+/ - Router setup with multiple endpoints
+/ - Middleware integration
+/ - Request/response handling
+/ - Graceful server lifecycle management
+on god
 
 yeet "stdlib::web_vibez::*"
 yeet "stdlib::io::console"

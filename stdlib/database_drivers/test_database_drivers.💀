@@ -282,10 +282,12 @@ empty_result := execute_query(&registry, 0, "")
 assert_false(empty_result.success)
 vibez.spill("✅ Test 28: Edge cases - PASSED")
 
-fr fr Test 29: Memory safety - no unsafe operations used
-fr fr This test verifies that the implementation uses only safe CURSED patterns
-fr fr All state is managed through stack-allocated structures and safe pointers
-fr fr No global mutable state or unsafe operations are present
+no cap
+Test 29: Memory safety - no unsafe operations used
+This test verifies that the implementation uses only safe CURSED patterns
+All state is managed through stack-allocated structures and safe pointers
+No global mutable state or unsafe operations are present
+on god
 vibez.spill("✅ Test 29: Memory safety verification - PASSED")
 
 fr fr Test 30: Thread safety simulation

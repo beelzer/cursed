@@ -1,25 +1,29 @@
 #!/usr/bin/env cursed
 
-fr fr! # Advanced Type System Demo
-fr fr! 
-fr fr! This example demonstrates CURSED's sophisticated type system including:
-fr fr! - Structs with methods and generics
-fr fr! - Interfaces and collab-like behavior
-fr fr! - Generic functions and types
-fr fr! - Type assertions and conversions
-fr fr! - Pattern matching with types
-fr fr! - Advanced error handling with custom types
-fr fr!
-fr fr! @author CURSED Language Team  
-fr fr! @version 1.0.0
+no cap
+! # Advanced Type System Demo
+! 
+! This example demonstrates CURSED's sophisticated type system including:
+! - Structs with methods and generics
+! - Interfaces and collab-like behavior
+! - Generic functions and types
+! - Type assertions and conversions
+! - Pattern matching with types
+! - Advanced error handling with custom types
+!
+! @author CURSED Language Team  
+! @version 1.0.0
+on god
 
 yeet "stdlib::math"
 yeet "stdlib::string"
 yeet "stdlib::json_tea"
 
-fr fr/ Generic container for any type of data with metadata
-fr fr/ 
-fr fr/ This demonstrates generic types, constraints, and methods.
+no cap
+/ Generic container for any type of data with metadata
+/ 
+/ This demonstrates generic types, constraints, and methods.
+on god
 squad Container<T> {
     /// The actual data being stored
     data: T,
@@ -449,9 +453,11 @@ slay function demonstrate_type_assertions() {
     }
 }
 
-fr fr/ Demonstrate advanced generic functions
-fr fr/ 
-fr fr/ Generic function that works with any type that can be cloned and debugged
+no cap
+/ Demonstrate advanced generic functions
+/ 
+/ Generic function that works with any type that can be cloned and debugged
+on god
 slay function process_container<T: Clone + std::fmt::Debug>(
     container: &Container<T>,
     processor: impl Fn(&T) -> T

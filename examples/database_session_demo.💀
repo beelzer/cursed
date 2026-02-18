@@ -1,7 +1,9 @@
-fr fr/ CURSED Database Session Store Demo
-fr fr/ 
-fr fr/ This example demonstrates how to use the database session store
-fr fr/ for persistent session management in web applications.
+no cap
+/ CURSED Database Session Store Demo
+/ 
+/ This example demonstrates how to use the database session store
+/ for persistent session management in web applications.
+on god
 
 yeet "stdlib::web_vibez::session"
 yeet "stdlib::web_vibez::config"

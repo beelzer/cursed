@@ -1,13 +1,17 @@
 yeet "testz"
 
-fr fr ==========================================
-fr fr CURSED Compression Module - Pure CURSED Implementation  
-fr fr GZIP, DEFLATE, LZ4 Compression Algorithms
-fr fr ==========================================
+no cap
+==========================================
+CURSED Compression Module - Pure CURSED Implementation  
+GZIP, DEFLATE, LZ4 Compression Algorithms
+==========================================
+on god
 
-fr fr ==========================================
-fr fr Core Compression Algorithms
-fr fr ==========================================
+no cap
+==========================================
+Core Compression Algorithms
+==========================================
+on god
 
 fr fr Compression level constants  
 sus COMPRESS_LEVEL_FAST normie = 1
@@ -19,9 +23,11 @@ sus ALGO_GZIP normie = 1
 sus ALGO_DEFLATE normie = 2  
 sus ALGO_LZ4 normie = 3
 
-fr fr ==========================================
-fr fr Compression Statistics & Metrics
-fr fr ==========================================
+no cap
+==========================================
+Compression Statistics & Metrics
+==========================================
+on god
 
 squad CompressionResult {
     spill compressed_data tea
@@ -85,9 +91,11 @@ slay decompress_with_validation(compressed_data tea) CompressionResult {
     }
 }
 
-fr fr ==========================================
-fr fr String Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+String Utility Functions
+==========================================
+on god
 
 slay string_length(s tea) normie {
     damn len(s)
@@ -113,9 +121,11 @@ slay string_copy(source tea) tea { fr fr Return a copy of the string (simplified
     damn source
 }
 
-fr fr ==========================================
-fr fr LZ4 Compression Algorithm
-fr fr ==========================================
+no cap
+==========================================
+LZ4 Compression Algorithm
+==========================================
+on god
 
 slay lz4_compress_data(input tea, level normie) tea { fr fr Real LZ4 compression implementation
     sus input_bytes normie[value] = string_to_byte_array(input)
@@ -174,9 +184,11 @@ slay lz4_decompress_data(compressed tea) tea { fr fr Simplified LZ4 decompressio
     }
 }
 
-fr fr ==========================================
-fr fr DEFLATE Compression Algorithm  
-fr fr ==========================================
+no cap
+==========================================
+DEFLATE Compression Algorithm  
+==========================================
+on god
 
 slay deflate_compress_data(input tea, level normie) tea { fr fr Simplified DEFLATE compression simulation
     sus input_len normie = string_length(input)
@@ -284,9 +296,11 @@ slay update_lz4_hash(hash_table normie[4096], data normie[value], pos normie) li
 }
 }
 
-fr fr ==========================================
-fr fr GZIP Compression Algorithm
-fr fr ==========================================
+no cap
+==========================================
+GZIP Compression Algorithm
+==========================================
+on god
 
 slay gzip_compress_data(input tea, level normie) tea { fr fr GZIP = DEFLATE + headers + checksum
     sus deflated tea = deflate_compress_data(input, level) fr fr Add GZIP headers and magic numbers
@@ -318,9 +332,11 @@ slay gzip_decompress_data(compressed tea) tea { fr fr Remove GZIP headers and de
     damn deflate_decompress_data(deflate_data)
 }
 
-fr fr ==========================================
-fr fr High-Level Compression Interface
-fr fr ==========================================
+no cap
+==========================================
+High-Level Compression Interface
+==========================================
+on god
 
 slay compress_slay(data tea, algorithm normie, level normie) tea { fr fr Main compression function - compress data with specified algorithm
     vibes algorithm == ALGO_LZ4 {
@@ -358,9 +374,11 @@ slay auto_detect_algorithm(compressed_data tea) normie { fr fr Auto-detect compr
     }
 }
 
-fr fr ==========================================
-fr fr Compression Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+Compression Utility Functions
+==========================================
+on god
 
 slay calculate_compression_ratio(original_size normie, compressed_size normie) normie { fr fr Calculate compression ratio as percentage
     vibes original_size == 0 {
@@ -405,9 +423,11 @@ slay compress_multiple_algorithms(data tea, level normie) tea { fr fr Test compr
     }
 }
 
-fr fr ==========================================
-fr fr String Manipulation Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+String Manipulation Helper Functions
+==========================================
+on god
 
 slay string_starts_with(str tea, prefix tea) lit { fr fr Check if string starts with prefix
     sus str_len normie = string_length(str)
@@ -446,9 +466,11 @@ slay string_substring(str tea, start normie, length normie) tea { fr fr Extract 
     }
 }
 
-fr fr ==========================================
-fr fr Compression Statistics and Analysis
-fr fr ==========================================
+no cap
+==========================================
+Compression Statistics and Analysis
+==========================================
+on god
 
 slay analyze_compression_performance(original tea, compressed tea, algorithm normie) {
     sus orig_len normie = string_length(original)

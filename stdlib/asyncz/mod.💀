@@ -67,9 +67,11 @@ squad AsyncStream {
     spill consumer_count normie
 }
 
-fr fr =============================================================================
-fr fr FUTURE/PROMISE OPERATIONS - Async task management
-fr fr =============================================================================
+no cap
+=============================================================================
+FUTURE/PROMISE OPERATIONS - Async task management
+=============================================================================
+on god
 
 fr fr Create a new future for async operations
 slay create_future() *Future {
@@ -247,9 +249,11 @@ slay future_catch(future *Future, error_callback slay(*ErrorInstance)) {
     }
 }
 
-fr fr =============================================================================
-fr fr ASYNC EXECUTOR - Task management and scheduling
-fr fr =============================================================================
+no cap
+=============================================================================
+ASYNC EXECUTOR - Task management and scheduling
+=============================================================================
+on god
 
 fr fr Create a new async executor integrated with goroutine system
 slay create_async_executor(max_workers normie, max_concurrent normie) *AsyncExecutor {
@@ -344,9 +348,11 @@ slay shutdown_executor(executor *AsyncExecutor) {
     thread_pool_wait_all(executor.worker_pool)
 }
 
-fr fr =============================================================================
-fr fr ASYNC CONTEXT - Cancellation and timeout management
-fr fr =============================================================================
+no cap
+=============================================================================
+ASYNC CONTEXT - Cancellation and timeout management
+=============================================================================
+on god
 
 fr fr Create a new async context
 slay create_async_context() *AsyncContext {
@@ -445,9 +451,11 @@ slay run_with_context(context *AsyncContext, task slay() normie) *Future {
     damn future
 }
 
-fr fr =============================================================================
-fr fr TIMER AND DELAY UTILITIES - Time-based async operations
-fr fr =============================================================================
+no cap
+=============================================================================
+TIMER AND DELAY UTILITIES - Time-based async operations
+=============================================================================
+on god
 
 fr fr Create a timer that executes after a delay
 slay create_timer(delay_ms normie, callback slay()) *Timer {
@@ -522,9 +530,11 @@ slay await_timer(timer *Timer) lit {
     }
 }
 
-fr fr =============================================================================
-fr fr ASYNC STREAMS - Data flow processing
-fr fr =============================================================================
+no cap
+=============================================================================
+ASYNC STREAMS - Data flow processing
+=============================================================================
+on god
 
 fr fr Create a new async stream
 slay create_async_stream(buffer_size normie) *AsyncStream {
@@ -658,9 +668,11 @@ slay stream_reduce(stream *AsyncStream, initial normie, reducer slay(normie, nor
     damn future
 }
 
-fr fr =============================================================================
-fr fr UTILITY FUNCTIONS AND HELPERS
-fr fr =============================================================================
+no cap
+=============================================================================
+UTILITY FUNCTIONS AND HELPERS
+=============================================================================
+on god
 
 fr fr Generate unique task ID
 sus global_task_counter normie = 0
@@ -702,9 +714,11 @@ slay memory.allocate_array(type tea, size normie) []*normie {
     damn array
 }
 
-fr fr =============================================================================
-fr fr ASYNC COMPOSITION PATTERNS - Common async patterns
-fr fr =============================================================================
+no cap
+=============================================================================
+ASYNC COMPOSITION PATTERNS - Common async patterns
+=============================================================================
+on god
 
 fr fr Parallel execution of multiple async tasks
 slay async_parallel(tasks slay[value]() normie, task_count normie) *Future {
@@ -862,9 +876,11 @@ slay async_from_callback(setup slay(slay(normie))) *Future {
     damn future
 }
 
-fr fr =============================================================================
-fr fr EXTERNAL FUNCTION DECLARATIONS - Integration with concurrency system
-fr fr =============================================================================
+no cap
+=============================================================================
+EXTERNAL FUNCTION DECLARATIONS - Integration with concurrency system
+=============================================================================
+on god
 
 fr fr Thread pool operations from goroutine system
 slay goroutine_create_thread_pool(max_workers normie, queue_size normie) *ThreadPool {

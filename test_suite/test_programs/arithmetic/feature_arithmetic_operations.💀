@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Arithmetic Operations Feature Test
-fr fr Tests: Complete arithmetic operations with proper precedence
-fr fr Expected: Mathematical operations produce identical results
+no cap
+Arithmetic Operations Feature Test
+Tests: Complete arithmetic operations with proper precedence
+Expected: Mathematical operations produce identical results
+on god
 
 slay main_character() {
     vibez.spill("=== Arithmetic Operations Test ===")

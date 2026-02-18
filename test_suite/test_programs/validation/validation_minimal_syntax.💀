@@ -1,8 +1,10 @@
 vibe main
 
-fr fr Test: Minimal CURSED syntax validation
-fr fr Purpose: Test basic parsing without stdlib dependencies
-fr fr Expected: Should parse and execute basic operations
+no cap
+Test: Minimal CURSED syntax validation
+Purpose: Test basic parsing without stdlib dependencies
+Expected: Should parse and execute basic operations
+on god
 
 slay main_character() {
     fr fr Basic variable declarations

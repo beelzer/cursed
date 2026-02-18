@@ -5,9 +5,11 @@ yeet "core"
 fr fr Initialize vibe_life module for testing
 init_vibe_life()
 
-fr fr ==============================================================================
-fr fr COMMAND LINE ARGUMENT TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+COMMAND LINE ARGUMENT TESTS
+==============================================================================
+on god
 
 test_start("get_args basic functionality")
 sus args [tea] = get_args()
@@ -30,9 +32,11 @@ set_args(new_args)
 assert_eq_int(get_arg_count(), 3)
 assert_eq_string(get_arg(2), "--debug")
 
-fr fr ==============================================================================
-fr fr ENVIRONMENT VARIABLE TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+ENVIRONMENT VARIABLE TESTS
+==============================================================================
+on god
 
 test_start("get_env default variables")
 assert_eq_string(get_env("HOME"), "/home/user")
@@ -57,9 +61,11 @@ test_start("get_env_keys functionality")
 sus env_keys [tea] = get_env_keys()
 assert_true(env_keys.length() >= 4) fr fr At least default vars
 
-fr fr ==============================================================================
-fr fr PROCESS CONTROL TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS CONTROL TESTS
+==============================================================================
+on god
 
 test_start("get_pid functionality")
 sus pid normie = get_pid()
@@ -73,9 +79,11 @@ test_start("exit code management")
 exit(42)
 assert_eq_int(get_exit_code(), 42)
 
-fr fr ==============================================================================
-fr fr WORKING DIRECTORY TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+WORKING DIRECTORY TESTS
+==============================================================================
+on god
 
 test_start("get_cwd default")
 assert_eq_string(get_cwd(), "/home/user")
@@ -101,9 +109,11 @@ assert_eq_string(basename("/home/user/file.txt"), "file.txt")
 assert_eq_string(basename("file.txt"), "file.txt")
 assert_eq_string(basename("/home/user/"), "")
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTION TESTS
+==============================================================================
+on god
 
 test_start("get_module_info functionality")
 sus info tea = get_module_info()

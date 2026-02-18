@@ -1,7 +1,9 @@
-fr fr ================================
-fr fr Enhanced CURSED Testing Framework Demo
-fr fr Shows all the new features in action
-fr fr ================================
+no cap
+================================
+Enhanced CURSED Testing Framework Demo
+Shows all the new features in action
+================================
+on god
 
 fr fr Basic test state (simplified for demo)
 sus test_count normie = 0
@@ -40,9 +42,11 @@ be_like TestConfig squad {
     coverage_enabled lit
 }
 
-fr fr ================================
-fr fr Core Enhanced Functions
-fr fr ================================
+no cap
+================================
+Core Enhanced Functions
+================================
+on god
 
 slay test_start(name tea) {
     test_count = test_count + 1
@@ -80,9 +84,11 @@ slay suite_end() {
     vibez.spill("=== End Suite: " + current_suite_name + " ===")
 }
 
-fr fr ================================
-fr fr Enhanced Assertions
-fr fr ================================
+no cap
+================================
+Enhanced Assertions
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     lowkey actual == expected {
@@ -161,9 +167,11 @@ slay assert_false(value lit) {
     }
 }
 
-fr fr ================================
-fr fr Mock Functions
-fr fr ================================
+no cap
+================================
+Mock Functions
+================================
+on god
 
 slay create_mock(function_name tea) MockFunction {
     sus mock MockFunction = MockFunction{
@@ -193,9 +201,11 @@ slay verify_mock_called(mock MockFunction, expected_count normie) {
     }
 }
 
-fr fr ================================
-fr fr Performance Testing
-fr fr ================================
+no cap
+================================
+Performance Testing
+================================
+on god
 
 slay benchmark_start() normie {
     benchmark_start_time = 1000  fr fr Simulated timestamp
@@ -208,9 +218,11 @@ slay benchmark_end(start_time normie) {
     vibez.spill("Benchmark: " + current_test_name + " took " + tea(duration) + "ms")
 }
 
-fr fr ================================
-fr fr Configuration System
-fr fr ================================
+no cap
+================================
+Configuration System
+================================
+on god
 
 slay create_default_config() TestConfig {
     sus config TestConfig = TestConfig{
@@ -226,9 +238,11 @@ slay create_default_config() TestConfig {
     damn config
 }
 
-fr fr ================================
-fr fr Enhanced Reporting
-fr fr ================================
+no cap
+================================
+Enhanced Reporting
+================================
+on god
 
 slay print_test_summary() {
     vibez.spill("")
@@ -271,9 +285,11 @@ slay reset_test_state() {
     current_suite_name = ""
 }
 
-fr fr ================================
-fr fr Demo Test Cases
-fr fr ================================
+no cap
+================================
+Demo Test Cases
+================================
+on god
 
 slay demo_basic_assertions() {
     test_start("demo_basic_assertions")
@@ -385,9 +401,11 @@ slay demo_configuration() {
     test_end()
 }
 
-fr fr ================================
-fr fr Main Demo Runner
-fr fr ================================
+no cap
+================================
+Main Demo Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("🚀 CURSED Enhanced Testing Framework Demo")

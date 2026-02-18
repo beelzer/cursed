@@ -1,8 +1,10 @@
-fr fr/ CURSED PGO Comprehensive Demonstration
-fr fr/ 
-fr fr/ This example demonstrates various code patterns that benefit from
-fr fr/ Profile-Guided Optimization, including hot functions, cold functions,
-fr fr/ loops, branches, and memory access patterns.
+no cap
+/ CURSED PGO Comprehensive Demonstration
+/ 
+/ This example demonstrates various code patterns that benefit from
+/ Profile-Guided Optimization, including hot functions, cold functions,
+/ loops, branches, and memory access patterns.
+on god
 
 fr fr Mathematical computation with hot path optimization opportunities
 slay fibonacci_recursive(sus n: i32) -> i64 {
@@ -321,28 +323,30 @@ slay benchmark_pgo_effectiveness() -> void {
     println("Branch results count: " + branch_results.len().to_string());
 }
 
-fr fr/ Instructions for using this demo with PGO:
-fr fr/ 
-fr fr/ 1. Generate instrumented binary:
-fr fr/    cursed pgo generate pgo_comprehensive_demo.💀 --output demo_instrumented
-fr fr/ 
-fr fr/ 2. Collect profile data:
-fr fr/    cursed pgo collect demo_instrumented --runs 5 --benchmark
-fr fr/ 
-fr fr/ 3. Analyze profile data:
-fr fr/    cursed pgo analyze profile.data --detailed --format text
-fr fr/ 
-fr fr/ 4. Apply optimizations:
-fr fr/    cursed pgo apply pgo_comprehensive_demo.💀 --profile profile.data --strategy speed
-fr fr/ 
-fr fr/ 5. Full workflow:
-fr fr/    cursed pgo workflow pgo_comprehensive_demo.💀 --training-runs 3 --benchmark
-fr fr/ 
-fr fr/ Expected optimizations:
-fr fr/ - fibonacci_iterative: Function inlining and loop optimization
-fr fr/ - matrix_multiply: Vectorization and cache optimization
-fr fr/ - process_array_hot: Loop unrolling and branch optimization
-fr fr/ - classify_number: Branch prediction optimization
-fr fr/ - apply_operation: Indirect call promotion
-fr fr/ - handle_error_cold: Size optimization (cold function)
-fr fr/ - complex_algorithm: Control flow optimization
+no cap
+/ Instructions for using this demo with PGO:
+/ 
+/ 1. Generate instrumented binary:
+/    cursed pgo generate pgo_comprehensive_demo.💀 --output demo_instrumented
+/ 
+/ 2. Collect profile data:
+/    cursed pgo collect demo_instrumented --runs 5 --benchmark
+/ 
+/ 3. Analyze profile data:
+/    cursed pgo analyze profile.data --detailed --format text
+/ 
+/ 4. Apply optimizations:
+/    cursed pgo apply pgo_comprehensive_demo.💀 --profile profile.data --strategy speed
+/ 
+/ 5. Full workflow:
+/    cursed pgo workflow pgo_comprehensive_demo.💀 --training-runs 3 --benchmark
+/ 
+/ Expected optimizations:
+/ - fibonacci_iterative: Function inlining and loop optimization
+/ - matrix_multiply: Vectorization and cache optimization
+/ - process_array_hot: Loop unrolling and branch optimization
+/ - classify_number: Branch prediction optimization
+/ - apply_operation: Indirect call promotion
+/ - handle_error_cold: Size optimization (cold function)
+/ - complex_algorithm: Control flow optimization
+on god

@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Arithmetic Edge Cases Test
-fr fr Tests: Zero, negative numbers, and edge conditions
-fr fr Expected: Consistent handling of edge cases
+no cap
+Arithmetic Edge Cases Test
+Tests: Zero, negative numbers, and edge conditions
+Expected: Consistent handling of edge cases
+on god
 
 slay main_character() lit {
     vibez.spill("=== Arithmetic Edge Cases Test ===")

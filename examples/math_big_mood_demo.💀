@@ -1,14 +1,16 @@
-fr fr Big Mood Mathematics Demo - Arbitrary Precision Arithmetic in CURSED
-fr fr 
-fr fr This example demonstrates the comprehensive big_mood module capabilities:
-fr fr - BigInt: Unlimited precision integer arithmetic
-fr fr - BigRat: Exact rational number computations
-fr fr - BigFloat: High-precision floating-point operations
-fr fr - Decimal: Exact decimal arithmetic for financial calculations
-fr fr - BigComplex: Arbitrary precision complex numbers
-fr fr - Mathematical functions with unlimited precision
-fr fr - Cryptographic prime generation
-fr fr - Performance optimizations for large numbers
+no cap
+Big Mood Mathematics Demo - Arbitrary Precision Arithmetic in CURSED
+
+This example demonstrates the comprehensive big_mood module capabilities:
+- BigInt: Unlimited precision integer arithmetic
+- BigRat: Exact rational number computations
+- BigFloat: High-precision floating-point operations
+- Decimal: Exact decimal arithmetic for financial calculations
+- BigComplex: Arbitrary precision complex numbers
+- Mathematical functions with unlimited precision
+- Cryptographic prime generation
+- Performance optimizations for large numbers
+on god
 
 yeet "stdlib::math::big_mood"
 yeet "stdlib::io"

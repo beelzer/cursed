@@ -1,7 +1,9 @@
-fr fr ================================
-fr fr CURSED Production Parallel Test Runner
-fr fr Real concurrent execution, result aggregation, and performance optimization
-fr fr ================================
+no cap
+================================
+CURSED Production Parallel Test Runner
+Real concurrent execution, result aggregation, and performance optimization
+================================
+on god
 
 yeet "testz"
 yeet "vibez"
@@ -9,9 +11,11 @@ yeet "concurrenz"
 yeet "timez"
 yeet "stringz"
 
-fr fr ================================
-fr fr Production Test Execution Structures
-fr fr ================================
+no cap
+================================
+Production Test Execution Structures
+================================
+on god
 
 struct ParallelTestRunner {
     worker_count normie
@@ -66,15 +70,19 @@ struct TestWorker {
     last_heartbeat normie
 }
 
-fr fr ================================
-fr fr Global Parallel Runner Instance
-fr fr ================================
+no cap
+================================
+Global Parallel Runner Instance
+================================
+on god
 
 sus __parallel_runner ParallelTestRunner
 
-fr fr ================================
-fr fr Production Parallel Test Execution
-fr fr ================================
+no cap
+================================
+Production Parallel Test Execution
+================================
+on god
 
 slay initialize_parallel_runner(worker_count normie) lit {
     __parallel_runner.worker_count = worker_count
@@ -292,9 +300,11 @@ slay check_completion_status() lit {
     damn __parallel_runner.completed_tests >= __parallel_runner.total_tests
 }
 
-fr fr ================================
-fr fr Public Parallel Execution API
-fr fr ================================
+no cap
+================================
+Public Parallel Execution API
+================================
+on god
 
 slay run_tests_in_parallel(test_functions slay[value]() TestResult, worker_count normie) lit {
     lowkey (len(test_functions) == 0) {
@@ -355,9 +365,11 @@ slay get_parallel_execution_stats() ParallelExecutionStats {
     damn stats
 }
 
-fr fr ================================
-fr fr Benchmark and Performance Testing
-fr fr ================================
+no cap
+================================
+Benchmark and Performance Testing
+================================
+on god
 
 slay run_performance_benchmark(benchmark_function slay() BenchmarkResult, iterations normie) BenchmarkResult {
     struct BenchmarkResult {
@@ -405,9 +417,11 @@ slay run_performance_benchmark(benchmark_function slay() BenchmarkResult, iterat
     damn result
 }
 
-fr fr ================================
-fr fr Coverage Reporting System
-fr fr ================================
+no cap
+================================
+Coverage Reporting System
+================================
+on god
 
 struct CoverageReport {
     total_lines normie
@@ -449,9 +463,11 @@ slay generate_coverage_report() CoverageReport {
     damn __coverage_data
 }
 
-fr fr ================================
-fr fr Advanced Assertion System
-fr fr ================================
+no cap
+================================
+Advanced Assertion System
+================================
+on god
 
 slay assert_parallel_execution_time(expected_max_ms normie, actual_ms normie) TestResult {
     sus result TestResult
@@ -485,9 +501,11 @@ slay assert_worker_efficiency(expected_min_efficiency drip, actual_efficiency dr
     damn result
 }
 
-fr fr ================================
-fr fr Demonstration and Test Functions
-fr fr ================================
+no cap
+================================
+Demonstration and Test Functions
+================================
+on god
 
 slay demo_parallel_execution() lit {
     vibez.spill("🎯 Demonstrating Parallel Test Execution")

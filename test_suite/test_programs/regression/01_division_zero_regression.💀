@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Division by Zero Regression Test
-fr fr Tests: Ensures division by zero handling doesn't regress
-fr fr Expected: System handles division by zero gracefully
+no cap
+Division by Zero Regression Test
+Tests: Ensures division by zero handling doesn't regress
+Expected: System handles division by zero gracefully
+on god
 
 slay main_character() {
     vibez.spill("=== Division by Zero Regression Test ===")

@@ -6,9 +6,11 @@ yeet "stdlib::json"
 yeet "stdlib::strings"
 yeet "stdlib::io"
 
-fr fr ================================================
-fr fr 1. JSON Processing with Type Switches
-fr fr ================================================
+no cap
+================================================
+1. JSON Processing with Type Switches
+================================================
+on god
 
 squad JsonProcessor {
     sus indent_level int
@@ -88,9 +90,11 @@ slay demonstrate_json_processing() {
     println(formatted)
 }
 
-fr fr ================================================
-fr fr 2. HTTP Request Handler System
-fr fr ================================================
+no cap
+================================================
+2. HTTP Request Handler System
+================================================
+on god
 
 collab ResponseWriter {
     slay write([]byte) (int, error)
@@ -243,9 +247,11 @@ slay demonstrate_http_handling() {
     }
 }
 
-fr fr ================================================
-fr fr 3. Plugin System with Type Switches
-fr fr ================================================
+no cap
+================================================
+3. Plugin System with Type Switches
+================================================
+on god
 
 collab Plugin {
     slay name() string
@@ -448,9 +454,11 @@ slay demonstrate_plugin_system() {
     }
 }
 
-fr fr ================================================
-fr fr 4. Nested Type Switches and Complex Patterns
-fr fr ================================================
+no cap
+================================================
+4. Nested Type Switches and Complex Patterns
+================================================
+on god
 
 slay process_complex_data(data interface{}) {
     println("\n=== Complex Nested Data Processing ===")

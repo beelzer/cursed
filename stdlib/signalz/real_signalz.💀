@@ -3,9 +3,11 @@ yeet "errorz"
 yeet "concurrenz"
 yeet "memz"
 
-fr fr CURSED Real Signal Handling Module (signalz) - OS Integration Implementation
-fr fr Replaces simulation with actual OS-level signal handling capabilities
-fr fr Uses platform-specific signal handling: Unix signals, Windows console handlers
+no cap
+CURSED Real Signal Handling Module (signalz) - OS Integration Implementation
+Replaces simulation with actual OS-level signal handling capabilities
+Uses platform-specific signal handling: Unix signals, Windows console handlers
+on god
 
 fr fr Signal constants matching platform implementations
 sus SIGHUP normie = 1      fr fr Hangup
@@ -150,9 +152,11 @@ extern slay cursed_signal_process_pending() lit
 extern slay cursed_signal_is_signal_safe() lit
 extern slay cursed_signal_cleanup() lit
 
-fr fr =============================================================================
-fr fr REAL SIGNAL SYSTEM INITIALIZATION
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL SYSTEM INITIALIZATION
+=============================================================================
+on god
 
 slay initialize_signal_system() *ErrorInstance {
     lowkey signal_system_initialized {
@@ -189,9 +193,11 @@ slay initialize_signal_system() *ErrorInstance {
     damn 0
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL HANDLER REGISTRATION
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL HANDLER REGISTRATION
+=============================================================================
+on god
 
 slay signal_register(signal_num normie, handler SignalHandlerFunc) *ErrorInstance {
     lowkey signal_num < 1 || signal_num > 63 {
@@ -280,9 +286,11 @@ slay signal_register_cleanup(cleanup_func slay()) *ErrorInstance {
     damn create_error("No more cleanup handler slots available")
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL MASKING AND BLOCKING
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL MASKING AND BLOCKING
+=============================================================================
+on god
 
 slay signal_block(signal_num normie) *ErrorInstance {
     lowkey signal_num < 1 || signal_num > 63 {
@@ -371,9 +379,11 @@ slay is_signal_blocked(signal_num normie) lit {
     damn current_signal_mask.has_signal(signal_num)
 }
 
-fr fr =============================================================================
-fr fr REAL SIGNAL DELIVERY AND PROCESSING
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL SIGNAL DELIVERY AND PROCESSING
+=============================================================================
+on god
 
 slay signal_send_to_process(target_pid normie, signal_num normie) *ErrorInstance {
     lowkey target_pid <= 0 {
@@ -437,9 +447,11 @@ slay signal_process_pending() *ErrorInstance {
     damn 0
 }
 
-fr fr =============================================================================
-fr fr SIGNAL HANDLER EXECUTION (Called from native platform)
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL HANDLER EXECUTION (Called from native platform)
+=============================================================================
+on god
 
 fr fr This function is called by the native signal handling platform
 slay cursed_signal_handler_callback(signal_num normie, context_ptr *SignalContext) {
@@ -477,9 +489,11 @@ slay cursed_signal_handler_callback(signal_num normie, context_ptr *SignalContex
     in_signal_handler = cap
 }
 
-fr fr =============================================================================
-fr fr SIGNAL SAFETY AND UTILITIES
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL SAFETY AND UTILITIES
+=============================================================================
+on god
 
 slay is_signal_async_safe(signal_num normie) lit {
     vibe_check signal_num {
@@ -575,9 +589,11 @@ slay signal_number(name tea) normie {
     }
 }
 
-fr fr =============================================================================
-fr fr SIGNAL STATISTICS AND MONITORING
-fr fr =============================================================================
+no cap
+=============================================================================
+SIGNAL STATISTICS AND MONITORING
+=============================================================================
+on god
 
 slay get_signal_statistics() *SignalStats {
     damn &signal_statistics
@@ -617,9 +633,11 @@ slay reset_signal_statistics() {
     }
 }
 
-fr fr =============================================================================
-fr fr GRACEFUL SHUTDOWN AND CLEANUP
-fr fr =============================================================================
+no cap
+=============================================================================
+GRACEFUL SHUTDOWN AND CLEANUP
+=============================================================================
+on god
 
 slay signal_setup_graceful_shutdown() *ErrorInstance {
     fr fr Register handlers for common termination signals
@@ -694,9 +712,11 @@ slay signal_cleanup() {
     vibez.spill("Real signal system cleaned up")
 }
 
-fr fr =============================================================================
-fr fr HELPER FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+HELPER FUNCTIONS
+=============================================================================
+on god
 
 slay get_current_time() normie {
     damn 1234567890  fr fr Simplified timestamp - should use real time API

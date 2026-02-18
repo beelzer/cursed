@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Test: vibez module output functionality
-fr fr Purpose: Validate vibez.spill works correctly with various data types
-fr fr Expected: All output should display properly formatted strings
+no cap
+Test: vibez module output functionality
+Purpose: Validate vibez.spill works correctly with various data types
+Expected: All output should display properly formatted strings
+on god
 
 slay main_character() {
 fr fr Test basic tea output

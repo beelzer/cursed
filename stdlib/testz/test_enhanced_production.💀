@@ -3,9 +3,11 @@ fr fr Comprehensive test suite that demonstrates ALL the new features
 
 yeet "testz"
 
-fr fr ================================
-fr fr Test Suite: Framework Initialization and Configuration
-fr fr ================================
+no cap
+================================
+Test Suite: Framework Initialization and Configuration
+================================
+on god
 
 slay test_framework_initialization() {
     suite_start("Framework Initialization")
@@ -39,9 +41,11 @@ slay test_framework_initialization() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Basic Assertion Functionality
-fr fr ================================
+no cap
+================================
+Test Suite: Basic Assertion Functionality
+================================
+on god
 
 slay test_basic_assertions() {
     suite_start("Basic Assertions")
@@ -108,9 +112,11 @@ slay test_basic_assertions() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Performance Testing and Benchmarking
-fr fr ================================
+no cap
+================================
+Test Suite: Performance Testing and Benchmarking
+================================
+on god
 
 slay test_performance_features() {
     suite_start("Performance Testing")
@@ -136,9 +142,11 @@ slay test_performance_features() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Property-Based Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Property-Based Testing
+================================
+on god
 
 slay test_property_based_testing() {
     suite_start("Property-Based Testing") fr fr Test property-based testing for integers
@@ -152,9 +160,11 @@ slay test_property_based_testing() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Mock System Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Mock System Testing
+================================
+on god
 
 slay test_mock_system() {
     suite_start("Mock System")
@@ -184,9 +194,11 @@ slay test_mock_system() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Test Discovery and Execution
-fr fr ================================
+no cap
+================================
+Test Suite: Test Discovery and Execution
+================================
+on god
 
 slay test_discovery_and_execution() {
     suite_start("Test Discovery")
@@ -200,9 +212,11 @@ slay test_discovery_and_execution() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Output Format Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Output Format Testing
+================================
+on god
 
 slay test_output_formats() {
     suite_start("Output Formats")
@@ -231,9 +245,11 @@ slay test_output_formats() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Coverage Analysis
-fr fr ================================
+no cap
+================================
+Test Suite: Coverage Analysis
+================================
+on god
 
 slay test_coverage_analysis() {
     suite_start("Coverage Analysis")
@@ -246,9 +262,11 @@ slay test_coverage_analysis() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Parallel Execution
-fr fr ================================
+no cap
+================================
+Test Suite: Parallel Execution
+================================
+on god
 
 slay test_parallel_execution() {
     suite_start("Parallel Execution")
@@ -261,9 +279,11 @@ slay test_parallel_execution() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Advanced Test Patterns
-fr fr ================================
+no cap
+================================
+Test Suite: Advanced Test Patterns
+================================
+on god
 
 slay test_advanced_patterns() {
     suite_start("Advanced Test Patterns") fr fr Test with timeout
@@ -275,9 +295,11 @@ slay test_advanced_patterns() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Fixtures and Setup/Teardown
-fr fr ================================
+no cap
+================================
+Test Suite: Fixtures and Setup/Teardown
+================================
+on god
 
 slay test_fixtures() {
     suite_start("Fixtures and Setup")
@@ -298,9 +320,11 @@ slay test_fixtures() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Edge Cases and Error Handling
-fr fr ================================
+no cap
+================================
+Test Suite: Edge Cases and Error Handling
+================================
+on god
 
 slay test_edge_cases() {
     suite_start("Edge Cases")
@@ -335,9 +359,11 @@ slay test_edge_cases() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: State Management
-fr fr ================================
+no cap
+================================
+Test Suite: State Management
+================================
+on god
 
 slay test_state_management() {
     suite_start("State Management")
@@ -360,9 +386,11 @@ slay test_state_management() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Test Suite: Skip Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Skip Testing
+================================
+on god
 
 slay test_skipping_functionality() {
     suite_start("Skip Testing")
@@ -375,9 +403,11 @@ slay test_skipping_functionality() {
     suite_end()
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("🚀 Starting CURSED Testing Framework v6.0 Enhanced Production Tests")

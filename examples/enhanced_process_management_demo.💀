@@ -1,8 +1,10 @@
 #!/usr/bin/env cursed
 
-fr fr Enhanced Process Management Demo
-fr fr Demonstrates the complete enhanced process management and IPC system
-fr fr with real-world examples using ExecSlay and ExecVibez features
+no cap
+Enhanced Process Management Demo
+Demonstrates the complete enhanced process management and IPC system
+with real-world examples using ExecSlay and ExecVibez features
+on god
 
 yeet "stdlib::process::exec_slay"
 yeet "stdlib::process::exec_vibez_enhanced"

@@ -1,7 +1,9 @@
-fr fr Function definitions from rpc_vibes module
-fr fr ================================
-fr fr RPC Message Types
-fr fr ================================
+no cap
+Function definitions from rpc_vibes module
+================================
+RPC Message Types
+================================
+on god
 
 fr fr RPC Request message structure
 slay create_rpc_request(id tea, method tea, params tea) tea {
@@ -21,9 +23,11 @@ slay create_rpc_error(id tea, code normie, message tea) tea {
     damn error
 }
 
-fr fr ================================
-fr fr RPC Method Registry
-fr fr ================================
+no cap
+================================
+RPC Method Registry
+================================
+on god
 
 sus method_registry_count normie = 0
 sus method_registry_names tea[5]
@@ -63,9 +67,11 @@ slay execute_method(method_name tea, params tea) tea {
     damn "null"
 }
 
-fr fr ================================
-fr fr RPC Statistics
-fr fr ================================
+no cap
+================================
+RPC Statistics
+================================
+on god
 
 sus rpc_requests_sent normie = 0
 
@@ -94,9 +100,11 @@ slay to_string(value normie) tea {
     damn "0"
 }
 
-fr fr ================================
-fr fr Test Execution
-fr fr ================================
+no cap
+================================
+Test Execution
+================================
+on god
 
 fr fr Test basic RPC functionality without testz
 vibez.spill("Testing RPC Vibes Module")

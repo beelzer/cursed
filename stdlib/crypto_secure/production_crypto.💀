@@ -1,14 +1,18 @@
-fr fr =====================================
-fr fr CURSED Secure Cryptography Module
-fr fr Production-Ready Implementations
-fr fr =====================================
+no cap
+=====================================
+CURSED Secure Cryptography Module
+Production-Ready Implementations
+=====================================
+on god
 
 yeet "vibez"
 
-fr fr ==============================
-fr fr SHA-256 Implementation
-fr fr NIST FIPS 180-4 Compliant
-fr fr ==============================
+no cap
+==============================
+SHA-256 Implementation
+NIST FIPS 180-4 Compliant
+==============================
+on god
 
 sus SHA256_BLOCK_SIZE drip = 64
 sus SHA256_DIGEST_SIZE drip = 32
@@ -164,10 +168,12 @@ slay sha256_constant_time(input tea) tea {
     damn result
 }
 
-fr fr ==============================
-fr fr PBKDF2 Key Derivation
-fr fr RFC 2898 Compliant
-fr fr ==============================
+no cap
+==============================
+PBKDF2 Key Derivation
+RFC 2898 Compliant
+==============================
+on god
 
 slay pbkdf2_hmac_sha256(password tea, salt tea, iterations drip, key_length drip) tea {
     lowkey iterations < 1000 {
@@ -252,9 +258,11 @@ slay hmac_sha256_secure(key tea, message tea) tea {
     damn final_hash
 }
 
-fr fr ==============================
-fr fr Cryptographically Secure RNG
-fr fr ==============================
+no cap
+==============================
+Cryptographically Secure RNG
+==============================
+on god
 
 slay secure_random_bytes(length drip) normie[value]{
     fr fr Use system entropy source
@@ -294,10 +302,12 @@ slay secure_random_string(length drip) tea {
     damn result
 }
 
-fr fr ==============================
-fr fr Constant-Time String Comparison
-fr fr Prevents Timing Attacks
-fr fr ==============================
+no cap
+==============================
+Constant-Time String Comparison
+Prevents Timing Attacks
+==============================
+on god
 
 slay constant_time_compare(a tea, b tea) lit {
     sus len_a drip = string_length(a)
@@ -316,9 +326,11 @@ slay constant_time_compare(a tea, b tea) lit {
     damn diff == 0
 }
 
-fr fr ==============================
-fr fr Utility Functions
-fr fr ==============================
+no cap
+==============================
+Utility Functions
+==============================
+on god
 
 slay byte_to_hex(b normie) tea {
     sus hex_chars tea = "0123456789abcdef"

@@ -1,10 +1,12 @@
-fr fr/ fr fr CURSED Symmetric Encryption Examples - Security in style periodt
-fr fr/ 
-fr fr/ This file demonstrates comprehensive symmetric encryption usage in CURSED:
-fr fr/ - File encryption/decryption with password
-fr fr/ - Authenticated encryption with additional data
-fr fr/ - Key derivation and secure key management
-fr fr/ - Performance-optimized bulk encryption
+no cap
+/ fr fr CURSED Symmetric Encryption Examples - Security in style periodt
+/ 
+/ This file demonstrates comprehensive symmetric encryption usage in CURSED:
+/ - File encryption/decryption with password
+/ - Authenticated encryption with additional data
+/ - Key derivation and secure key management
+/ - Performance-optimized bulk encryption
+on god
 
 from crypto_advanced::aes_gcm import AesGcm256
 from crypto_advanced::chacha20_poly1305 import ChaCha20Poly1305  

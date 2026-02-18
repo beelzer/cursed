@@ -1,7 +1,9 @@
-fr fr/ Enhanced Optimization Demo
-fr fr/ 
-fr fr/ This CURSED program demonstrates various optimization opportunities
-fr fr/ that the enhanced LLVM passes can detect and improve.
+no cap
+/ Enhanced Optimization Demo
+/ 
+/ This CURSED program demonstrates various optimization opportunities
+/ that the enhanced LLVM passes can detect and improve.
+on god
 
 yeet "stdlib::goroutine"
 yeet "stdlib::channel"

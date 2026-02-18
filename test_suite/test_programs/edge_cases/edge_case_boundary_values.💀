@@ -3,9 +3,11 @@ vibe main
 yeet "vibez"
 yeet "mathz"
 
-fr fr Test: Boundary value edge cases
-fr fr Purpose: Test handling of edge values and boundary conditions
-fr fr Expected: All boundary cases should be handled correctly
+no cap
+Test: Boundary value edge cases
+Purpose: Test handling of edge values and boundary conditions
+Expected: All boundary cases should be handled correctly
+on god
 
 slay main_character() {
     vibez.spill("=== Testing Boundary Values ===")

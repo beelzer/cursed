@@ -5,9 +5,11 @@ yeet "testz"
 yeet "vibez"
 yeet "process/mod"
 
-fr fr ==============================================================================
-fr fr BASIC PROCESS EXECUTION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+BASIC PROCESS EXECUTION TESTS
+==============================================================================
+on god
 
 test_start("Basic Process Spawn and Execution")
 
@@ -98,9 +100,11 @@ slay test_direct_execution() {
     vibez.spill("✅ Direct execution test passed - User: ", result.stdout)
 }
 
-fr fr ==============================================================================
-fr fr PROCESS COMMUNICATION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS COMMUNICATION TESTS
+==============================================================================
+on god
 
 test_start("Process Communication and I/O")
 
@@ -162,9 +166,11 @@ slay test_process_io() {
     vibez.spill("✅ Process I/O test passed - Stdin written: ", bytes_written, " bytes")
 }
 
-fr fr ==============================================================================
-fr fr SIGNAL HANDLING TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+SIGNAL HANDLING TESTS
+==============================================================================
+on god
 
 test_start("Signal Handling and Process Control")
 
@@ -245,9 +251,11 @@ slay test_process_kill() {
     vibez.spill("✅ Process kill test passed - Process killed with SIGKILL")
 }
 
-fr fr ==============================================================================
-fr fr PROCESS MONITORING TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS MONITORING TESTS
+==============================================================================
+on god
 
 test_start("Process Monitoring and Statistics")
 
@@ -309,9 +317,11 @@ slay test_process_health() {
     vibez.spill("✅ Process health monitoring test passed")
 }
 
-fr fr ==============================================================================
-fr fr PROCESS GROUP TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS GROUP TESTS
+==============================================================================
+on god
 
 test_start("Process Groups and Session Management")
 
@@ -336,9 +346,11 @@ slay test_process_group() {
     vibez.spill("✅ Process group test passed - Group size: ", updated_group.processes.length())
 }
 
-fr fr ==============================================================================
-fr fr ADVANCED EXECUTION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+ADVANCED EXECUTION TESTS
+==============================================================================
+on god
 
 test_start("Advanced Execution Features")
 
@@ -433,9 +445,11 @@ slay test_command_timeout() {
     vibez.spill("✅ Command timeout test passed - Process timed out as expected")
 }
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTION TESTS
+==============================================================================
+on god
 
 test_start("Utility Functions")
 
@@ -498,9 +512,11 @@ slay test_process_tree() {
     vibez.spill("✅ Process tree test passed - Tree size: ", tree.length())
 }
 
-fr fr ==============================================================================
-fr fr RUN ALL TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+RUN ALL TESTS
+==============================================================================
+on god
 
 fr fr Execute all test functions
 test_basic_spawn()

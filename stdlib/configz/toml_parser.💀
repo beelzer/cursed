@@ -1,16 +1,20 @@
-fr fr ==========================================
-fr fr CURSED TOML Parser - Full TOML v1.0.0 Implementation
-fr fr Comprehensive TOML parsing with complete specification compliance
-fr fr ==========================================
+no cap
+==========================================
+CURSED TOML Parser - Full TOML v1.0.0 Implementation
+Comprehensive TOML parsing with complete specification compliance
+==========================================
+on god
 
 yeet "stringz"
 yeet "mathz"
 yeet "filez"
 yeet "vibez"
 
-fr fr ==========================================
-fr fr TOML Parser Structures
-fr fr ==========================================
+no cap
+==========================================
+TOML Parser Structures
+==========================================
+on god
 
 squad TomlValue {
     sus value_type tea              fr fr "string", "integer", "float", "boolean", "array", "table", "datetime"
@@ -52,9 +56,11 @@ squad TomlParser {
     sus errors tea[value]
 }
 
-fr fr ==========================================
-fr fr Core TOML Parser Functions
-fr fr ==========================================
+no cap
+==========================================
+Core TOML Parser Functions
+==========================================
+on god
 
 slay create_toml_parser(content tea) TomlParser {
     fr fr Initialize TOML parser with content
@@ -120,9 +126,11 @@ slay parse_toml_document(content tea) TomlDocument {
     damn document
 }
 
-fr fr ==========================================
-fr fr Table Header Parsing
-fr fr ==========================================
+no cap
+==========================================
+Table Header Parsing
+==========================================
+on god
 
 squad ParserResult<T> {
     sus success lit
@@ -248,9 +256,11 @@ slay parse_table_name(parser TomlParser) ParserResult<tea> {
     damn result
 }
 
-fr fr ==========================================
-fr fr Key-Value Pair Parsing
-fr fr ==========================================
+no cap
+==========================================
+Key-Value Pair Parsing
+==========================================
+on god
 
 slay parse_key_value_pair(parser TomlParser) ParserResult<TomlKeyValue> {
     fr fr Parse key = value
@@ -363,9 +373,11 @@ slay parse_key(parser TomlParser) ParserResult<tea> {
     damn result
 }
 
-fr fr ==========================================
-fr fr Value Parsing
-fr fr ==========================================
+no cap
+==========================================
+Value Parsing
+==========================================
+on god
 
 slay parse_value(parser TomlParser) ParserResult<TomlValue> {
     fr fr Parse TOML value (string, number, boolean, array, inline table, datetime)
@@ -416,9 +428,11 @@ slay parse_value(parser TomlParser) ParserResult<TomlValue> {
     }
 }
 
-fr fr ==========================================
-fr fr String Parsing
-fr fr ==========================================
+no cap
+==========================================
+String Parsing
+==========================================
+on god
 
 slay parse_basic_string(parser TomlParser) ParserResult<TomlValue> {
     fr fr Parse "basic string" with escape sequences
@@ -531,9 +545,11 @@ slay parse_literal_string(parser TomlParser) ParserResult<TomlValue> {
     damn result
 }
 
-fr fr ==========================================
-fr fr Number and Boolean Parsing
-fr fr ==========================================
+no cap
+==========================================
+Number and Boolean Parsing
+==========================================
+on god
 
 slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
     fr fr Parse integer, float, or datetime value
@@ -642,9 +658,11 @@ slay parse_boolean(parser TomlParser) ParserResult<TomlValue> {
     damn result
 }
 
-fr fr ==========================================
-fr fr Array Parsing
-fr fr ==========================================
+no cap
+==========================================
+Array Parsing
+==========================================
+on god
 
 slay parse_array(parser TomlParser) ParserResult<TomlValue> {
     fr fr Parse [value1, value2, value3]
@@ -729,9 +747,11 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
     damn result
 }
 
-fr fr ==========================================
-fr fr Parser Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Parser Helper Functions
+==========================================
+on god
 
 slay advance_parser(parser TomlParser) TomlParser {
     fr fr Advance parser by one character
@@ -810,9 +830,11 @@ slay peek_chars(parser TomlParser, count drip) tea {
     damn result
 }
 
-fr fr ==========================================
-fr fr Character Classification
-fr fr ==========================================
+no cap
+==========================================
+Character Classification
+==========================================
+on god
 
 slay is_identifier_start(char tea) lit {
     fr fr Check if character can start an identifier
@@ -841,9 +863,11 @@ slay is_number_char(char tea) lit {
          char == ":" || char == "T" || char == "Z"  fr fr For datetime
 }
 
-fr fr ==========================================
-fr fr Value Parsing Helpers
-fr fr ==========================================
+no cap
+==========================================
+Value Parsing Helpers
+==========================================
+on god
 
 slay get_escaped_character(char tea) tea {
     fr fr Convert escape sequence to actual character
@@ -962,9 +986,11 @@ slay contains_datetime_pattern(str tea) lit {
          string_contains(str, "Z")
 }
 
-fr fr ==========================================
-fr fr Array and String Utilities
-fr fr ==========================================
+no cap
+==========================================
+Array and String Utilities
+==========================================
+on god
 
 slay append_toml_table(tables TomlTable[value], table TomlTable) TomlTable[value]{
     fr fr Append table to tables array
@@ -1046,9 +1072,11 @@ slay join_strings_with_dot(parts tea[value]) tea {
     damn parts[0]  fr fr Fallback for longer arrays
 }
 
-fr fr ==========================================
-fr fr High-Level TOML API
-fr fr ==========================================
+no cap
+==========================================
+High-Level TOML API
+==========================================
+on god
 
 slay parse_toml_string(content tea) TomlDocument {
     fr fr Main entry point for TOML parsing
@@ -1090,9 +1118,11 @@ slay toml_document_get_errors(document TomlDocument) tea[value]{
     damn document.parsing_errors
 }
 
-fr fr ==========================================
-fr fr Value Access Functions
-fr fr ==========================================
+no cap
+==========================================
+Value Access Functions
+==========================================
+on god
 
 slay toml_get_string(document TomlDocument, key tea) tea {
     fr fr Get string value by key
@@ -1151,9 +1181,11 @@ slay find_value_by_key(document TomlDocument, key tea) TomlValue {
     damn empty_value
 }
 
-fr fr ==========================================
-fr fr Configuration Integration
-fr fr ==========================================
+no cap
+==========================================
+Configuration Integration
+==========================================
+on god
 
 slay convert_toml_to_config_json(document TomlDocument) tea {
     fr fr Convert TOML document to JSON-like configuration format
@@ -1222,9 +1254,11 @@ slay toml_value_to_json_string(value TomlValue) tea {
     damn "null"
 }
 
-fr fr ==========================================
-fr fr Core String Operations - Real Implementation
-fr fr ==========================================
+no cap
+==========================================
+Core String Operations - Real Implementation
+==========================================
+on god
 
 slay string_char_at(str tea, index drip) tea {
     fr fr Get character at index - real implementation using UTF-8 indexing
@@ -1404,9 +1438,11 @@ slay float_to_string(value sus) tea {
     damn result
 }
 
-fr fr ==========================================
-fr fr Array Manipulation Functions - Real Implementation
-fr fr ==========================================
+no cap
+==========================================
+Array Manipulation Functions - Real Implementation
+==========================================
+on god
 
 slay append_table_entry(tables TomlTable[value], table TomlTable) TomlTable[value]{
     fr fr Append table to tables array - dynamic array growth
@@ -1440,9 +1476,11 @@ slay append_string(strings tea[value], str tea) tea[value]{
     damn new_strings
 }
 
-fr fr ==========================================
-fr fr File I/O Functions - Real Implementation  
-fr fr ==========================================
+no cap
+==========================================
+File I/O Functions - Real Implementation  
+==========================================
+on god
 
 slay file_read_all(handle FileHandle) tea {
     fr fr Read entire file content - buffered reading for large files
@@ -1469,9 +1507,11 @@ slay file_read_all(handle FileHandle) tea {
     damn content
 }
 
-fr fr ==========================================
-fr fr Advanced Parser Functions - Real Implementation
-fr fr ==========================================
+no cap
+==========================================
+Advanced Parser Functions - Real Implementation
+==========================================
+on god
 
 slay parse_identifier(parser TomlParser) ParserResult<tea> {
     fr fr Parse bare identifier (letters, numbers, underscore, dash)
@@ -1814,9 +1854,11 @@ slay merge_error_arrays(arr1 tea[value], arr2 tea[value]) tea[value]{
     damn merged
 }
 
-fr fr ==========================================
-fr fr Missing Parser Functions - Complete Implementation
-fr fr ==========================================
+no cap
+==========================================
+Missing Parser Functions - Complete Implementation
+==========================================
+on god
 
 slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
     fr fr Parse number (integer/float) or datetime
@@ -2018,9 +2060,11 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
     damn result
 }
 
-fr fr ==========================================
-fr fr Number Parsing Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Number Parsing Helper Functions
+==========================================
+on god
 
 slay remove_underscores(str tea) tea {
     fr fr Remove underscore separators from numbers
@@ -2132,9 +2176,11 @@ slay power_of_ten(exponent drip) sus {
     damn result
 }
 
-fr fr ==========================================
-fr fr Low-level Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Low-level Helper Functions
+==========================================
+on god
 
 slay strlen_utf8(str tea) drip {
     fr fr UTF-8 aware string length

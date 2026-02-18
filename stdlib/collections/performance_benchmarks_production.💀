@@ -1,7 +1,9 @@
-fr fr ========================================
-fr fr Production Collections Performance Benchmarks
-fr fr Comprehensive performance testing and comparison
-fr fr ========================================
+no cap
+========================================
+Production Collections Performance Benchmarks
+Comprehensive performance testing and comparison
+========================================
+on god
 
 yeet "testz"
 yeet "stdlib/collections/production_collections"
@@ -49,9 +51,11 @@ slay print_benchmark_results() {
     }
 }
 
-fr fr ================================
-fr fr Sorting Algorithm Benchmarks
-fr fr ================================
+no cap
+================================
+Sorting Algorithm Benchmarks
+================================
+on god
 
 slay benchmark_sorting_algorithms() {
     vibez.spill("\n🚀 Benchmarking Sorting Algorithms...")
@@ -155,9 +159,11 @@ slay benchmark_insertion_sort(data [normie], data_type tea, size normie) {
     record_benchmark("Sort " + data_type, "InsertionSort", size, 50, avg_time, "O(n²)")
 }
 
-fr fr ================================
-fr fr Hash Table Benchmarks
-fr fr ================================
+no cap
+================================
+Hash Table Benchmarks
+================================
+on god
 
 slay benchmark_hash_table() {
     vibez.spill("\n📊 Benchmarking Hash Table Operations...")
@@ -248,9 +254,11 @@ slay benchmark_hashmap_collisions() {
     vibez.spill("Collision test: inserted", collision_success, "items successfully")
 }
 
-fr fr ================================
-fr fr AVL Tree Benchmarks
-fr fr ================================
+no cap
+================================
+AVL Tree Benchmarks
+================================
+on god
 
 slay benchmark_avl_tree() {
     vibez.spill("\n🌳 Benchmarking AVL Tree Operations...")
@@ -335,9 +343,11 @@ slay benchmark_avl_balanced_insertion() {
     vibez.spill("Balanced insertion test: tree remains balanced during sorted insertions")
 }
 
-fr fr ================================
-fr fr Priority Queue Benchmarks
-fr fr ================================
+no cap
+================================
+Priority Queue Benchmarks
+================================
+on god
 
 slay benchmark_priority_queue() {
     vibez.spill("\n🏆 Benchmarking Priority Queue Operations...")
@@ -428,9 +438,11 @@ slay benchmark_pq_mixed_operations() {
     record_benchmark("PriorityQueue Mixed", "Binary Heap", 1000, 1000, avg_time_per_op, "O(log n)")
 }
 
-fr fr ================================
-fr fr Statistics Benchmarks
-fr fr ================================
+no cap
+================================
+Statistics Benchmarks
+================================
+on god
 
 slay benchmark_statistics() {
     vibez.spill("\n📈 Benchmarking Statistics Operations...")
@@ -496,9 +508,11 @@ slay benchmark_statistics_advanced(size normie) {
     record_benchmark("Statistics Advanced", "Variance+StdDev", size, 25, avg_time, "O(n log n)")
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay generate_random_array(size normie) [normie] {
     sus arr normie[value] = []
@@ -566,9 +580,11 @@ slay Math_random() drip {
     damn seed / 2147483647.0
 }
 
-fr fr ================================
-fr fr Comparative Analysis
-fr fr ================================
+no cap
+================================
+Comparative Analysis
+================================
+on god
 
 slay analyze_algorithm_performance() {
     vibez.spill("\n=== ALGORITHM PERFORMANCE ANALYSIS ===")
@@ -616,9 +632,11 @@ slay performance_comparison_summary() {
     vibez.spill("• Stability matters when sorting objects with multiple keys")
 }
 
-fr fr ================================
-fr fr Main Benchmark Runner
-fr fr ================================
+no cap
+================================
+Main Benchmark Runner
+================================
+on god
 
 vibez.spill("🚀 Starting Production Collections Performance Benchmarks")
 vibez.spill("=======================================================")

@@ -1,7 +1,9 @@
-fr fr ==========================================
-fr fr ENHANCED CONFIGZ COMPREHENSIVE TEST
-fr fr Complete validation of enhanced configuration system
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED CONFIGZ COMPREHENSIVE TEST
+Complete validation of enhanced configuration system
+==========================================
+on god
 
 yeet "configz"
 yeet "vibez"
@@ -9,9 +11,11 @@ yeet "enhanced_json_parser"
 yeet "enhanced_string_operations"
 yeet "enhanced_array_operations"
 
-fr fr ==========================================
-fr fr ENHANCED JSON PARSING TESTS
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED JSON PARSING TESTS
+==========================================
+on god
 
 slay test_enhanced_json_parsing() lit {
     vibez.spill("=== Testing Enhanced JSON Parser ===")
@@ -92,9 +96,11 @@ slay test_enhanced_json_parsing() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr ENHANCED STRING OPERATIONS TESTS
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED STRING OPERATIONS TESTS
+==========================================
+on god
 
 slay test_enhanced_string_operations() lit {
     vibez.spill("=== Testing Enhanced String Operations ===")
@@ -166,9 +172,11 @@ slay test_enhanced_string_operations() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr ENHANCED ARRAY OPERATIONS TESTS
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED ARRAY OPERATIONS TESTS
+==========================================
+on god
 
 slay test_enhanced_array_operations() lit {
     vibez.spill("=== Testing Enhanced Array Operations ===")
@@ -253,9 +261,11 @@ slay test_enhanced_array_operations() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr CONFIGURATION INTEGRATION TESTS
-fr fr ==========================================
+no cap
+==========================================
+CONFIGURATION INTEGRATION TESTS
+==========================================
+on god
 
 slay test_enhanced_configuration_integration() lit {
     vibez.spill("=== Testing Enhanced Configuration Integration ===")
@@ -381,9 +391,11 @@ slay test_enhanced_configuration_integration() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr PERFORMANCE AND STRESS TESTS
-fr fr ==========================================
+no cap
+==========================================
+PERFORMANCE AND STRESS TESTS
+==========================================
+on god
 
 slay test_enhanced_performance() lit {
     vibez.spill("=== Testing Enhanced Performance ===")
@@ -449,9 +461,11 @@ slay test_enhanced_performance() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr MAIN TEST RUNNER
-fr fr ==========================================
+no cap
+==========================================
+MAIN TEST RUNNER
+==========================================
+on god
 
 slay main_character() lit {
     vibez.spill("Starting CURSED Enhanced Configuration System Comprehensive Tests\n")
@@ -534,9 +548,11 @@ slay main_character() lit {
     damn all_tests_passed
 }
 
-fr fr ==========================================
-fr fr HELPER FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+HELPER FUNCTIONS
+==========================================
+on god
 
 slay find_json_key_value(pairs JsonKeyValue[value], key tea) JsonKeyValue {
     fr fr Find key-value pair in JSON object

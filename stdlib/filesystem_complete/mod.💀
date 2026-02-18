@@ -1,13 +1,17 @@
-fr fr CURSED Complete Filesystem Module - Production Implementation
-fr fr Comprehensive filesystem operations with real system integration
-fr fr Handles all edge cases, Unicode, permissions, and cross-platform compatibility
+no cap
+CURSED Complete Filesystem Module - Production Implementation
+Comprehensive filesystem operations with real system integration
+Handles all edge cases, Unicode, permissions, and cross-platform compatibility
+on god
 
 yeet "stringz"
 yeet "timez"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like FileInfo squad {
     name tea
@@ -121,9 +125,11 @@ facts ERROR_INVALID_ARG normie = 22
 facts ERROR_NO_SPACE normie = 28
 facts ERROR_READ_ONLY normie = 30
 
-fr fr ================================
-fr fr External System Call Interface
-fr fr ================================
+no cap
+================================
+External System Call Interface
+================================
+on god
 
 outer slay sys_open(path [*:0]const u8, flags normie, mode normie) normie
 outer slay sys_close(fd normie) normie
@@ -192,9 +198,11 @@ be_like StatVfsBuffer squad {
     f_flag normie
 }
 
-fr fr ================================
-fr fr Path Manipulation and Validation
-fr fr ================================
+no cap
+================================
+Path Manipulation and Validation
+================================
+on god
 
 slay normalize_path(path tea) tea { fr fr Normalize path with proper separator handling
     lowkey path == "" {
@@ -379,9 +387,11 @@ slay get_basename(path tea) tea { fr fr Get filename without extension
     damn string_substring(filename, 0, last_dot)
 }
 
-fr fr ================================
-fr fr Core File Operations
-fr fr ================================
+no cap
+================================
+Core File Operations
+================================
+on god
 
 slay read_file(path tea) tea { fr fr Read entire file as string
     sus bytes byte[value] = read_file_bytes(path)
@@ -587,9 +597,11 @@ slay truncate_file(path tea, size thicc) lit { fr fr Truncate file to size
     damn sys_truncate(c_path, size) == 0
 }
 
-fr fr ================================
-fr fr Directory Operations
-fr fr ================================
+no cap
+================================
+Directory Operations
+================================
+on god
 
 slay create_directory(path tea) lit { fr fr Create single directory
     lowkey path == "" {
@@ -743,9 +755,11 @@ slay copy_directory_recursive(source tea, dest tea) lit { fr fr Copy directory t
     damn true
 }
 
-fr fr ================================
-fr fr File Information and Status
-fr fr ================================
+no cap
+================================
+File Information and Status
+================================
+on god
 
 slay file_exists(path tea) lit { fr fr Check if file/directory exists
     sus c_path [*:0]const u8 = string_to_cstring(path)
@@ -888,9 +902,11 @@ slay set_file_owner(path tea, owner_id normie, group_id normie) lit { fr fr Set 
     damn sys_chown(c_path, owner_id, group_id) == 0
 }
 
-fr fr ================================
-fr fr Advanced File Operations
-fr fr ================================
+no cap
+================================
+Advanced File Operations
+================================
+on god
 
 slay open_file(path tea, mode normie) FileHandle { fr fr Open file with mode
     sus handle FileHandle = {
@@ -1045,9 +1061,11 @@ slay unlock_file(lock FileLock) lit { fr fr Unlock file
     damn result
 }
 
-fr fr ================================
-fr fr Symbolic Links and Hard Links
-fr fr ================================
+no cap
+================================
+Symbolic Links and Hard Links
+================================
+on god
 
 slay create_symlink(target tea, link_path tea) lit { fr fr Create symbolic link
     sus c_target [*:0]const u8 = string_to_cstring(target)
@@ -1078,9 +1096,11 @@ slay read_symlink(link_path tea) tea { fr fr Read symbolic link target
     damn cstring_to_string(&buffer[0])
 }
 
-fr fr ================================
-fr fr Directory and Working Directory Management
-fr fr ================================
+no cap
+================================
+Directory and Working Directory Management
+================================
+on god
 
 slay get_current_directory() tea { fr fr Get current working directory
     sus buffer u8[4096] = undefined
@@ -1137,9 +1157,11 @@ slay create_temp_file(prefix tea) tea { fr fr Create temporary file
     damn ""
 }
 
-fr fr ================================
-fr fr Filesystem Statistics
-fr fr ================================
+no cap
+================================
+Filesystem Statistics
+================================
+on god
 
 slay get_filesystem_stats(path tea) FileSystemStats { fr fr Get filesystem statistics
     sus stats FileSystemStats = {
@@ -1193,9 +1215,11 @@ slay get_disk_usage(path tea) thicc { fr fr Get disk space used by path
     damn total_size
 }
 
-fr fr ================================
-fr fr File Watching/Monitoring
-fr fr ================================
+no cap
+================================
+File Watching/Monitoring
+================================
+on god
 
 slay watch_file(path tea, events normie, callback tea) WatchHandle { fr fr Watch file for changes
     sus handle WatchHandle = {
@@ -1235,9 +1259,11 @@ slay stop_watching(handle WatchHandle) lit { fr fr Stop watching file
     damn true
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay copy_file_metadata(source_info FileInfo, dest_path tea) { fr fr Copy file metadata
     fr fr Set permissions
@@ -1311,9 +1337,11 @@ slay get_line_ending() tea { fr fr Get platform-specific line ending
     damn "\n"
 }
 
-fr fr ================================
-fr fr String and Array Helper Functions (placeholders)
-fr fr ================================
+no cap
+================================
+String and Array Helper Functions (placeholders)
+================================
+on god
 
 slay string_to_cstring(s tea) [*:0]const u8 {
     fr fr Placeholder - would use proper string conversion

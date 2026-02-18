@@ -1,8 +1,10 @@
-fr fr! XChaCha20-Poly1305 AEAD Demo
-fr fr! 
-fr fr! This example demonstrates the complete XChaCha20-Poly1305 AEAD functionality
-fr fr! including basic encryption/decryption, streaming APIs, key derivation, and
-fr fr! security best practices.
+no cap
+! XChaCha20-Poly1305 AEAD Demo
+! 
+! This example demonstrates the complete XChaCha20-Poly1305 AEAD functionality
+! including basic encryption/decryption, streaming APIs, key derivation, and
+! security best practices.
+on god
 
 yeet "stdlib::crypto"
 

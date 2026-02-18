@@ -6,16 +6,20 @@ yeet "pqc_sphincs"
 yeet "pqc_mceliece"
 yeet "pqc_falcon"
 
-fr fr ========================================
-fr fr CURSED Post-Quantum Cryptography Test Suite
-fr fr Comprehensive Testing of all PQC Algorithms
-fr fr ========================================
+no cap
+========================================
+CURSED Post-Quantum Cryptography Test Suite
+Comprehensive Testing of all PQC Algorithms
+========================================
+on god
 
 test_start("Post-Quantum Cryptography Comprehensive Test Suite")
 
-fr fr ========================================
-fr fr Kyber-768 KEM Tests
-fr fr ========================================
+no cap
+========================================
+Kyber-768 KEM Tests
+========================================
+on god
 
 test_start("Kyber-768 Key Generation Test")
 sus kyber_keypair [normie] = pqc_kyber_generate_keypair()
@@ -47,9 +51,11 @@ sus kyber_recovered_secret [normie] = pqc_kyber_decapsulate(kyber_ciphertext, ky
 assert_true(kyber_recovered_secret[0] != 0) fr fr Recovered secret should be non-zero
 vibez.spill("✅ Kyber-768 decapsulation successful")
 
-fr fr ========================================
-fr fr Dilithium-3 Digital Signature Tests
-fr fr ========================================
+no cap
+========================================
+Dilithium-3 Digital Signature Tests
+========================================
+on god
 
 test_start("Dilithium-3 Key Generation Test")
 sus dilithium_keypair [normie] = pqc_dilithium_generate_keypair()
@@ -77,9 +83,11 @@ sus dilithium_verify_result lit = pqc_dilithium_verify(dilithium_signature, test
 assert_true(dilithium_verify_result)
 vibez.spill("✅ Dilithium-3 signature verification successful")
 
-fr fr ========================================
-fr fr SPHINCS+-128s Hash-based Signature Tests
-fr fr ========================================
+no cap
+========================================
+SPHINCS+-128s Hash-based Signature Tests
+========================================
+on god
 
 test_start("SPHINCS+-128s Key Generation Test")
 sus sphincs_keypair [normie] = pqc_sphincs_generate_keypair()
@@ -107,9 +115,11 @@ sus sphincs_verify_result lit = pqc_sphincs_verify(sphincs_signature, test_messa
 assert_true(sphincs_verify_result)
 vibez.spill("✅ SPHINCS+-128s signature verification successful")
 
-fr fr ========================================
-fr fr Classic McEliece Code-based Encryption Tests
-fr fr ========================================
+no cap
+========================================
+Classic McEliece Code-based Encryption Tests
+========================================
+on god
 
 test_start("Classic McEliece Key Generation Test")
 sus mceliece_keypair [normie] = pqc_mceliece_generate_keypair()
@@ -138,9 +148,11 @@ sus mceliece_recovered_plaintext [normie] = pqc_mceliece_decrypt(mceliece_cipher
 assert_true(mceliece_recovered_plaintext[0] != 0) fr fr Recovered plaintext should be non-zero
 vibez.spill("✅ Classic McEliece decryption successful")
 
-fr fr ========================================
-fr fr Falcon-512 Compact Signature Tests
-fr fr ========================================
+no cap
+========================================
+Falcon-512 Compact Signature Tests
+========================================
+on god
 
 test_start("Falcon-512 Key Generation Test")
 sus falcon_keypair [normie] = pqc_falcon_generate_keypair()
@@ -169,9 +181,11 @@ sus falcon_verify_result lit = pqc_falcon_verify(falcon_signature, test_message,
 assert_true(falcon_verify_result)
 vibez.spill("✅ Falcon-512 signature verification successful")
 
-fr fr ========================================
-fr fr Cross-Algorithm Interoperability Tests
-fr fr ========================================
+no cap
+========================================
+Cross-Algorithm Interoperability Tests
+========================================
+on god
 
 test_start("Cross-Algorithm Message Integrity Test")
 fr fr Test that all signature algorithms can verify the same message
@@ -193,9 +207,11 @@ assert_true(sphincs_cross_verify)
 assert_true(falcon_cross_verify)
 vibez.spill("✅ Cross-algorithm message integrity verification successful")
 
-fr fr ========================================
-fr fr Security Property Tests
-fr fr ========================================
+no cap
+========================================
+Security Property Tests
+========================================
+on god
 
 test_start("Key Uniqueness Test")
 fr fr Generate multiple key pairs and ensure they're different
@@ -221,9 +237,11 @@ vibes sig1[0] != sig2[0] {
     vibez.spill("ℹ️ Signatures identical (deterministic or same randomness)")
 }
 
-fr fr ========================================
-fr fr Error Handling Tests
-fr fr ========================================
+no cap
+========================================
+Error Handling Tests
+========================================
+on god
 
 test_start("Invalid Signature Rejection Test")
 fr fr Modify signature and ensure verification fails
@@ -245,9 +263,11 @@ sus wrong_key_verify_result lit = pqc_dilithium_verify(dilithium_signature, test
 assert_false(wrong_key_verify_result)
 vibez.spill("✅ Wrong key rejection successful")
 
-fr fr ========================================
-fr fr Performance and Resource Tests
-fr fr ========================================
+no cap
+========================================
+Performance and Resource Tests
+========================================
+on god
 
 test_start("Algorithm Performance Comparison")
 fr fr Simple performance indicators (not actual timing)
@@ -267,9 +287,11 @@ vibez.spill("  SPHINCS+ public key:  ~32 bytes")
 vibez.spill("  McEliece public key:  ~261120 bytes")
 vibez.spill("  Falcon public key:    ~897 bytes")
 
-fr fr ========================================
-fr fr Quantum Security Analysis
-fr fr ========================================
+no cap
+========================================
+Quantum Security Analysis
+========================================
+on god
 
 test_start("Quantum Security Level Verification")
 vibez.spill("🛡️ Quantum Security Analysis:")
@@ -282,9 +304,11 @@ vibez.spill("  Falcon-512:     128-bit quantum security")
 assert_true(based) fr fr All algorithms provide quantum resistance
 vibez.spill("✅ All algorithms provide post-quantum security")
 
-fr fr ========================================
-fr fr NIST Standardization Status
-fr fr ========================================
+no cap
+========================================
+NIST Standardization Status
+========================================
+on god
 
 test_start("NIST Standardization Compliance")
 vibez.spill("📜 NIST PQC Standardization Status:")
@@ -297,9 +321,11 @@ vibez.spill("  Falcon:         Round 3 Finalist")
 assert_true(based) fr fr All implemented algorithms are NIST approved
 vibez.spill("✅ All algorithms meet NIST PQC standards")
 
-fr fr ========================================
-fr fr Test Suite Summary
-fr fr ========================================
+no cap
+========================================
+Test Suite Summary
+========================================
+on god
 
 print_test_summary()
 

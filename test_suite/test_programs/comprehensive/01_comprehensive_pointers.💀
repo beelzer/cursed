@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Comprehensive Pointer Test
-fr fr Tests: All major pointer operations and scenarios
-fr fr Expected: Identical results in both modes
+no cap
+Comprehensive Pointer Test
+Tests: All major pointer operations and scenarios
+Expected: Identical results in both modes
+on god
 
 be_like Person squad {
     name tea

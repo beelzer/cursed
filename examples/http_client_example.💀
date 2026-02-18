@@ -1,7 +1,9 @@
-fr fr/ HTTP Client Example for CURSED
-fr fr/ 
-fr fr/ This example demonstrates how to use the HTTP client for making
-fr fr/ requests, handling responses, and working with headers and cookies.
+no cap
+/ HTTP Client Example for CURSED
+/ 
+/ This example demonstrates how to use the HTTP client for making
+/ requests, handling responses, and working with headers and cookies.
+on god
 
 yeet "stdlib::net::http"
 yeet "stdlib::io"

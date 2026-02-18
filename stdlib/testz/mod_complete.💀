@@ -1,10 +1,14 @@
-fr fr CURSED Testing Framework v4.0 - Complete TestResult Integration
-fr fr Enterprise-grade testing with full TestResult type system support
-fr fr Provides comprehensive testing utilities with structured result handling
+no cap
+CURSED Testing Framework v4.0 - Complete TestResult Integration
+Enterprise-grade testing with full TestResult type system support
+Provides comprehensive testing utilities with structured result handling
+on god
 
-fr fr ================================
-fr fr Test Framework Core with Complete TestResult Integration
-fr fr ================================
+no cap
+================================
+Test Framework Core with Complete TestResult Integration
+================================
+on god
 
 fr fr Global test state using TestResult system
 sus current_suite_name tea = "default"
@@ -121,9 +125,11 @@ slay TestResult.with_file_name(result TestResult, file tea) TestResult {
     damn result
 }
 
-fr fr ================================
-fr fr Enhanced Core Test Functions
-fr fr ================================
+no cap
+================================
+Enhanced Core Test Functions
+================================
+on god
 
 slay test_start(name tea) {
     current_test_name = name
@@ -167,9 +173,11 @@ slay test_error(message tea) {
     vibez.spill("  ⚠ ERROR: " + message)
 }
 
-fr fr ================================
-fr fr Enhanced Assertion Functions with TestResult
-fr fr ================================
+no cap
+================================
+Enhanced Assertion Functions with TestResult
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     lowkey actual == expected {
@@ -251,9 +259,11 @@ slay assert_false(value lit) {
     }
 }
 
-fr fr ================================
-fr fr Enhanced Assertion Functions that Return TestResult
-fr fr ================================
+no cap
+================================
+Enhanced Assertion Functions that Return TestResult
+================================
+on god
 
 slay assert_eq_int_result(test_name tea, actual normie, expected normie) TestResult {
     lowkey actual == expected {
@@ -295,9 +305,11 @@ slay assert_false_result(test_name tea, value lit) TestResult {
     }
 }
 
-fr fr ================================
-fr fr Enhanced Test Reporting with TestResult
-fr fr ================================
+no cap
+================================
+Enhanced Test Reporting with TestResult
+================================
+on god
 
 slay print_test_summary() {
     vibez.spill("")
@@ -342,9 +354,11 @@ slay print_test_summary() {
     }
 }
 
-fr fr ================================
-fr fr JSON Output Support
-fr fr ================================
+no cap
+================================
+JSON Output Support
+================================
+on god
 
 slay generate_json_report() tea {
     sus json_output tea = "{\n"
@@ -379,9 +393,11 @@ slay generate_json_report() tea {
     damn json_output
 }
 
-fr fr ================================
-fr fr TAP Output Support
-fr fr ================================
+no cap
+================================
+TAP Output Support
+================================
+on god
 
 slay generate_tap_report() tea {
     sus tap_output tea = "1.." + tea(test_count) + "\n"
@@ -413,9 +429,11 @@ slay generate_tap_report() tea {
     damn tap_output
 }
 
-fr fr ================================
-fr fr Test Utilities
-fr fr ================================
+no cap
+================================
+Test Utilities
+================================
+on god
 
 slay reset_test_state() {
     test_count = 0
@@ -452,9 +470,11 @@ slay get_failed_count() normie {
     damn test_failed
 }
 
-fr fr ================================
-fr fr Collection Management
-fr fr ================================
+no cap
+================================
+Collection Management
+================================
+on god
 
 slay add_test_result(result TestResult) {
     test_results = test_results + [result]
@@ -476,8 +496,10 @@ slay collect_test_results(results [TestResult]) {
     }
 }
 
-fr fr ================================
-fr fr Export all testing functions
-fr fr ================================
+no cap
+================================
+Export all testing functions
+================================
+on god
 
 fr fr Note: vibes export system not working, functions available globally

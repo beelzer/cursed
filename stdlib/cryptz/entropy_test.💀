@@ -1,6 +1,8 @@
-fr fr ===== ENTROPY VALIDATION TEST =====
-fr fr Test that cryptz module produces unpredictable entropy values
-fr fr This test validates that hardcoded constants have been replaced with real system calls
+no cap
+===== ENTROPY VALIDATION TEST =====
+Test that cryptz module produces unpredictable entropy values
+This test validates that hardcoded constants have been replaced with real system calls
+on god
 
 yeet "cryptz"
 yeet "vibez"

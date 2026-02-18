@@ -2,9 +2,11 @@ yeet "testz"
 yeet "stringz"
 yeet "vibez"
 
-fr fr ===============================
-fr fr Test Coverage Analysis Tool
-fr fr ===============================
+no cap
+===============================
+Test Coverage Analysis Tool
+===============================
+on god
 
 fr fr Coverage tracking variables
 sus total_modules_analyzed normie = 0
@@ -30,9 +32,11 @@ sus fuzz_test_files normie = 0
 sus integration_test_files normie = 0
 sus performance_test_files normie = 0
 
-fr fr ===============================
-fr fr Module Analysis Functions
-fr fr ===============================
+no cap
+===============================
+Module Analysis Functions
+===============================
+on god
 
 slay analyze_module_coverage(module_name tea) {
     vibez.spill("📊 Analyzing coverage for: " + module_name)
@@ -98,9 +102,11 @@ slay calculate_module_coverage(test_count normie, function_count normie) normie 
     }
 }
 
-fr fr ===============================
-fr fr Comprehensive Coverage Analysis
-fr fr ===============================
+no cap
+===============================
+Comprehensive Coverage Analysis
+===============================
+on god
 
 slay analyze_all_stdlib_coverage() {
     vibez.spill("🔍 Starting comprehensive stdlib coverage analysis...")
@@ -134,9 +140,11 @@ slay analyze_all_stdlib_coverage() {
     generate_coverage_report()
 }
 
-fr fr ===============================
-fr fr Coverage Reporting
-fr fr ===============================
+no cap
+===============================
+Coverage Reporting
+===============================
+on god
 
 slay generate_coverage_report() {
     vibez.spill("")
@@ -198,19 +206,23 @@ slay generate_improvement_recommendations() {
     vibez.spill("    5. Use bulk test generator for missing unit tests")
 }
 
-fr fr ===============================
-fr fr Coverage Quality Assessment
-fr fr ===============================
+no cap
+===============================
+Coverage Quality Assessment
+===============================
+on god
 
 slay assess_test_quality() {
     vibez.spill("")
     vibez.spill("🔬 TEST QUALITY ASSESSMENT:") fr fr Calculate test diversity score
     sus test_types normie = 0
-    fr fr unit_test_files > 0 { test_types = test_types + 1 }
-    fr fr property_test_files > 0 { test_types = test_types + 1 }
-    fr fr fuzz_test_files > 0 { test_types = test_types + 1 }
-    fr fr integration_test_files > 0 { test_types = test_types + 1 }
-    fr fr performance_test_files > 0 { test_types = test_types + 1 }
+    no cap
+    unit_test_files > 0 { test_types = test_types + 1 }
+    property_test_files > 0 { test_types = test_types + 1 }
+    fuzz_test_files > 0 { test_types = test_types + 1 }
+    integration_test_files > 0 { test_types = test_types + 1 }
+    performance_test_files > 0 { test_types = test_types + 1 }
+    on god
     
     sus max_test_types normie = 5
     sus diversity_score normie = (test_types * 100) / max_test_types
@@ -226,9 +238,11 @@ slay assess_test_quality() {
     }
 }
 
-fr fr ===============================
-fr fr Property-Based Coverage Check
-fr fr ===============================
+no cap
+===============================
+Property-Based Coverage Check
+===============================
+on god
 
 slay check_property_based_coverage() {
     vibez.spill("")
@@ -236,10 +250,12 @@ slay check_property_based_coverage() {
     sus critical_with_properties normie = 0
     sus critical_module_count normie = 8 fr fr Count of critical modules
     
-    fr fr stringz.Contains(critical_modules, "stringz") { critical_with_properties = critical_with_properties + 1 }
-    fr fr stringz.Contains(critical_modules, "crypto") { critical_with_properties = critical_with_properties + 1 }
-    fr fr stringz.Contains(critical_modules, "json_tea") { critical_with_properties = critical_with_properties + 1 }
-    fr fr stringz.Contains(critical_modules, "mathz") { critical_with_properties = critical_with_properties + 1 }
+    no cap
+    stringz.Contains(critical_modules, "stringz") { critical_with_properties = critical_with_properties + 1 }
+    stringz.Contains(critical_modules, "crypto") { critical_with_properties = critical_with_properties + 1 }
+    stringz.Contains(critical_modules, "json_tea") { critical_with_properties = critical_with_properties + 1 }
+    stringz.Contains(critical_modules, "mathz") { critical_with_properties = critical_with_properties + 1 }
+    on god
     
     sus property_coverage normie = (critical_with_properties * 100) / critical_module_count
     vibez.spill("  Critical modules with property tests: " + tea(critical_with_properties) + "/" + tea(critical_module_count))
@@ -252,9 +268,11 @@ slay check_property_based_coverage() {
     }
 }
 
-fr fr ===============================
-fr fr Main Execution
-fr fr ===============================
+no cap
+===============================
+Main Execution
+===============================
+on god
 
 fr fr Start comprehensive coverage analysis
 testz.set_test_suite("Stdlib Coverage Analysis")

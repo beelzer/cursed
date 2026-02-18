@@ -3,9 +3,11 @@ fr fr Critical for self-hosting and robust error handling
 
 yeet "testz"
 
-fr fr Result type definition (using enum-like pattern)
-fr fr Result<T, E> can be Ok(T) or Err(E)
-fr fr Implemented as a tuple with discriminant pattern
+no cap
+Result type definition (using enum-like pattern)
+Result<T, E> can be Ok(T) or Err(E)
+Implemented as a tuple with discriminant pattern
+on god
 
 slay ok_int(value normie) (lit, normie, tea) {
     damn (based, value, "")

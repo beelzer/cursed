@@ -2,9 +2,11 @@ fr fr Enhanced Error Handling Module - Production Error Management
 fr fr Pure CURSED implementation with comprehensive error handling
 yeet "testz"
 
-fr fr ================================
-fr fr Core Error Types
-fr fr ================================
+no cap
+================================
+Core Error Types
+================================
+on god
 
 collab Error {
     slay message() tea
@@ -76,9 +78,11 @@ flex FileSystemError => Error {
     slay unwrap() tea { damn msg }
 }
 
-fr fr ================================
-fr fr Result Type for Error Handling
-fr fr ================================
+no cap
+================================
+Result Type for Error Handling
+================================
+on god
 
 collab Result<T, E> {
     slay is_ok() lit
@@ -136,9 +140,11 @@ flex Err<T, E> => Result<T, E> {
     }
 }
 
-fr fr ================================
-fr fr Error Creation Functions
-fr fr ================================
+no cap
+================================
+Error Creation Functions
+================================
+on god
 
 slay create_runtime_error(message tea, code normie, recoverable lit) Error {
     sus stack tea[value] = get_current_stack_trace()
@@ -174,9 +180,11 @@ slay create_filesystem_error(message tea, path tea, operation tea) Error {
     }
 }
 
-fr fr ================================
-fr fr Result Creation Functions
-fr fr ================================
+no cap
+================================
+Result Creation Functions
+================================
+on god
 
 slay ok<T, E>(value T) Result<T, E> {
     damn Ok<T, E>{value: value}
@@ -194,9 +202,11 @@ slay result_from_nullable<T, E>(value T, is_valid lit, error_msg tea) Result<T, 
     }
 }
 
-fr fr ================================
-fr fr Error Propagation Utilities
-fr fr ================================
+no cap
+================================
+Error Propagation Utilities
+================================
+on god
 
 slay try_operation<T, E>(operation slay() Result<T, E>) Result<T, E> {
     fr fr Simple wrapper for error propagation
@@ -225,9 +235,11 @@ slay collect_results<T, E>(results Result[value]<T, E>) Result<T[value], E> {
     damn ok<T[value], E>(collected_values)
 }
 
-fr fr ================================
-fr fr Error Recovery and Retry
-fr fr ================================
+no cap
+================================
+Error Recovery and Retry
+================================
+on god
 
 squad RetryConfig {
     spill max_attempts normie
@@ -281,9 +293,11 @@ slay is_error_recoverable<E>(err E) lit {
     damn based fr fr Assume recoverable for now
 }
 
-fr fr ================================
-fr fr Error Logging and Reporting
-fr fr ================================
+no cap
+================================
+Error Logging and Reporting
+================================
+on god
 
 squad ErrorLogger {
     spill log_level normie
@@ -325,9 +339,11 @@ slay format_error_log_entry(timestamp tea, err Error) tea {
     damn entry
 }
 
-fr fr ================================
-fr fr Error Aggregation and Analysis
-fr fr ================================
+no cap
+================================
+Error Aggregation and Analysis
+================================
+on god
 
 squad ErrorAggregator {
     spill errors Error[value]
@@ -390,9 +406,11 @@ slay get_most_common_error_type(error_counts map[tea]normie) tea {
     damn most_common
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay get_current_stack_trace() tea[value]{
     fr fr Simplified stack trace - real implementation would use runtime introspection
@@ -439,9 +457,11 @@ slay print_error_to_console(message tea) {
     vibez.spill("ERROR: " + message)
 }
 
-fr fr ================================
-fr fr Panic and Recovery System
-fr fr ================================
+no cap
+================================
+Panic and Recovery System
+================================
+on god
 
 squad PanicInfo {
     spill message tea
@@ -466,9 +486,11 @@ slay recover_from_panic(recovery_fn slay()) lit {
     damn based fr fr Assume recovery successful
 }
 
-fr fr ================================
-fr fr Error Context System
-fr fr ================================
+no cap
+================================
+Error Context System
+================================
+on god
 
 squad ErrorContext {
     spill operation tea

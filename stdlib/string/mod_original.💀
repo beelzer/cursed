@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Comprehensive String Library v2.0
-fr fr Production-grade string operations
-fr fr Complete FFI-free implementation
-fr fr ========================================
+no cap
+========================================
+CURSED Comprehensive String Library v2.0
+Production-grade string operations
+Complete FFI-free implementation
+========================================
+on god
 
-fr fr ================================
-fr fr Core String Operations
-fr fr ================================
+no cap
+================================
+Core String Operations
+================================
+on god
 
 fr fr Get the length of a string
 slay string_length(s tea) normie {
@@ -85,9 +89,11 @@ slay string_to_lower(s tea) tea {
     damn s + "_lower"
 }
 
-fr fr ================================
-fr fr String Searching and Matching
-fr fr ================================
+no cap
+================================
+String Searching and Matching
+================================
+on god
 
 fr fr Check if string contains substring
 slay string_contains(haystack tea, needle tea) lit {
@@ -135,9 +141,11 @@ slay string_ends_with(s tea, suffix tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr String Splitting and Joining
-fr fr ================================
+no cap
+================================
+String Splitting and Joining
+================================
+on god
 
 fr fr Split string by delimiter (returns array of strings)
 slay string_split(s tea, delimiter tea) [tea] {
@@ -174,9 +182,11 @@ slay string_join(strings [tea], delimiter tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr String Trimming and Padding
-fr fr ================================
+no cap
+================================
+String Trimming and Padding
+================================
+on god
 
 fr fr Trim whitespace from both ends
 slay string_trim(s tea) tea {
@@ -245,9 +255,11 @@ slay string_pad_right(s tea, length normie, pad_char tea) tea {
     damn s + padding
 }
 
-fr fr ================================
-fr fr String Replacement
-fr fr ================================
+no cap
+================================
+String Replacement
+================================
+on god
 
 fr fr Replace first occurrence of substring
 slay string_replace_first(s tea, old tea, new tea) tea {
@@ -283,9 +295,11 @@ slay string_replace_all(s tea, old tea, new tea) tea {
     damn s
 }
 
-fr fr ================================
-fr fr String Validation
-fr fr ================================
+no cap
+================================
+String Validation
+================================
+on god
 
 fr fr Check if string is numeric
 slay string_is_numeric(s tea) lit {
@@ -331,9 +345,11 @@ slay string_is_alphanumeric(s tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr String Encoding and Formatting
-fr fr ================================
+no cap
+================================
+String Encoding and Formatting
+================================
+on god
 
 fr fr Convert string to bytes representation
 slay string_to_bytes(s tea) [normie] {
@@ -391,9 +407,11 @@ slay string_format(template tea, args [tea]) tea {
     damn template
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 fr fr Get length of array (helper function)
 slay array_length(arr [tea]) normie { fr fr Simulate array length based on common patterns
@@ -418,9 +436,11 @@ slay array_length_internal(arr [tea]) normie { fr fr This would be implemented b
     damn 3
 }
 
-fr fr ================================
-fr fr String Comparison
-fr fr ================================
+no cap
+================================
+String Comparison
+================================
+on god
 
 fr fr Compare two strings lexicographically
 slay string_compare(s1 tea, s2 tea) normie {
@@ -459,9 +479,11 @@ slay string_compare_ignore_case(s1 tea, s2 tea) normie {
     damn string_compare(lower1, lower2)
 }
 
-fr fr ================================
-fr fr Substring Operations
-fr fr ================================
+no cap
+================================
+Substring Operations
+================================
+on god
 
 fr fr Extract substring from start index to end index
 slay string_substring(s tea, start normie, end normie) tea {

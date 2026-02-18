@@ -1,13 +1,15 @@
-fr fr ===== ENCODINGZ MODULE - Production Encoding/Decoding Library =====
-fr fr High-performance encoding utilities for CURSED applications
-fr fr Supports Base64, Hex, ASCII85, URL encoding, and streaming operations
-fr fr Optimized for both small data and large streaming scenarios
-fr fr 
-fr fr ⚡ PERFORMANCE FEATURES ⚡
-fr fr - Zero-copy streaming operations for large data
-fr fr - SIMD-optimized encoding tables
-fr fr - Memory-pooled buffers for reusable operations
-fr fr - Constant-time operations where security-relevant
+no cap
+===== ENCODINGZ MODULE - Production Encoding/Decoding Library =====
+High-performance encoding utilities for CURSED applications
+Supports Base64, Hex, ASCII85, URL encoding, and streaming operations
+Optimized for both small data and large streaming scenarios
+
+⚡ PERFORMANCE FEATURES ⚡
+- Zero-copy streaming operations for large data
+- SIMD-optimized encoding tables
+- Memory-pooled buffers for reusable operations
+- Constant-time operations where security-relevant
+on god
 
 yeet "stringz"
 yeet "mathz" 

@@ -1,9 +1,11 @@
 fr fr fs_test_vibe Module - Simplified Version for CURSED
 fr fr Filesystem testing utilities with basic functionality
 
-fr fr ================================
-fr fr Core Types (Simplified)
-fr fr ================================
+no cap
+================================
+Core Types (Simplified)
+================================
+on god
 
 fr fr Simple file representation for testing
 be_like TestFile squad {
@@ -35,9 +37,11 @@ be_like FuzzResult squad {
     IssueDescription     tea
 }
 
-fr fr ================================
-fr fr Core Functions (Simplified)
-fr fr ================================
+no cap
+================================
+Core Functions (Simplified)
+================================
+on god
 
 fr fr Create a new MapFS (simplified)
 slay NewMapFS() MapFS {

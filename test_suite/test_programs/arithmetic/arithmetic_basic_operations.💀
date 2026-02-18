@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Test: Basic arithmetic operations
-fr fr Purpose: Test all arithmetic operators work correctly
-fr fr Expected: All arithmetic should compute properly
+no cap
+Test: Basic arithmetic operations
+Purpose: Test all arithmetic operators work correctly
+Expected: All arithmetic should compute properly
+on god
 
 slay main_character() {
     fr fr Integer arithmetic

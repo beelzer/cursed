@@ -123,9 +123,11 @@ struct AtomicBool {
     spill value normie          fr fr Boolean atomic value (0=false, 1=true)
 }
 
-fr fr =============================================================================
-fr fr MUTEX OPERATIONS - Thread-safe locking primitives
-fr fr =============================================================================
+no cap
+=============================================================================
+MUTEX OPERATIONS - Thread-safe locking primitives
+=============================================================================
+on god
 
 fr fr Create new mutex for synchronization
 slay create_mutex() *Mutex {
@@ -222,9 +224,11 @@ slay mutex_trylock(mutex *Mutex) lit {
     damn cap
 }
 
-fr fr =============================================================================
-fr fr WAITGROUP OPERATIONS - Goroutine synchronization
-fr fr =============================================================================
+no cap
+=============================================================================
+WAITGROUP OPERATIONS - Goroutine synchronization
+=============================================================================
+on god
 
 fr fr Create new wait group for goroutine synchronization
 slay create_waitgroup() *WaitGroup {
@@ -283,9 +287,11 @@ slay waitgroup_wait(wg *WaitGroup) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr CHANNEL OPERATIONS - Buffered communication primitives
-fr fr =============================================================================
+no cap
+=============================================================================
+CHANNEL OPERATIONS - Buffered communication primitives
+=============================================================================
+on god
 
 fr fr Create buffered channel for communication
 slay create_channel(capacity normie) *Channel {
@@ -537,9 +543,11 @@ slay channel_is_closed(ch *Channel) lit {
     damn atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1
 }
 
-fr fr =============================================================================
-fr fr SELECT STATEMENT IMPLEMENTATION - Non-blocking channel multiplexing
-fr fr =============================================================================
+no cap
+=============================================================================
+SELECT STATEMENT IMPLEMENTATION - Non-blocking channel multiplexing
+=============================================================================
+on god
 
 fr fr Select operation for non-blocking channel operations
 slay select_try_send(ch *Channel, data normie) lit {
@@ -704,9 +712,11 @@ slay condition_broadcast(condition Mutex) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr ATOMIC OPERATIONS - Lock-free primitives
-fr fr =============================================================================
+no cap
+=============================================================================
+ATOMIC OPERATIONS - Lock-free primitives
+=============================================================================
+on god
 
 fr fr Create atomic 32-bit integer
 slay atomic_i32_new(initial normie) *AtomicI32 {
@@ -797,9 +807,11 @@ slay atomic_sub_i32(atomic *AtomicI32, delta normie) normie {
     damn atomic_drip.atomic_sub_i32(&atomic.value, delta, SEQCST)
 }
 
-fr fr =============================================================================
-fr fr BARRIER OPERATIONS - Synchronization point for multiple goroutines
-fr fr =============================================================================
+no cap
+=============================================================================
+BARRIER OPERATIONS - Synchronization point for multiple goroutines
+=============================================================================
+on god
 
 fr fr Create barrier for synchronized waiting
 slay create_barrier(count normie) *Barrier {
@@ -834,9 +846,11 @@ slay barrier_wait(barrier *Barrier) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr SEMAPHORE OPERATIONS - Resource counting primitive
-fr fr =============================================================================
+no cap
+=============================================================================
+SEMAPHORE OPERATIONS - Resource counting primitive
+=============================================================================
+on god
 
 fr fr Create semaphore for resource counting
 slay create_semaphore(initial normie) *Semaphore {
@@ -899,9 +913,11 @@ slay semaphore_try_acquire(sem *Semaphore) lit {
     damn cap
 }
 
-fr fr =============================================================================
-fr fr THREAD POOL OPERATIONS - Concurrent task execution
-fr fr =============================================================================
+no cap
+=============================================================================
+THREAD POOL OPERATIONS - Concurrent task execution
+=============================================================================
+on god
 
 fr fr Create thread pool for concurrent execution
 slay create_thread_pool(worker_count normie, queue_size normie) *ThreadPool {
@@ -962,9 +978,11 @@ slay thread_pool_wait_all(pool *ThreadPool) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr ONCE OPERATIONS - One-time initialization primitive
-fr fr =============================================================================
+no cap
+=============================================================================
+ONCE OPERATIONS - One-time initialization primitive
+=============================================================================
+on god
 
 fr fr Create once primitive for one-time initialization
 slay create_once() *Once {
@@ -1026,18 +1044,22 @@ slay waitgroup_new() *WaitGroupStruct {
     damn &wg
 }
 
-fr fr =============================================================================
-fr fr UTILITY FUNCTIONS - Compatibility and convenience functions
-fr fr =============================================================================
+no cap
+=============================================================================
+UTILITY FUNCTIONS - Compatibility and convenience functions
+=============================================================================
+on god
 
 fr fr Channel creation function for Go-style compatibility
 slay make(chan_type tea, buffer_size normie) *Channel {
     damn create_channel(buffer_size)
 }
 
-fr fr =============================================================================
-fr fr GOROUTINE RUNTIME INTEGRATION - ENHANCED STAN IMPLEMENTATION
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE RUNTIME INTEGRATION - ENHANCED STAN IMPLEMENTATION
+=============================================================================
+on god
 
 yeet "goroutine_runtime"  fr fr Import enhanced goroutine runtime
 
@@ -1081,9 +1103,11 @@ slay shutdown_scheduler() {
     goroutine_runtime.shutdown_goroutine_scheduler()
 }
 
-fr fr =============================================================================
-fr fr CURSED RUNTIME INTEGRATION FUNCTIONS - REAL IMPLEMENTATION
-fr fr =============================================================================
+no cap
+=============================================================================
+CURSED RUNTIME INTEGRATION FUNCTIONS - REAL IMPLEMENTATION
+=============================================================================
+on god
 
 yeet "os_primitives"
 yeet "real_goroutine_tracking"
@@ -1346,9 +1370,11 @@ slay cpu_pause() {
     os_primitives.cpu_pause_instruction()
 }
 
-fr fr =============================================================================
-fr fr CHANNEL REGISTRY HELPER FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+CHANNEL REGISTRY HELPER FUNCTIONS
+=============================================================================
+on god
 
 slay create_channel_hashmap(initial_size normie) thicc {
     damn memory.allocate(initial_size * 16)  fr fr Simple placeholder
@@ -1364,9 +1390,11 @@ slay hashmap_get_channel(map thicc, key thicc) *Channel {
     damn 0  fr fr Placeholder
 }
 
-fr fr =============================================================================
-fr fr READ-WRITE MUTEX OPERATIONS - Shared/exclusive locking
-fr fr =============================================================================
+no cap
+=============================================================================
+READ-WRITE MUTEX OPERATIONS - Shared/exclusive locking
+=============================================================================
+on god
 
 fr fr Create read-write mutex for shared resource access
 slay create_rwmutex() *RWMutex {
@@ -1440,9 +1468,11 @@ slay rwmutex_unlock(rwmutex *RWMutex) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr CONDITION VARIABLE OPERATIONS - Thread coordination
-fr fr =============================================================================
+no cap
+=============================================================================
+CONDITION VARIABLE OPERATIONS - Thread coordination
+=============================================================================
+on god
 
 fr fr Create condition variable for thread coordination
 slay create_condition() *CondVar {

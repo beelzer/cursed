@@ -1,15 +1,17 @@
-fr fr/ Certificate Renewal Management Demo - CURSED Language
-fr fr/ 
-fr fr/ Comprehensive demonstration of certificate renewal functionality including:
-fr fr/ - Automated certificate lifecycle management
-fr fr/ - ACME protocol integration for Let's Encrypt
-fr fr/ - Certificate expiration monitoring and alerting
-fr fr/ - Zero-downtime certificate rotation
-fr fr/ - Certificate validation and rollback
-fr fr/ - Renewal scheduling and automation
-fr fr/ - Error handling and recovery
-fr fr/ - Certificate backup and restoration
-fr fr/ - Notification systems
+no cap
+/ Certificate Renewal Management Demo - CURSED Language
+/ 
+/ Comprehensive demonstration of certificate renewal functionality including:
+/ - Automated certificate lifecycle management
+/ - ACME protocol integration for Let's Encrypt
+/ - Certificate expiration monitoring and alerting
+/ - Zero-downtime certificate rotation
+/ - Certificate validation and rollback
+/ - Renewal scheduling and automation
+/ - Error handling and recovery
+/ - Certificate backup and restoration
+/ - Notification systems
+on god
 
 yeet "stdlib::crypto::crypto_pki::certificate_renewal"
 yeet "stdlib::crypto::crypto_pki::types"

@@ -2,9 +2,11 @@ vibe main
 yeet "vibez"
 yeet "mathz"
 
-fr fr Arithmetic Precedence Regression Test
-fr fr Tests: Operator precedence and expression evaluation order
-fr fr Expected: Correct mathematical precedence maintained
+no cap
+Arithmetic Precedence Regression Test
+Tests: Operator precedence and expression evaluation order
+Expected: Correct mathematical precedence maintained
+on god
 
 slay main_character() {
     vibez.spill("=== Arithmetic Precedence Regression Test ===")

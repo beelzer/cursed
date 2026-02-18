@@ -1,6 +1,8 @@
-fr fr Enterprise Error Recovery Patterns
-fr fr Issue #29: Advanced error recovery patterns for production applications
-fr fr Features: Correlation IDs, Circuit Breakers, Distributed Tracing, Error Aggregation
+no cap
+Enterprise Error Recovery Patterns
+Issue #29: Advanced error recovery patterns for production applications
+Features: Correlation IDs, Circuit Breakers, Distributed Tracing, Error Aggregation
+on god
 
 yeet "testz"
 yeet "timez" 
@@ -8,9 +10,11 @@ yeet "mathz"
 yeet "vibez"
 yeet "networkz"
 
-fr fr ================================
-fr fr Correlation ID and Trace Context
-fr fr ================================
+no cap
+================================
+Correlation ID and Trace Context
+================================
+on god
 
 be_like correlation_id squad {
     trace_id tea     fr fr Distributed trace identifier
@@ -74,9 +78,11 @@ slay (ctx trace_context) child_context(operation tea) trace_context {
     }
 }
 
-fr fr ================================
-fr fr Enterprise Circuit Breaker
-fr fr ================================
+no cap
+================================
+Enterprise Circuit Breaker
+================================
+on god
 
 be_like circuit_state smol {
     closed = 0
@@ -248,9 +254,11 @@ slay (cb @circuit_breaker) update_response_time(duration_ms normie) {
     cb.metrics.avg_response_time_ms = (current_avg * meal(total_requests - 1) + meal(duration_ms)) / meal(total_requests)
 }
 
-fr fr ================================
-fr fr Enhanced Error Types with Context
-fr fr ================================
+no cap
+================================
+Enhanced Error Types with Context
+================================
+on god
 
 be_like enhanced_error squad {
     base_error Error            fr fr From basic enhanced_error module
@@ -347,9 +355,11 @@ slay (err enhanced_error) propagate_to_service(service_name tea, operation tea) 
     damn err
 }
 
-fr fr ================================
-fr fr Error Aggregation and Batch Processing
-fr fr ================================
+no cap
+================================
+Error Aggregation and Batch Processing
+================================
+on god
 
 be_like error_aggregator squad {
     errors enhanced_error[value]
@@ -497,9 +507,11 @@ slay process_correlation_group(trace_id tea, errors enhanced_error[value], resul
     }
 }
 
-fr fr ================================
-fr fr Distributed Tracing Integration
-fr fr ================================
+no cap
+================================
+Distributed Tracing Integration
+================================
+on god
 
 be_like trace_span squad {
     trace_id tea
@@ -626,9 +638,11 @@ slay (tracer @distributed_tracer) export_spans() {
     tracer.last_export_time = timez.unix_ms()
 }
 
-fr fr ================================
-fr fr Recovery and Escalation Actions
-fr fr ================================
+no cap
+================================
+Recovery and Escalation Actions
+================================
+on god
 
 slay trigger_cascade_recovery(trace_id tea, errors enhanced_error[value], result @batch_processing_result) {
     fr fr Implement cascade failure recovery
@@ -677,9 +691,11 @@ slay trigger_escalation(err enhanced_error, result @batch_processing_result) {
     result.escalations_created++
 }
 
-fr fr ================================
-fr fr Monitoring and Metrics Integration  
-fr fr ================================
+no cap
+================================
+Monitoring and Metrics Integration  
+================================
+on god
 
 be_like error_metrics squad {
     total_errors normie
@@ -726,9 +742,11 @@ slay update_error_metrics(err enhanced_error) {
     }
 }
 
-fr fr ================================
-fr fr Testing and Validation
-fr fr ================================
+no cap
+================================
+Testing and Validation
+================================
+on god
 
 slay test_enterprise_error_recovery() {
     test_start("Enterprise Error Recovery")
@@ -765,9 +783,11 @@ slay test_enterprise_error_recovery() {
     test_end()
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay generate_uuid() tea {
     fr fr Simplified UUID generation

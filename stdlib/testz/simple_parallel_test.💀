@@ -1,13 +1,17 @@
-fr fr ================================
-fr fr Simple Parallel Test Runner Demo
-fr fr Demonstrates parallelism control without complex dependencies
-fr fr ================================
+no cap
+================================
+Simple Parallel Test Runner Demo
+Demonstrates parallelism control without complex dependencies
+================================
+on god
 
 yeet "vibez"
 
-fr fr ================================
-fr fr Environment Variable Support Demo
-fr fr ================================
+no cap
+================================
+Environment Variable Support Demo
+================================
+on god
 
 slay get_env_bool(key tea, default_value lit) lit {
     fr fr Simulate environment variable reading
@@ -42,9 +46,11 @@ slay get_env_string(key tea, default_value tea) tea {
     damn default_value
 }
 
-fr fr ================================
-fr fr Configuration Structures
-fr fr ================================
+no cap
+================================
+Configuration Structures
+================================
+on god
 
 struct SimpleTestConfig {
     parallel_enabled lit
@@ -74,9 +80,11 @@ slay create_test_config() SimpleTestConfig {
     damn config
 }
 
-fr fr ================================
-fr fr Test Execution Simulation
-fr fr ================================
+no cap
+================================
+Test Execution Simulation
+================================
+on god
 
 slay execute_test_sequential(test_files tea[value], config SimpleTestConfig) drip {
     vibez.spill("🔄 Running tests sequentially...")
@@ -167,9 +175,11 @@ slay execute_test_parallel(test_files tea[value], config SimpleTestConfig) drip 
     damn failed_count
 }
 
-fr fr ================================
-fr fr Resource Management Demo
-fr fr ================================
+no cap
+================================
+Resource Management Demo
+================================
+on god
 
 slay monitor_resources(config SimpleTestConfig) {
     vibez.spill("📊 Resource Monitoring:")
@@ -184,9 +194,11 @@ slay monitor_resources(config SimpleTestConfig) {
     vibez.spill("  ⏱️ Timeout:", config.timeout_seconds, "seconds")
 }
 
-fr fr ================================
-fr fr Configuration Display
-fr fr ================================
+no cap
+================================
+Configuration Display
+================================
+on god
 
 slay print_config_summary(config SimpleTestConfig) {
     vibez.spill("")
@@ -203,9 +215,11 @@ slay print_config_summary(config SimpleTestConfig) {
     vibez.spill("═══════════════════════════════════")
 }
 
-fr fr ================================
-fr fr Test Profiles Demo
-fr fr ================================
+no cap
+================================
+Test Profiles Demo
+================================
+on god
 
 slay create_development_profile() SimpleTestConfig {
     vibez.spill("🔧 Creating development profile...")
@@ -255,9 +269,11 @@ slay create_ci_profile() SimpleTestConfig {
     damn config
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay string_from_int(value drip) tea {
     lowkey (value == 1) { damn "1" }
@@ -271,9 +287,11 @@ slay string_from_int(value drip) tea {
     damn "unknown"
 }
 
-fr fr ================================
-fr fr Main Test Execution
-fr fr ================================
+no cap
+================================
+Main Test Execution
+================================
+on god
 
 slay main_character() {
     vibez.spill("🧪 CURSED Parallel Test Runner Demo")

@@ -1,15 +1,19 @@
-fr fr CURSED Comprehensive Mathematical Operations Test Suite
-fr fr Tests all enhanced mathematical functions for correctness
-fr fr Validates IEEE 754 compliance, statistical accuracy, and algorithmic correctness
+no cap
+CURSED Comprehensive Mathematical Operations Test Suite
+Tests all enhanced mathematical functions for correctness
+Validates IEEE 754 compliance, statistical accuracy, and algorithmic correctness
+on god
 
 yeet "testz"
 yeet "enhanced_mathematical_operations"
 yeet "proper_statistical_functions"  
 yeet "ieee754_nan_checking"
 
-fr fr ==========================================
-fr fr TEST DATA PREPARATION
-fr fr ==========================================
+no cap
+==========================================
+TEST DATA PREPARATION
+==========================================
+on god
 
 slay create_test_dataset_small() meal[value]{
     sus data meal[value] = [1.0, 2.0, 3.0, 4.0, 5.0]
@@ -36,9 +40,11 @@ slay create_test_dataset_negative() meal[value]{
     damn data
 }
 
-fr fr ==========================================
-fr fr IEEE 754 COMPLIANCE TESTS
-fr fr ==========================================
+no cap
+==========================================
+IEEE 754 COMPLIANCE TESTS
+==========================================
+on god
 
 slay test_nan_detection_comprehensive() lit {
     spill_facts("Testing IEEE 754 NaN detection...")
@@ -124,9 +130,11 @@ slay test_finite_detection_comprehensive() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr EUCLIDEAN ALGORITHM TESTS
-fr fr ==========================================
+no cap
+==========================================
+EUCLIDEAN ALGORITHM TESTS
+==========================================
+on god
 
 slay test_euclidean_gcd_comprehensive() lit {
     spill_facts("Testing enhanced Euclidean GCD algorithm...")
@@ -196,9 +204,11 @@ slay test_lcm_comprehensive() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr STATISTICAL FUNCTIONS TESTS
-fr fr ==========================================
+no cap
+==========================================
+STATISTICAL FUNCTIONS TESTS
+==========================================
+on god
 
 slay test_median_sorting_based_comprehensive() lit {
     spill_facts("Testing proper sorting-based median calculation...")
@@ -303,9 +313,11 @@ slay test_robust_mean_comprehensive() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr QUARTILE AND PERCENTILE TESTS
-fr fr ==========================================
+no cap
+==========================================
+QUARTILE AND PERCENTILE TESTS
+==========================================
+on god
 
 slay test_quartiles_comprehensive() lit {
     spill_facts("Testing proper quartile calculations...")
@@ -363,9 +375,11 @@ slay test_percentiles_comprehensive() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr ROBUST STATISTICS TESTS
-fr fr ==========================================
+no cap
+==========================================
+ROBUST STATISTICS TESTS
+==========================================
+on god
 
 slay test_mad_comprehensive() lit {
     spill_facts("Testing Median Absolute Deviation (MAD)...")
@@ -399,9 +413,11 @@ slay test_trimmed_mean_comprehensive() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr ADVANCED STATISTICAL TESTS
-fr fr ==========================================
+no cap
+==========================================
+ADVANCED STATISTICAL TESTS
+==========================================
+on god
 
 slay test_skewness_kurtosis_comprehensive() lit {
     spill_facts("Testing skewness and kurtosis calculations...")
@@ -422,9 +438,11 @@ slay test_skewness_kurtosis_comprehensive() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr NEWTON-RAPHSON SQRT TESTS
-fr fr ==========================================
+no cap
+==========================================
+NEWTON-RAPHSON SQRT TESTS
+==========================================
+on god
 
 slay test_sqrt_newton_raphson_comprehensive() lit {
     spill_facts("Testing Newton-Raphson square root...")
@@ -461,9 +479,11 @@ slay test_sqrt_newton_raphson_comprehensive() lit {
     damn based
 }
 
-fr fr ==========================================
-fr fr COMPREHENSIVE TEST SUITE RUNNER
-fr fr ==========================================
+no cap
+==========================================
+COMPREHENSIVE TEST SUITE RUNNER
+==========================================
+on god
 
 slay run_comprehensive_mathematical_tests() lit {
     spill_facts("=" * 60)

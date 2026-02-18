@@ -1,6 +1,8 @@
-fr fr IPC - Pure CURSED Inter-Process Communication Module
-fr fr Comprehensive IPC mechanisms without FFI dependencies
-fr fr Provides named pipes, message queues, shared memory, semaphores, and Unix sockets
+no cap
+IPC - Pure CURSED Inter-Process Communication Module
+Comprehensive IPC mechanisms without FFI dependencies
+Provides named pipes, message queues, shared memory, semaphores, and Unix sockets
+on god
 
 yeet "signal_boost"
 
@@ -33,9 +35,11 @@ sus IPC_PERM_READ normie = 4
 sus IPC_PERM_WRITE normie = 2
 sus IPC_PERM_EXECUTE normie = 1
 
-fr fr ==============================================================================
-fr fr IPC CONFIGURATION AND INITIALIZATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+IPC CONFIGURATION AND INITIALIZATION
+==============================================================================
+on god
 
 fr fr Initialize IPC subsystem
 slay init_ipc() lit {
@@ -89,9 +93,11 @@ slay get_ipc_config() map {
     damn ipc_config
 }
 
-fr fr ==============================================================================
-fr fr NAMED PIPES IMPLEMENTATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+NAMED PIPES IMPLEMENTATION
+==============================================================================
+on god
 
 fr fr Create named pipe
 slay create_named_pipe(name tea, buffer_size normie) lit {
@@ -209,9 +215,11 @@ slay read_from_pipe(name tea) tea {
     damn data
 }
 
-fr fr ==============================================================================
-fr fr MESSAGE QUEUES IMPLEMENTATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+MESSAGE QUEUES IMPLEMENTATION
+==============================================================================
+on god
 
 fr fr Create message queue
 slay create_message_queue(name tea, max_size normie) lit {
@@ -325,9 +333,11 @@ slay insert_message_by_priority(messages [map], new_message map) {
     }
 }
 
-fr fr ==============================================================================
-fr fr SHARED MEMORY IMPLEMENTATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+SHARED MEMORY IMPLEMENTATION
+==============================================================================
+on god
 
 fr fr Create shared memory segment
 slay create_shared_memory(name tea, size normie) lit {
@@ -415,9 +425,11 @@ slay read_shared_memory(name tea, key tea) tea {
     damn data.get(key)
 }
 
-fr fr ==============================================================================
-fr fr SEMAPHORE IMPLEMENTATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+SEMAPHORE IMPLEMENTATION
+==============================================================================
+on god
 
 fr fr Create semaphore
 slay create_semaphore(name tea, initial_value normie) lit {
@@ -505,9 +517,11 @@ slay semaphore_signal(name tea) lit {
     damn cap fr fr Semaphore at max value
 }
 
-fr fr ==============================================================================
-fr fr UNIX SOCKET SIMULATION
-fr fr ==============================================================================
+no cap
+==============================================================================
+UNIX SOCKET SIMULATION
+==============================================================================
+on god
 
 fr fr Create Unix socket
 slay create_unix_socket(name tea, socket_type tea) lit {
@@ -576,9 +590,11 @@ slay connect_unix_socket(name tea, client_process tea) lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTIONS
+==============================================================================
+on god
 
 fr fr Get current timestamp (simulated)
 slay get_current_timestamp() normie {
@@ -610,9 +626,11 @@ slay get_ipc_statistics() map {
     damn ipc_statistics
 }
 
-fr fr ==============================================================================
-fr fr CLEANUP FUNCTIONS
-fr fr ==============================================================================
+no cap
+==============================================================================
+CLEANUP FUNCTIONS
+==============================================================================
+on god
 
 fr fr Cleanup specific resource type
 slay cleanup_resource_type(resource_type tea) lit {
@@ -654,9 +672,11 @@ slay cleanup_ipc() lit {
     damn based
 }
 
-fr fr ==============================================================================
-fr fr PROCESS MANAGEMENT
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS MANAGEMENT
+==============================================================================
+on god
 
 fr fr Register process for IPC
 slay register_process(process_id tea, process_name tea) lit {
@@ -711,9 +731,11 @@ slay list_active_processes() [tea] {
     damn active_processes
 }
 
-fr fr ==============================================================================
-fr fr DEBUGGING AND DIAGNOSTICS
-fr fr ==============================================================================
+no cap
+==============================================================================
+DEBUGGING AND DIAGNOSTICS
+==============================================================================
+on god
 
 fr fr Dump IPC state
 slay dump_ipc_state() {

@@ -1,13 +1,17 @@
-fr fr CURSED TestResult Type System Tests
-fr fr Comprehensive test suite for TestResult functionality
-fr fr Author: CURSED Compiler Team
+no cap
+CURSED TestResult Type System Tests
+Comprehensive test suite for TestResult functionality
+Author: CURSED Compiler Team
+on god
 
 yeet "testz"
 yeet "test_result/mod"
 
-fr fr ================================
-fr fr Basic TestResult Tests
-fr fr ================================
+no cap
+================================
+Basic TestResult Tests
+================================
+on god
 
 slay test_result_creation() {
     test_start("TestResult Creation")
@@ -88,9 +92,11 @@ slay test_result_builder() {
     vibez.spill("✓ TestResult builder tests passed")
 }
 
-fr fr ================================
-fr fr TestSuite Tests
-fr fr ================================
+no cap
+================================
+TestSuite Tests
+================================
+on god
 
 slay test_suite_creation() {
     test_start("TestSuite Creation")
@@ -156,9 +162,11 @@ slay test_suite_timing() {
     vibez.spill("✓ TestSuite timing tests passed")
 }
 
-fr fr ================================
-fr fr TestReport Tests
-fr fr ================================
+no cap
+================================
+TestReport Tests
+================================
+on god
 
 slay test_report_creation() {
     test_start("TestReport Creation")
@@ -213,9 +221,11 @@ slay test_report_aggregation() {
     vibez.spill("✓ TestReport aggregation tests passed")
 }
 
-fr fr ================================
-fr fr Serialization Tests
-fr fr ================================
+no cap
+================================
+Serialization Tests
+================================
+on god
 
 slay test_json_serialization() {
     test_start("JSON Serialization")
@@ -363,9 +373,11 @@ slay test_console_serialization() {
     vibez.spill("✓ Console serialization tests passed")
 }
 
-fr fr ================================
-fr fr Enhanced Assertion Tests
-fr fr ================================
+no cap
+================================
+Enhanced Assertion Tests
+================================
+on god
 
 slay test_enhanced_assertions() {
     test_start("Enhanced Assertions")
@@ -413,9 +425,11 @@ slay test_enhanced_assertions() {
     vibez.spill("✓ Enhanced assertions tests passed")
 }
 
-fr fr ================================
-fr fr Utility Function Tests
-fr fr ================================
+no cap
+================================
+Utility Function Tests
+================================
+on god
 
 slay test_utility_functions() {
     test_start("Utility Functions")
@@ -455,9 +469,11 @@ slay test_utility_functions() {
     vibez.spill("✓ Utility functions tests passed")
 }
 
-fr fr ================================
-fr fr Performance Tests
-fr fr ================================
+no cap
+================================
+Performance Tests
+================================
+on god
 
 slay test_performance_utilities() {
     test_start("Performance Utilities")
@@ -478,9 +494,11 @@ slay test_performance_utilities() {
     vibez.spill("✓ Performance utilities tests passed")
 }
 
-fr fr ================================
-fr fr Integration Tests
-fr fr ================================
+no cap
+================================
+Integration Tests
+================================
+on god
 
 slay test_integration_with_testz() {
     test_start("Integration with testz")
@@ -500,9 +518,11 @@ slay test_integration_with_testz() {
     vibez.spill("✓ Integration with testz tests passed")
 }
 
-fr fr ================================
-fr fr Comprehensive Integration Test
-fr fr ================================
+no cap
+================================
+Comprehensive Integration Test
+================================
+on god
 
 slay test_comprehensive_workflow() {
     test_start("Comprehensive Workflow")
@@ -573,9 +593,11 @@ slay test_comprehensive_workflow() {
     vibez.spill("HTML Report Length: " + tea(html_report.length) + " characters")
 }
 
-fr fr ================================
-fr fr Main Test Execution
-fr fr ================================
+no cap
+================================
+Main Test Execution
+================================
+on god
 
 slay main_character() {
     vibez.spill("Starting CURSED TestResult Type System Tests")

@@ -110,11 +110,13 @@ slay test_tcp_loopback_communication() {
     sus server TCPListener = tcp_listener_create("127.0.0.1", 8080, 5)
     assert_true(server.socket.is_listening)
     
-    fr fr Note: In a real test, we would need to:
-    fr fr 1. Start the server in a separate goroutine
-    fr fr 2. Connect a client
-    fr fr 3. Exchange data
-    fr fr 4. Clean up both ends
+    no cap
+    Note: In a real test, we would need to:
+    1. Start the server in a separate goroutine
+    2. Connect a client
+    3. Exchange data
+    4. Clean up both ends
+    on god
     
     fr fr For this test, we'll just verify the listener is working
     assert_true(server.socket.socket_id > 0)

@@ -4,9 +4,11 @@ yeet "vibez"
 
 fr fr Enhanced testz testing framework with improved error handling, performance testing, and better reporting
 
-fr fr ===============================
-fr fr Enhanced Error Handling Types
-fr fr ===============================
+no cap
+===============================
+Enhanced Error Handling Types
+===============================
+on god
 
 fr fr Test result types for better error handling
 sus TestResult tea = "TestResult"
@@ -22,9 +24,11 @@ sus error_stack_trace tea = ""
 sus error_file tea = ""
 sus error_line normie = 0
 
-fr fr ===============================
-fr fr Enhanced Performance Testing
-fr fr ===============================
+no cap
+===============================
+Enhanced Performance Testing
+===============================
+on god
 
 fr fr Performance benchmark result tracking
 sus benchmark_results tea = ""
@@ -37,9 +41,11 @@ sus performance_memory_threshold normie = 1000000 fr fr 1MB
 sus performance_time_threshold normie = 1000000 fr fr 1ms in nanoseconds
 sus performance_error_threshold normie = 0 fr fr No errors allowed
 
-fr fr ===============================
-fr fr Enhanced Test Discovery
-fr fr ===============================
+no cap
+===============================
+Enhanced Test Discovery
+===============================
+on god
 
 fr fr Test discovery state
 sus discovered_test_names tea = ""
@@ -52,9 +58,11 @@ sus test_execution_queue tea = ""
 sus test_execution_index normie = 0
 sus test_execution_total normie = 0
 
-fr fr ===============================
-fr fr Enhanced Error Reporting Functions
-fr fr ===============================
+no cap
+===============================
+Enhanced Error Reporting Functions
+===============================
+on god
 
 slay create_test_error(message tea, context tea, file tea, line normie) {
     error_context = context
@@ -98,9 +106,11 @@ slay assert_eq_with_diff(actual tea, expected tea, message tea) {
     }
 }
 
-fr fr ===============================
-fr fr Enhanced Performance Benchmarking
-fr fr ===============================
+no cap
+===============================
+Enhanced Performance Benchmarking
+===============================
+on god
 
 slay benchmark_with_validation(name tea, iterations normie, validation_func tea) {
     benchmark_start(name)
@@ -159,9 +169,11 @@ slay benchmark_comparison(name1 tea, name2 tea, func1 tea, func2 tea) {
     vibez.spill("📊 Comparison complete - see individual benchmark results above")
 }
 
-fr fr ===============================
-fr fr Enhanced Test Discovery
-fr fr ===============================
+no cap
+===============================
+Enhanced Test Discovery
+===============================
+on god
 
 slay discover_tests_in_directory(directory tea, pattern tea) {
     test_discovery_path = directory
@@ -213,9 +225,11 @@ slay filter_tests_by_tag(tag tea) {
     }
 }
 
-fr fr ===============================
-fr fr Enhanced Test Result Reporting
-fr fr ===============================
+no cap
+===============================
+Enhanced Test Result Reporting
+===============================
+on god
 
 slay generate_test_report(format tea) {
     vibez.spill("📋 Generating test report in format: " + format)
@@ -283,9 +297,11 @@ slay generate_text_report() {
     vibez.spill("=====================================")
 }
 
-fr fr ===============================
-fr fr Enhanced Test Execution Control
-fr fr ===============================
+no cap
+===============================
+Enhanced Test Execution Control
+===============================
+on god
 
 slay run_test_with_timeout(test_name tea, timeout_ms normie) {
     vibez.spill("⏰ Running test with timeout: " + test_name + " (timeout: " + tea(timeout_ms) + "ms)")
@@ -333,9 +349,11 @@ slay run_test_with_retry(test_name tea, max_retries normie) {
     }
 }
 
-fr fr ===============================
-fr fr Enhanced Test Utilities
-fr fr ===============================
+no cap
+===============================
+Enhanced Test Utilities
+===============================
+on god
 
 slay create_test_fixture(name tea, data tea) {
     vibez.spill("🔧 Creating test fixture: " + name)
@@ -359,9 +377,11 @@ slay test_group_end(group_name tea) {
     print_test_summary()
 }
 
-fr fr ===============================
-fr fr Enhanced Assertion Library
-fr fr ===============================
+no cap
+===============================
+Enhanced Assertion Library
+===============================
+on god
 
 slay assert_approximately_equal(actual normie, expected normie, tolerance normie) {
     sus diff normie = actual - expected
@@ -670,9 +690,11 @@ slay matches_word_characters(text tea) lit {
     damn based
 }
 
-fr fr ===============================
-fr fr Build System Integration
-fr fr ===============================
+no cap
+===============================
+Build System Integration
+===============================
+on god
 
 slay integrate_with_build_system(build_command tea) {
     vibez.spill("🏗️ Integrating with build system: " + build_command) fr fr Simulate build system integration
@@ -699,9 +721,11 @@ slay run_continuous_integration_suite() {
     vibez.spill("✅ Continuous integration suite completed")
 }
 
-fr fr ===============================
-fr fr Enhanced Test Framework Summary
-fr fr ===============================
+no cap
+===============================
+Enhanced Test Framework Summary
+===============================
+on god
 
 slay print_enhanced_framework_info() {
     vibez.spill("🚀 Enhanced CURSED Testing Framework (testz)")

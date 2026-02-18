@@ -1,9 +1,11 @@
 fr fr Data Drip module - Database interface and SQL operations
 fr fr Provides comprehensive database operations with connection pooling and transaction support
 
-fr fr ================================
-fr fr Database Connection Functions  
-fr fr ================================
+no cap
+================================
+Database Connection Functions  
+================================
+on god
 
 slay OpenDB(driverName tea, dataSourceName tea) tea {
     sus connectionString tea = driverName + "://" + dataSourceName
@@ -21,9 +23,11 @@ slay Ping(db tea) tea {
     damn "Ping successful"
 }
 
-fr fr ================================
-fr fr Connection Pool Management
-fr fr ================================
+no cap
+================================
+Connection Pool Management
+================================
+on god
 
 slay SetMaxOpenConns(db tea, maxConns normie) {
     vibez.spill("Setting max open connections to: " + tea(maxConns))
@@ -37,9 +41,11 @@ slay SetConnMaxLifetime(db tea, duration tea) {
     vibez.spill("Setting connection max lifetime: " + duration)
 }
 
-fr fr ================================
-fr fr Query Execution Functions
-fr fr ================================
+no cap
+================================
+Query Execution Functions
+================================
+on god
 
 slay Query(db tea, query tea, args tea) tea {
     sus fullQuery tea = "Query: " + query + " Args: " + args
@@ -59,9 +65,11 @@ slay QueryRow(db tea, query tea, args tea) tea {
     damn "Single row result"
 }
 
-fr fr ================================
-fr fr Transaction Management
-fr fr ================================
+no cap
+================================
+Transaction Management
+================================
+on god
 
 slay Begin(db tea) tea {
     vibez.spill("Beginning transaction on: " + db)
@@ -78,9 +86,11 @@ slay Rollback(tx tea) tea {
     damn "Transaction rolled back"
 }
 
-fr fr ================================
-fr fr Prepared Statement Functions
-fr fr ================================
+no cap
+================================
+Prepared Statement Functions
+================================
+on god
 
 slay Prepare(db tea, query tea) tea {
     vibez.spill("Preparing statement: " + query)
@@ -102,9 +112,11 @@ slay CloseStmt(stmt tea) tea {
     damn "Statement closed"
 }
 
-fr fr ================================
-fr fr Result Processing Functions
-fr fr ================================
+no cap
+================================
+Result Processing Functions
+================================
+on god
 
 slay NextRow(rows tea) lit {
     vibez.spill("Checking next row in: " + rows)
@@ -126,9 +138,11 @@ slay GetColumns(rows tea) tea {
     damn "Column1,Column2,Column3"
 }
 
-fr fr ================================
-fr fr Database Utility Functions
-fr fr ================================
+no cap
+================================
+Database Utility Functions
+================================
+on god
 
 slay LastInsertId(result tea) normie {
     vibez.spill("Getting last insert ID from: " + result)
@@ -144,9 +158,11 @@ slay Register(name tea, driver tea) {
     vibez.spill("Registering driver: " + name + " with implementation: " + driver)
 }
 
-fr fr ================================
-fr fr Enhanced Query Builder
-fr fr ================================
+no cap
+================================
+Enhanced Query Builder
+================================
+on god
 
 slay NewQueryBuilder() tea {
     damn "QueryBuilder{}"
@@ -172,9 +188,11 @@ slay LimitRows(builder tea, limit normie) tea {
     damn query
 }
 
-fr fr ================================
-fr fr Connection Pool Stats
-fr fr ================================
+no cap
+================================
+Connection Pool Stats
+================================
+on god
 
 slay PoolStats(db tea) tea {
     sus stats tea = "PoolStats{OpenConnections: 5, IdleConnections: 2, WaitingQueries: 0}"
@@ -187,9 +205,11 @@ slay IsConnected(db tea) lit {
     damn based
 }
 
-fr fr ================================
-fr fr SQL Injection Protection
-fr fr ================================
+no cap
+================================
+SQL Injection Protection
+================================
+on god
 
 slay EscapeString(value tea) tea {
     sus escaped tea = "'" + value + "'"
@@ -202,9 +222,11 @@ slay ValidateQuery(query tea) lit {
     damn based
 }
 
-fr fr ================================
-fr fr Async Database Operations
-fr fr ================================
+no cap
+================================
+Async Database Operations
+================================
+on god
 
 slay QueryAsync(db tea, query tea, args tea) tea {
     sus asyncQuery tea = "AsyncQuery: " + query + " Args: " + args

@@ -1,13 +1,15 @@
-fr fr Certificate Revocation Demo - CURSED Language
-fr fr Comprehensive demonstration of PKI certificate revocation functionality
-fr fr
-fr fr This example showcases:
-fr fr - Certificate Revocation List (CRL) generation and management
-fr fr - Online Certificate Status Protocol (OCSP) support
-fr fr - Certificate revocation reason code handling
-fr fr - Bulk certificate revocation capabilities
-fr fr - Emergency revocation procedures
-fr fr - Revocation status checking and verification
+no cap
+Certificate Revocation Demo - CURSED Language
+Comprehensive demonstration of PKI certificate revocation functionality
+
+This example showcases:
+- Certificate Revocation List (CRL) generation and management
+- Online Certificate Status Protocol (OCSP) support
+- Certificate revocation reason code handling
+- Bulk certificate revocation capabilities
+- Emergency revocation procedures
+- Revocation status checking and verification
+on god
 
 yeet "stdlib::crypto_pki" as pki;
 yeet "stdlib::io" as io;

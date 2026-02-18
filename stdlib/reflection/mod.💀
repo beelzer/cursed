@@ -3,9 +3,11 @@ yeet "testz"
 fr fr CURSED Comprehensive Reflection System - Pure CURSED implementation
 fr fr Provides runtime type inspection, dynamic method calling, and introspection capabilities
 
-fr fr ===============================
-fr fr BASIC TYPE REFLECTION
-fr fr ===============================
+no cap
+===============================
+BASIC TYPE REFLECTION
+===============================
+on god
 
 fr fr Get type name for any value
 slay get_type_name_int(value normie) tea {
@@ -92,9 +94,11 @@ slay is_numeric_string(value tea) lit {
     damn cap
 }
 
-fr fr ===============================
-fr fr DYNAMIC METHOD CALLS
-fr fr ===============================
+no cap
+===============================
+DYNAMIC METHOD CALLS
+===============================
+on god
 
 fr fr Call method dynamically on any value
 slay call_method_int(value normie, method_name tea) tea {
@@ -158,9 +162,11 @@ slay call_method_string(value tea, method_name tea) tea {
     damn "method_not_found"
 }
 
-fr fr ===============================
-fr fr STRUCT FIELD INSPECTION
-fr fr ===============================
+no cap
+===============================
+STRUCT FIELD INSPECTION
+===============================
+on god
 
 fr fr Simulate field information for PersonStruct
 slay get_field_count_person() normie {
@@ -248,9 +254,11 @@ slay get_field_value_by_name(field_name tea, name_val tea, age_val normie, activ
     damn "field_not_found"
 }
 
-fr fr ===============================
-fr fr INTERFACE METHOD DISCOVERY
-fr fr ===============================
+no cap
+===============================
+INTERFACE METHOD DISCOVERY
+===============================
+on god
 
 fr fr Check if type implements Stringer interface
 slay implements_stringer_int(value normie) lit {
@@ -342,9 +350,11 @@ slay get_interface_method_name(interface_name tea, index normie) tea {
     damn "unknown_method"
 }
 
-fr fr ===============================
-fr fr MEMORY LAYOUT INTROSPECTION
-fr fr ===============================
+no cap
+===============================
+MEMORY LAYOUT INTROSPECTION
+===============================
+on god
 
 fr fr Get memory layout for basic types
 slay get_memory_size_int() normie {
@@ -392,9 +402,11 @@ slay get_struct_padding_bytes_person() normie {
     damn 3
 }
 
-fr fr ===============================
-fr fr DYNAMIC OBJECT CREATION
-fr fr ===============================
+no cap
+===============================
+DYNAMIC OBJECT CREATION
+===============================
+on god
 
 fr fr Create new instance of type by name (returns string representation)
 slay create_instance_by_name(type_name tea) tea {
@@ -442,9 +454,11 @@ slay clone_value_string(value tea) tea {
     damn value
 }
 
-fr fr ===============================
-fr fr GENERIC TYPE INTROSPECTION
-fr fr ===============================
+no cap
+===============================
+GENERIC TYPE INTROSPECTION
+===============================
+on god
 
 fr fr Get generic type parameter count
 slay get_generic_param_count(type_name tea) normie {
@@ -490,9 +504,11 @@ slay get_generic_instance_name_two_args(base_name tea, type_arg1 tea, type_arg2 
     damn base_name + "[" + type_arg1 + ", " + type_arg2 + "]"
 }
 
-fr fr ===============================
-fr fr UTILITY FUNCTIONS
-fr fr ===============================
+no cap
+===============================
+UTILITY FUNCTIONS
+===============================
+on god
 
 fr fr Dynamic type conversions
 slay int_to_string_dynamic(value normie) tea {
@@ -645,9 +661,11 @@ slay string_to_float_dynamic(value tea) meal {
     damn 0.0
 }
 
-fr fr ===============================
-fr fr TYPE REGISTRY
-fr fr ===============================
+no cap
+===============================
+TYPE REGISTRY
+===============================
+on god
 
 fr fr Simulate a simple type registry with arrays
 sus registered_type_names tea[value]
@@ -698,9 +716,11 @@ slay get_registered_type_name(index normie) tea {
     damn "invalid_index"
 }
 
-fr fr ===============================
-fr fr ADVANCED REFLECTION FEATURES
-fr fr ===============================
+no cap
+===============================
+ADVANCED REFLECTION FEATURES
+===============================
+on god
 
 fr fr Check if method exists on type
 slay has_method_on_type(type_name tea, method_name tea) lit {
@@ -802,9 +822,11 @@ slay get_method_return_type(type_name tea, method_name tea) tea {
     damn "unknown"
 }
 
-fr fr ===============================
-fr fr REFLECTION DEMO FUNCTIONS
-fr fr ===============================
+no cap
+===============================
+REFLECTION DEMO FUNCTIONS
+===============================
+on god
 
 slay reflection_comprehensive_demo() lit {
     vibez.spill("CURSED Comprehensive Reflection System Demo")

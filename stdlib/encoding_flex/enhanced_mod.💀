@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Enhanced Encoding Module v2.0
-fr fr Complete encoding/decoding implementations
-fr fr Base64, Hex, URL, JSON, Binary support
-fr fr ========================================
+no cap
+========================================
+CURSED Enhanced Encoding Module v2.0
+Complete encoding/decoding implementations
+Base64, Hex, URL, JSON, Binary support
+========================================
+on god
 
-fr fr ================================
-fr fr Base64 Encoding Implementation
-fr fr ================================
+no cap
+================================
+Base64 Encoding Implementation
+================================
+on god
 
 sus BASE64_CHARS tea = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 sus BASE64_PAD tea = "="
@@ -134,9 +138,11 @@ slay base64_char_index(char tea) normie {
     damn -1
 }
 
-fr fr ================================
-fr fr Hexadecimal Encoding Implementation
-fr fr ================================
+no cap
+================================
+Hexadecimal Encoding Implementation
+================================
+on god
 
 sus HEX_CHARS tea = "0123456789abcdef"
 
@@ -217,9 +223,11 @@ slay hex_char_value(char tea) normie {
     damn -1
 }
 
-fr fr ================================
-fr fr URL Encoding Implementation
-fr fr ================================
+no cap
+================================
+URL Encoding Implementation
+================================
+on god
 
 fr fr Encode string for URL
 slay url_encode(data tea) tea {
@@ -300,9 +308,11 @@ slay url_char_needs_encoding(char tea) lit {
     damn based
 }
 
-fr fr ================================
-fr fr JSON Encoding Implementation
-fr fr ================================
+no cap
+================================
+JSON Encoding Implementation
+================================
+on god
 
 fr fr Encode value to JSON string
 slay json_encode(value tea) tea {
@@ -398,9 +408,11 @@ slay json_unescape_string(str tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Binary Encoding Implementation
-fr fr ================================
+no cap
+================================
+Binary Encoding Implementation
+================================
+on god
 
 fr fr Write 16-bit big-endian integer
 slay write_uint16_be(value normie) tea {
@@ -448,9 +460,11 @@ slay read_uint32_be(data tea) (normie, tea) {
     damn value, ""
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay char_at(str tea, index normie) tea {
     lowkey index < 0 || index >= len(str) {

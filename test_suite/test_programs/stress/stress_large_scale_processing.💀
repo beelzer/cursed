@@ -4,9 +4,11 @@ yeet "mathz"
 yeet "stringz"
 yeet "collections"
 
-fr fr Large-scale processing stress test
-fr fr Tests handling of large datasets, extensive loops, and memory management
-fr fr Expected: Successful processing of large amounts of data
+no cap
+Large-scale processing stress test
+Tests handling of large datasets, extensive loops, and memory management
+Expected: Successful processing of large amounts of data
+on god
 
 slay generate_large_array(size normie) {
     sus result normie[value] = []

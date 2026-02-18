@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Nested Pointers Test
-fr fr Tests: Pointers to pointers (double indirection)
-fr fr Expected: Identical results in both modes
+no cap
+Nested Pointers Test
+Tests: Pointers to pointers (double indirection)
+Expected: Identical results in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Nested Pointers Test ===")

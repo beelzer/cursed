@@ -4,9 +4,11 @@ yeet "vibez"
 yeet "mathz"
 yeet "stringz"
 
-fr fr Test: Standard library import and usage validation
-fr fr Purpose: Ensure all stdlib modules can be imported and used together
-fr fr Expected: All imported modules should be accessible and functional
+no cap
+Test: Standard library import and usage validation
+Purpose: Ensure all stdlib modules can be imported and used together
+Expected: All imported modules should be accessible and functional
+on god
 
 slay main_character() {
     vibez.spill("=== Testing Multiple Stdlib Imports ===")

@@ -1,8 +1,10 @@
 yeet "string_pure"
 
-fr fr ========================================
-fr fr Pure CURSED String Library Test Suite
-fr fr ========================================
+no cap
+========================================
+Pure CURSED String Library Test Suite
+========================================
+on god
 
 slay test_string_length() {
     test_start("String Length Functions")

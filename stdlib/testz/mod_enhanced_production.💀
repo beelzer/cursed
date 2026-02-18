@@ -1,21 +1,25 @@
-fr fr CURSED Testing Framework v6.0 - Enhanced Production Edition
-fr fr The Ultimate Gen Z Testing Framework with ALL the Features
-fr fr fr fr Features:
-fr fr - Property-based testing with sick random generation
-fr fr - Benchmarking with precise performance metrics
-fr fr - Coverage analysis that's actually useful
-fr fr - Parallel execution because we're not waiting around
-fr fr - Multiple output formats (JSON, XML, HTML, TAP)
-fr fr - Test discovery that finds everything
-fr fr - Comprehensive assertions for all data types
-fr fr - Fixtures and setup/teardown that actually work
-fr fr - Performance regression testing
-fr fr - Mock system that doesn't suck
-fr fr - Error handling that makes sense
+no cap
+CURSED Testing Framework v6.0 - Enhanced Production Edition
+The Ultimate Gen Z Testing Framework with ALL the Features
+fr fr Features:
+- Property-based testing with sick random generation
+- Benchmarking with precise performance metrics
+- Coverage analysis that's actually useful
+- Parallel execution because we're not waiting around
+- Multiple output formats (JSON, XML, HTML, TAP)
+- Test discovery that finds everything
+- Comprehensive assertions for all data types
+- Fixtures and setup/teardown that actually work
+- Performance regression testing
+- Mock system that doesn't suck
+- Error handling that makes sense
+on god
 
-fr fr ================================
-fr fr Core Framework State - The Foundation
-fr fr ================================
+no cap
+================================
+Core Framework State - The Foundation
+================================
+on god
 
 fr fr Test execution counters
 sus test_count normie = 0
@@ -49,9 +53,11 @@ fr fr Test filtering
 sus test_pattern tea = "*"
 sus test_directory tea = "tests/"
 
-fr fr ================================
-fr fr Basic Test Lifecycle Functions
-fr fr ================================
+no cap
+================================
+Basic Test Lifecycle Functions
+================================
+on god
 
 slay test_start(name tea) {
     current_test_name = name
@@ -88,9 +94,11 @@ slay suite_end() {
     vibez.spill("")
 }
 
-fr fr ================================
-fr fr Basic Assertion Functions - The Essentials
-fr fr ================================
+no cap
+================================
+Basic Assertion Functions - The Essentials
+================================
+on god
 
 slay assert_eq_int(actual normie, expected normie) {
     current_assertion_name = "assert_eq_int"
@@ -198,9 +206,11 @@ slay assert_eq_float(actual meal, expected meal) {
     }
 }
 
-fr fr ================================
-fr fr Advanced Assertion Functions - The Power Tools
-fr fr ================================
+no cap
+================================
+Advanced Assertion Functions - The Power Tools
+================================
+on god
 
 slay assert_ne_int(actual normie, expected normie) {
     current_assertion_name = "assert_ne_int"
@@ -282,9 +292,11 @@ slay assert_in_range(actual normie, min normie, max normie) {
     }
 }
 
-fr fr ================================
-fr fr String Assertion Functions - For Text Validation
-fr fr ================================
+no cap
+================================
+String Assertion Functions - For Text Validation
+================================
+on god
 
 slay assert_string_contains(haystack tea, needle tea) {
     current_assertion_name = "assert_string_contains" fr fr Basic string contains check
@@ -406,9 +418,11 @@ slay assert_string_ends_with(text tea, suffix tea) {
     }
 }
 
-fr fr ================================
-fr fr Performance Testing Functions - The Speed Demons
-fr fr ================================
+no cap
+================================
+Performance Testing Functions - The Speed Demons
+================================
+on god
 
 slay benchmark_start() normie {
     damn get_current_time()
@@ -467,9 +481,11 @@ slay benchmark_function(name tea, iterations normie) {
     test_end()
 }
 
-fr fr ================================
-fr fr Property-Based Testing Functions - The Random Chaos
-fr fr ================================
+no cap
+================================
+Property-Based Testing Functions - The Random Chaos
+================================
+on god
 
 slay property_test_int(name tea, min_val normie, max_val normie, iterations normie) {
     test_start("property_" + name)
@@ -525,9 +541,11 @@ slay property_test_string(name tea, min_length normie, max_length normie, iterat
     test_end()
 }
 
-fr fr ================================
-fr fr Mock System Functions - The Fake It Till You Make It
-fr fr ================================
+no cap
+================================
+Mock System Functions - The Fake It Till You Make It
+================================
+on god
 
 slay create_mock(name tea) normie {
     vibez.spill("  🎭 Created mock: " + name)
@@ -543,9 +561,11 @@ slay mock_verify_called(mock_id normie, expected_calls normie) { fr fr For now, 
     vibez.spill("  🎭 Mock " + tea(mock_id) + " was called " + tea(expected_calls) + " times")
 }
 
-fr fr ================================
-fr fr Test Discovery Functions - The Seekers
-fr fr ================================
+no cap
+================================
+Test Discovery Functions - The Seekers
+================================
+on god
 
 slay discover_test_files(directory tea) normie {
     vibez.spill("  🔍 Discovering tests in: " + directory) fr fr For now, just simulate finding some test files
@@ -571,9 +591,11 @@ slay run_test_suite(directory tea) {
     suite_end()
 }
 
-fr fr ================================
-fr fr Configuration Functions - The Control Center
-fr fr ================================
+no cap
+================================
+Configuration Functions - The Control Center
+================================
+on god
 
 slay enable_verbose() {
     verbose_mode = based
@@ -625,9 +647,11 @@ slay set_test_directory(directory tea) {
     vibez.spill("  📁 Test directory set to: " + directory)
 }
 
-fr fr ================================
-fr fr Output Format Functions - The Reporters
-fr fr ================================
+no cap
+================================
+Output Format Functions - The Reporters
+================================
+on god
 
 slay enable_json_output() {
     json_output = based
@@ -711,9 +735,11 @@ slay generate_tap_report() {
     }
 }
 
-fr fr ================================
-fr fr Coverage Analysis Functions - The Code Inspectors
-fr fr ================================
+no cap
+================================
+Coverage Analysis Functions - The Code Inspectors
+================================
+on god
 
 slay analyze_coverage() {
     lowkey coverage_mode {
@@ -735,9 +761,11 @@ slay report_coverage_gaps() {
     }
 }
 
-fr fr ================================
-fr fr Performance Regression Testing - The Speed Police
-fr fr ================================
+no cap
+================================
+Performance Regression Testing - The Speed Police
+================================
+on god
 
 slay check_performance_regression(test_name tea, current_time normie, baseline_time normie, threshold normie) {
     test_start("performance_regression_" + test_name)
@@ -763,9 +791,11 @@ slay check_performance_regression(test_name tea, current_time normie, baseline_t
     test_end()
 }
 
-fr fr ================================
-fr fr Test Fixtures and Setup/Teardown - The Prep Squad
-fr fr ================================
+no cap
+================================
+Test Fixtures and Setup/Teardown - The Prep Squad
+================================
+on god
 
 slay setup_test_fixture(fixture_name tea) {
     vibez.spill("  🔧 Setting up fixture: " + fixture_name) fr fr Fixture setup code would go here
@@ -780,9 +810,11 @@ slay with_fixture(fixture_name tea) {
     teardown_test_fixture(fixture_name)
 }
 
-fr fr ================================
-fr fr Parallel Test Execution - The Multitaskers
-fr fr ================================
+no cap
+================================
+Parallel Test Execution - The Multitaskers
+================================
+on god
 
 slay run_tests_in_parallel(test_names [tea]) {
     lowkey parallel_mode {
@@ -808,9 +840,11 @@ slay run_tests_in_parallel(test_names [tea]) {
     }
 }
 
-fr fr ================================
-fr fr Utility Functions - The Helpers
-fr fr ================================
+no cap
+================================
+Utility Functions - The Helpers
+================================
+on god
 
 slay get_current_time() normie { fr fr Simplified time function - would need actual implementation
     damn 1000
@@ -824,9 +858,11 @@ slay random_string(min_length normie, max_length normie) tea { fr fr Simplified 
     damn "random_string"
 }
 
-fr fr ================================
-fr fr Test Summary and Reporting - The Final Boss
-fr fr ================================
+no cap
+================================
+Test Summary and Reporting - The Final Boss
+================================
+on god
 
 slay print_test_summary() {
     vibez.spill("")
@@ -872,9 +908,11 @@ slay print_test_summary() {
     vibez.spill("════════════════════════════════════════════════════════════════")
 }
 
-fr fr ================================
-fr fr State Management Functions - The Cleaners
-fr fr ================================
+no cap
+================================
+State Management Functions - The Cleaners
+================================
+on god
 
 slay reset_test_state() {
     test_count = 0
@@ -907,9 +945,11 @@ slay all_tests_passed() lit {
     damn test_failed == 0 && test_errors == 0
 }
 
-fr fr ================================
-fr fr Advanced Test Patterns - The Pro Moves
-fr fr ================================
+no cap
+================================
+Advanced Test Patterns - The Pro Moves
+================================
+on god
 
 slay test_with_timeout(test_name tea, timeout_ms normie) {
     test_start(test_name)
@@ -969,9 +1009,11 @@ slay test_matrix(test_name tea, test_data [tea]) {
     }
 }
 
-fr fr ================================
-fr fr Integration with Build Systems - The Connectors
-fr fr ================================
+no cap
+================================
+Integration with Build Systems - The Connectors
+================================
+on god
 
 slay export_junit_xml() {
     vibez.spill("  📤 Exporting JUnit XML format")
@@ -991,9 +1033,11 @@ slay export_ci_metadata() {
     vibez.spill("  CURSED_PASS_RATE=" + tea((test_passed * 100) / test_count))
 }
 
-fr fr ================================
-fr fr Final Export Statement
-fr fr ================================
+no cap
+================================
+Final Export Statement
+================================
+on god
 
 fr fr Note: CURSED module system would export all these functions
 fr fr For now, they're all globally available when this module is imported

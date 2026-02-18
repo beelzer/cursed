@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Pointer Type Validation Test
-fr fr Tests: Type safety with pointers
-fr fr Expected: Identical results in both modes
+no cap
+Pointer Type Validation Test
+Tests: Type safety with pointers
+Expected: Identical results in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Pointer Type Validation ===")

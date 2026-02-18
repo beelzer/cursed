@@ -3,11 +3,13 @@ yeet "stringz"
 yeet "cryptz"
 yeet "encode_mood"
 
-fr fr ========================================
-fr fr CURSED WebSocket Module - websocketz
-fr fr Production-Grade WebSocket Protocol Implementation
-fr fr RFC 6455 Compliant Implementation in Pure CURSED
-fr fr ========================================
+no cap
+========================================
+CURSED WebSocket Module - websocketz
+Production-Grade WebSocket Protocol Implementation
+RFC 6455 Compliant Implementation in Pure CURSED
+========================================
+on god
 
 fr fr WebSocket Opcodes (RFC 6455)
 facts {
@@ -103,9 +105,11 @@ be_like WebSocketRoom squad {
     spill created_time normie
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET FRAME HANDLING
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET FRAME HANDLING
+=============================================================================
+on god
 
 slay ws_frame_create(opcode smol, payload tea, masked lit) WebSocketFrame {
     sus frame WebSocketFrame
@@ -215,9 +219,11 @@ slay ws_frame_unmask_payload(payload tea, mask_key smol[4]) tea {
     damn ws_frame_mask_payload(payload, mask_key)
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET HANDSHAKE
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET HANDSHAKE
+=============================================================================
+on god
 
 slay ws_generate_key() tea {
     fr fr Generate WebSocket key (16 random bytes, base64 encoded)
@@ -325,9 +331,11 @@ slay ws_validate_handshake_response(response tea, expected_accept tea) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET CONNECTION MANAGEMENT
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET CONNECTION MANAGEMENT
+=============================================================================
+on god
 
 fr fr Global connection counter for unique IDs
 sus global_ws_connection_counter normie = 0
@@ -380,9 +388,11 @@ slay ws_connection_set_protocol(conn *WebSocketConnection, protocol tea) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET MESSAGE HANDLING
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET MESSAGE HANDLING
+=============================================================================
+on god
 
 slay ws_send_text(conn *WebSocketConnection, text tea) lit {
     lowkey !ws_connection_is_open(*conn) {
@@ -492,9 +502,11 @@ slay ws_queue_message(conn *WebSocketConnection, message_type smol, payload tea)
     damn based
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET ROOM MANAGEMENT (BROADCASTING)
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET ROOM MANAGEMENT (BROADCASTING)
+=============================================================================
+on god
 
 slay ws_room_create(room_id tea, name tea) WebSocketRoom {
     sus room WebSocketRoom
@@ -560,9 +572,11 @@ slay ws_room_is_empty(room WebSocketRoom) lit {
     damn room.connection_count == 0
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET CLIENT INTERFACE
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET CLIENT INTERFACE
+=============================================================================
+on god
 
 slay ws_client_connect(url tea, protocols tea[10], protocol_count normie) WebSocketConnection {
     fr fr Create client connection
@@ -598,9 +612,11 @@ slay ws_client_disconnect(conn *WebSocketConnection) lit {
     damn ws_connection_close(conn, WS_CLOSE_NORMAL, "Client disconnecting")
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET SERVER INTERFACE
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET SERVER INTERFACE
+=============================================================================
+on god
 
 slay ws_server_create(port normie, path tea) WebSocketConnection {
     fr fr Create server connection
@@ -647,9 +663,11 @@ slay ws_server_accept_connection(server *WebSocketConnection, client_request tea
     damn client_conn
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET UTILITY FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET UTILITY FUNCTIONS
+=============================================================================
+on god
 
 slay ws_get_opcode_name(opcode smol) tea {
     lowkey opcode == WS_OPCODE_CONTINUATION {
@@ -731,9 +749,11 @@ slay ws_validate_utf8(text tea) lit {
     damn !stringz.contains(text, "\0")
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET EXTENSIONS SUPPORT
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET EXTENSIONS SUPPORT
+=============================================================================
+on god
 
 slay ws_extension_parse(extension_header tea) tea {
     fr fr Parse Sec-WebSocket-Extensions header
@@ -778,9 +798,11 @@ slay ws_extension_decompress(data tea, extension tea) tea {
     }
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET SECURITY FEATURES
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET SECURITY FEATURES
+=============================================================================
+on god
 
 slay ws_validate_origin(origin tea, allowed_origins tea[10], origin_count normie) lit {
     fr fr Validate Origin header against allowed origins
@@ -818,9 +840,11 @@ slay ws_content_filter(message tea, blocked_words tea[20], word_count normie) li
     damn based  fr fr Content allowed
 }
 
-fr fr =============================================================================
-fr fr WEBSOCKET DEMO FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+WEBSOCKET DEMO FUNCTIONS
+=============================================================================
+on god
 
 slay ws_demo_client() {
     vibez.spill("🔌 WebSocket Client Demo")

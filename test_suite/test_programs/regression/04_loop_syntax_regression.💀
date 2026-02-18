@@ -1,9 +1,11 @@
 vibe main
 yeet "vibez"
 
-fr fr Loop Syntax Regression Test
-fr fr Tests: Ensures periodt loop syntax doesn't regress
-fr fr Expected: Correct loop execution and termination
+no cap
+Loop Syntax Regression Test
+Tests: Ensures periodt loop syntax doesn't regress
+Expected: Correct loop execution and termination
+on god
 
 slay main_character() {
     vibez.spill("=== Loop Syntax Regression Test ===")

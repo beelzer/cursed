@@ -1,7 +1,9 @@
-fr fr/ fr fr CURSED Asymmetric Cryptography Examples - secure communication periodt
-fr fr/ 
-fr fr/ This example demonstrates how to use the CURSED asymmetric crypto library
-fr fr/ for key generation, encryption, digital signatures, and certificate handling.
+no cap
+/ fr fr CURSED Asymmetric Cryptography Examples - secure communication periodt
+/ 
+/ This example demonstrates how to use the CURSED asymmetric crypto library
+/ for key generation, encryption, digital signatures, and certificate handling.
+on god
 
 fr fr Import crypto modules
 yeet crypto.asymmetric as asymm

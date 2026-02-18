@@ -4,9 +4,11 @@ yeet "testz"
 yeet "string_simple"
 yeet "error_core"
 
-fr fr ================================
-fr fr JSON Value Types
-fr fr ================================
+no cap
+================================
+JSON Value Types
+================================
+on god
 
 collab JsonValue {
     slay as_string() tea
@@ -100,9 +102,11 @@ flex JsonArray => JsonValue {
     slay get_type() tea { damn "array" }
 }
 
-fr fr ================================
-fr fr JSON Parser State
-fr fr ================================
+no cap
+================================
+JSON Parser State
+================================
+on god
 
 squad JsonParser {
     spill input tea
@@ -151,9 +155,11 @@ slay JsonParser_skip_whitespace(parser JsonParser) JsonParser {
     damn parser
 }
 
-fr fr ================================
-fr fr JSON Parsing Functions
-fr fr ================================
+no cap
+================================
+JSON Parsing Functions
+================================
+on god
 
 slay json_parse(input tea) (JsonValue, tea) {
     sus parser JsonParser = JsonParser_new(input)
@@ -424,9 +430,11 @@ slay json_parse_array(parser JsonParser) (JsonValue, tea) {
     damn (array, "")
 }
 
-fr fr ================================
-fr fr JSON Serialization Functions
-fr fr ================================
+no cap
+================================
+JSON Serialization Functions
+================================
+on god
 
 slay json_stringify(value JsonValue) tea {
     match value.get_type() {
@@ -495,9 +503,11 @@ slay json_array_to_string(arr JsonArray) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay json_is_digit(char tea) lit {
     damn char >= "0" && char <= "9"
@@ -519,9 +529,11 @@ slay json_string_to_number(str tea) meal {
     damn 0.0 fr fr Default fallback
 }
 
-fr fr ================================
-fr fr High-Level API Functions
-fr fr ================================
+no cap
+================================
+High-Level API Functions
+================================
+on god
 
 slay json_decode(json_str tea) (JsonValue, tea) {
     damn json_parse(json_str)

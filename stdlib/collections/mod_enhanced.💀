@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Enhanced Collections Library v3.0
-fr fr Production-grade data structures
-fr fr Complete memory-safe implementation
-fr fr ========================================
+no cap
+========================================
+CURSED Enhanced Collections Library v3.0
+Production-grade data structures
+Complete memory-safe implementation
+========================================
+on god
 
-fr fr ================================
-fr fr Enhanced HashMap Implementation
-fr fr ================================
+no cap
+================================
+Enhanced HashMap Implementation
+================================
+on god
 
 squad HashMapEntry[K, V] {
     spill key K
@@ -182,9 +186,11 @@ slay hashmap_resize[K, V](old_map HashMap[K, V], new_capacity normie) HashMap[K,
     damn new_map
 }
 
-fr fr ================================
-fr fr Enhanced LinkedList Implementation
-fr fr ================================
+no cap
+================================
+Enhanced LinkedList Implementation
+================================
+on god
 
 squad ListNode[T] {
     spill data T
@@ -404,9 +410,11 @@ slay linkedlist_free_node[T](list LinkedList[T], index normie) LinkedList[T] {
     damn list
 }
 
-fr fr ================================
-fr fr Enhanced Set Implementation
-fr fr ================================
+no cap
+================================
+Enhanced Set Implementation
+================================
+on god
 
 squad Set[T] {
     spill map HashMap[T, lit]
@@ -505,9 +513,11 @@ slay set_difference[T](set1 Set[T], set2 Set[T]) Set[T] {
     damn result
 }
 
-fr fr ================================
-fr fr Enhanced Stack Implementation
-fr fr ================================
+no cap
+================================
+Enhanced Stack Implementation
+================================
+on god
 
 squad Stack[T] {
     spill data T[value]
@@ -563,9 +573,11 @@ slay stack_size[T](stack Stack[T]) normie {
     damn stack.top + 1
 }
 
-fr fr ================================
-fr fr Enhanced Queue Implementation
-fr fr ================================
+no cap
+================================
+Enhanced Queue Implementation
+================================
+on god
 
 squad Queue[T] {
     spill data T[value]
@@ -655,9 +667,11 @@ slay queue_resize[T](old_queue Queue[T], new_capacity normie) Queue[T] {
     damn new_queue
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay equals[T](a T, b T) lit {
     fr fr Generic equality check - simplified

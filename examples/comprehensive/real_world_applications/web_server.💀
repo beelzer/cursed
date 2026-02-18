@@ -1,26 +1,28 @@
 #!/usr/bin/env cursed
 
-fr fr! # Production Web Server in CURSED
-fr fr! 
-fr fr! This example demonstrates a complete, production-lowkey web server built with
-fr fr! the CURSED programming language, showcasing:
-fr fr! 
-fr fr! - HTTP server with routing and middleware
-fr fr! - Database integration with connection pooling
-fr fr! - Authentication and authorization
-fr fr! - JSON API endpoints with validation
-fr fr! - Static file serving
-fr fr! - WebSocket support for real-time features
-fr fr! - Comprehensive error handling
-fr fr! - Configuration management
-fr fr! - Logging and monitoring
-fr fr! - Graceful shutdown handling
-fr fr! 
-fr fr! This proves that CURSED is capable of building serious, enterprise-grade
-fr fr! web applications despite its playful Gen Z syntax.
-fr fr! 
-fr fr! @author CURSED Language Team
-fr fr! @version 1.0.0
+no cap
+! # Production Web Server in CURSED
+! 
+! This example demonstrates a complete, production-lowkey web server built with
+! the CURSED programming language, showcasing:
+! 
+! - HTTP server with routing and middleware
+! - Database integration with connection pooling
+! - Authentication and authorization
+! - JSON API endpoints with validation
+! - Static file serving
+! - WebSocket support for real-time features
+! - Comprehensive error handling
+! - Configuration management
+! - Logging and monitoring
+! - Graceful shutdown handling
+! 
+! This proves that CURSED is capable of building serious, enterprise-grade
+! web applications despite its playful Gen Z syntax.
+! 
+! @author CURSED Language Team
+! @version 1.0.0
+on god
 
 yeet "stdlib::web_vibez"
 yeet "stdlib::database"

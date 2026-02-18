@@ -1,7 +1,9 @@
-fr fr ================================
-fr fr Simple Test for Enhanced CURSED Testing Framework
-fr fr Direct inclusion without imports
-fr fr ================================
+no cap
+================================
+Simple Test for Enhanced CURSED Testing Framework
+Direct inclusion without imports
+================================
+on god
 
 fr fr Include the testz module functions directly
 fr fr Global test state
@@ -134,9 +136,11 @@ slay reset_test_state() {
     current_suite_name = ""
 }
 
-fr fr ================================
-fr fr Simple Test Cases
-fr fr ================================
+no cap
+================================
+Simple Test Cases
+================================
+on god
 
 slay test_basic_assertions() {
     test_start("test_basic_assertions")
@@ -190,9 +194,11 @@ slay test_skipping_functionality() {
     test_end()
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("🧪 Starting Simple Enhanced Testing Framework Test...")

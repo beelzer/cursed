@@ -2,10 +2,12 @@ yeet "testz"
 yeet "httpz_v2"
 yeet "stringz"
 
-fr fr ========================================
-fr fr CURSED HTTP/2 Module Test Suite
-fr fr Comprehensive Testing for httpz_v2
-fr fr ========================================
+no cap
+========================================
+CURSED HTTP/2 Module Test Suite
+Comprehensive Testing for httpz_v2
+========================================
+on god
 
 slay test_http2_frame_creation() {
     test_start("HTTP/2 Frame Creation")
@@ -503,9 +505,11 @@ slay test_http2_performance() {
     http2_connection_close(&conn)
 }
 
-fr fr =============================================================================
-fr fr TEST SUITE EXECUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+TEST SUITE EXECUTION
+=============================================================================
+on god
 
 slay run_all_http2_tests() {
     vibez.spill("🧪 Running HTTP/2 Test Suite")

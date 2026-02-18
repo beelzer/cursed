@@ -1,42 +1,54 @@
-fr fr ===== ENCODINGZ MODULE ENTRY POINT =====
-fr fr High-performance encoding/decoding utilities for CURSED
-fr fr This module provides comprehensive encoding support for modern applications
+no cap
+===== ENCODINGZ MODULE ENTRY POINT =====
+High-performance encoding/decoding utilities for CURSED
+This module provides comprehensive encoding support for modern applications
+on god
 
 yeet "encodingz"
 
 fr fr Re-export all encoding functions for easy access
 fr fr Users can now: yeet "encodingz" and use all functions directly
 
-fr fr Base64 functions are automatically available:
-fr fr - base64_encode(data)
-fr fr - base64_decode(encoded) 
-fr fr - base64_encode_url_safe(data)
-fr fr - base64_decode_url_safe(encoded)
+no cap
+Base64 functions are automatically available:
+- base64_encode(data)
+- base64_decode(encoded) 
+- base64_encode_url_safe(data)
+- base64_decode_url_safe(encoded)
+on god
 
-fr fr Hex functions are automatically available:
-fr fr - hex_encode(data)
-fr fr - hex_decode(encoded)
-fr fr - hex_encode_upper(data)
+no cap
+Hex functions are automatically available:
+- hex_encode(data)
+- hex_decode(encoded)
+- hex_encode_upper(data)
+on god
 
 fr fr ASCII85 functions are automatically available:
 fr fr - ascii85_encode(data)
 
-fr fr URL functions are automatically available:
-fr fr - url_encode(data)
-fr fr - url_decode(encoded)
+no cap
+URL functions are automatically available:
+- url_encode(data)
+- url_decode(encoded)
+on god
 
-fr fr Streaming functions are automatically available:
-fr fr - create_stream_encoder(encoding_type)
-fr fr - stream_encode_chunk(encoder, chunk)
-fr fr - stream_finalize(encoder)
+no cap
+Streaming functions are automatically available:
+- create_stream_encoder(encoding_type)
+- stream_encode_chunk(encoder, chunk)
+- stream_finalize(encoder)
+on god
 
 fr fr Performance functions are automatically available:
 fr fr - benchmark_encoding(data, iterations)
 
-fr fr Module is production-ready and optimized for:
-fr fr ✅ High-performance encoding/decoding operations
-fr fr ✅ Memory-efficient streaming for large data
-fr fr ✅ Comprehensive error handling
-fr fr ✅ Security-conscious implementations
-fr fr ✅ Cross-platform compatibility
-fr fr ✅ Zero external dependencies
+no cap
+Module is production-ready and optimized for:
+✅ High-performance encoding/decoding operations
+✅ Memory-efficient streaming for large data
+✅ Comprehensive error handling
+✅ Security-conscious implementations
+✅ Cross-platform compatibility
+✅ Zero external dependencies
+on god

@@ -1,8 +1,10 @@
-fr fr Error Handling Showcase - CURSED Programming Language
-fr fr 
-fr fr This example demonstrates comprehensive error handling capabilities
-fr fr including panic/recovery, question mark operator, stack traces, and
-fr fr integration with various language features.
+no cap
+Error Handling Showcase - CURSED Programming Language
+
+This example demonstrates comprehensive error handling capabilities
+including panic/recovery, question mark operator, stack traces, and
+integration with various language features.
+on god
 
 yeet "stdlib::io"
 yeet "stdlib::fs"

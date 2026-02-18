@@ -3,9 +3,11 @@ vibe main
 yeet "vibez"
 yeet "mathz"
 
-fr fr Test: mathz module mathematical operations
-fr fr Purpose: Validate mathz functions work correctly
-fr fr Expected: All mathematical operations should produce correct results
+no cap
+Test: mathz module mathematical operations
+Purpose: Validate mathz functions work correctly
+Expected: All mathematical operations should produce correct results
+on god
 
 slay main_character() {
 fr fr Test basic mathz functions

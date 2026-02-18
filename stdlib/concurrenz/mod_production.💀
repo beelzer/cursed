@@ -5,12 +5,14 @@ yeet "testz"
 yeet "sysz"  // System calls and OS primitives
 yeet "sync"  // Production sync module
 
-fr fr =============================================================================
-fr fr PRODUCTION CONCURRENCY MODULE - Real OS-Level Concurrency Implementation
-fr fr Complete replacement of simplified goroutine and channel implementations 
-fr fr with production-grade work-stealing scheduler, hardware context switching,
-fr fr and proper OS thread management
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION CONCURRENCY MODULE - Real OS-Level Concurrency Implementation
+Complete replacement of simplified goroutine and channel implementations 
+with production-grade work-stealing scheduler, hardware context switching,
+and proper OS thread management
+=============================================================================
+on god
 
 fr fr Memory ordering constants for hardware atomics
 sus RELAXED normie = 0
@@ -25,9 +27,11 @@ sus THREAD_PRIORITY_NORMAL normie = 0
 sus THREAD_PRIORITY_HIGH normie = 1
 sus THREAD_PRIORITY_LOW normie = -1
 
-fr fr =============================================================================
-fr fr REAL GOROUTINE CONTEXT SWITCHING - Hardware Register Management
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL GOROUTINE CONTEXT SWITCHING - Hardware Register Management
+=============================================================================
+on god
 
 fr fr Complete CPU register context (platform-specific sizes)
 struct ProductionCpuContext {
@@ -116,9 +120,11 @@ struct ProductionSchedulerStats {
     spill goroutine_spawn_rate drip         fr fr Goroutines per second
 }
 
-fr fr =============================================================================
-fr fr REAL OS THREAD MANAGEMENT AND CONTEXT SWITCHING
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL OS THREAD MANAGEMENT AND CONTEXT SWITCHING
+=============================================================================
+on god
 
 fr fr Global production scheduler instance
 sus global_production_scheduler *ProductionScheduler = 0
@@ -260,9 +266,11 @@ slay production_worker_thread_main(worker_data thicc) normie {
     damn 0  // Thread termination
 }
 
-fr fr =============================================================================
-fr fr HARDWARE CONTEXT SWITCHING - Real CPU Register Management  
-fr fr =============================================================================
+no cap
+=============================================================================
+HARDWARE CONTEXT SWITCHING - Real CPU Register Management  
+=============================================================================
+on god
 
 fr fr Save complete CPU context to memory (platform-specific assembly)
 slay save_production_cpu_context(goroutine *ProductionGoroutine) {
@@ -329,9 +337,11 @@ slay production_context_switch(from_goroutine *ProductionGoroutine, to_goroutine
     }
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION GOROUTINE LIFECYCLE WITH STACK GUARDS
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION GOROUTINE LIFECYCLE WITH STACK GUARDS
+=============================================================================
+on god
 
 fr fr Allocate goroutine with stack overflow protection
 slay allocate_production_goroutine(stack_size normie, priority normie) *ProductionGoroutine {
@@ -419,9 +429,11 @@ slay deallocate_production_goroutine(goroutine *ProductionGoroutine) {
     memory.free(goroutine)
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION WORK-STEALING QUEUE
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION WORK-STEALING QUEUE
+=============================================================================
+on god
 
 fr fr Initialize production work queue with proper synchronization
 slay init_production_work_queue(queue *ProductionWorkQueue, capacity normie) lit {
@@ -570,9 +582,11 @@ slay steal_production_work(queue *ProductionWorkQueue) thicc {
     damn 0  // Failed to steal
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION SCHEDULER INITIALIZATION
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION SCHEDULER INITIALIZATION
+=============================================================================
+on god
 
 fr fr Initialize production scheduler with detected CPU count
 slay init_production_scheduler(worker_count normie) lit {
@@ -637,9 +651,11 @@ slay init_production_scheduler(worker_count normie) lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr CURSED INTEGRATION - Production Stan Implementation
-fr fr =============================================================================
+no cap
+=============================================================================
+CURSED INTEGRATION - Production Stan Implementation
+=============================================================================
+on god
 
 fr fr Production stan function - spawn goroutine with work-stealing scheduler
 slay stan_production(task_function thicc, context_data thicc) thicc {
@@ -730,9 +746,11 @@ slay stan_production_priority(task_function thicc, context_data thicc, priority 
     damn goroutine.id
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION PERFORMANCE MONITORING
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION PERFORMANCE MONITORING
+=============================================================================
+on god
 
 fr fr Get detailed scheduler statistics
 slay get_production_scheduler_stats() *ProductionSchedulerStats {
@@ -785,9 +803,11 @@ slay production_concurrency_status() {
     vibez.spill("Goroutine Spawn Rate:", stats.goroutine_spawn_rate, "/min")
 }
 
-fr fr =============================================================================
-fr fr MODULE INITIALIZATION
-fr fr =============================================================================
+no cap
+=============================================================================
+MODULE INITIALIZATION
+=============================================================================
+on god
 
 fr fr Initialize production concurrency module
 slay concurrency_production_init() lit {

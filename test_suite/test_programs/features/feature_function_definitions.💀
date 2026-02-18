@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Test: Various function definition patterns
-fr fr Purpose: Validate different function signature patterns work correctly
-fr fr Expected: All function types should parse and execute properly
+no cap
+Test: Various function definition patterns
+Purpose: Validate different function signature patterns work correctly
+Expected: All function types should parse and execute properly
+on god
 
 slay main_character() {
     fr fr Test void function

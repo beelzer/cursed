@@ -8,9 +8,11 @@ enhanced_testz.print_enhanced_framework_info()
 testz.set_verbose_mode(based)
 testz.set_test_suite("Enhanced Testz Framework Tests")
 
-fr fr ===============================
-fr fr Test Enhanced Error Handling
-fr fr ===============================
+no cap
+===============================
+Test Enhanced Error Handling
+===============================
+on god
 
 testz.test_start("Enhanced error handling")
 enhanced_testz.create_test_error("Sample error", "Test context", "test_file.💀", 42)
@@ -19,18 +21,22 @@ enhanced_testz.assert_with_context(based, "Context-aware assertion", "test_conte
 enhanced_testz.assert_eq_with_diff("hello", "hello", "String equality with diff")
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Enhanced Performance Benchmarking
-fr fr ===============================
+no cap
+===============================
+Test Enhanced Performance Benchmarking
+===============================
+on god
 
 testz.test_start("Enhanced performance benchmarking")
 enhanced_testz.benchmark_with_validation("performance_test", 10, "validation_func")
 enhanced_testz.benchmark_comparison("algorithm_a", "algorithm_b", "func_a", "func_b")
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Enhanced Test Discovery
-fr fr ===============================
+no cap
+===============================
+Test Enhanced Test Discovery
+===============================
+on god
 
 testz.test_start("Enhanced test discovery")
 enhanced_testz.discover_tests_in_directory("tests", "test_*")
@@ -40,9 +46,11 @@ enhanced_testz.filter_tests_by_tag("performance")
 enhanced_testz.run_discovered_tests()
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Enhanced Reporting
-fr fr ===============================
+no cap
+===============================
+Test Enhanced Reporting
+===============================
+on god
 
 testz.test_start("Enhanced test reporting")
 enhanced_testz.generate_test_report("json")
@@ -51,18 +59,22 @@ enhanced_testz.generate_test_report("html")
 enhanced_testz.generate_test_report("text")
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Enhanced Execution Control
-fr fr ===============================
+no cap
+===============================
+Test Enhanced Execution Control
+===============================
+on god
 
 testz.test_start("Enhanced execution control")
 enhanced_testz.run_test_with_timeout("timeout_test", 500)
 enhanced_testz.run_test_with_retry("retry_test", 3)
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Enhanced Test Utilities
-fr fr ===============================
+no cap
+===============================
+Test Enhanced Test Utilities
+===============================
+on god
 
 testz.test_start("Enhanced test utilities")
 enhanced_testz.create_test_fixture("test_data", "sample_data")
@@ -71,9 +83,11 @@ enhanced_testz.test_group_end("Sample Group")
 enhanced_testz.cleanup_test_fixture("test_data")
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Enhanced Assertion Library
-fr fr ===============================
+no cap
+===============================
+Test Enhanced Assertion Library
+===============================
+on god
 
 testz.test_start("Enhanced assertion library")
 enhanced_testz.assert_approximately_equal(100, 102, 5)
@@ -82,25 +96,31 @@ enhanced_testz.assert_matches_pattern("hello world", "world")
 enhanced_testz.assert_between(50, 0, 100)
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Build System Integration
-fr fr ===============================
+no cap
+===============================
+Test Build System Integration
+===============================
+on god
 
 testz.test_start("Build system integration")
 enhanced_testz.integrate_with_build_system("cargo build")
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Continuous Integration
-fr fr ===============================
+no cap
+===============================
+Test Continuous Integration
+===============================
+on god
 
 testz.test_start("Continuous integration")
 enhanced_testz.run_continuous_integration_suite()
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Advanced Features
-fr fr ===============================
+no cap
+===============================
+Test Advanced Features
+===============================
+on god
 
 testz.test_start("Advanced framework features")
 fr fr Test the original testz features still work
@@ -133,9 +153,11 @@ testz.benchmark_end()
 
 testz.test_end()
 
-fr fr ===============================
-fr fr Final Summary
-fr fr ===============================
+no cap
+===============================
+Final Summary
+===============================
+on god
 
 testz.after_all_tests()
 

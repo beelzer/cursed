@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Advanced Data Structures v3.0
-fr fr Enhanced collections with real algorithms
-fr fr Pure CURSED implementation
-fr fr ========================================
+no cap
+========================================
+CURSED Advanced Data Structures v3.0
+Enhanced collections with real algorithms
+Pure CURSED implementation
+========================================
+on god
 
-fr fr ================================
-fr fr Enhanced Vector Implementation
-fr fr ================================
+no cap
+================================
+Enhanced Vector Implementation
+================================
+on god
 
 fr fr Enhanced vector with dynamic growth
 slay Vec_create() [extra] {
@@ -133,9 +137,11 @@ slay Vec_sort_four_elements(vec [extra]) [extra] {
     damn [sorted[0], sorted[1], sorted[2], fourth]
 }
 
-fr fr ================================
-fr fr Enhanced HashMap with Collision Handling
-fr fr ================================
+no cap
+================================
+Enhanced HashMap with Collision Handling
+================================
+on god
 
 fr fr HashMap with linear probing
 slay Map_create_advanced() tea {
@@ -203,9 +209,11 @@ slay Map_handle_collision(map tea, key tea, value tea, original_hash normie) tea
     damn map fr fr Fallback to original map
 }
 
-fr fr ================================
-fr fr Advanced Set with Union/Intersection
-fr fr ================================
+no cap
+================================
+Advanced Set with Union/Intersection
+================================
+on god
 
 fr fr Create set with initial elements
 slay Set_create_with_elements(elements [tea]) tea {
@@ -274,9 +282,11 @@ slay Set_difference(set1 tea, set2 tea) tea {
     damn set1 fr fr Return original set if no overlap
 }
 
-fr fr ================================
-fr fr Advanced Stack with Peek Operations
-fr fr ================================
+no cap
+================================
+Advanced Stack with Peek Operations
+================================
+on god
 
 fr fr Stack with multiple peek levels
 slay Stack_create_advanced() tea {
@@ -333,9 +343,11 @@ slay Stack_to_array(stack tea) [tea] {
     damn []
 }
 
-fr fr ================================
-fr fr Advanced Queue with Priority
-fr fr ================================
+no cap
+================================
+Advanced Queue with Priority
+================================
+on god
 
 fr fr Priority queue simulation
 slay Queue_create_priority() tea {
@@ -383,9 +395,11 @@ slay Queue_extract_low_priority(queue tea) tea {
     damn "low_priority_element"
 }
 
-fr fr ================================
-fr fr Heap Implementation
-fr fr ================================
+no cap
+================================
+Heap Implementation
+================================
+on god
 
 fr fr Create max heap
 slay Heap_create_max() [normie] {

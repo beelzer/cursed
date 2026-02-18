@@ -3,9 +3,11 @@ fr fr Pure CURSED implementation with comprehensive functionality
 yeet "testz"
 yeet "error_core"
 
-fr fr ================================
-fr fr Generic Array Operations  
-fr fr ================================
+no cap
+================================
+Generic Array Operations  
+================================
+on god
 
 slay array_map<T, U>(arr T[value], mapper_fn slay(T) U) U[value]{
     sus result U[value] = []
@@ -91,9 +93,11 @@ slay array_sort_integers(arr normie[value]) normie[value]{
     damn result
 }
 
-fr fr ================================
-fr fr Enhanced HashMap Implementation
-fr fr ================================
+no cap
+================================
+Enhanced HashMap Implementation
+================================
+on god
 
 squad HashMap<K, V> {
     spill buckets HashEntry[value][value]<K, V>
@@ -193,9 +197,11 @@ slay HashMap_resize<K, V>(old_map HashMap<K, V>) HashMap<K, V> {
     damn new_map
 }
 
-fr fr ================================
-fr fr Thread-Safe Collections
-fr fr ================================
+no cap
+================================
+Thread-Safe Collections
+================================
+on god
 
 squad SafeArray<T> {
     spill data T[value]
@@ -236,9 +242,11 @@ slay SafeArray_length<T>(safe_arr SafeArray<T>) normie {
     damn len(safe_arr.data)
 }
 
-fr fr ================================
-fr fr Advanced Tree Structures
-fr fr ================================
+no cap
+================================
+Advanced Tree Structures
+================================
+on god
 
 squad BinaryTree<T> {
     spill value T
@@ -292,9 +300,11 @@ slay BinaryTree_inorder<T>(root *BinaryTree<T>, visit_fn slay(T)) {
     }
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay HashMap_compute_hash<K>(key K) normie {
     fr fr Generic hash function - would be specialized per type
@@ -319,9 +329,11 @@ slay string_char_code_at(s tea, index normie) normie {
     damn 65 fr fr Placeholder - 'A'
 }
 
-fr fr ================================
-fr fr Error Handling Helpers
-fr fr ================================
+no cap
+================================
+Error Handling Helpers
+================================
+on god
 
 squad CollectionError {
     spill message tea

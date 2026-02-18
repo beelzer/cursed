@@ -1,9 +1,11 @@
-fr fr SSH Client Demo - Complete SSH functionality demonstration
-fr fr This example shows how to use the CURSED SSH client for:
-fr fr - Connecting to remote servers
-fr fr - Executing commands
-fr fr - Transferring files
-fr fr - Handling different authentication methods
+no cap
+SSH Client Demo - Complete SSH functionality demonstration
+This example shows how to use the CURSED SSH client for:
+- Connecting to remote servers
+- Executing commands
+- Transferring files
+- Handling different authentication methods
+on god
 
 yeet "stdlib::net::protocols::ssh"
 yeet "stdlib::io"

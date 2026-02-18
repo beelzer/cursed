@@ -1,7 +1,9 @@
-fr fr Sample CURSED application demonstrating build system integration
-fr fr
-fr fr This file shows how a CURSED application can be structured and built
-fr fr using the CURSED build system.
+no cap
+Sample CURSED application demonstrating build system integration
+
+This file shows how a CURSED application can be structured and built
+using the CURSED build system.
+on god
 
 vibe my_cursed_app;
 

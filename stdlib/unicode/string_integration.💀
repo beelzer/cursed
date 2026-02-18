@@ -1,13 +1,17 @@
-fr fr Unicode String Integration Module - Complete Implementation
-fr fr Pure CURSED Unicode operations with comprehensive string handling
-fr fr FFI-free implementation with full Unicode support
+no cap
+Unicode String Integration Module - Complete Implementation
+Pure CURSED Unicode operations with comprehensive string handling
+FFI-free implementation with full Unicode support
+on god
 
 yeet "testz"
 yeet "error_core"
 
-fr fr ================================
-fr fr Unicode String Data Structures
-fr fr ================================
+no cap
+================================
+Unicode String Data Structures
+================================
+on god
 
 collab UnicodeString {
     slay new(raw_bytes normie[value]) UnicodeString
@@ -54,9 +58,11 @@ collab UnicodeIterator {
     slay remaining() normie
 }
 
-fr fr ================================
-fr fr Unicode Character Classification
-fr fr ================================
+no cap
+================================
+Unicode Character Classification
+================================
+on god
 
 slay unicode_is_letter(codepoint normie) lit { fr fr Basic Latin letters
     lowkey (codepoint >= 0x41 && codepoint <= 0x5A) || (codepoint >= 0x61 && codepoint <= 0x7A) {
@@ -222,9 +228,11 @@ slay unicode_is_separator(codepoint normie) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr Case Conversion Functions
-fr fr ================================
+no cap
+================================
+Case Conversion Functions
+================================
+on god
 
 slay unicode_to_upper(codepoint normie) normie { fr fr Basic Latin lowercase to uppercase
     lowkey (codepoint >= 0x61 && codepoint <= 0x7A) {
@@ -272,9 +280,11 @@ slay unicode_to_title(codepoint normie) normie { fr fr For most characters, titl
     damn unicode_to_upper(codepoint)
 }
 
-fr fr ================================
-fr fr UTF-8 Encoding/Decoding
-fr fr ================================
+no cap
+================================
+UTF-8 Encoding/Decoding
+================================
+on god
 
 slay utf8_encode_codepoint(codepoint normie) normie[value]{
     sus result normie[value] = []
@@ -394,9 +404,11 @@ slay utf8_validate_sequence(bytes normie[value], offset normie, length normie) l
     damn based
 }
 
-fr fr ================================
-fr fr String Operations Implementation
-fr fr ================================
+no cap
+================================
+String Operations Implementation
+================================
+on god
 
 slay unicode_string_create(utf8_bytes normie[value]) (UnicodeString, yikes) {
     lowkey !utf8_validate_string(utf8_bytes) {
@@ -624,9 +636,11 @@ slay unicode_string_equals(str1 UnicodeString, str2 UnicodeString) lit {
     damn unicode_string_compare(str1, str2) == 0
 }
 
-fr fr ================================
-fr fr Helper Functions
-fr fr ================================
+no cap
+================================
+Helper Functions
+================================
+on god
 
 slay utf8_validate_string(bytes normie[value]) lit {
     sus offset normie = 0
@@ -710,9 +724,11 @@ slay unicode_string_byte_to_char_offset(str UnicodeString, byte_offset normie) n
     damn char_index
 }
 
-fr fr ================================
-fr fr Array Helper Functions
-fr fr ================================
+no cap
+================================
+Array Helper Functions
+================================
+on god
 
 slay make_byte_array(size normie) normie[value]{ fr fr Would be implemented by runtime
     sus arr normie[value] = []
@@ -754,9 +770,11 @@ slay min_int(a normie, b normie) normie {
     lowkey a < b { damn a } else { damn b }
 }
 
-fr fr ================================
-fr fr Unicode Properties
-fr fr ================================
+no cap
+================================
+Unicode Properties
+================================
+on god
 
 slay unicode_get_general_category(codepoint normie) tea {
     lowkey unicode_is_letter(codepoint) {

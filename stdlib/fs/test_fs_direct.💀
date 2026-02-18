@@ -3,9 +3,11 @@ fr fr Testing filesystem operations directly
 
 yeet "fs"
 
-fr fr ================================
-fr fr Test Basic File Operations
-fr fr ================================
+no cap
+================================
+Test Basic File Operations
+================================
+on god
 
 vibez.spill("Starting filesystem tests...")
 
@@ -44,9 +46,11 @@ vibez.spill("File exists after delete: " + tea(exists_after_delete))
 
 vibez.spill("Basic file operations test complete!")
 
-fr fr ================================
-fr fr Test Directory Operations
-fr fr ================================
+no cap
+================================
+Test Directory Operations
+================================
+on god
 
 vibez.spill("Testing directory operations...")
 
@@ -73,9 +77,11 @@ vibez.spill("Remove directory success: " + tea(remove_success))
 
 vibez.spill("Directory operations test complete!")
 
-fr fr ================================
-fr fr Test Path Utilities
-fr fr ================================
+no cap
+================================
+Test Path Utilities
+================================
+on god
 
 vibez.spill("Testing path utilities...")
 
@@ -97,9 +103,11 @@ vibez.spill("Basename: " + basename)
 
 vibez.spill("Path utilities test complete!")
 
-fr fr ================================
-fr fr Test Error Handling
-fr fr ================================
+no cap
+================================
+Test Error Handling
+================================
+on god
 
 vibez.spill("Testing error handling...")
 

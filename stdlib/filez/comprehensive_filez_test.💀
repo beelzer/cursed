@@ -1,6 +1,8 @@
-fr fr COMPREHENSIVE FILEZ ENHANCED RUNTIME INTEGRATION TEST SUITE
-fr fr Tests all advanced file I/O operations with proper error handling
-fr fr P0 critical - validates production-lowkey filesystem operations
+no cap
+COMPREHENSIVE FILEZ ENHANCED RUNTIME INTEGRATION TEST SUITE
+Tests all advanced file I/O operations with proper error handling
+P0 critical - validates production-lowkey filesystem operations
+on god
 
 yeet "filez_runtime_enhanced"
 yeet "testz"

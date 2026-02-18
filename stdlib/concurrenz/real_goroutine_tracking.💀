@@ -1,15 +1,19 @@
-fr fr Real Goroutine Tracking System - Production-Ready Goroutine Management
-fr fr Replaces simplified goroutine IDs with comprehensive tracking, profiling, and debugging
-fr fr Full thread-local storage, goroutine stacks, and performance monitoring
+no cap
+Real Goroutine Tracking System - Production-Ready Goroutine Management
+Replaces simplified goroutine IDs with comprehensive tracking, profiling, and debugging
+Full thread-local storage, goroutine stacks, and performance monitoring
+on god
 
 yeet "atomic_drip"
 yeet "memory"
 yeet "os_primitives"
 yeet "error_drip"
 
-fr fr =============================================================================
-fr fr GOROUTINE TRACKING STRUCTURES - Real Production Implementation
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE TRACKING STRUCTURES - Real Production Implementation
+=============================================================================
+on god
 
 fr fr Thread-Local Storage structure for goroutine context
 struct ThreadLocalStorage {
@@ -98,9 +102,11 @@ struct StackGuard {
     spill overflow_count normie         fr fr Number of overflow attempts
 }
 
-fr fr =============================================================================
-fr fr GLOBAL GOROUTINE REGISTRY - Centralized Tracking System
-fr fr =============================================================================
+no cap
+=============================================================================
+GLOBAL GOROUTINE REGISTRY - Centralized Tracking System
+=============================================================================
+on god
 
 fr fr Global registry instance
 sus global_goroutine_registry *GoroutineRegistry = 0
@@ -230,9 +236,11 @@ slay unregister_goroutine(goroutine_id thicc) lit {
     damn context != 0
 }
 
-fr fr =============================================================================
-fr fr THREAD-LOCAL GOROUTINE CONTEXT MANAGEMENT
-fr fr =============================================================================
+no cap
+=============================================================================
+THREAD-LOCAL GOROUTINE CONTEXT MANAGEMENT
+=============================================================================
+on god
 
 fr fr Set current goroutine context in thread-local storage
 slay set_current_goroutine(goroutine_id thicc, context *GoroutineExecutionContext) {
@@ -273,9 +281,11 @@ slay is_main_goroutine() lit {
     damn thread_local_goroutine_id == 0
 }
 
-fr fr =============================================================================
-fr fr COMPREHENSIVE GOROUTINE CONTEXT CREATION
-fr fr =============================================================================
+no cap
+=============================================================================
+COMPREHENSIVE GOROUTINE CONTEXT CREATION
+=============================================================================
+on god
 
 fr fr Create complete goroutine execution context
 slay create_goroutine_context_full(parent_id thicc, stack_size normie, priority normie, 
@@ -378,9 +388,11 @@ slay allocate_goroutine_stack_with_guards(context *GoroutineExecutionContext, st
     damn based
 }
 
-fr fr =============================================================================
-fr fr GOROUTINE STATE AND LIFECYCLE MANAGEMENT
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE STATE AND LIFECYCLE MANAGEMENT
+=============================================================================
+on god
 
 fr fr Goroutine state constants
 sus GOROUTINE_READY normie = 0          fr fr Ready to run
@@ -465,9 +477,11 @@ slay record_goroutine_yield(goroutine_id thicc) lit {
     damn cap
 }
 
-fr fr =============================================================================
-fr fr PERFORMANCE PROFILING AND MONITORING
-fr fr =============================================================================
+no cap
+=============================================================================
+PERFORMANCE PROFILING AND MONITORING
+=============================================================================
+on god
 
 fr fr Create profiling data for goroutine
 slay create_goroutine_profile_data() *GoroutineProfileData {
@@ -522,9 +536,11 @@ slay record_memory_allocation(goroutine_id thicc, bytes_allocated normie) {
     }
 }
 
-fr fr =============================================================================
-fr fr GOROUTINE DEBUGGING AND INTROSPECTION
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE DEBUGGING AND INTROSPECTION
+=============================================================================
+on god
 
 fr fr Get comprehensive goroutine information for debugging
 struct GoroutineDebugInfo {
@@ -619,9 +635,11 @@ slay print_goroutine_stack_trace(goroutine_id thicc) {
     memory.free(debug_info)
 }
 
-fr fr =============================================================================
-fr fr UTILITY FUNCTIONS AND HELPERS
-fr fr =============================================================================
+no cap
+=============================================================================
+UTILITY FUNCTIONS AND HELPERS
+=============================================================================
+on god
 
 fr fr Get goroutine context by ID
 slay get_goroutine_context(goroutine_id thicc) *GoroutineExecutionContext {

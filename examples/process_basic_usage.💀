@@ -1,7 +1,9 @@
-fr fr/ CURSED Process Management - Basic Usage Examples
-fr fr/ 
-fr fr/ This example shows practical, everyday usage of the process management APIs
-fr fr/ in the CURSED programming language.
+no cap
+/ CURSED Process Management - Basic Usage Examples
+/ 
+/ This example shows practical, everyday usage of the process management APIs
+/ in the CURSED programming language.
+on god
 
 yeet "stdlib::process"
 yeet "stdlib::io"

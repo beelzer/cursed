@@ -1,7 +1,9 @@
-fr fr CONFIGZ MODULE - Enhanced Production Configuration Management System
-fr fr Complete implementation with advanced parsing, validation, and processing
-fr fr Multi-format support (JSON, TOML, YAML, INI, ENV), hot reloading, validation
-fr fr Schema validation, environment integration, and secure configuration handling
+no cap
+CONFIGZ MODULE - Enhanced Production Configuration Management System
+Complete implementation with advanced parsing, validation, and processing
+Multi-format support (JSON, TOML, YAML, INI, ENV), hot reloading, validation
+Schema validation, environment integration, and secure configuration handling
+on god
 
 yeet "jsonz"
 yeet "stringz"
@@ -1170,9 +1172,11 @@ slay config_export_json(manager ConfigManager) tea {
     damn json_stringify(json_object)
 }
 
-fr fr ==========================================
-fr fr ENHANCED IMPLEMENTATION FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED IMPLEMENTATION FUNCTIONS
+==========================================
+on god
 
 slay enhanced_json_to_config_recursive(manager ConfigManager, json_value JsonValue, prefix tea, source_type tea) ConfigManager {
     fr fr Convert enhanced JSON value to configuration values with full type support
@@ -1382,15 +1386,19 @@ slay create_enhanced_config_value_from_env(env_value tea, source_type tea) Confi
 }
 
 slay decrypt_config_value_enhanced(config_value ConfigValue) ConfigValue {
-    fr fr Enhanced decryption with multiple cipher support
-    fr fr This would integrate with actual cryptographic libraries
-    fr fr For now, return the value unchanged (mock implementation)
+    no cap
+    Enhanced decryption with multiple cipher support
+    This would integrate with actual cryptographic libraries
+    For now, return the value unchanged (mock implementation)
+    on god
     damn config_value
 }
 
-fr fr ==========================================
-fr fr ENHANCED UTILITY FUNCTIONS
-fr fr ==========================================
+no cap
+==========================================
+ENHANCED UTILITY FUNCTIONS
+==========================================
+on god
 
 slay array_contains_enhanced(arr tea[value], target tea) lit {
     fr fr Enhanced array contains using optimized search

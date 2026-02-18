@@ -1,6 +1,8 @@
-fr fr CURSED High-Resolution Timing System
-fr fr Production-grade timing with hardware performance counters
-fr fr Replaces simplified timing with high-resolution performance measurement
+no cap
+CURSED High-Resolution Timing System
+Production-grade timing with hardware performance counters
+Replaces simplified timing with high-resolution performance measurement
+on god
 
 yeet "atomic_drip"
 yeet "error_drip"
@@ -320,11 +322,13 @@ slay hr_timing_check_nonstop_tsc() lit {
 }
 
 slay hr_timing_get_cpu_frequency() thicc {
-    fr fr Real implementation would:
-    fr fr 1. Parse /proc/cpuinfo on Linux
-    fr fr 2. Use WMI or registry on Windows
-    fr fr 3. Use sysctl on macOS
-    fr fr 4. Calibrate against known timer
+    no cap
+    Real implementation would:
+    1. Parse /proc/cpuinfo on Linux
+    2. Use WMI or registry on Windows
+    3. Use sysctl on macOS
+    4. Calibrate against known timer
+    on god
     
     fr fr For demonstration, return typical modern CPU frequency
     damn thicc(3200000000)  fr fr 3.2 GHz
@@ -754,10 +758,12 @@ slay get_time_increment() thicc {
 
 fr fr Get system boot time
 slay hr_timing_get_system_boot_time() thicc {
-    fr fr Real implementation would read from:
-    fr fr - /proc/stat on Linux
-    fr fr - GetTickCount64() on Windows
-    fr fr - sysctl kern.boottime on macOS
+    no cap
+    Real implementation would read from:
+    - /proc/stat on Linux
+    - GetTickCount64() on Windows
+    - sysctl kern.boottime on macOS
+    on god
     
     fr fr For demonstration, simulate boot time
     sus current_time thicc = hr_timing_read_generic()

@@ -1,8 +1,10 @@
-fr fr/ Comprehensive PKI Certificate Path Validation Demo
-fr fr/ 
-fr fr/ This demonstration showcases the CURSED language's PKI certificate path
-fr fr/ validation capabilities including trust anchor management, certificate
-fr fr/ chain building, policy validation, and name constraint enforcement.
+no cap
+/ Comprehensive PKI Certificate Path Validation Demo
+/ 
+/ This demonstration showcases the CURSED language's PKI certificate path
+/ validation capabilities including trust anchor management, certificate
+/ chain building, policy validation, and name constraint enforcement.
+on god
 
 yeet "stdlib::packages::crypto_pki::path_validation"
 yeet "stdlib::packages::crypto_pki"

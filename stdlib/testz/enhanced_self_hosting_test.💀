@@ -1,9 +1,11 @@
 yeet "testz"
 
-fr fr ===============================
-fr fr Enhanced Self-Hosting Validation Test
-fr fr Demonstrates testz v4.0 capabilities
-fr fr ===============================
+no cap
+===============================
+Enhanced Self-Hosting Validation Test
+Demonstrates testz v4.0 capabilities
+===============================
+on god
 
 fr fr Configure testz for comprehensive testing
 set_verbose_mode(based)
@@ -13,9 +15,11 @@ set_memory_tracking(based)
 vibez.spill("🚀 Starting Enhanced Self-Hosting Test Suite")
 vibez.spill("===============================================")
 
-fr fr ===============================
-fr fr Test Core Enhanced Functions
-fr fr ===============================
+no cap
+===============================
+Test Core Enhanced Functions
+===============================
+on god
 
 test_start("Enhanced assertion functions")
 assert_ne_int(10, 20)
@@ -24,9 +28,11 @@ assert_lt_int(25, 50)
 assert_contains("hello world", "world")
 test_end()
 
-fr fr ===============================
-fr fr Test Both-Mode Functionality
-fr fr ===============================
+no cap
+===============================
+Test Both-Mode Functionality
+===============================
+on god
 
 test_start("Both-mode testing validation")
 sus test_code tea = "vibez.spill(\"Both modes test\")"
@@ -45,9 +51,11 @@ sus consistency_result lit = validate_both_modes_consistency()
 assert_true(consistency_result)
 test_end()
 
-fr fr ===============================
-fr fr Test Performance Benchmarking
-fr fr ===============================
+no cap
+===============================
+Test Performance Benchmarking
+===============================
+on god
 
 test_start("Performance benchmarking")
 benchmark_start("String concatenation test")
@@ -64,9 +72,11 @@ fr fr Benchmark results are informational
 assert_true(based) fr fr Always pass for benchmark info
 test_end()
 
-fr fr ===============================
-fr fr Test Memory Validation
-fr fr ===============================
+no cap
+===============================
+Test Memory Validation
+===============================
+on god
 
 test_start("Memory usage validation")
 track_memory_allocation("test allocation")
@@ -82,9 +92,11 @@ sus leak_result lit = validate_no_memory_leaks("leak detection test")
 assert_true(leak_result)
 test_end()
 
-fr fr ===============================
-fr fr Test Compilation Validation
-fr fr ===============================
+no cap
+===============================
+Test Compilation Validation
+===============================
+on god
 
 test_start("Compilation success validation")
 sus compile_success lit = validate_compilation_success("test_program.💀")
@@ -96,9 +108,11 @@ sus compile_failure lit = validate_compilation_failure("invalid_program.💀", "
 assert_true(compile_failure)
 test_end()
 
-fr fr ===============================
-fr fr Test Module Dependency Validation
-fr fr ===============================
+no cap
+===============================
+Test Module Dependency Validation
+===============================
+on god
 
 test_start("Module import validation")
 sus expected_imports tea[value] = ["testz"]
@@ -111,9 +125,11 @@ sus chain_result lit = validate_dependency_chain("stdlib_root")
 assert_true(chain_result)
 test_end()
 
-fr fr ===============================
-fr fr Test Self-Hosting Specific Tests
-fr fr ===============================
+no cap
+===============================
+Test Self-Hosting Specific Tests
+===============================
+on god
 
 test_start("Self-hosting compilation test")
 sus self_hosting_code tea = "vibez.spill(\"Self-hosting works!\")"
@@ -136,9 +152,11 @@ bestie i := 0; i < 4; i++ {
 }
 test_end()
 
-fr fr ===============================
-fr fr Test Advanced Self-Hosting Features
-fr fr ===============================
+no cap
+===============================
+Test Advanced Self-Hosting Features
+===============================
+on god
 
 test_start("Advanced self-hosting: Type system")
 sus type_code tea = "sus x normie = 42; sus y drip = 3.14; vibez.spill(x + y)"
@@ -158,9 +176,11 @@ sus pattern_result lit = test_both_modes("Pattern matching", pattern_code)
 assert_true(pattern_result)
 test_end()
 
-fr fr ===============================
-fr fr Test Performance Regression Detection
-fr fr ===============================
+no cap
+===============================
+Test Performance Regression Detection
+===============================
+on god
 
 test_start("Performance regression detection")
 benchmark_start("Performance baseline test")
@@ -173,9 +193,11 @@ fr fr Performance should be reasonable (less than 1000ms for 1000 iterations)
 assert_lt_int(baseline_time, 1000)
 test_end()
 
-fr fr ===============================
-fr fr Final Self-Hosting Validation
-fr fr ===============================
+no cap
+===============================
+Final Self-Hosting Validation
+===============================
+on god
 
 test_start("Complete self-hosting validation")
 vibez.spill("🏁 Running final self-hosting validation...")
@@ -192,9 +214,11 @@ assert_gt_int(get_success_rate(), 75) fr fr Success rate > 75%
 vibez.spill("✅ Self-hosting validation complete!")
 test_end()
 
-fr fr ===============================
-fr fr Print Enhanced Test Summary
-fr fr ===============================
+no cap
+===============================
+Print Enhanced Test Summary
+===============================
+on god
 
 print_test_summary()
 

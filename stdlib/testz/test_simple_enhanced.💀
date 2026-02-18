@@ -1,13 +1,17 @@
-fr fr ================================
-fr fr CURSED Testing Framework - Simple Enhanced Tests
-fr fr Comprehensive test suite using the current testz module
-fr fr ================================
+no cap
+================================
+CURSED Testing Framework - Simple Enhanced Tests
+Comprehensive test suite using the current testz module
+================================
+on god
 
 yeet "testz"
 
-fr fr ================================
-fr fr Test Suite: Basic Assertions
-fr fr ================================
+no cap
+================================
+Test Suite: Basic Assertions
+================================
+on god
 
 slay test_integer_assertions() {
     test_start("test_integer_assertions")
@@ -68,9 +72,11 @@ slay test_boolean_assertions() {
     assert_eq_bool(2 == 3, cap)
 }
 
-fr fr ================================
-fr fr Test Suite: Advanced Features
-fr fr ================================
+no cap
+================================
+Test Suite: Advanced Features
+================================
+on god
 
 slay test_variable_declarations() {
     test_start("test_variable_declarations")
@@ -150,9 +156,11 @@ slay test_logical_operations() {
     assert_true(!cap)
 }
 
-fr fr ================================
-fr fr Test Suite: Edge Cases
-fr fr ================================
+no cap
+================================
+Test Suite: Edge Cases
+================================
+on god
 
 slay test_edge_cases() {
     test_start("test_edge_cases")
@@ -197,9 +205,11 @@ slay test_complex_expressions() {
     assert_false((10 - 2) < 5)
 }
 
-fr fr ================================
-fr fr Test Suite: Function Testing
-fr fr ================================
+no cap
+================================
+Test Suite: Function Testing
+================================
+on god
 
 slay test_function_calls() {
     test_start("test_function_calls")
@@ -217,9 +227,11 @@ slay test_function_calls() {
     assert_eq_string(tea(cap), "cap")
 }
 
-fr fr ================================
-fr fr Test Suite: State Management
-fr fr ================================
+no cap
+================================
+Test Suite: State Management
+================================
+on god
 
 slay test_state_management() {
     test_start("test_state_management")
@@ -237,9 +249,11 @@ slay test_state_management() {
     assert_true(test_count > initial_count)
 }
 
-fr fr ================================
-fr fr Test Suite: Comprehensive Validation
-fr fr ================================
+no cap
+================================
+Test Suite: Comprehensive Validation
+================================
+on god
 
 slay test_comprehensive_validation() {
     test_start("test_comprehensive_validation")
@@ -271,9 +285,11 @@ slay test_comprehensive_validation() {
     assert_true(flag || opposite)
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("🧪 Starting CURSED Testing Framework - Simple Enhanced Tests...")

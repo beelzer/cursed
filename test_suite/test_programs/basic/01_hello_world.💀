@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Basic Hello World Test
-fr fr Tests: Simple vibez.spill() function call
-fr fr Expected: Identical output in both modes
+no cap
+Basic Hello World Test
+Tests: Simple vibez.spill() function call
+Expected: Identical output in both modes
+on god
 
 slay main_character() {
     vibez.spill("Hello, CURSED World!")

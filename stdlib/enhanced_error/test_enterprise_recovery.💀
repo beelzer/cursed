@@ -5,9 +5,11 @@ yeet "testz"
 yeet ".mod"
 yeet ".enterprise_recovery"
 
-fr fr ================================
-fr fr Test Correlation IDs and Trace Context
-fr fr ================================
+no cap
+================================
+Test Correlation IDs and Trace Context
+================================
+on god
 
 slay test_correlation_id_generation() {
     test_start("Correlation ID Generation")
@@ -51,9 +53,11 @@ slay test_correlation_id_generation() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Enterprise Circuit Breaker
-fr fr ================================
+no cap
+================================
+Test Enterprise Circuit Breaker
+================================
+on god
 
 slay test_circuit_breaker_states() {
     test_start("Circuit Breaker State Management")
@@ -149,9 +153,11 @@ slay test_circuit_breaker_metrics() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Enhanced Error Types
-fr fr ================================
+no cap
+================================
+Test Enhanced Error Types
+================================
+on god
 
 slay test_enhanced_error_creation() {
     test_start("Enhanced Error Creation and Metadata")
@@ -213,9 +219,11 @@ slay test_enhanced_error_creation() {
     test_end()
 }
 
-fr fr ================================  
-fr fr Test Error Aggregation
-fr fr ================================
+no cap
+================================  
+Test Error Aggregation
+================================
+on god
 
 slay test_error_aggregation() {
     test_start("Error Aggregation and Batch Processing")
@@ -300,9 +308,11 @@ slay test_error_aggregation() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Distributed Tracing  
-fr fr ================================
+no cap
+================================
+Test Distributed Tracing  
+================================
+on god
 
 slay test_distributed_tracing() {
     test_start("Distributed Tracing Integration")
@@ -364,9 +374,11 @@ slay test_distributed_tracing() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Complex Distributed Scenarios
-fr fr ================================
+no cap
+================================
+Test Complex Distributed Scenarios
+================================
+on god
 
 slay test_distributed_error_scenarios() {
     test_start("Complex Distributed Error Scenarios")
@@ -452,9 +464,11 @@ slay test_distributed_error_scenarios() {
     test_end()
 }
 
-fr fr ================================
-fr fr Test Integration with Circuit Breaker
-fr fr ================================
+no cap
+================================
+Test Integration with Circuit Breaker
+================================
+on god
 
 slay test_circuit_breaker_integration() {
     test_start("Circuit Breaker Integration with Error Recovery")
@@ -505,9 +519,11 @@ slay test_circuit_breaker_integration() {
     test_end()
 }
 
-fr fr ================================
-fr fr Integration Test Runner
-fr fr ================================
+no cap
+================================
+Integration Test Runner
+================================
+on god
 
 slay run_comprehensive_enterprise_recovery_tests() {
     test_start("Comprehensive Enterprise Error Recovery Tests")
@@ -527,9 +543,11 @@ slay run_comprehensive_enterprise_recovery_tests() {
     test_end()
 }
 
-fr fr ================================
-fr fr Utility Functions for Testing
-fr fr ================================
+no cap
+================================
+Utility Functions for Testing
+================================
+on god
 
 collab Result<T, E> {
     slay is_ok() lit

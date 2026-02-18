@@ -1,10 +1,12 @@
 yeet "testz"
 
-fr fr ================================
-fr fr CURSED String Library v3.0  
-fr fr Working String Manipulation
-fr fr Pure CURSED Implementation
-fr fr ================================
+no cap
+================================
+CURSED String Library v3.0  
+Working String Manipulation
+Pure CURSED Implementation
+================================
+on god
 
 fr fr Helper function to convert character to integer  
 slay char_to_int(c sip) normie {
@@ -282,14 +284,18 @@ slay string_pad_right(s tea, width normie, pad_char tea) tea {
     damn s
 }
 
-fr fr ================================
-fr fr Runtime Helper Functions
-fr fr ================================
+no cap
+================================
+Runtime Helper Functions
+================================
+on god
 
 slay runtime_char_to_ascii(c sip) normie {
-    fr fr Runtime intrinsic to convert character to ASCII
-    fr fr This would be implemented at the runtime level
-    fr fr For now, return common ASCII values for basic characters
+    no cap
+    Runtime intrinsic to convert character to ASCII
+    This would be implemented at the runtime level
+    For now, return common ASCII values for basic characters
+    on god
     vibes c == 'a' { damn 97 }
     vibes c == 'b' { damn 98 }
     vibes c == 'c' { damn 99 }
@@ -427,17 +433,21 @@ slay runtime_ascii_to_char(ascii normie) sip {
 }
 
 slay runtime_string_char_at(s tea, index normie) sip {
-    fr fr Runtime intrinsic to get character at index
-    fr fr This would be implemented at the runtime level
-    fr fr For testing, simulate some string access
-    fr fr In real implementation, this would access the string buffer directly
+    no cap
+    Runtime intrinsic to get character at index
+    This would be implemented at the runtime level
+    For testing, simulate some string access
+    In real implementation, this would access the string buffer directly
+    on god
     damn s[index]
 }
 
 slay runtime_char_to_string(c sip) tea {
-    fr fr Runtime intrinsic to convert character to string
-    fr fr This would be implemented efficiently at the runtime level
-    fr fr For now, use string concatenation
+    no cap
+    Runtime intrinsic to convert character to string
+    This would be implemented efficiently at the runtime level
+    For now, use string concatenation
+    on god
     damn "" + c
 }
 

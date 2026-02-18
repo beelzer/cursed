@@ -1,15 +1,19 @@
-fr fr Comprehensive Test Suite for Goroutine Runtime Integration
-fr fr Tests all goroutine functionality including work-stealing scheduler
-fr fr P0 Critical testing for CURSED concurrency system
+no cap
+Comprehensive Test Suite for Goroutine Runtime Integration
+Tests all goroutine functionality including work-stealing scheduler
+P0 Critical testing for CURSED concurrency system
+on god
 
 yeet "concurrenz.goroutine_runtime"
 yeet "testz"
 yeet "vibez"
 yeet "mathz"
 
-fr fr =============================================================================
-fr fr BASIC GOROUTINE FUNCTIONALITY TESTS  
-fr fr =============================================================================
+no cap
+=============================================================================
+BASIC GOROUTINE FUNCTIONALITY TESTS  
+=============================================================================
+on god
 
 fr fr Test basic goroutine spawning and execution
 slay test_basic_goroutine_spawn() lit {
@@ -88,9 +92,11 @@ slay test_multiple_goroutines() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr WORK-STEALING QUEUE TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+WORK-STEALING QUEUE TESTS
+=============================================================================
+on god
 
 fr fr Test work queue basic operations
 slay test_work_queue_operations() lit {
@@ -179,9 +185,11 @@ slay test_work_stealing() lit {
     }
 }
 
-fr fr =============================================================================
-fr fr GOROUTINE STACK MANAGEMENT TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE STACK MANAGEMENT TESTS
+=============================================================================
+on god
 
 fr fr Test goroutine stack allocation and deallocation
 slay test_goroutine_stack_management() lit {
@@ -252,9 +260,11 @@ slay test_stack_overflow_detection() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr GOROUTINE CONTEXT MANAGEMENT TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE CONTEXT MANAGEMENT TESTS
+=============================================================================
+on god
 
 fr fr Test goroutine context creation and destruction
 slay test_goroutine_context_lifecycle() lit {
@@ -307,9 +317,11 @@ slay test_goroutine_context_lifecycle() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr SCHEDULER PERFORMANCE TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+SCHEDULER PERFORMANCE TESTS
+=============================================================================
+on god
 
 fr fr Test scheduler performance with many goroutines
 slay test_scheduler_performance() lit {
@@ -381,9 +393,11 @@ slay test_scheduler_performance() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr GOROUTINE MEMORY MANAGEMENT TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+GOROUTINE MEMORY MANAGEMENT TESTS
+=============================================================================
+on god
 
 fr fr Test goroutine-specific memory allocator
 slay test_goroutine_allocator() lit {
@@ -437,9 +451,11 @@ slay test_goroutine_allocator() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr INTEGRATION TESTS WITH CHANNELS
-fr fr =============================================================================
+no cap
+=============================================================================
+INTEGRATION TESTS WITH CHANNELS
+=============================================================================
+on god
 
 fr fr Test goroutines communicating via channels
 slay test_goroutine_channel_communication() lit {
@@ -516,9 +532,11 @@ slay test_goroutine_channel_communication() lit {
     damn based
 }
 
-fr fr =============================================================================
-fr fr STRESS TESTS
-fr fr =============================================================================
+no cap
+=============================================================================
+STRESS TESTS
+=============================================================================
+on god
 
 fr fr Stress test with high goroutine count
 slay test_high_goroutine_count() lit {
@@ -617,9 +635,11 @@ slay test_high_goroutine_count() lit {
     }
 }
 
-fr fr =============================================================================
-fr fr MAIN TEST RUNNER
-fr fr =============================================================================
+no cap
+=============================================================================
+MAIN TEST RUNNER
+=============================================================================
+on god
 
 fr fr Run all goroutine runtime tests
 slay run_all_goroutine_tests() lit {

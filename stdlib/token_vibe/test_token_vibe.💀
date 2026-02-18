@@ -4,9 +4,11 @@ yeet "token_vibe"
 fr fr Comprehensive test suite for token_vibe module
 fr fr Essential for validating lexical analysis in self-hosting compiler
 
-fr fr =============================================================================
-fr fr Token Type and Constant Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Token Type and Constant Tests
+=============================================================================
+on god
 
 slay test_token_constants() {
     test_start("Token type constants") fr fr Core token types
@@ -62,9 +64,11 @@ slay test_token_string_conversion() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Position Tracking Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Position Tracking Tests
+=============================================================================
+on god
 
 slay test_position_functions() {
     test_start("Position tracking functions") fr fr Test position creation
@@ -95,9 +99,11 @@ slay test_position_edge_cases() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Token Info Structure Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Token Info Structure Tests
+=============================================================================
+on god
 
 slay test_token_info_creation() {
     test_start("Token info creation and access")
@@ -142,9 +148,11 @@ slay test_token_classification() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Character Classification Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Character Classification Tests
+=============================================================================
+on god
 
 slay test_character_classification() {
     test_start("Character classification functions") fr fr Test letter classification
@@ -179,9 +187,11 @@ slay test_character_classification() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Scanner State Machine Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Scanner State Machine Tests
+=============================================================================
+on god
 
 slay test_scanner_creation() {
     test_start("Scanner creation and state")
@@ -219,9 +229,11 @@ slay test_scanner_advancement() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Keyword Recognition Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Keyword Recognition Tests
+=============================================================================
+on god
 
 slay test_keyword_recognition() {
     test_start("Keyword recognition") fr fr Test CURSED-specific keywords
@@ -253,9 +265,11 @@ slay test_keyword_recognition() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Tokenization Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Tokenization Tests
+=============================================================================
+on god
 
 slay test_basic_tokenization() {
     test_start("Basic tokenization") fr fr Test simple expression
@@ -323,9 +337,11 @@ slay test_complex_tokenization() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Token Stream Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Token Stream Tests
+=============================================================================
+on god
 
 slay test_token_stream() {
     test_start("Token stream functionality")
@@ -344,9 +360,11 @@ slay test_token_stream() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Error Recovery Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Error Recovery Tests
+=============================================================================
+on god
 
 slay test_error_recovery() {
     test_start("Error recovery and reporting")
@@ -378,9 +396,11 @@ slay test_invalid_tokens() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Utility Function Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Utility Function Tests
+=============================================================================
+on god
 
 slay test_utility_functions() {
     test_start("Utility functions") fr fr Test string hashing
@@ -398,9 +418,11 @@ slay test_utility_functions() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Module Status Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Module Status Tests
+=============================================================================
+on god
 
 slay test_module_status() {
     test_start("Module status and information")
@@ -427,9 +449,11 @@ slay test_tokenizer_validation() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Operator and Delimiter Classification Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Operator and Delimiter Classification Tests
+=============================================================================
+on god
 
 slay test_operator_classification() {
     test_start("Operator classification")
@@ -467,9 +491,11 @@ slay test_delimiter_classification() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Performance and Stress Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Performance and Stress Tests
+=============================================================================
+on god
 
 slay test_large_input_tokenization() {
     test_start("Large input tokenization") fr fr Create a reasonably large input
@@ -493,9 +519,11 @@ slay test_edge_case_inputs() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Integration Tests
-fr fr =============================================================================
+no cap
+=============================================================================
+Integration Tests
+=============================================================================
+on god
 
 slay test_tokenizer_integration() {
     test_start("Tokenizer integration with CURSED syntax") fr fr Test complete CURSED program tokenization
@@ -511,9 +539,11 @@ slay test_tokenizer_integration() {
     print_test_summary()
 }
 
-fr fr =============================================================================
-fr fr Main Test Runner
-fr fr =============================================================================
+no cap
+=============================================================================
+Main Test Runner
+=============================================================================
+on god
 
 vibez.spill("Running comprehensive token_vibe module tests...")
 vibez.spill("===================================================")

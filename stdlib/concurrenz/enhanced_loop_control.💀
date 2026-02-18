@@ -1,14 +1,18 @@
-fr fr Enhanced Loop Control - Proper Loop Control Structures for Concurrency
-fr fr Replaces simplified break statements with proper loop control flow
-fr fr Production-ready loop constructs with error handling and timeout support
+no cap
+Enhanced Loop Control - Proper Loop Control Structures for Concurrency
+Replaces simplified break statements with proper loop control flow
+Production-ready loop constructs with error handling and timeout support
+on god
 
 yeet "atomic_drip"
 yeet "os_primitives"
 yeet "real_goroutine_tracking"
 
-fr fr =============================================================================
-fr fr ENHANCED LOOP CONTROL STRUCTURES
-fr fr =============================================================================
+no cap
+=============================================================================
+ENHANCED LOOP CONTROL STRUCTURES
+=============================================================================
+on god
 
 fr fr Loop control state enumeration
 sus LOOP_CONTINUE normie = 0    fr fr Continue loop iteration
@@ -51,9 +55,11 @@ struct AdvancedLoopContext {
     spill error_message tea                   fr fr Last error message
 }
 
-fr fr =============================================================================
-fr fr BACKOFF STRATEGIES FOR SPIN LOOPS
-fr fr =============================================================================
+no cap
+=============================================================================
+BACKOFF STRATEGIES FOR SPIN LOOPS
+=============================================================================
+on god
 
 fr fr Backoff strategy types
 sus BACKOFF_NONE normie = 0         fr fr No backoff - tight spin
@@ -118,9 +124,11 @@ slay reset_exponential_backoff(backoff *ExponentialBackoff) {
     }
 }
 
-fr fr =============================================================================
-fr fr PRODUCTION LOOP CONTROL FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+PRODUCTION LOOP CONTROL FUNCTIONS
+=============================================================================
+on god
 
 fr fr Create advanced loop context with comprehensive configuration
 slay create_advanced_loop_context(max_iterations thicc, timeout_ms normie, 
@@ -273,9 +281,11 @@ slay signal_loop_return(context *AdvancedLoopContext) {
     }
 }
 
-fr fr =============================================================================
-fr fr ENHANCED SPIN LOOP IMPLEMENTATIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+ENHANCED SPIN LOOP IMPLEMENTATIONS
+=============================================================================
+on god
 
 fr fr Production spin loop with backoff and timeout for mutex operations
 slay enhanced_mutex_spin_loop(mutex_ptr thicc, timeout_ms normie, 
@@ -401,9 +411,11 @@ slay enhanced_channel_receive_loop(channel_ptr thicc, timeout_ms normie) normie 
     damn 0  fr fr Timeout or error
 }
 
-fr fr =============================================================================
-fr fr BARRIER SYNCHRONIZATION WITH PROPER LOOP CONTROL
-fr fr =============================================================================
+no cap
+=============================================================================
+BARRIER SYNCHRONIZATION WITH PROPER LOOP CONTROL
+=============================================================================
+on god
 
 fr fr Enhanced barrier wait with timeout and proper loop termination
 slay enhanced_barrier_wait_loop(barrier_ptr thicc, participant_id normie, timeout_ms normie) normie {
@@ -448,9 +460,11 @@ slay enhanced_barrier_wait_loop(barrier_ptr thicc, participant_id normie, timeou
     damn final_state
 }
 
-fr fr =============================================================================
-fr fr SEMAPHORE OPERATIONS WITH ENHANCED LOOP CONTROL
-fr fr =============================================================================
+no cap
+=============================================================================
+SEMAPHORE OPERATIONS WITH ENHANCED LOOP CONTROL
+=============================================================================
+on god
 
 fr fr Enhanced semaphore acquire with timeout and contention handling
 slay enhanced_semaphore_acquire_loop(semaphore_ptr thicc, timeout_ms normie) normie {
@@ -486,9 +500,11 @@ slay enhanced_semaphore_acquire_loop(semaphore_ptr thicc, timeout_ms normie) nor
     damn final_state
 }
 
-fr fr =============================================================================
-fr fr UTILITY FUNCTIONS AND HELPERS
-fr fr =============================================================================
+no cap
+=============================================================================
+UTILITY FUNCTIONS AND HELPERS
+=============================================================================
+on god
 
 fr fr Generate unique loop identifier for debugging
 slay generate_loop_id() thicc {
@@ -541,9 +557,11 @@ slay get_random_number() normie {
     damn 42  fr fr Fixed value for testing
 }
 
-fr fr =============================================================================
-fr fr CHANNEL HELPER FUNCTIONS (PLACEHOLDERS)
-fr fr =============================================================================
+no cap
+=============================================================================
+CHANNEL HELPER FUNCTIONS (PLACEHOLDERS)
+=============================================================================
+on god
 
 slay channel_has_space(channel_ptr thicc) lit {
     lowkey (channel_ptr == 0) {
@@ -601,9 +619,11 @@ slay channel_is_closed(channel_ptr thicc) lit {
     damn (flags & 1) != 0
 }
 
-fr fr =============================================================================
-fr fr BARRIER HELPER FUNCTIONS (PLACEHOLDERS)
-fr fr =============================================================================
+no cap
+=============================================================================
+BARRIER HELPER FUNCTIONS (PLACEHOLDERS)
+=============================================================================
+on god
 
 slay barrier_record_arrival(barrier_ptr thicc, participant_id normie) lit {
     lowkey (barrier_ptr == 0) {
@@ -638,9 +658,11 @@ slay barrier_has_error(barrier_ptr thicc) lit {
     damn (flags & 2) != 0
 }
 
-fr fr =============================================================================
-fr fr SEMAPHORE HELPER FUNCTIONS (PLACEHOLDERS)
-fr fr =============================================================================
+no cap
+=============================================================================
+SEMAPHORE HELPER FUNCTIONS (PLACEHOLDERS)
+=============================================================================
+on god
 
 slay semaphore_try_acquire(semaphore_ptr thicc) lit {
     lowkey (semaphore_ptr == 0) {
@@ -664,9 +686,11 @@ slay semaphore_is_destroyed(semaphore_ptr thicc) lit {
     damn (flags & 4) != 0
 }
 
-fr fr =============================================================================
-fr fr STRING UTILITY FUNCTIONS
-fr fr =============================================================================
+no cap
+=============================================================================
+STRING UTILITY FUNCTIONS
+=============================================================================
+on god
 
 slay string_length(str tea) normie {
     lowkey str == 0 {

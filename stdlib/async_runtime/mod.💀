@@ -479,9 +479,11 @@ slay get_future_result() tea {
     damn future_result
 }
 
-fr fr =============================================================================
-fr fr REAL ASYNC TASK SCHEDULING - Production-ready implementation
-fr fr =============================================================================
+no cap
+=============================================================================
+REAL ASYNC TASK SCHEDULING - Production-ready implementation
+=============================================================================
+on god
 
 fr fr Queue async task for execution
 slay queue_async_task(task_id normie, function_name tea) lit {
@@ -552,9 +554,11 @@ slay async_await(function_name tea) normie {
     damn wait_for_async_task(task_id)
 }
 
-fr fr =============================================================================
-fr fr HELPER FUNCTIONS - String parsing and utility functions
-fr fr =============================================================================
+no cap
+=============================================================================
+HELPER FUNCTIONS - String parsing and utility functions
+=============================================================================
+on god
 
 fr fr Find character position in string
 slay find_char(text tea, char tea) normie {
@@ -613,9 +617,11 @@ slay run_custom_async() normie {
     damn async_await("custom_async_task")
 }
 
-fr fr =============================================================================
-fr fr ASYNC SYSTEM INTEGRATION - External function declarations
-fr fr =============================================================================
+no cap
+=============================================================================
+ASYNC SYSTEM INTEGRATION - External function declarations
+=============================================================================
+on god
 
 fr fr Channel operations from concurrency system
 slay create_channel(capacity normie) dm<tea> {

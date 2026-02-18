@@ -1,13 +1,17 @@
 yeet "testz"
 
-fr fr ==========================================
-fr fr CURSED JSON Module - Pure CURSED Implementation  
-fr fr RFC 7159 Compliant JSON Processing
-fr fr ==========================================
+no cap
+==========================================
+CURSED JSON Module - Pure CURSED Implementation  
+RFC 7159 Compliant JSON Processing
+==========================================
+on god
 
-fr fr ==========================================
-fr fr Core JSON Parsing Functions (RFC 7159)
-fr fr ==========================================
+no cap
+==========================================
+Core JSON Parsing Functions (RFC 7159)
+==========================================
+on god
 
 slay parse_json(json_string tea) tea { fr fr Main RFC 7159 compliant JSON parser
     sus trimmed tea = string_trim(json_string)
@@ -97,9 +101,11 @@ slay parse_simple_object(json_string tea) tea { fr fr Simple object parser for b
     damn ""
 }
 
-fr fr ==========================================
-fr fr JSON Generation Functions (RFC 7159)
-fr fr ==========================================
+no cap
+==========================================
+JSON Generation Functions (RFC 7159)
+==========================================
+on god
 
 slay to_json(value tea) tea { fr fr Convert CURSED value to JSON string
     damn stringify_value(value)
@@ -126,9 +132,11 @@ slay stringify_value(value tea) tea { fr fr Enhanced JSON stringification with t
     damn "\"" + escape_json_string(value) + "\""
 }
 
-fr fr ==========================================
-fr fr Type Conversion Functions
-fr fr ==========================================
+no cap
+==========================================
+Type Conversion Functions
+==========================================
+on god
 
 slay object_to_map(json_object tea) tea { fr fr Convert JSON object to map-like representation
     sus trimmed tea = string_trim(json_object)
@@ -148,9 +156,11 @@ slay array_to_slice(json_array tea) tea { fr fr Convert JSON array to slice-like
     damn "SLICE:" + trimmed
 }
 
-fr fr ==========================================
-fr fr Validation Functions (RFC 7159)
-fr fr ==========================================
+no cap
+==========================================
+Validation Functions (RFC 7159)
+==========================================
+on god
 
 slay is_valid_json(json_string tea) lit { fr fr RFC 7159 compliant JSON validation
     sus trimmed tea = string_trim(json_string)
@@ -346,9 +356,11 @@ slay unescape_json_string(input tea) tea { fr fr Unescape JSON string
     damn result
 }
 
-fr fr ==========================================
-fr fr Utility Functions
-fr fr ==========================================
+no cap
+==========================================
+Utility Functions
+==========================================
+on god
 
 slay is_numeric(value tea) lit { fr fr Check if string represents a number
     bestie string_length(value) == 0 {
@@ -431,9 +443,11 @@ slay string_ends_with(input tea, suffix tea) lit { fr fr Check if string ends wi
     damn suffix_part == suffix
 }
 
-fr fr ==========================================
-fr fr Parser Helper Functions
-fr fr ==========================================
+no cap
+==========================================
+Parser Helper Functions
+==========================================
+on god
 
 slay split_object_pairs(content tea) tea { fr fr Split object content into key-value pairs (simplified)
     bestie string_length(content) == 0 {
@@ -470,9 +484,11 @@ slay string_contains(haystack tea, needle tea) lit { fr fr Check if string conta
     damn cap
 }
 
-fr fr ==========================================
-fr fr High-Level API Functions (RFC 7159 Compliant)
-fr fr ==========================================
+no cap
+==========================================
+High-Level API Functions (RFC 7159 Compliant)
+==========================================
+on god
 
 slay parse(json_string tea) tea { fr fr Main parse function (RFC 7159 compliant)
     damn parse_json(json_string)

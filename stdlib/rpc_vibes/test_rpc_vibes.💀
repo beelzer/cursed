@@ -1,8 +1,10 @@
 fr fr CURSED RPC Vibes Module - Working Tests
 
-fr fr ================================
-fr fr RPC Functions Implementation
-fr fr ================================
+no cap
+================================
+RPC Functions Implementation
+================================
+on god
 
 fr fr Create RPC request
 slay create_rpc_request(req_id tea, rpc_method tea, rpc_params tea) tea {
@@ -156,9 +158,11 @@ slay test_rpc_connection(test_config tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr Test Execution
-fr fr ================================
+no cap
+================================
+Test Execution
+================================
+on god
 
 vibez.spill("🚀 RPC Vibes Module Test Suite")
 vibez.spill("================================")

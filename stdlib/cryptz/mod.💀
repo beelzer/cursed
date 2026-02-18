@@ -744,11 +744,13 @@ slay blake2b_process_data(data tea, h drip[value], size drip) tea {
     secure_memory_clear()  fr fr Clear sensitive data immediately
     damn blake_result
 }
-fr fr ================================
-fr fr ================================================================== 
-fr fr PRODUCTION CRYPTZ MODULE - SECURITY VULNERABILITIES ELIMINATED
-fr fr ALL PLACEHOLDER IMPLEMENTATIONS REPLACED WITH REAL CRYPTO
-fr fr ==================================================================
+no cap
+================================
+================================================================== 
+PRODUCTION CRYPTZ MODULE - SECURITY VULNERABILITIES ELIMINATED
+ALL PLACEHOLDER IMPLEMENTATIONS REPLACED WITH REAL CRYPTO
+==================================================================
+on god
 
 yeet "cryptz/mod_secure"
 
@@ -1108,9 +1110,11 @@ slay aes_gcm_decrypt(ciphertext tea, key tea, iv tea) tea {
     runtime_aes_gcm_decrypt(ciphertext, key, iv, &output[0])
     damn bytes_to_string(output)
 }
-fr fr ================================
-fr fr AES CTR Mode Implementation
-fr fr ================================
+no cap
+================================
+AES CTR Mode Implementation
+================================
+on god
 
 slay aes_ctr_encrypt(plaintext tea, key tea) tea {
     lowkey string_length(key) != 16 {
@@ -1145,10 +1149,12 @@ slay aes_ctr_decrypt(ciphertext tea, key tea) tea {
     damn aes_ctr_encrypt(ciphertext, key)
 }
 
-fr fr ================================
-fr fr ChaCha20 Stream Cipher
-fr fr RFC 8439 compliant
-fr fr ================================
+no cap
+================================
+ChaCha20 Stream Cipher
+RFC 8439 compliant
+================================
+on god
 
 sus chacha20_constants [normie] = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
 
@@ -1500,10 +1506,12 @@ slay secure_random_byte() drip {
     damn buffer[0]
 }
 
-fr fr ================================
-fr fr Secure Random Number Generation
-fr fr Cryptographically secure random numbers
-fr fr ================================
+no cap
+================================
+Secure Random Number Generation
+Cryptographically secure random numbers
+================================
+on god
 
 sus secure_rng_state normie = 0x12345678
 sus secure_rng_counter normie = 0

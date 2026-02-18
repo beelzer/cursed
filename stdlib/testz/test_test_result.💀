@@ -3,9 +3,11 @@ fr fr Comprehensive testing of the new TestResult functionality
 
 yeet "testz"
 
-fr fr ================================
-fr fr Test TestResult Basic Functionality
-fr fr ================================
+no cap
+================================
+Test TestResult Basic Functionality
+================================
+on god
 
 slay test_result_creation() {
     test_start("test_result_creation")
@@ -187,9 +189,11 @@ slay test_advanced_features() {
     vibez.spill("Advanced features test completed")
 }
 
-fr fr ================================
-fr fr Main Test Runner
-fr fr ================================
+no cap
+================================
+Main Test Runner
+================================
+on god
 
 slay main_character() {
     vibez.spill("Starting CURSED TestResult System Tests")

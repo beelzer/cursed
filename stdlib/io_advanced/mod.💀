@@ -3,9 +3,11 @@ fr fr Advanced formatted output, input validation, and stream handling
 
 yeet "io_basic"
 
-fr fr ================================
-fr fr Formatted Output Functions
-fr fr ================================
+no cap
+================================
+Formatted Output Functions
+================================
+on god
 
 slay printf_string(format tea, value tea) cringe {
     fr fr Print formatted string
@@ -57,9 +59,11 @@ slay printf_bool(format tea, value lit) cringe {
     }
 }
 
-fr fr ================================
-fr fr Input Validation Functions
-fr fr ================================
+no cap
+================================
+Input Validation Functions
+================================
+on god
 
 slay read_validated_int(prompt tea, min_val drip, max_val drip) drip {
     fr fr Read and validate integer input
@@ -100,9 +104,11 @@ slay read_yes_no(prompt tea) lit {
     damn based
 }
 
-fr fr ================================
-fr fr Stream Operations
-fr fr ================================
+no cap
+================================
+Stream Operations
+================================
+on god
 
 slay create_input_stream(source tea) drip {
     fr fr Create input stream handle
@@ -148,9 +154,11 @@ slay stream_close(handle drip) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr File Information Functions
-fr fr ================================
+no cap
+================================
+File Information Functions
+================================
+on god
 
 slay get_file_size(filename tea) drip {
     fr fr Get file size in bytes
@@ -198,9 +206,11 @@ slay is_file_writable(filename tea) lit {
     damn cap
 }
 
-fr fr ================================
-fr fr CSV Operations
-fr fr ================================
+no cap
+================================
+CSV Operations
+================================
+on god
 
 slay read_csv_line(line tea) drip {
     fr fr Parse CSV line and return field count
@@ -234,9 +244,11 @@ slay escape_csv_field(field tea) tea {
     damn field
 }
 
-fr fr ================================
-fr fr JSON Operations
-fr fr ================================
+no cap
+================================
+JSON Operations
+================================
+on god
 
 slay validate_json(content tea) lit {
     fr fr Validate JSON syntax
@@ -268,9 +280,11 @@ slay minify_json(content tea) tea {
     damn content
 }
 
-fr fr ================================
-fr fr Configuration File Operations
-fr fr ================================
+no cap
+================================
+Configuration File Operations
+================================
+on god
 
 slay read_config_value(filename tea, key tea) tea {
     fr fr Read configuration value by key
@@ -302,9 +316,11 @@ slay list_config_keys(filename tea) drip {
     damn 0
 }
 
-fr fr ================================
-fr fr Log File Operations
-fr fr ================================
+no cap
+================================
+Log File Operations
+================================
+on god
 
 slay write_log_entry(logfile tea, level tea, message tea) lit {
     fr fr Write timestamped log entry
@@ -331,9 +347,11 @@ slay parse_log_entry(entry tea) drip {
     damn 0
 }
 
-fr fr ================================
-fr fr Temporary File Operations
-fr fr ================================
+no cap
+================================
+Temporary File Operations
+================================
+on god
 
 slay create_temp_file(prefix tea) tea {
     fr fr Create temporary file with prefix
@@ -359,9 +377,11 @@ slay cleanup_temp_files(pattern tea) drip {
     damn 0
 }
 
-fr fr ================================
-fr fr Progress Display
-fr fr ================================
+no cap
+================================
+Progress Display
+================================
+on god
 
 slay show_progress_bar(current drip, total drip, width drip) cringe {
     fr fr Display progress bar

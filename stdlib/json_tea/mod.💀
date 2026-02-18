@@ -1,10 +1,12 @@
 yeet "testz"
 
-fr fr ==========================================
-fr fr CURSED JSON Tea Module - RFC 7159 Compliant Implementation  
-fr fr Production-Grade JSON Processing with Full Standards Compliance
-fr fr Security-Hardened with Proper Error Handling and Unicode Support
-fr fr ==========================================
+no cap
+==========================================
+CURSED JSON Tea Module - RFC 7159 Compliant Implementation  
+Production-Grade JSON Processing with Full Standards Compliance
+Security-Hardened with Proper Error Handling and Unicode Support
+==========================================
+on god
 
 fr fr JSON Value Types
 enum JSONValueType {
@@ -617,9 +619,11 @@ slay (s *JSONSerializer) get_indent() tea {
     damn result
 }
 
-fr fr =============================================================================
-fr fr Public API Functions - Compatible with existing test suite
-fr fr =============================================================================
+no cap
+=============================================================================
+Public API Functions - Compatible with existing test suite
+=============================================================================
+on god
 
 fr fr Core Marshal function
 slay Marshal(data tea) tea {
@@ -704,9 +708,11 @@ slay get_json_type(json_string tea) tea {
     damn json_value_type_to_string(value.type)
 }
 
-fr fr =============================================================================
-fr fr Helper Functions
-fr fr =============================================================================
+no cap
+=============================================================================
+Helper Functions
+=============================================================================
+on god
 
 fr fr Convert simple data to JSON value
 slay convert_to_json_value(data tea) (JSONValue, JSONError) {
@@ -930,9 +936,11 @@ slay add_prefix_to_lines(text tea, prefix tea) tea {
     damn result
 }
 
-fr fr =============================================================================
-fr fr Legacy Compatibility Functions
-fr fr =============================================================================
+no cap
+=============================================================================
+Legacy Compatibility Functions
+=============================================================================
+on god
 
 fr fr Compatibility functions for existing test suite
 slay marshal(data tea) tea { damn Marshal(data) }

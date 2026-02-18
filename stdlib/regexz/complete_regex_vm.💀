@@ -8,40 +8,44 @@ yeet "mathz"
 
 fr fr ===== EXTENDED OPCODE DEFINITIONS =====
 
-fr fr Basic opcodes (0-17) - already implemented partially
-fr fr 0: END - End of program
-fr fr 1: MATCH_START - Match start of string
-fr fr 2: MATCH_END - Match end of string  
-fr fr 3: MATCH_ANY - Match any character (.)
-fr fr 4: JUMP - Unconditional jump
-fr fr 5: SPLIT - Non-deterministic split (for alternation)
-fr fr 6: CAPTURE_START - Begin capture group
-fr fr 7: CAPTURE_END - End capture group
-fr fr 8: MATCH_CHAR - Match specific character
-fr fr 9: MATCH_RANGE - Match character range [a-z]
-fr fr 10: MATCH_SET - Match character set [abc]
-fr fr 11: MATCH_NEG_SET - Match negative character set [^abc]
-fr fr 12: MATCH_DIGIT - Match digit \d
-fr fr 13: MATCH_WORD - Match word character \w
-fr fr 14: MATCH_SPACE - Match whitespace \s
-fr fr 15: MATCH_NON_DIGIT - Match non-digit \D
-fr fr 16: MATCH_NON_WORD - Match non-word \W
-fr fr 17: MATCH_NON_SPACE - Match non-whitespace \S
+no cap
+Basic opcodes (0-17) - already implemented partially
+0: END - End of program
+1: MATCH_START - Match start of string
+2: MATCH_END - Match end of string  
+3: MATCH_ANY - Match any character (.)
+4: JUMP - Unconditional jump
+5: SPLIT - Non-deterministic split (for alternation)
+6: CAPTURE_START - Begin capture group
+7: CAPTURE_END - End capture group
+8: MATCH_CHAR - Match specific character
+9: MATCH_RANGE - Match character range [a-z]
+10: MATCH_SET - Match character set [abc]
+11: MATCH_NEG_SET - Match negative character set [^abc]
+12: MATCH_DIGIT - Match digit \d
+13: MATCH_WORD - Match word character \w
+14: MATCH_SPACE - Match whitespace \s
+15: MATCH_NON_DIGIT - Match non-digit \D
+16: MATCH_NON_WORD - Match non-word \W
+17: MATCH_NON_SPACE - Match non-whitespace \S
+on god
 
-fr fr Advanced opcodes (18+)
-fr fr 18: MATCH_WORD_BOUNDARY - Word boundary \b
-fr fr 19: MATCH_NON_WORD_BOUNDARY - Non-word boundary \B
-fr fr 20: LOOKAHEAD_POS - Positive lookahead (?=...)
-fr fr 21: LOOKAHEAD_NEG - Negative lookahead (?!...)
-fr fr 22: LOOKBEHIND_POS - Positive lookbehind (?<=...)
-fr fr 23: LOOKBEHIND_NEG - Negative lookbehind (?<!...)
-fr fr 24: ATOMIC_GROUP - Atomic group (?>...)
-fr fr 25: REPEAT_LAZY - Lazy quantifier support
-fr fr 26: REPEAT_POSSESSIVE - Possessive quantifier support
-fr fr 27: MATCH_UNICODE_CLASS - Unicode character classes
-fr fr 28: MATCH_NEWLINE - Platform-specific newline
-fr fr 29: BACKREF - Backreference \1, \2, etc.
-fr fr 30: CONDITIONAL - Conditional expression (?(condition)...)
+no cap
+Advanced opcodes (18+)
+18: MATCH_WORD_BOUNDARY - Word boundary \b
+19: MATCH_NON_WORD_BOUNDARY - Non-word boundary \B
+20: LOOKAHEAD_POS - Positive lookahead (?=...)
+21: LOOKAHEAD_NEG - Negative lookahead (?!...)
+22: LOOKBEHIND_POS - Positive lookbehind (?<=...)
+23: LOOKBEHIND_NEG - Negative lookbehind (?<!...)
+24: ATOMIC_GROUP - Atomic group (?>...)
+25: REPEAT_LAZY - Lazy quantifier support
+26: REPEAT_POSSESSIVE - Possessive quantifier support
+27: MATCH_UNICODE_CLASS - Unicode character classes
+28: MATCH_NEWLINE - Platform-specific newline
+29: BACKREF - Backreference \1, \2, etc.
+30: CONDITIONAL - Conditional expression (?(condition)...)
+on god
 
 squad CompleteRegexVM {
     sus bytecode drip[value]

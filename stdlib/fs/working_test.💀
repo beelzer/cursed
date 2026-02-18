@@ -1,8 +1,10 @@
 fr fr Simple working test for filesystem module
 
-fr fr ================================
-fr fr Filesystem Functions (Mock)
-fr fr ================================
+no cap
+================================
+Filesystem Functions (Mock)
+================================
+on god
 
 slay read_file(path tea) tea {
     vibez.spill("fs.read_file: Reading file '" + path + "'")
@@ -29,9 +31,11 @@ slay join_path(base tea, component tea) tea {
     damn base + "/" + component
 }
 
-fr fr ================================
-fr fr Test Functions
-fr fr ================================
+no cap
+================================
+Test Functions
+================================
+on god
 
 slay test_filesystem_functions() {
     vibez.spill("Running CURSED Filesystem Module Tests")

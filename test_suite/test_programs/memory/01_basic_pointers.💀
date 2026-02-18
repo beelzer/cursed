@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Basic Pointer Operations Test
-fr fr Tests: Basic pointer declaration, assignment, and dereferencing  
-fr fr Expected: Identical results in both modes
+no cap
+Basic Pointer Operations Test
+Tests: Basic pointer declaration, assignment, and dereferencing  
+Expected: Identical results in both modes
+on god
 
 slay main_character() {
     vibez.spill("=== Basic Pointer Operations ===")

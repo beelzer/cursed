@@ -3,9 +3,11 @@ yeet "string"
 
 test_start("CURSED String Library v2.0 Comprehensive Tests")
 
-fr fr ================================
-fr fr Core String Operations Tests
-fr fr ================================
+no cap
+================================
+Core String Operations Tests
+================================
+on god
 
 test_start("string_length function")
 assert_eq_int(string_length("test"), 4)
@@ -33,9 +35,11 @@ assert_eq_string(string_to_lower("HELLO"), "hello")
 assert_eq_string(string_to_lower("TEST"), "test")
 assert_eq_string(string_to_lower("ABC"), "abc")
 
-fr fr ================================
-fr fr String Searching Tests
-fr fr ================================
+no cap
+================================
+String Searching Tests
+================================
+on god
 
 test_start("string_contains function")
 assert_true(string_contains("hello world", "world"))
@@ -58,9 +62,11 @@ assert_true(string_ends_with("hello world", "world"))
 assert_true(string_ends_with("programming", "ming"))
 assert_false(string_ends_with("hello", "world"))
 
-fr fr ================================
-fr fr String Validation Tests
-fr fr ================================
+no cap
+================================
+String Validation Tests
+================================
+on god
 
 test_start("string_is_numeric function")
 assert_true(string_is_numeric("123"))
@@ -82,9 +88,11 @@ assert_true(string_is_alphanumeric("hello"))
 assert_true(string_is_alphanumeric("123"))
 assert_false(string_is_alphanumeric("hello!"))
 
-fr fr ================================
-fr fr String Trimming Tests
-fr fr ================================
+no cap
+================================
+String Trimming Tests
+================================
+on god
 
 test_start("string_trim function")
 assert_eq_string(string_trim("  hello  "), "hello")
@@ -99,9 +107,11 @@ test_start("string_trim_right function")
 assert_eq_string(string_trim_right("hello  "), "hello")
 assert_eq_string(string_trim_right("world "), "world")
 
-fr fr ================================
-fr fr String Replacement Tests
-fr fr ================================
+no cap
+================================
+String Replacement Tests
+================================
+on god
 
 test_start("string_replace_first function")
 assert_eq_string(string_replace_first("hello world", "world", "universe"), "hello universe")
@@ -111,9 +121,11 @@ test_start("string_replace_all function")
 assert_eq_string(string_replace_all("hello world hello", "hello", "hi"), "hi world hi")
 assert_eq_string(string_replace_all("test string test", "test", "demo"), "demo string demo")
 
-fr fr ================================
-fr fr String Comparison Tests
-fr fr ================================
+no cap
+================================
+String Comparison Tests
+================================
+on god
 
 test_start("string_compare function")
 assert_eq_int(string_compare("hello", "hello"), 0)
@@ -124,9 +136,11 @@ test_start("string_compare_ignore_case function")
 assert_eq_int(string_compare_ignore_case("Hello", "hello"), 0)
 assert_eq_int(string_compare_ignore_case("A", "b"), -1)
 
-fr fr ================================
-fr fr Substring Operations Tests
-fr fr ================================
+no cap
+================================
+Substring Operations Tests
+================================
+on god
 
 test_start("string_substring function")
 assert_eq_string(string_substring("hello world", 0, 5), "hello")
@@ -136,9 +150,11 @@ test_start("string_substr function")
 assert_eq_string(string_substr("hello world", 0, 5), "hello")
 assert_eq_string(string_substr("hello world", 6, 5), "world")
 
-fr fr ================================
-fr fr String Formatting Tests
-fr fr ================================
+no cap
+================================
+String Formatting Tests
+================================
+on god
 
 test_start("string_format function")
 assert_eq_string(string_format("Hello, {}!", "World"), "Hello, World!")
@@ -146,9 +162,11 @@ assert_eq_string(string_format("Hello, {}!", "World"), "Hello, World!")
 test_start("string_format_three function")
 assert_eq_string(string_format_three("{} + {} = {}", "2", "3", "5"), "2 + 3 = 5")
 
-fr fr ================================
-fr fr String Padding Tests
-fr fr ================================
+no cap
+================================
+String Padding Tests
+================================
+on god
 
 test_start("string_pad_left function")
 assert_eq_string(string_pad_left("test", 8, "0"), "0000test")
@@ -158,9 +176,11 @@ test_start("string_pad_right function")
 assert_eq_string(string_pad_right("test", 8, "0"), "test0000")
 assert_eq_string(string_pad_right("hello", 10, " "), "hello     ")
 
-fr fr ================================
-fr fr Unicode Support Tests
-fr fr ================================
+no cap
+================================
+Unicode Support Tests
+================================
+on god
 
 test_start("string_char_at function")
 assert_eq_string(string_char_at("hello", 0), 'h')

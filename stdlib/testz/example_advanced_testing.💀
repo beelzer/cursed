@@ -3,17 +3,21 @@ yeet "testz"
 fr fr Advanced Testing Framework Example
 fr fr Demonstrates all major features of the enhanced testz module
 
-fr fr ===============================
-fr fr Test Suite Configuration
-fr fr ===============================
+no cap
+===============================
+Test Suite Configuration
+===============================
+on god
 
 testz.set_verbose_mode(based)
 testz.set_test_suite("Advanced Testing Framework Demo")
 testz.before_all_tests()
 
-fr fr ===============================
-fr fr Mock Data Structure for Testing
-fr fr ===============================
+no cap
+===============================
+Mock Data Structure for Testing
+===============================
+on god
 
 sus test_data_store tea = ""
 sus test_counter normie = 0
@@ -41,9 +45,11 @@ slay mock_get_data() tea {
     damn test_data_store
 }
 
-fr fr ===============================
-fr fr Basic Unit Tests
-fr fr ===============================
+no cap
+===============================
+Basic Unit Tests
+===============================
+on god
 
 testz.test_start("Mock data structure initialization")
 mock_setup()
@@ -62,9 +68,11 @@ testz.assert_contains(mock_get_data(), "test2")
 mock_teardown()
 testz.test_end()
 
-fr fr ===============================
-fr fr Property-Based Testing Example
-fr fr ===============================
+no cap
+===============================
+Property-Based Testing Example
+===============================
+on god
 
 testz.test_start("Property-based testing: Data structure invariants")
 testz.property_test_start("Counter increments correctly", 100)
@@ -88,9 +96,11 @@ bestie i := 0; i < 100; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr Performance Benchmarking Example
-fr fr ===============================
+no cap
+===============================
+Performance Benchmarking Example
+===============================
+on god
 
 testz.test_start("Performance benchmarking: Data operations")
 testz.set_benchmark_mode(based)
@@ -110,9 +120,11 @@ bestie i := 0; i < 1000; i++ {
 testz.benchmark_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Fixtures Example
-fr fr ===============================
+no cap
+===============================
+Test Fixtures Example
+===============================
+on god
 
 testz.set_setup_function("mock_setup")
 testz.set_teardown_function("mock_teardown")
@@ -126,9 +138,11 @@ testz.assert_eq_string(testz.get_fixture_data(), "shared_test_data")
 fr fr Teardown is automatically called
 testz.test_end()
 
-fr fr ===============================
-fr fr String Testing with Enhanced Assertions
-fr fr ===============================
+no cap
+===============================
+String Testing with Enhanced Assertions
+===============================
+on god
 
 testz.test_start("String manipulation testing")
 sus test_string tea = "Hello, CURSED World!"
@@ -147,9 +161,11 @@ testz.assert_ne_string(test_string, upper_string)
 testz.assert_ne_string(test_string, lower_string)
 testz.test_end()
 
-fr fr ===============================
-fr fr Numeric Range Testing
-fr fr ===============================
+no cap
+===============================
+Numeric Range Testing
+===============================
+on god
 
 testz.test_start("Numeric range and boundary testing")
 sus test_value normie = 50
@@ -166,9 +182,11 @@ testz.assert_range_int(0, 0, 100)
 testz.assert_range_int(100, 0, 100)
 testz.test_end()
 
-fr fr ===============================
-fr fr Mathematical Property Testing
-fr fr ===============================
+no cap
+===============================
+Mathematical Property Testing
+===============================
+on god
 
 testz.test_start("Mathematical properties validation")
 testz.property_test_start("Arithmetic properties", 50)
@@ -192,9 +210,11 @@ bestie i := 0; i < 50; i++ {
 testz.property_test_end()
 testz.test_end()
 
-fr fr ===============================
-fr fr Advanced Test Features
-fr fr ===============================
+no cap
+===============================
+Advanced Test Features
+===============================
+on god
 
 testz.test_start("Advanced test features demo")
 testz.focus_test() fr fr Mark this test as focused
@@ -203,9 +223,11 @@ testz.assert_true(testz.is_verbose_mode())
 testz.assert_true(testz.is_benchmark_mode())
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Discovery and Filtering
-fr fr ===============================
+no cap
+===============================
+Test Discovery and Filtering
+===============================
+on god
 
 testz.test_start("Test discovery and filtering")
 testz.discover_tests("test_*")
@@ -215,9 +237,11 @@ testz.assert_true(testz.should_run_test("test_advanced_features"))
 testz.assert_false(testz.should_run_test("test_basic_features"))
 testz.test_end()
 
-fr fr ===============================
-fr fr Error Handling Testing
-fr fr ===============================
+no cap
+===============================
+Error Handling Testing
+===============================
+on god
 
 testz.test_start("Error handling validation")
 fr fr Test successful operations
@@ -228,9 +252,11 @@ fr fr (In a real scenario, this would test actual error conditions)
 testz.assert_throws("Expected error for invalid input")
 testz.test_end()
 
-fr fr ===============================
-fr fr Performance Comparison Testing
-fr fr ===============================
+no cap
+===============================
+Performance Comparison Testing
+===============================
+on god
 
 testz.test_start("Performance comparison between approaches")
 testz.set_benchmark_iterations(100)
@@ -256,9 +282,11 @@ testz.benchmark_end()
 
 testz.test_end()
 
-fr fr ===============================
-fr fr Test Statistics Validation
-fr fr ===============================
+no cap
+===============================
+Test Statistics Validation
+===============================
+on god
 
 testz.test_start("Test statistics and reporting")
 testz.assert_gt_int(testz.get_test_results(), 0)
@@ -271,18 +299,22 @@ fr fr Validate test execution time tracking
 testz.assert_ge_int(testz.get_execution_time(), 0)
 testz.test_end()
 
-fr fr ===============================
-fr fr Comprehensive Test Suite Cleanup
-fr fr ===============================
+no cap
+===============================
+Comprehensive Test Suite Cleanup
+===============================
+on god
 
 testz.test_start("Test suite cleanup and finalization")
 testz.reset_test_state()
 testz.assert_eq_int(testz.get_test_results(), 0) fr fr After reset
 testz.test_end()
 
-fr fr ===============================
-fr fr Final Test Suite Summary
-fr fr ===============================
+no cap
+===============================
+Final Test Suite Summary
+===============================
+on god
 
 testz.after_all_tests()
 

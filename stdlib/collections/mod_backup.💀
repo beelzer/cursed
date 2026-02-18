@@ -223,9 +223,11 @@ slay array_all(arr [extra], predicate slay) lit {
     damn collections_array_all(arr, predicate);
 }
 
-fr fr ================================
-fr fr HashMap/Map operations  
-fr fr ================================
+no cap
+================================
+HashMap/Map operations  
+================================
+on god
 
 slay map_new() map {
     damn {};
@@ -293,9 +295,11 @@ slay map_map_values(m map, mapper slay) map {
     damn collections_map_map_values(m, mapper);
 }
 
-fr fr ================================
-fr fr Set operations
-fr fr ================================
+no cap
+================================
+Set operations
+================================
+on god
 
 slay set_new() set {
     damn collections_set_new();
@@ -359,9 +363,11 @@ slay set_from_array(arr [extra]) set {
     damn collections_set_from_array(arr);
 }
 
-fr fr ================================
-fr fr Queue operations
-fr fr ================================
+no cap
+================================
+Queue operations
+================================
+on god
 
 slay queue_new() queue {
     damn collections_queue_new();
@@ -397,9 +403,11 @@ slay queue_clear(q queue) queue {
     damn q;
 }
 
-fr fr ================================
-fr fr Stack operations
-fr fr ================================
+no cap
+================================
+Stack operations
+================================
+on god
 
 slay stack_new() stack {
     damn collections_stack_new();
@@ -431,9 +439,11 @@ slay stack_clear(s stack) stack {
     damn s;
 }
 
-fr fr ================================
-fr fr Utility functions
-fr fr ================================
+no cap
+================================
+Utility functions
+================================
+on god
 
 slay range(start normie, end normie) [normie] {
     damn collections_range(start, end);

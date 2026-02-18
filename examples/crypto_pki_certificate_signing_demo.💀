@@ -1,12 +1,14 @@
-fr fr Certificate Signing Demo for CURSED Crypto PKI Package
-fr fr 
-fr fr This example demonstrates comprehensive certificate signing functionality including:
-fr fr - Creating and configuring a Certificate Authority (CA)
-fr fr - Generating Certificate Signing Requests (CSRs)
-fr fr - Signing certificates with various algorithms
-fr fr - Batch certificate signing
-fr fr - Certificate renewal
-fr fr - Signature verification
+no cap
+Certificate Signing Demo for CURSED Crypto PKI Package
+
+This example demonstrates comprehensive certificate signing functionality including:
+- Creating and configuring a Certificate Authority (CA)
+- Generating Certificate Signing Requests (CSRs)
+- Signing certificates with various algorithms
+- Batch certificate signing
+- Certificate renewal
+- Signature verification
+on god
 
 yeet "stdlib::crypto_pki"
 yeet "stdlib::io"

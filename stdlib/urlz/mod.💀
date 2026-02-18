@@ -1,13 +1,17 @@
-fr fr CURSED URL Parsing Module - RFC 3986 Compliant Implementation
-fr fr Full RFC 3986 URL parsing with comprehensive validation and encoding
-fr fr Production-ready URL handling with security considerations
+no cap
+CURSED URL Parsing Module - RFC 3986 Compliant Implementation
+Full RFC 3986 URL parsing with comprehensive validation and encoding
+Production-ready URL handling with security considerations
+on god
 
 yeet "stringz"
 yeet "mathz"
 
-fr fr ================================
-fr fr Core Data Structures
-fr fr ================================
+no cap
+================================
+Core Data Structures
+================================
+on god
 
 be_like URL squad {
     scheme tea
@@ -65,9 +69,11 @@ facts CHAR_UNRESERVED normie = 3
 facts CHAR_RESERVED normie = 4
 facts CHAR_PERCENT normie = 5
 
-fr fr ================================
-fr fr RFC 3986 Character Classification
-fr fr ================================
+no cap
+================================
+RFC 3986 Character Classification
+================================
+on god
 
 slay is_alpha(c normie) lit { fr fr Check if character is alphabetic
     damn (c >= 65 && c <= 90) || (c >= 97 && c <= 122)
@@ -88,9 +94,11 @@ slay is_unreserved(c normie) lit { fr fr RFC 3986 unreserved characters
 }
 
 slay is_reserved(c normie) lit { fr fr RFC 3986 reserved characters
-    fr fr gen-delims / sub-delims
-    fr fr gen-delims: ":" / "/" / "?" / "#" / "[" / "]" / "@"
-    fr fr sub-delims: "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
+    no cap
+    gen-delims / sub-delims
+    gen-delims: ":" / "/" / "?" / "#" / "[" / "]" / "@"
+    sub-delims: "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
+    on god
     damn c == 58 || c == 47 || c == 63 || c == 35 || c == 91 || c == 93 || c == 64 ||
          c == 33 || c == 36 || c == 38 || c == 39 || c == 40 || c == 41 || c == 42 ||
          c == 43 || c == 44 || c == 59 || c == 61
@@ -110,9 +118,11 @@ slay is_gen_delim(c normie) lit { fr fr RFC 3986 gen-delims
     damn c == 58 || c == 47 || c == 63 || c == 35 || c == 91 || c == 93 || c == 64
 }
 
-fr fr ================================
-fr fr Percent Encoding/Decoding
-fr fr ================================
+no cap
+================================
+Percent Encoding/Decoding
+================================
+on god
 
 slay percent_encode_char(c normie) tea { fr fr Encode single character
     lowkey is_unreserved(c) {
@@ -196,9 +206,11 @@ slay hex_digit_value(c normie) normie { fr fr Convert hex character to value
     damn 0
 }
 
-fr fr ================================
-fr fr URL Validation Functions
-fr fr ================================
+no cap
+================================
+URL Validation Functions
+================================
+on god
 
 slay validate_scheme(scheme tea) lit { fr fr RFC 3986 scheme validation
     lowkey scheme == "" {
@@ -403,9 +415,11 @@ slay validate_path(path tea) lit { fr fr RFC 3986 path validation
     damn true
 }
 
-fr fr ================================
-fr fr Core URL Parsing
-fr fr ================================
+no cap
+================================
+Core URL Parsing
+================================
+on god
 
 slay parse_url(url_string tea) URL { fr fr Main URL parsing function
     sus url URL = {
@@ -635,9 +649,11 @@ slay extract_hostname(host tea) tea { fr fr Extract hostname from host:port
     damn host
 }
 
-fr fr ================================
-fr fr URL Construction and Manipulation
-fr fr ================================
+no cap
+================================
+URL Construction and Manipulation
+================================
+on god
 
 slay build_url(url URL) tea { fr fr Construct URL string from components
     lowkey !url.is_valid {
@@ -718,9 +734,11 @@ slay is_ipv6_literal(host tea) lit { fr fr Check if host is IPv6 literal
     damn starts_with(host, "[") && ends_with(host, "]")
 }
 
-fr fr ================================
-fr fr URL Resolution (RFC 3986 Section 5)
-fr fr ================================
+no cap
+================================
+URL Resolution (RFC 3986 Section 5)
+================================
+on god
 
 slay resolve_url(base_url tea, relative_url tea) tea { fr fr Resolve relative URL against base
     sus base URL = parse_url(base_url)
@@ -816,9 +834,11 @@ slay remove_dot_segments(path tea) tea { fr fr RFC 3986 dot segment removal
     damn result
 }
 
-fr fr ================================
-fr fr Query Parameter Handling
-fr fr ================================
+no cap
+================================
+Query Parameter Handling
+================================
+on god
 
 slay parse_query_params(query tea) tea[value]{ fr fr Parse query string into key=value pairs
     lowkey query == "" {
@@ -904,9 +924,11 @@ slay remove_query_param(url *URL, key tea) { fr fr Remove query parameter
     url.raw_query = url.query
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay create_parse_error(message tea, position thicc, url tea, error_type normie) URLParseError {
     sus error URLParseError = {
@@ -979,9 +1001,11 @@ slay get_effective_port(url URL) normie { fr fr Get effective port (default if n
     damn url.port
 }
 
-fr fr ================================
-fr fr String Helper Functions (would use stringz in practice)
-fr fr ================================
+no cap
+================================
+String Helper Functions (would use stringz in practice)
+================================
+on god
 
 slay char_code_at(s tea, index thicc) normie {
     fr fr Placeholder - would use stringz module

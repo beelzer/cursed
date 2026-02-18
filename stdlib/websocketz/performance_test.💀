@@ -3,10 +3,12 @@ yeet "websocketz"
 yeet "stringz"
 yeet "timez"
 
-fr fr ========================================
-fr fr CURSED WebSocket Performance Tests
-fr fr Stress Testing & Benchmarking Suite
-fr fr ========================================
+no cap
+========================================
+CURSED WebSocket Performance Tests
+Stress Testing & Benchmarking Suite
+========================================
+on god
 
 slay performance_test_room_scaling() {
     test_start("WebSocket Room Scaling Performance")
@@ -445,9 +447,11 @@ slay performance_test_security_validation() {
                " tests, " + stringz.int_to_string(clean_messages) + " clean messages")
 }
 
-fr fr =============================================================================
-fr fr PERFORMANCE TEST SUITE EXECUTION
-fr fr =============================================================================
+no cap
+=============================================================================
+PERFORMANCE TEST SUITE EXECUTION
+=============================================================================
+on god
 
 slay run_all_performance_tests() {
     vibez.spill("🏃 Running WebSocket Performance Test Suite")

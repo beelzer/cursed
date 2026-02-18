@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Pointer Syntax Error Test
-fr fr Tests: Proper error handling for pointer syntax
-fr fr Expected: Should compile successfully with new ඞ syntax
+no cap
+Pointer Syntax Error Test
+Tests: Proper error handling for pointer syntax
+Expected: Should compile successfully with new ඞ syntax
+on god
 
 slay main_character() {
     vibez.spill("=== Pointer Syntax Validation ===")

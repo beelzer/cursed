@@ -1,14 +1,18 @@
 yeet "testz"
 
-fr fr ========================================
-fr fr CURSED Production Crypto Library v2.0
-fr fr 100% Pure CURSED Secure Implementation  
-fr fr NO FFI Dependencies - NO Placeholders
-fr fr ========================================
+no cap
+========================================
+CURSED Production Crypto Library v2.0
+100% Pure CURSED Secure Implementation  
+NO FFI Dependencies - NO Placeholders
+========================================
+on god
 
-fr fr ================================
-fr fr Cryptographically Secure RNG
-fr fr ================================
+no cap
+================================
+Cryptographically Secure RNG
+================================
+on god
 
 fr fr ChaCha20-based CSPRNG state
 sus chacha20_state [normie] = [
@@ -101,9 +105,11 @@ slay generate_random_u32() normie {
     damn result
 }
 
-fr fr ================================
-fr fr SHA-256 Implementation
-fr fr ================================
+no cap
+================================
+SHA-256 Implementation
+================================
+on god
 
 fr fr SHA-256 constants
 sus sha256_k [normie] = [
@@ -221,9 +227,11 @@ slay sha256(data tea) tea {
     damn result
 }
 
-fr fr ================================
-fr fr AES Implementation
-fr fr ================================
+no cap
+================================
+AES Implementation
+================================
+on god
 
 fr fr AES S-box
 sus aes_sbox [normie] = [
@@ -293,9 +301,11 @@ slay aes_decrypt(ciphertext tea, key tea) tea {
     damn aes_encrypt(ciphertext, key)
 }
 
-fr fr ================================
-fr fr HMAC Implementation
-fr fr ================================
+no cap
+================================
+HMAC Implementation
+================================
+on god
 
 slay hmac_sha256(key tea, message tea) tea {
     fr fr Simplified HMAC-SHA256
@@ -306,9 +316,11 @@ slay hmac_sha256(key tea, message tea) tea {
     damn sha256(outer_combined)
 }
 
-fr fr ================================
-fr fr Key Generation
-fr fr ================================
+no cap
+================================
+Key Generation
+================================
+on god
 
 slay generate_key(bits normie) tea {
     fr fr Generate random key of specified bit length
@@ -323,9 +335,11 @@ slay generate_key(bits normie) tea {
     damn key
 }
 
-fr fr ================================
-fr fr Secure Random Functions
-fr fr ================================
+no cap
+================================
+Secure Random Functions
+================================
+on god
 
 slay secure_random_int(min normie, max normie) normie {
     vibes min >= max {
@@ -357,9 +371,11 @@ slay secure_random_string(length normie) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Utility Functions
-fr fr ================================
+no cap
+================================
+Utility Functions
+================================
+on god
 
 slay string_length(s tea) normie {
     fr fr Simplified length calculation for demo
@@ -396,9 +412,11 @@ slay u32_to_hex(value normie) tea {
     damn result
 }
 
-fr fr ================================
-fr fr Module Initialization
-fr fr ================================
+no cap
+================================
+Module Initialization
+================================
+on god
 
 fr fr Initialize with high-entropy seed  
 crypto_secure_init(0x12345678, 0x9abcdef0, 0xfedcba98)

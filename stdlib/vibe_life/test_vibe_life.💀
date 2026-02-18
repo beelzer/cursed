@@ -5,9 +5,11 @@ yeet "core"
 fr fr Initialize vibe_life module for testing
 init_vibe_life()
 
-fr fr ==============================================================================
-fr fr COMMAND LINE ARGUMENT TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+COMMAND LINE ARGUMENT TESTS
+==============================================================================
+on god
 
 test_start("get_args basic functionality")
 sus args [tea] = vibe_life.get_args()
@@ -30,9 +32,11 @@ vibe_life.set_args(new_args)
 assert_eq_int(vibe_life.get_arg_count(), 3)
 assert_eq_string(vibe_life.get_arg(2), "--debug")
 
-fr fr ==============================================================================
-fr fr ENVIRONMENT VARIABLE TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+ENVIRONMENT VARIABLE TESTS
+==============================================================================
+on god
 
 test_start("get_env default variables")
 assert_eq_string(vibe_life.get_env("HOME"), "/home/user")
@@ -57,9 +61,11 @@ test_start("get_env_keys functionality")
 sus env_keys [tea] = vibe_life.get_env_keys()
 assert_true(env_keys.length() >= 4) fr fr At least default vars
 
-fr fr ==============================================================================
-fr fr PROCESS CONTROL TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+PROCESS CONTROL TESTS
+==============================================================================
+on god
 
 test_start("get_pid functionality")
 sus pid normie = vibe_life.get_pid()
@@ -73,9 +79,11 @@ test_start("exit code management")
 vibe_life.exit(42)
 assert_eq_int(vibe_life.get_exit_code(), 42)
 
-fr fr ==============================================================================
-fr fr WORKING DIRECTORY TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+WORKING DIRECTORY TESTS
+==============================================================================
+on god
 
 test_start("get_cwd default")
 assert_eq_string(vibe_life.get_cwd(), "/home/user")
@@ -101,9 +109,11 @@ assert_eq_string(vibe_life.basename("/home/user/file.txt"), "file.txt")
 assert_eq_string(vibe_life.basename("file.txt"), "file.txt")
 assert_eq_string(vibe_life.basename("/home/user/"), "")
 
-fr fr ==============================================================================
-fr fr FILE SYSTEM OPERATION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+FILE SYSTEM OPERATION TESTS
+==============================================================================
+on god
 
 test_start("file_exists default files")
 assert_true(vibe_life.file_exists("/tmp/cursed.log"))
@@ -144,9 +154,11 @@ assert_true(vibe_life.create_dir("/tmp/testdir"))
 assert_true(vibe_life.is_dir("/tmp/testdir"))
 assert_false(vibe_life.is_dir("/tmp/test2.txt"))
 
-fr fr ==============================================================================
-fr fr UTILITY FUNCTION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+UTILITY FUNCTION TESTS
+==============================================================================
+on god
 
 test_start("get_timestamp functionality")
 sus timestamp normie = vibe_life.get_timestamp()
@@ -160,9 +172,11 @@ sus info tea = vibe_life.get_module_info()
 assert_true(info.contains("vibe_life"))
 assert_true(info.contains("v1.0"))
 
-fr fr ==============================================================================
-fr fr INTEGRATION TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+INTEGRATION TESTS
+==============================================================================
+on god
 
 test_start("file and directory integration")
 fr fr Create directory and file
@@ -184,9 +198,11 @@ sus current_dir tea = vibe_life.get_cwd()
 sus main_file tea = vibe_life.join_path(current_dir, vibe_life.get_arg(2))
 assert_eq_string(main_file, "/home/projects/main.💀")
 
-fr fr ==============================================================================
-fr fr EDGE CASE TESTS
-fr fr ==============================================================================
+no cap
+==============================================================================
+EDGE CASE TESTS
+==============================================================================
+on god
 
 test_start("empty and null inputs")
 assert_eq_string(vibe_life.get_env(""), "")

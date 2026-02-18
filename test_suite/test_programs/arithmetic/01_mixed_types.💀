@@ -2,9 +2,11 @@ vibe main
 
 yeet "vibez"
 
-fr fr Mixed Type Arithmetic Test
-fr fr Tests: Integer and float arithmetic operations
-fr fr Expected: Type handling should be consistent
+no cap
+Mixed Type Arithmetic Test
+Tests: Integer and float arithmetic operations
+Expected: Type handling should be consistent
+on god
 
 slay main_character() {
     vibez.spill("=== Mixed Type Arithmetic Test ===")
