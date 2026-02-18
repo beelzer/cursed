@@ -1,0 +1,26 @@
+fr fr Simple test: global vars, functions, control flow
+
+sus greeting = "Hello from CURSED!";
+sus is_awesome = based;
+
+slay add(x, y) {
+    sus result = x + y;
+    return result;
+}
+
+slay main_character() {
+    println(greeting);
+
+    sus a = 10;
+    sus b = 32;
+    sus sum = add(a, b);
+    println(sum);
+
+    lowkey (is_awesome) {
+        println("CURSED is awesome!");
+    } highkey {
+        println("Something is wrong");
+    }
+
+    return 0;
+}

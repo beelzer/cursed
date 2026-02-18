@@ -486,9 +486,8 @@ pub const Lexer = struct {
             '\'' => return self.charLiteral(start_line, start_column),
 
             '@' => {
-                // Reject legacy @ pointer syntax
-                std.debug.print("Error at line {}, column {}: Legacy '@' pointer syntax is not supported. Use 'ඞ' (Among Us character) instead.\n", .{ start_line, start_column });
-                return error.LegacySyntaxRejected;
+                // Accept @ as pointer/dereference operator (same as ඞ)
+                return Token.init(.At, "@", start_line, start_column);
             },
 
             else => {
@@ -724,20 +723,38 @@ pub const Lexer = struct {
 
     fn charLiteral(self: *Lexer, line: usize, column: usize) !Token {
         const start = self.position - 1; // Include opening quote
-        
+
         if (self.peek() == '\\') {
-            try self.parseEscapeSequence();
+            self.parseEscapeSequence() catch {
+                // If escape parsing fails, treat as string
+                return self.singleQuoteString(start, line, column);
+            };
         } else if (!self.isAtEnd()) {
             _ = self.advanceUtf8(); // Single Unicode character
         }
 
-        if (self.isAtEnd() or self.peek() != '\'') return error.UnterminatedChar;
+        if (self.isAtEnd() or self.peek() != '\'') {
+            // Not a single char literal — treat as single-quoted string
+            return self.singleQuoteString(start, line, column);
+        }
 
         // Consume closing quote
         _ = self.advance();
 
         const lexeme = self.input[start..self.position];
         return Token.init(.Character, lexeme, line, column);
+    }
+
+    fn singleQuoteString(self: *Lexer, start: usize, line: usize, column: usize) Token {
+        // Consume everything until closing ' or end of line
+        while (!self.isAtEnd() and self.peek() != '\'' and self.peek() != '\n') {
+            _ = self.advance();
+        }
+        if (!self.isAtEnd() and self.peek() == '\'') {
+            _ = self.advance(); // consume closing '
+        }
+        const lexeme = self.input[start..self.position];
+        return Token.init(.StringLiteral, lexeme, line, column);
     }
 
     fn number(self: *Lexer, line: usize, column: usize) !Token {

@@ -653,7 +653,6 @@ pub const Parser = struct {
         _ = self.advance(); // consume '.'
         // FIXED: Better method name validation with debugging
         if (!self.check(.Identifier) and !self.isKeywordAllowedAsMethodName()) {
-            std.debug.print("DEBUG: Expected method name after '.', found: {any}\n", .{self.peek().kind});
             return ParserError.UnexpectedToken;
         }
         const property = self.advance().lexeme;
@@ -1381,7 +1380,6 @@ pub const Parser = struct {
         
         // Struct declaration (squad)
         if (self.check(.Squad) or self.check(.Struct)) {
-            // std.debug.print("DEBUG: Parsing struct statement\n", .{});
             return try self.parseStructStatement();
         }
         
@@ -1558,12 +1556,14 @@ pub const Parser = struct {
         }
         
         _ = try self.consume(.RightParen, "Expected ')' after parameters");
-        
-        // Parse return type
-        if (!self.check(.LeftBrace)) {
+
+        // Parse return type (optionally preceded by '->')
+        if (self.match(.Arrow)) {
+            func.return_type = try self.parseType();
+        } else if (!self.check(.LeftBrace)) {
             func.return_type = try self.parseType();
         }
-        
+
         // Parse body
         _ = try self.consume(.LeftBrace, "Expected '{'");
         
@@ -1641,31 +1641,47 @@ pub const Parser = struct {
     }
 
     fn parseParameter(self: *Parser) ParserError!Parameter {
-        if (!self.check(.Identifier)) {
+        // Support both parameter orderings:
+        //   name type  (e.g., n normie)  - identifier followed by optional type
+        //   type name  (e.g., sus x)     - type keyword followed by identifier
+        var name: []const u8 = undefined;
+        var param_type: Type = Type{ .Basic = ast.BasicType.Auto };
+
+        if (self.check(.Identifier)) {
+            // Could be "name type" or just "name"
+            name = self.advance().lexeme;
+
+            // Skip 'drip' modifier if present (invalid syntax from old tests)
+            if (self.check(.Identifier) and std.mem.eql(u8, self.peek().lexeme, "drip")) {
+                _ = self.advance(); // consume 'drip'
+            }
+
+            // Parse optional type after name
+            if (self.checkType() and !self.check(.Comma) and !self.check(.RightParen) and !self.check(.Equal)) {
+                param_type = self.parseType() catch blk: {
+                    _ = self.reportErrorWithContext("Error parsing parameter type", "parseParameter") catch {};
+                    break :blk Type{ .Basic = ast.BasicType.Auto };
+                };
+            }
+        } else if (self.checkBasicType()) {
+            // Type-first syntax: "type name" (e.g., sus x, tea msg, normie n)
+            param_type = self.parseType() catch blk: {
+                _ = self.reportErrorWithContext("Error parsing parameter type", "parseParameter") catch {};
+                break :blk Type{ .Basic = ast.BasicType.Auto };
+            };
+            if (!self.check(.Identifier)) {
+                _ = self.reportErrorWithContext("Expected parameter name after type", "parseParameter") catch {};
+                return ParserError.UnexpectedToken;
+            }
+            name = self.advance().lexeme;
+        } else {
             return ParserError.UnexpectedToken;
         }
-        
-        const name = self.advance().lexeme;
-        
-        // CRITICAL MEMORY SAFETY FIX: Validate name is not null/empty
+
+        // Validate name is not null/empty
         if (name.len == 0) {
             _ = self.reportErrorWithContext("Empty parameter name", "parseParameter") catch {};
             return ParserError.UnexpectedToken;
-        }
-        
-        // Skip 'drip' modifier if present (invalid syntax from old tests)
-        if (self.check(.Identifier) and std.mem.eql(u8, self.peek().lexeme, "drip")) {
-            _ = self.advance(); // consume 'drip'
-        }
-        
-        // Parse type (optional for parameters in CURSED, defaults to 'auto')
-        var param_type: Type = Type{ .Basic = ast.BasicType.Auto };
-        if (self.checkType()) {
-            param_type = self.parseType() catch blk: {
-                _ = self.reportErrorWithContext("Error parsing parameter type", "parseParameter") catch {};
-                // Use auto type as fallback for recovery
-                break :blk Type{ .Basic = ast.BasicType.Auto };
-            };
         }
         
         var param = Parameter{
@@ -2921,18 +2937,9 @@ pub const Parser = struct {
             // CRITICAL: Check for struct literal Name{field: value, ...} with proper brace handling
             // This distinguishes between struct literals and erroneous complex expressions
             if (self.check(.LeftBrace)) {
-                std.debug.print("DEBUG: Found brace after identifier '{s}'\n", .{name});
-                // Additional validation: ensure this is actually a struct literal context
-                // and not a misplaced brace from a complex expression
                 if (self.isValidStructLiteralContext()) {
-                    std.debug.print("DEBUG: Valid struct literal context detected\n", .{});
                     return try self.parseStructLiteral(name);
                 } else {
-                    std.debug.print("DEBUG: Invalid struct literal context, treating as identifier\n", .{});
-                    // This might be part of a complex expression that was incorrectly parsed
-                    // Return the identifier and let the caller handle the brace
-                    // The brace will be handled by parseBlockStatement in parseStatement
-                    std.debug.print("DEBUG: Returning identifier due to invalid struct context: '{s}'\n", .{name});
                     return Expression{ .Identifier = name };
                 }
             }
@@ -2946,21 +2953,18 @@ pub const Parser = struct {
     }
 
     fn parseStructLiteral(self: *Parser, struct_name: []const u8) ParserError!Expression {
-        std.debug.print("DEBUG: Parsing struct literal for '{s}'\n", .{struct_name});
         _ = try self.consume(.LeftBrace, "Expected '{'");
-        
+
         // Support both StructFieldAssignment (legacy) and FieldInitializer (new)
         var fields = std.ArrayList(ast.FieldInitializer){ .items = &.{}, .capacity = 0 };
-        
+
         if (!self.check(.RightBrace)) {
             while (true) {
                 if (!self.check(.Identifier)) {
-                    std.debug.print("DEBUG: Expected identifier for field name, got: {any}\n", .{self.peek().kind});
                     return ParserError.UnexpectedToken;
                 }
-                
+
                 const field_name = self.advance().lexeme;
-                std.debug.print("DEBUG: Parsing field '{s}'\n", .{field_name});
         _ = try self.consume(.Colon, "Expected ':' after field name");
                 const value = try self.parseExpression();
                 
@@ -3653,10 +3657,11 @@ pub const Parser = struct {
             const field = try self.parseStructField(visibility);
             try fields.append(self.allocator, field);
             
-            // Optional comma
+            // Optional comma or semicolon after field
             _ = self.match(.Comma);
+            _ = self.match(.Semicolon);
         }
-        
+
         _ = try self.consume(.RightBrace, "Expected '}' after struct fields");
         
         return Statement{ .Struct = ast.StructStatement{
@@ -3669,16 +3674,61 @@ pub const Parser = struct {
     }
 
     fn parseStructField(self: *Parser, visibility: ast.Visibility) ParserError!ast.StructField {
-        // Parse field name
+        // Handle both orderings:
+        // 1. "name type" (e.g., x sus)
+        // 2. "type name" (e.g., tea name, normie age) — actual type keywords first
+        // 3. "sus name" / "facts name" — variable-declaration keywords as type prefixes
+        if (self.check(.Sus) or self.check(.Facts)) {
+            // sus/facts used as type prefix in struct fields — consume and use Auto type
+            _ = self.advance();
+            if (!self.check(.Identifier)) {
+                return ParserError.UnexpectedToken;
+            }
+            const name = self.advance().lexeme;
+            // Consume optional colon+type after name (e.g., "sus id: i32")
+            var field_type = ast.Type{ .Basic = ast.BasicType.Auto };
+            if (self.match(.Colon)) {
+                field_type = self.parseType() catch ast.Type{ .Basic = ast.BasicType.Auto };
+            }
+            return ast.StructField{
+                .name = name,
+                .field_type = field_type,
+                .visibility = visibility,
+            };
+        }
+        if (self.checkBasicType()) {
+            // Type-first syntax with actual type: tea name, normie age, vibes score, etc.
+            const field_type = try self.parseType();
+            if (!self.check(.Identifier)) {
+                return ParserError.UnexpectedToken;
+            }
+            const name = self.advance().lexeme;
+            if (self.match(.Colon)) {
+                _ = self.parseType() catch {};
+            }
+            return ast.StructField{
+                .name = name,
+                .field_type = field_type,
+                .visibility = visibility,
+            };
+        }
+
+        // Name-first syntax: x sus, name tea, etc.
         if (!self.check(.Identifier)) {
             return ParserError.UnexpectedToken;
         }
-        
+
         const name = self.advance().lexeme;
-        
-        // Parse field type
-        const field_type = try self.parseType();
-        
+
+        // Parse optional colon before type
+        _ = self.match(.Colon);
+
+        // Parse field type (may be Auto if nothing follows)
+        const field_type = if (self.check(.Semicolon) or self.check(.Comma) or self.check(.RightBrace))
+            ast.Type{ .Basic = ast.BasicType.Auto }
+        else
+            try self.parseType();
+
         return ast.StructField{
             .name = name,
             .field_type = field_type,
@@ -4009,11 +4059,13 @@ pub const Parser = struct {
 
     fn parseVibeCheckStatement(self: *Parser) ParserError!Statement {
         _ = try self.consume(.VibeCheck, "Expected 'vibe check'");
-        
-        const expression = try self.parseExpression();
+
+        // Parse the switch expression, but stop before '{' to avoid the Pratt parser
+        // consuming the vibe_check body as a struct literal (LeftBrace has Call precedence)
+        const expression = try self.parseExpressionPrattPrec(.Call);
         const expression_ptr = try self.arena_allocator.create(Expression);
         expression_ptr.* = expression;
-        
+
         _ = try self.consume(.LeftBrace, "Expected '{'");
         
         var patterns = std.ArrayList(ast.PatternCase){ .items = &.{}, .capacity = 0 };
@@ -4021,29 +4073,32 @@ pub const Parser = struct {
         
         while (!self.check(.RightBrace) and !self.isAtEnd()) {
             if (self.match(.Newline)) continue;
-            
+
             // Check for default case
             if (self.match(.Basic)) {
-        _ = try self.consume(.Colon, "Expected ':' after 'basic'");
-                
+                // Accept both ':' and '->' after 'basic'
+                if (!self.match(.Colon) and !self.match(.Arrow)) {
+                    _ = try self.consume(.Colon, "Expected ':' or '->' after 'basic'");
+                }
+
                 var default_stmts = std.ArrayList(*Statement){ .items = &.{}, .capacity = 0 };
                 while (!self.check(.Mood) and !self.check(.Basic) and !self.check(.RightBrace) and !self.isAtEnd()) {
                     if (self.match(.Newline)) continue;
-                    
+
                     const stmt = try self.parseStatement();
-                    const stmt_ptr = try self.arena_allocator.create(Statement); 
-                    stmt_ptr.* = stmt; 
+                    const stmt_ptr = try self.arena_allocator.create(Statement);
+                    stmt_ptr.* = stmt;
                     try default_stmts.append(self.allocator, stmt_ptr);
                 }
-                
+
                 default_case = default_stmts;
                 continue;
             }
-            
+
             // Parse case
             if (self.match(.Mood)) {
                 const pattern = try self.parsePattern();
-                
+
                 var guard: ?*Expression = null;
                 if (self.matchIdentifier("if")) {
                     const guard_expr = try self.parseExpression();
@@ -4051,17 +4106,22 @@ pub const Parser = struct {
                     guard_ptr.* = guard_expr;
                     guard = guard_ptr;
                 }
-                
-        _ = try self.consume(.Colon, "Expected ':' after case pattern");
-                
+
+                // Accept both ':' and '->' after case pattern
+                if (!self.match(.Colon) and !self.match(.Arrow)) {
+                    _ = try self.consume(.Colon, "Expected ':' or '->' after case pattern");
+                }
+
                 var case_body = std.ArrayList(*ast.Statement){ .items = &.{}, .capacity = 0 };
                 while (!self.check(.Mood) and !self.check(.Basic) and !self.check(.RightBrace) and !self.isAtEnd()) {
                     if (self.match(.Newline)) continue;
-                    
+
                     const stmt = try self.parseStatement();
-                    const stmt_ptr = try self.arena_allocator.create(Statement); stmt_ptr.* = stmt; try case_body.append(self.allocator, stmt_ptr);
+                    const stmt_ptr = try self.arena_allocator.create(Statement);
+                    stmt_ptr.* = stmt;
+                    try case_body.append(self.allocator, stmt_ptr);
                 }
-                
+
                 try patterns.append(self.allocator, ast.PatternCase{
                     .pattern = pattern,
                     .guard = guard,
@@ -4069,9 +4129,9 @@ pub const Parser = struct {
                 });
             }
         }
-        
+
         _ = try self.consume(.RightBrace, "Expected '}'");
-        
+
         return Statement{ .PatternSwitch = ast.PatternSwitchStatement{
             .expression = expression_ptr,
             .patterns = patterns,

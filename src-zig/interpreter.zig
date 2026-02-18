@@ -931,6 +931,14 @@ pub const Interpreter = struct {
             } 
         });
 
+        // Register puts as alias for println (used in many examples)
+        try self.globals.define("puts", Value{
+            .BuiltinFunction = .{
+                .name = "puts",
+                .func = builtinPrintln
+            }
+        });
+
         // Register native bridge functions for CURSED stdlib modules
         try self.globals.define("string_concat_native", Value{ 
             .BuiltinFunction = .{ 
@@ -981,7 +989,6 @@ pub const Interpreter = struct {
                     try self.functions.put(func.name, cursed_func);
                 },
                 .Struct => |struct_decl| {
-                    // Removed DEBUG output
                     try self.type_registry.registerStruct(struct_decl.name, struct_decl);
                 },
                 .Interface => |interface_decl| {
@@ -1154,10 +1161,106 @@ pub const Interpreter = struct {
     }
 
     fn executeImportStatement(self: *Interpreter, import_stmt: ast.ImportStatement) InterpreterError!void {
-        // Removed DEBUG output
-        
-        // For now, use builtin modules to avoid complex parsing issues
-        try self.loadBuiltinModule(import_stmt.path);
+        // Handle multiple imports: yeet "mod1", "mod2"
+        if (import_stmt.multiple_paths.items.len > 0) {
+            self.loadResolvedModule(import_stmt.path, null) catch {};
+            for (import_stmt.multiple_paths.items) |path| {
+                self.loadResolvedModule(path, null) catch {};
+            }
+            return;
+        }
+
+        try self.loadResolvedModule(import_stmt.path, import_stmt.alias);
+    }
+
+    fn loadResolvedModule(self: *Interpreter, raw_path: []const u8, alias: ?[]const u8) InterpreterError!void {
+        var module_path = raw_path;
+
+        // Strip stdlib:: prefix (e.g., "stdlib::io" -> "io")
+        if (module_path.len > 8 and std.mem.eql(u8, module_path[0..8], "stdlib::")) {
+            module_path = module_path[8..];
+        }
+        // Strip packages:: prefix (e.g., "packages::crypto_pqc" -> "crypto_pqc")
+        if (module_path.len > 10 and std.mem.eql(u8, module_path[0..10], "packages::")) {
+            module_path = module_path[10..];
+        }
+
+        // Get the primary module name (first :: component) for builtin lookup
+        // e.g., "collections::queues" -> "collections", "math::advanced" -> "math"
+        var primary_name = module_path;
+        if (std.mem.indexOf(u8, module_path, "::")) |sep| {
+            primary_name = module_path[0..sep];
+        }
+
+        // Map variant names to existing builtins (e.g., "math" -> "mathz")
+        const lookup_name = mapModuleAlias(primary_name);
+
+        // Determine binding name (how code references this module)
+        // Priority: explicit alias > primary path component > lookup name
+        // e.g., "stdlib::math::advanced" -> bind as "math" (the primary component)
+        //        "stdlib::io" -> bind as "io"
+        var binding_name = lookup_name;
+        if (alias) |a| {
+            binding_name = a;
+        } else if (!std.mem.eql(u8, primary_name, lookup_name)) {
+            // Primary name differs from lookup (e.g., "math" vs "mathz")
+            // Bind under the primary name so code like `math.sqrt()` works
+            binding_name = primary_name;
+        }
+
+        // Load the module using the resolved lookup name, but bind under binding_name
+        self.loadBuiltinModuleAs(lookup_name, binding_name) catch {
+            // If primary component failed, try the last :: component
+            if (!std.mem.eql(u8, primary_name, module_path)) {
+                // Find last :: separator
+                var last_sep: usize = 0;
+                var i: usize = 0;
+                while (i + 1 < module_path.len) : (i += 1) {
+                    if (module_path[i] == ':' and module_path[i + 1] == ':') {
+                        last_sep = i;
+                    }
+                }
+                if (last_sep > 0) {
+                    const last_component = module_path[last_sep + 2 ..];
+                    self.loadBuiltinModuleAs(mapModuleAlias(last_component), binding_name) catch {
+                        return; // Silently ignore - module not available
+                    };
+                } else {
+                    return; // Silently ignore
+                }
+            } else {
+                return; // Silently ignore unresolvable imports
+            }
+        };
+    }
+
+    fn mapModuleAlias(name: []const u8) []const u8 {
+        // Map common CURSED name variants to existing builtin module names
+        if (std.mem.eql(u8, name, "math") or
+            std.mem.eql(u8, name, "math_basic") or
+            std.mem.eql(u8, name, "statistics") or
+            std.mem.eql(u8, name, "trigonometry") or
+            std.mem.eql(u8, name, "advanced") or
+            std.mem.eql(u8, name, "constants") or
+            std.mem.eql(u8, name, "big_mood")) return "mathz";
+        if (std.mem.eql(u8, name, "string") or
+            std.mem.eql(u8, name, "strings")) return "stringz";
+        if (std.mem.eql(u8, name, "testing") or
+            std.mem.eql(u8, name, "assertions") or
+            std.mem.eql(u8, name, "framework") or
+            std.mem.eql(u8, name, "test_vibes") or
+            std.mem.eql(u8, name, "quick_test")) return "testz";
+        if (std.mem.eql(u8, name, "timez")) return "time";
+        if (std.mem.eql(u8, name, "env")) return "envz";
+        if (std.mem.eql(u8, name, "http") or
+            std.mem.eql(u8, name, "websocket") or
+            std.mem.eql(u8, name, "net") or
+            std.mem.eql(u8, name, "vibe_net")) return "web_vibez";
+        if (std.mem.eql(u8, name, "regex_vibez")) return "regex";
+        if (std.mem.eql(u8, name, "json_tea")) return "json";
+        if (std.mem.eql(u8, name, "filez")) return "fs";
+        // io, collections, json, regex, memory, path, fs, fmt, vibez map directly
+        return name;
     }
     
     fn loadRealStdlibModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
@@ -1291,6 +1394,10 @@ pub const Interpreter = struct {
     }
 
     fn loadCursedStdlibModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
+        return self.loadCursedStdlibModuleAs(module_name, module_name);
+    }
+
+    fn loadCursedStdlibModuleAs(self: *Interpreter, module_name: []const u8, bind_as: []const u8) InterpreterError!void {
         // Try to load CURSED stdlib module from stdlib/{module_name}/mod.💀.💀
         // First try relative to current directory, then try from parent directory
         const local_path = try std.fmt.allocPrint(self.allocator, "stdlib/{s}/mod.💀", .{module_name});
@@ -1421,12 +1528,16 @@ pub const Interpreter = struct {
         // The arena will be cleaned up when the program exits
         
         const module_value = Value{ .Module = module_ptr };
-        try self.environment.define(module_name, module_value);
-        
+        try self.environment.define(bind_as, module_value);
+
         // Removed DEBUG: Successfully loaded CURSED stdlib module {s} with {} functions\n", .{ module_name, module_functions.count() });
     }
 
     fn loadZigBuiltinModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
+        return self.loadZigBuiltinModuleAs(module_name, module_name);
+    }
+
+    fn loadZigBuiltinModuleAs(self: *Interpreter, module_name: []const u8, bind_as: []const u8) InterpreterError!void {
         var module_functions = std.StringHashMap(Value).init(self.allocator);
         
         // Hardcode stdlib functions for now
@@ -1563,26 +1674,27 @@ pub const Interpreter = struct {
         };
         
         const module_value = Value{ .Module = module_ptr };
-        try self.environment.define(module_name, module_value);
-        
+        try self.environment.define(bind_as, module_value);
+
         // Removed DEBUG: Stored module {s} in environment@{*}, now has {} variables\n", .{ module_name, self.environment, self.environment.variables.count() });
         // Removed DEBUG: self.globals is at @{*}\n", .{&self.globals});
         // Removed DEBUG: Loaded Zig builtin module {s} with {} functions\n", .{ module_name, module_functions.count() });
     }
 
     fn loadBuiltinModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
+        return self.loadBuiltinModuleAs(module_name, module_name);
+    }
+
+    fn loadBuiltinModuleAs(self: *Interpreter, module_name: []const u8, bind_as: []const u8) InterpreterError!void {
         // Pure CURSED self-hosting: Only load CURSED stdlib implementations
-        if (self.loadCursedStdlibModule(module_name)) {
+        if (self.loadCursedStdlibModuleAs(module_name, bind_as)) {
             // Successfully loaded CURSED stdlib module
             return;
         } else |_| {
             // Silently fall back to Zig builtins when CURSED stdlib has issues
             // Fallback to Zig builtins
-            return self.loadZigBuiltinModule(module_name);
+            return self.loadZigBuiltinModuleAs(module_name, bind_as);
         }
-        
-        // Fallback to Zig builtin modules (should not be reached in self-hosting mode)
-        // try self.loadZigBuiltinModule(module_name);
     }
 
     fn executeLetStatement(self: *Interpreter, let: ast.LetStatement) InterpreterError!void {
@@ -2004,6 +2116,14 @@ pub const Interpreter = struct {
                     else => unreachable,
                 };
                 const concatenated = try std.fmt.allocPrint(self.allocator, "{s}{s}", .{left_str, right_str});
+                return Value{ .OwnedString = concatenated };
+            } else if (left == .String or left == .OwnedString or right == .String or right == .OwnedString) {
+                // String + non-string or non-string + String: auto-coerce to string concatenation
+                const left_str = left.toString(self.allocator) catch return InterpreterError.TypeMismatch;
+                defer self.allocator.free(left_str);
+                const right_str = right.toString(self.allocator) catch return InterpreterError.TypeMismatch;
+                defer self.allocator.free(right_str);
+                const concatenated = try std.fmt.allocPrint(self.allocator, "{s}{s}", .{ left_str, right_str });
                 return Value{ .OwnedString = concatenated };
             }
         } else if (std.mem.eql(u8, bin.operator, "-")) {
@@ -2703,7 +2823,6 @@ pub const Interpreter = struct {
                         return result;
                     }
                     
-                    std.debug.print("DEBUG: Function '{s}' not found\n", .{name});
                     return InterpreterError.UndefinedFunction;
                 }
             },
@@ -3937,10 +4056,8 @@ pub const Interpreter = struct {
             }
         }
         
-        // Handle unmatched patterns without default case
-        if (!matched) {
-            return InterpreterError.PatternMatchFailed;
-        }
+        // If no pattern matched and no default case, silently continue
+        // (like a switch with no matching case in most languages)
         return false; // Continue execution
     }
 
@@ -5487,7 +5604,6 @@ fn builtinCollectionsLength(interpreter: *Interpreter, args: []Value) Interprete
                 return InterpreterError.InvalidOperation;
             }
             const length = @as(i64, @intCast(str.len));
-            std.debug.print("DEBUG: builtinCollectionsLength - String length: {}\n", .{length});
             return Value{ .Integer = length };
         },
         .OwnedString => |str| {
@@ -5497,7 +5613,6 @@ fn builtinCollectionsLength(interpreter: *Interpreter, args: []Value) Interprete
                 return InterpreterError.InvalidOperation;
             }
             const length = @as(i64, @intCast(str.len));
-            std.debug.print("DEBUG: builtinCollectionsLength - OwnedString length: {}\n", .{length});
             return Value{ .Integer = length };
         },
         else => {
