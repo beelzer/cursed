@@ -5,3 +5,7 @@ tsconfig.json
 **/*.ts
 **/*.map
 .gitignore
+*.vsix
+build.sh
+.last-build-hash
+package-lock.json

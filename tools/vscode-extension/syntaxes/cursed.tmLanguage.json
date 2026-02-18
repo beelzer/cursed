@@ -310,7 +310,7 @@
       "patterns": [
         {
           "name": "keyword.control.conditional.cursed",
-          "match": "\\b(ready|otherwise|lowkey|highkey)\\b"
+          "match": "\\b(lowkey|highkey)\\b"
         },
         {
           "name": "keyword.control.loop.cursed",
@@ -318,11 +318,11 @@
         },
         {
           "name": "keyword.control.switch.cursed",
-          "match": "\\b(vibe_check|mood|basic|sick|when|aight)\\b"
+          "match": "\\b(vibe_check|mood|basic|match)\\b"
         },
         {
           "name": "keyword.control.flow.cursed",
-          "match": "\\b(ghosted|simp|damn|yolo|later|flex|in|select)\\b"
+          "match": "\\b(ghosted|simp|damn|yolo|later|flex|in|select|where)\\b"
         }
       ]
     },
@@ -346,7 +346,7 @@
       "patterns": [
         {
           "name": "keyword.control.error.cursed",
-          "match": "\\b(yikes|fam|shook|panic|recover)\\b"
+          "match": "\\b(yikes|fam|shook|yeet_error|catch|panic|recover)\\b"
         }
       ]
     },
@@ -370,7 +370,7 @@
         },
         {
           "name": "constant.language.boolean.false.cursed",
-          "match": "\\b(cringe|cap)\\b"
+          "match": "\\b(cringe)\\b"
         },
         {
           "name": "constant.language.null.cursed",

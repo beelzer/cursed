@@ -20,8 +20,6 @@ except
 rename
 
 # Control flow keywords
-ready
-otherwise
 lowkey
 highkey
 periodt
@@ -29,9 +27,8 @@ bestie
 vibe_check
 mood
 basic
-sick
-when
-aight
+match
+where
 ghosted
 simp
 damn
@@ -148,6 +145,19 @@ Set_len
 Set_insert
 Set_contains
 Set_remove
+
+# Entry points
+main_character
+
+# Comment syntax
+no_cap
+
+# Channels
+dm
+
+# Additional error handling
+yeet_error
+catch
 
 # Error types
 memory_yikes

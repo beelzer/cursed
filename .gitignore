@@ -35,3 +35,4 @@ package-lock.json
 
 # VS Code extension build output
 tools/vscode-extension/out/
+tools/vscode-extension/.last-build-hash

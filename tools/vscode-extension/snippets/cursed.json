@@ -21,6 +21,7 @@
     ],
     "description": "Main character entry point function"
   },
+
   "Function Definition": {
     "prefix": "slay",
     "body": [
@@ -30,6 +31,37 @@
     ],
     "description": "Function definition"
   },
+  "Function with Error Return": {
+    "prefix": "slayerr",
+    "body": [
+      "slay ${1:name}(${2:params}) yikes<${3:returnType}> {",
+      "\tlowkey ${4:errorCondition} {",
+      "\t\tyikes \"${5:error message}\"",
+      "\t}",
+      "\tdamn ${0:result}",
+      "}"
+    ],
+    "description": "Function returning a result type (yikes<T>)"
+  },
+  "Method with Receiver": {
+    "prefix": "slaymethod",
+    "body": [
+      "slay (${1:r} ${2:Type}) ${3:methodName}(${4:params}) ${5:returnType} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Method with receiver"
+  },
+  "Generic Function": {
+    "prefix": "slaygeneric",
+    "body": [
+      "slay ${1:name}<${2:T}>(${3:params}) ${4:returnType} where ${2:T}: ${5:Constraint} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Generic function with where clause"
+  },
+
   "Variable Declaration": {
     "prefix": "sus",
     "body": "sus ${1:name} ${2:type} = ${0:value}",
@@ -45,16 +77,17 @@
     "body": "facts ${1:NAME} = ${0:value}",
     "description": "Constant declaration"
   },
-  "If Statement (lowkey)": {
+
+  "If Statement": {
     "prefix": "lowkey",
     "body": [
       "lowkey ${1:condition} {",
       "\t$0",
       "}"
     ],
-    "description": "If statement using lowkey"
+    "description": "If statement"
   },
-  "If-Else Statement (lowkey/highkey)": {
+  "If-Else Statement": {
     "prefix": "lowkeyhighkey",
     "body": [
       "lowkey ${1:condition} {",
@@ -63,28 +96,22 @@
       "\t$0",
       "}"
     ],
-    "description": "If-else statement using lowkey/highkey"
+    "description": "If-else statement"
   },
-  "If Statement (ready)": {
-    "prefix": "ready",
+  "If-Else If-Else Statement": {
+    "prefix": "lowkeyhighkeylowkey",
     "body": [
-      "ready ${1:condition} {",
-      "\t$0",
-      "}"
-    ],
-    "description": "If statement using ready"
-  },
-  "If-Else Statement (ready/otherwise)": {
-    "prefix": "readyelse",
-    "body": [
-      "ready ${1:condition} {",
+      "lowkey ${1:condition1} {",
       "\t$2",
-      "} otherwise {",
+      "} highkey lowkey ${3:condition2} {",
+      "\t$4",
+      "} highkey {",
       "\t$0",
       "}"
     ],
-    "description": "If-else statement using ready/otherwise"
+    "description": "If / else-if / else chain"
   },
+
   "For Loop": {
     "prefix": "bestie",
     "body": [
@@ -103,14 +130,14 @@
     ],
     "description": "Range-based for loop"
   },
-  "While Loop (periodt)": {
+  "While Loop": {
     "prefix": "periodt",
     "body": [
       "periodt ${1:condition} {",
       "\t$0",
       "}"
     ],
-    "description": "While loop using periodt"
+    "description": "While loop"
   },
   "Infinite Loop": {
     "prefix": "bestieloop",
@@ -121,7 +148,8 @@
     ],
     "description": "Infinite loop"
   },
-  "Switch Statement (vibe_check)": {
+
+  "Switch Statement": {
     "prefix": "vibecheck",
     "body": [
       "vibe_check ${1:value} {",
@@ -133,13 +161,38 @@
       "\t\t$0",
       "}"
     ],
-    "description": "Switch statement using vibe_check"
+    "description": "Switch statement"
   },
+  "Select Statement": {
+    "prefix": "select",
+    "body": [
+      "vibe_check {",
+      "\tmood ${1:val} := <-${2:ch1}:",
+      "\t\t$3",
+      "\tmood ${4:val2} := <-${5:ch2}:",
+      "\t\t$6",
+      "\tbasic:",
+      "\t\t$0",
+      "}"
+    ],
+    "description": "Select on multiple channels"
+  },
+  "Pattern Matching": {
+    "prefix": "match",
+    "body": [
+      "match (${1:value}) {",
+      "\twhen ${2:pattern} -> ${3:result}",
+      "\twhen _ -> ${0:default}",
+      "}"
+    ],
+    "description": "Pattern matching"
+  },
+
   "Struct Definition": {
     "prefix": "squad",
     "body": [
-      "squad ${1:Name} {",
-      "\tsus ${2:field}",
+      "be_like ${1:Name} squad {",
+      "\tsus ${2:field} ${3:type}",
       "\t$0",
       "}"
     ],
@@ -155,41 +208,39 @@
     ],
     "description": "Interface definition"
   },
-  "Error Handling": {
-    "prefix": "fam",
+  "Implementation Block": {
+    "prefix": "impl",
     "body": [
-      "fam {",
-      "\t${1:val} := ${2:riskyCall()} shook",
-      "\t$3",
-      "} sus ${4:error} {",
+      "impl ${1:Interface} for ${2:Type} {",
       "\t$0",
       "}"
     ],
-    "description": "Try-catch error handling"
+    "description": "Implementation block"
   },
-  "Goroutine": {
-    "prefix": "stan",
+  "Generic Implementation": {
+    "prefix": "implgeneric",
     "body": [
-      "stan {",
+      "impl<${1:T}> ${2:Interface}<${1:T}> for ${3:Type} where ${1:T}: ${4:Constraint} {",
       "\t$0",
       "}"
     ],
-    "description": "Spawn goroutine"
+    "description": "Generic implementation with where clause"
   },
-  "Channel Declaration": {
-    "prefix": "dm",
-    "body": "sus ${1:ch} dm<${2:normie}>",
-    "description": "Channel declaration"
+  "Type Definition": {
+    "prefix": "belike",
+    "body": "be_like ${1:Name} ${0:sourceType}",
+    "description": "Type alias/definition"
   },
+
   "Return (damn)": {
     "prefix": "damn",
     "body": "damn ${0:value}",
-    "description": "Return statement using damn"
+    "description": "Return statement"
   },
   "Return (yolo)": {
     "prefix": "yolo",
     "body": "yolo ${0:value}",
-    "description": "Return statement using yolo"
+    "description": "Return statement (alt)"
   },
   "Break": {
     "prefix": "ghosted",
@@ -204,13 +255,112 @@
   "Defer": {
     "prefix": "later",
     "body": "later ${0:cleanup()}",
-    "description": "Defer statement"
+    "description": "Defer (run on scope exit)"
   },
+
+  "Error Return": {
+    "prefix": "yikes",
+    "body": "yikes \"${0:error message}\"",
+    "description": "Return an error"
+  },
+  "Error Handling (try-catch)": {
+    "prefix": "fam",
+    "body": [
+      "fam {",
+      "\t${1:val} := ${2:riskyCall()} shook",
+      "\t$3",
+      "} sus ${4:error} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Try-catch error handling"
+  },
+
+  "Goroutine": {
+    "prefix": "stan",
+    "body": [
+      "stan {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Spawn goroutine"
+  },
+  "Goroutine (function call)": {
+    "prefix": "stancall",
+    "body": "stan ${0:functionName(args)}",
+    "description": "Spawn goroutine with function call"
+  },
+  "Channel Make (unbuffered)": {
+    "prefix": "dmmake",
+    "body": "sus ${1:ch} = make(dm<${0:normie}>)",
+    "description": "Create unbuffered channel"
+  },
+  "Channel Make (buffered)": {
+    "prefix": "dmbuf",
+    "body": "sus ${1:ch} = make(dm<${2:normie}>, ${0:capacity})",
+    "description": "Create buffered channel"
+  },
+  "Channel Send": {
+    "prefix": "dmsend",
+    "body": "${1:ch} <- ${0:value}",
+    "description": "Send value to channel"
+  },
+  "Channel Receive": {
+    "prefix": "dmrecv",
+    "body": "sus ${1:val} = <-${0:ch}",
+    "description": "Receive value from channel"
+  },
+  "Channel Receive (with ok)": {
+    "prefix": "dmrecvok",
+    "body": "sus ${1:val}, ${2:ok} = <-${0:ch}",
+    "description": "Receive from channel with closed check"
+  },
+  "Channel Close": {
+    "prefix": "dmclose",
+    "body": "close(${0:ch})",
+    "description": "Close a channel"
+  },
+
+  "Pointer Type": {
+    "prefix": "ptr",
+    "body": "sus ${1:name} ඞ${2:normie} = ඞ${0:variable}",
+    "description": "Pointer declaration (ඞ)"
+  },
+  "Pointer Dereference": {
+    "prefix": "deref",
+    "body": "*${0:pointer}",
+    "description": "Dereference a pointer"
+  },
+
   "Import": {
     "prefix": "yeet",
-    "body": "yeet \"${1:package}\"",
+    "body": "yeet \"${0:package}\"",
     "description": "Import package"
   },
+  "Import (aliased)": {
+    "prefix": "yeetas",
+    "body": "yeet \"${1:package}\" as ${0:alias}",
+    "description": "Import package with alias"
+  },
+  "Import (selective)": {
+    "prefix": "yeetfrom",
+    "body": [
+      "yeet ${1:module}.{",
+      "\t${0:items}",
+      "}"
+    ],
+    "description": "Selective import from module"
+  },
+  "Package Declaration": {
+    "prefix": "vibe",
+    "body": [
+      "vibe ${1:packageName}",
+      "",
+      "$0"
+    ],
+    "description": "Package declaration"
+  },
+
   "Print": {
     "prefix": "spill",
     "body": "vibez.spill(${0:\"message\"})",
@@ -221,6 +371,43 @@
     "body": "println(${0:\"message\"})",
     "description": "Print line"
   },
+  "Sprintf": {
+    "prefix": "sprintf",
+    "body": "sprintf(\"${1:format}\", ${0:args})",
+    "description": "Format string"
+  },
+
+  "Array Declaration": {
+    "prefix": "array",
+    "body": "sus ${1:name} ${2:normie}[] = {${0:elements}}",
+    "description": "Array declaration"
+  },
+  "Map Declaration": {
+    "prefix": "map",
+    "body": "sus ${1:name} map[${2:tea}]${0:normie}",
+    "description": "Map declaration"
+  },
+  "Map Initialized": {
+    "prefix": "mapinit",
+    "body": [
+      "sus ${1:name} = map[${2:tea}]${3:normie}{",
+      "\t\"${4:key}\": ${5:value},",
+      "\t$0",
+      "}"
+    ],
+    "description": "Map with initial values"
+  },
+  "Slice": {
+    "prefix": "slice",
+    "body": "${1:collection}[${2:start}:${0:end}]",
+    "description": "Slice expression"
+  },
+  "Type Cast": {
+    "prefix": "as",
+    "body": "${1:value} as ${0:type}",
+    "description": "Type cast"
+  },
+
   "Line Comment": {
     "prefix": "frfr",
     "body": "fr fr ${0:comment}",
@@ -235,42 +422,7 @@
     ],
     "description": "Block comment"
   },
-  "Method with Receiver": {
-    "prefix": "slaymethod",
-    "body": [
-      "slay (${1:r} ${2:Type}) ${3:methodName}(${4:params}) ${5:returnType} {",
-      "\t$0",
-      "}"
-    ],
-    "description": "Method with receiver"
-  },
-  "Function with Error Return": {
-    "prefix": "slayerr",
-    "body": [
-      "slay ${1:name}(${2:params}) ${3:returnType} yikes {",
-      "\tready ${4:errorCondition} {",
-      "\t\tyikes \"${5:error message}\"",
-      "\t}",
-      "\tdamn ${0:result}",
-      "}"
-    ],
-    "description": "Function returning an error"
-  },
-  "Type Definition": {
-    "prefix": "belike",
-    "body": "be_like ${1:Name} ${0:sourceType}",
-    "description": "Type alias/definition"
-  },
-  "Pattern Matching": {
-    "prefix": "sick",
-    "body": [
-      "sick (${1:value}) {",
-      "\twhen ${2:pattern} -> ${3:result}",
-      "\twhen _ -> ${0:default}",
-      "}"
-    ],
-    "description": "Pattern matching"
-  },
+
   "Test Function": {
     "prefix": "test",
     "body": [
@@ -281,38 +433,5 @@
       "}"
     ],
     "description": "Test function"
-  },
-  "Array Declaration": {
-    "prefix": "array",
-    "body": "sus ${1:name} ${2:normie}[] = {${0:elements}}",
-    "description": "Array declaration"
-  },
-  "Map Declaration": {
-    "prefix": "map",
-    "body": "sus ${1:name} map[${2:tea}]${0:normie}",
-    "description": "Map declaration"
-  },
-  "Package Declaration": {
-    "prefix": "vibe",
-    "body": [
-      "vibe ${1:packageName}",
-      "",
-      "$0"
-    ],
-    "description": "Package declaration"
-  },
-  "Implementation Block": {
-    "prefix": "impl",
-    "body": [
-      "impl ${1:Interface} for ${2:Type} {",
-      "\t$0",
-      "}"
-    ],
-    "description": "Implementation block"
-  },
-  "Error Return": {
-    "prefix": "yikes",
-    "body": "yikes \"${0:error message}\"",
-    "description": "Return an error"
   }
 }

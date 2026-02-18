@@ -94,13 +94,15 @@ export async function activate(context: vscode.ExtensionContext) {
                     // Control flow
                     'lowkey': '**lowkey** — If statement\n\n```cursed\nlowkey condition {\n    fr fr do something\n}\n```',
                     'highkey': '**highkey** — Else clause\n\n```cursed\nlowkey condition {\n    fr fr if branch\n} highkey {\n    fr fr else branch\n}\n```',
-                    'ready': '**ready** — If statement (alt syntax)\n\n```cursed\nready (condition) {\n    fr fr do something\n}\n```',
-                    'otherwise': '**otherwise** — Else clause (alt syntax)\n\n```cursed\nready (x > 0) {\n    fr fr positive\n} otherwise {\n    fr fr non-positive\n}\n```',
                     'bestie': '**bestie** — For loop\n\n```cursed\nbestie i := 0; i < 10; i++ {\n    println(i)\n}\n```',
                     'periodt': '**periodt** — While loop\n\n```cursed\nperiodt condition {\n    fr fr loop body\n}\n```',
                     'vibe_check': '**vibe_check** — Switch statement\n\n```cursed\nvibe_check value {\n    mood 1: println("one")\n    mood 2: println("two")\n    basic: println("other")\n}\n```',
                     'mood': '**mood** — Case in vibe_check (switch)',
                     'basic': '**basic** — Default case in vibe_check (switch)',
+
+                    'flex': '**flex** — Range iteration\n\n```cursed\nbestie idx, val := flex collection {\n    println(val)\n}\n```',
+                    'select': '**select** — Select statement (channel multiplexing)\n\n```cursed\nselect {\n    mood msg := dm_recv(ch):\n        println(msg)\n}\n```',
+                    'match': '**match** — Pattern matching\n\n```cursed\nmatch value {\n    when 1 -> println("one")\n    when _ -> println("other")\n}\n```',
 
                     // Flow control
                     'damn': '**damn** — Return value from function\n\n```cursed\nslay add(a, b) {\n    damn a + b\n}\n```',
@@ -112,6 +114,8 @@ export async function activate(context: vscode.ExtensionContext) {
                     // Concurrency
                     'stan': '**stan** — Spawn goroutine\n\n```cursed\nstan { doWork() }\n```',
 
+                    'impl': '**impl** — Implementation block\n\n```cursed\nimpl Greeter for Person {\n    slay greet() tea {\n        damn "Hello"\n    }\n}\n```',
+
                     // Error handling
                     'yikes': '**yikes** — Error type / throw error',
                     'fam': '**fam** — Error handling block (try-catch)',
@@ -120,7 +124,6 @@ export async function activate(context: vscode.ExtensionContext) {
                     // Constants
                     'based': '**based** — Boolean `true`',
                     'cringe': '**cringe** — Boolean `false`',
-                    'cap': '**cap** — Boolean `false` (alt)',
                     'nah': '**nah** — Null value',
 
                     // Types
