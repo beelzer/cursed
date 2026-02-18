@@ -1,0 +1,11 @@
+{
+  "iconDefinitions": {
+    "cursed": {
+      "iconPath": "./cursed-icon.svg"
+    }
+  },
+  "fileExtensions": {
+    "💀": "cursed",
+    "cursed": "cursed"
+  }
+}

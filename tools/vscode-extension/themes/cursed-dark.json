@@ -1,0 +1,138 @@
+{
+  "name": "CURSED Dark",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#0d0d0d",
+    "editor.foreground": "#e0e0e0",
+    "editorCursor.foreground": "#ff6ec7",
+    "editor.selectionBackground": "#ff6ec740",
+    "editor.lineHighlightBackground": "#1a1a2e",
+    "editorLineNumber.foreground": "#555577",
+    "editorLineNumber.activeForeground": "#ff6ec7",
+    "sideBar.background": "#0a0a0a",
+    "sideBar.foreground": "#c0c0d0",
+    "sideBarTitle.foreground": "#ff6ec7",
+    "activityBar.background": "#0a0a0a",
+    "activityBar.foreground": "#ff6ec7",
+    "titleBar.activeBackground": "#0d0d0d",
+    "titleBar.activeForeground": "#e0e0e0",
+    "statusBar.background": "#1a1a2e",
+    "statusBar.foreground": "#ff6ec7",
+    "tab.activeBackground": "#1a1a2e",
+    "tab.activeForeground": "#e0e0e0",
+    "tab.inactiveBackground": "#0d0d0d",
+    "tab.inactiveForeground": "#666680",
+    "terminal.foreground": "#e0e0e0",
+    "terminal.ansiBlack": "#0d0d0d",
+    "terminal.ansiRed": "#ff4d6a",
+    "terminal.ansiGreen": "#7effc2",
+    "terminal.ansiYellow": "#ffe66d",
+    "terminal.ansiBlue": "#7dabff",
+    "terminal.ansiMagenta": "#ff6ec7",
+    "terminal.ansiCyan": "#6df5ff",
+    "terminal.ansiWhite": "#e0e0e0",
+    "editorBracketHighlight.foreground1": "#ff6ec7",
+    "editorBracketHighlight.foreground2": "#7dabff",
+    "editorBracketHighlight.foreground3": "#ffe66d",
+    "editorBracketHighlight.foreground4": "#7effc2",
+    "editorBracketHighlight.foreground5": "#6df5ff",
+    "editorBracketHighlight.foreground6": "#ff4d6a"
+  },
+  "tokenColors": [
+    {
+      "name": "Comments",
+      "scope": ["comment", "punctuation.definition.comment"],
+      "settings": { "foreground": "#555577", "fontStyle": "italic" }
+    },
+    {
+      "name": "Keywords",
+      "scope": ["keyword", "keyword.control", "keyword.other"],
+      "settings": { "foreground": "#ff6ec7", "fontStyle": "bold" }
+    },
+    {
+      "name": "Conditional / Loop keywords",
+      "scope": ["keyword.control.conditional", "keyword.control.loop"],
+      "settings": { "foreground": "#ff6ec7" }
+    },
+    {
+      "name": "Functions",
+      "scope": ["entity.name.function", "support.function"],
+      "settings": { "foreground": "#7dabff" }
+    },
+    {
+      "name": "Function definitions",
+      "scope": ["entity.name.function.definition"],
+      "settings": { "foreground": "#7dabff", "fontStyle": "bold" }
+    },
+    {
+      "name": "Types / Structs / Interfaces",
+      "scope": ["entity.name.type", "storage.type", "support.type"],
+      "settings": { "foreground": "#6df5ff" }
+    },
+    {
+      "name": "Type keywords (normie, tea, etc)",
+      "scope": ["storage.type.primitive", "keyword.type"],
+      "settings": { "foreground": "#6df5ff" }
+    },
+    {
+      "name": "Strings",
+      "scope": ["string", "string.quoted"],
+      "settings": { "foreground": "#7effc2" }
+    },
+    {
+      "name": "Numbers",
+      "scope": ["constant.numeric"],
+      "settings": { "foreground": "#ffe66d" }
+    },
+    {
+      "name": "Boolean / Null constants",
+      "scope": ["constant.language"],
+      "settings": { "foreground": "#ff4d6a" }
+    },
+    {
+      "name": "Variables",
+      "scope": ["variable", "variable.other"],
+      "settings": { "foreground": "#e0e0e0" }
+    },
+    {
+      "name": "Parameters",
+      "scope": ["variable.parameter"],
+      "settings": { "foreground": "#c9a0ff" }
+    },
+    {
+      "name": "Operators",
+      "scope": ["keyword.operator"],
+      "settings": { "foreground": "#ff6ec7" }
+    },
+    {
+      "name": "Punctuation / Braces",
+      "scope": ["punctuation"],
+      "settings": { "foreground": "#888899" }
+    },
+    {
+      "name": "Import / Package",
+      "scope": ["keyword.control.import", "keyword.other.package"],
+      "settings": { "foreground": "#c9a0ff" }
+    },
+    {
+      "name": "Module names",
+      "scope": ["entity.name.import", "entity.name.package"],
+      "settings": { "foreground": "#c9a0ff", "fontStyle": "italic" }
+    },
+    {
+      "name": "Error keywords",
+      "scope": ["keyword.control.trycatch", "keyword.other.error"],
+      "settings": { "foreground": "#ff4d6a" }
+    },
+    {
+      "name": "Concurrency keywords",
+      "scope": ["keyword.other.concurrency"],
+      "settings": { "foreground": "#ffe66d" }
+    },
+    {
+      "name": "Storage modifiers (const, etc)",
+      "scope": ["storage.modifier"],
+      "settings": { "foreground": "#ff6ec7" }
+    }
+  ]
+}
