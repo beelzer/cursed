@@ -1,0 +1,604 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Cursed",
+  "scopeName": "source.cursed",
+  "fileTypes": ["cursed", "💀"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#characters" },
+    { "include": "#numbers" },
+    { "include": "#package-declaration" },
+    { "include": "#import-statement" },
+    { "include": "#function-definition" },
+    { "include": "#type-definition" },
+    { "include": "#struct-definition" },
+    { "include": "#interface-definition" },
+    { "include": "#variable-declaration" },
+    { "include": "#keywords-control" },
+    { "include": "#keywords-declaration" },
+    { "include": "#keywords-concurrency" },
+    { "include": "#keywords-error" },
+    { "include": "#keywords-modifier" },
+    { "include": "#constants" },
+    { "include": "#blank-identifier" },
+    { "include": "#types" },
+    { "include": "#channel-type" },
+    { "include": "#map-type" },
+    { "include": "#pointer-operator" },
+    { "include": "#builtin-functions" },
+    { "include": "#operators" },
+    { "include": "#stdlib" },
+    { "include": "#package-access" },
+    { "include": "#method-call" },
+    { "include": "#function-call" },
+    { "include": "#all-caps-constants" },
+    { "include": "#user-types" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.documentation.cursed",
+          "match": "fr\\s+fr[!/].*$",
+          "patterns": [
+            { "include": "#comment-tags" }
+          ]
+        },
+        {
+          "name": "comment.line.cursed",
+          "match": "fr\\s+fr\\s.*$",
+          "patterns": [
+            { "include": "#comment-tags" }
+          ]
+        },
+        {
+          "name": "comment.line.cursed",
+          "match": "fr\\s+fr\\s*$"
+        },
+        {
+          "name": "comment.line.double-slash.cursed",
+          "begin": "//",
+          "end": "$",
+          "patterns": [
+            { "include": "#comment-tags" }
+          ]
+        },
+        {
+          "name": "comment.line.number-sign.cursed",
+          "match": "#.*$",
+          "patterns": [
+            { "include": "#comment-tags" }
+          ]
+        },
+        {
+          "name": "comment.block.cursed",
+          "begin": "no\\s+cap\\b",
+          "end": "\\bon\\s+god\\b",
+          "patterns": [
+            { "include": "#comments" },
+            { "include": "#comment-tags" }
+          ]
+        },
+        {
+          "name": "comment.block.c-style.cursed",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "patterns": [
+            { "include": "#comment-tags" }
+          ]
+        }
+      ]
+    },
+    "comment-tags": {
+      "patterns": [
+        {
+          "name": "keyword.codetag.notation.cursed",
+          "match": "\\b(TODO|FIXME|NOTE|HACK|XXX|BUG|WARN)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.cursed",
+          "begin": "\"",
+          "end": "\"",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.cursed" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.cursed" }
+          },
+          "patterns": [
+            { "include": "#string-escapes" }
+          ]
+        },
+        {
+          "name": "string.quoted.other.raw.cursed",
+          "begin": "`",
+          "end": "`",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.cursed" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.cursed" }
+          }
+        }
+      ]
+    },
+    "string-escapes": {
+      "patterns": [
+        {
+          "name": "constant.character.escape.cursed",
+          "match": "\\\\[nrtfvba\\\\\"'0]"
+        },
+        {
+          "name": "constant.character.escape.unicode.cursed",
+          "match": "\\\\u[0-9a-fA-F]{4}"
+        },
+        {
+          "name": "constant.character.escape.unicode.cursed",
+          "match": "\\\\U[0-9a-fA-F]{8}"
+        },
+        {
+          "name": "constant.character.escape.hex.cursed",
+          "match": "\\\\x[0-9a-fA-F]{2}"
+        }
+      ]
+    },
+    "characters": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.cursed",
+          "begin": "'",
+          "end": "'",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.character.begin.cursed" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.character.end.cursed" }
+          },
+          "patterns": [
+            { "include": "#string-escapes" },
+            {
+              "name": "constant.character.cursed",
+              "match": "."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.hex.cursed",
+          "match": "\\b0[xX][0-9a-fA-F_]+\\b"
+        },
+        {
+          "name": "constant.numeric.octal.cursed",
+          "match": "\\b0[oO][0-7_]+\\b"
+        },
+        {
+          "name": "constant.numeric.binary.cursed",
+          "match": "\\b0[bB][01_]+\\b"
+        },
+        {
+          "name": "constant.numeric.float.cursed",
+          "match": "\\b\\d[\\d_]*\\.[\\d_]*([eE][+-]?[\\d_]+)?\\b"
+        },
+        {
+          "name": "constant.numeric.float.cursed",
+          "match": "\\b\\.[\\d_]+([eE][+-]?[\\d_]+)?\\b"
+        },
+        {
+          "name": "constant.numeric.float.cursed",
+          "match": "\\b\\d[\\d_]*[eE][+-]?[\\d_]+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.cursed",
+          "match": "\\b\\d[\\d_]*\\b"
+        }
+      ]
+    },
+    "package-declaration": {
+      "patterns": [
+        {
+          "match": "^\\s*(vibe)\\s+([a-zA-Z_]\\w*)",
+          "captures": {
+            "1": { "name": "keyword.declaration.package.cursed" },
+            "2": { "name": "entity.name.namespace.cursed" }
+          }
+        }
+      ]
+    },
+    "import-statement": {
+      "patterns": [
+        {
+          "match": "^\\s*(yeet)\\s+(\"[^\"]*\")",
+          "captures": {
+            "1": { "name": "keyword.declaration.import.cursed" },
+            "2": { "name": "string.quoted.double.cursed" }
+          }
+        },
+        {
+          "name": "meta.import.cursed",
+          "begin": "^\\s*(yeet)\\s*\\(",
+          "end": "\\)",
+          "beginCaptures": {
+            "1": { "name": "keyword.declaration.import.cursed" }
+          },
+          "patterns": [
+            { "include": "#comments" },
+            {
+              "name": "string.quoted.double.cursed",
+              "match": "\"[^\"]*\""
+            }
+          ]
+        }
+      ]
+    },
+    "function-definition": {
+      "patterns": [
+        {
+          "comment": "Function definition: slay funcName(",
+          "match": "\\b(slay)\\s+([a-zA-Z_]\\w*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "keyword.declaration.function.cursed" },
+            "2": { "name": "entity.name.function.cursed" }
+          }
+        },
+        {
+          "comment": "Generic function: slay funcName<T>(",
+          "match": "\\b(slay)\\s+([a-zA-Z_]\\w*)\\s*(?=<)",
+          "captures": {
+            "1": { "name": "keyword.declaration.function.cursed" },
+            "2": { "name": "entity.name.function.cursed" }
+          }
+        },
+        {
+          "comment": "Method with receiver: slay (r Type) methodName(",
+          "match": "\\b(slay)\\s*\\([^)]+\\)\\s+([a-zA-Z_]\\w*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "keyword.declaration.function.cursed" },
+            "2": { "name": "entity.name.function.cursed" }
+          }
+        }
+      ]
+    },
+    "variable-declaration": {
+      "patterns": [
+        {
+          "comment": "Variable declaration: sus name or facts name",
+          "match": "\\b(sus|facts)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+          "captures": {
+            "1": { "name": "keyword.declaration.cursed" },
+            "2": { "name": "variable.name.cursed" }
+          }
+        }
+      ]
+    },
+    "type-definition": {
+      "patterns": [
+        {
+          "match": "\\b(be_like)\\s+([a-zA-Z_]\\w*)",
+          "captures": {
+            "1": { "name": "keyword.declaration.type.cursed" },
+            "2": { "name": "entity.name.type.cursed" }
+          }
+        }
+      ]
+    },
+    "struct-definition": {
+      "patterns": [
+        {
+          "match": "\\b(squad)\\b",
+          "name": "keyword.declaration.struct.cursed"
+        }
+      ]
+    },
+    "interface-definition": {
+      "patterns": [
+        {
+          "match": "\\b(collab)\\b",
+          "name": "keyword.declaration.interface.cursed"
+        }
+      ]
+    },
+    "keywords-control": {
+      "patterns": [
+        {
+          "name": "keyword.control.conditional.cursed",
+          "match": "\\b(ready|otherwise|lowkey|highkey)\\b"
+        },
+        {
+          "name": "keyword.control.loop.cursed",
+          "match": "\\b(bestie|periodt)\\b"
+        },
+        {
+          "name": "keyword.control.switch.cursed",
+          "match": "\\b(vibe_check|mood|basic|sick|when|aight)\\b"
+        },
+        {
+          "name": "keyword.control.flow.cursed",
+          "match": "\\b(ghosted|simp|damn|yolo|later|flex|in|select)\\b"
+        }
+      ]
+    },
+    "keywords-declaration": {
+      "patterns": [
+        {
+          "name": "keyword.declaration.cursed",
+          "match": "\\b(vibe|yeet|slay|sus|facts|be_like|squad|collab|impl|extends|with|as|from|except|rename|struct)\\b"
+        }
+      ]
+    },
+    "keywords-concurrency": {
+      "patterns": [
+        {
+          "name": "keyword.other.concurrency.cursed",
+          "match": "\\b(stan|dm_send|dm_recv|dm_close|dm_make)\\b"
+        }
+      ]
+    },
+    "keywords-error": {
+      "patterns": [
+        {
+          "name": "keyword.control.error.cursed",
+          "match": "\\b(yikes|fam|shook|panic|recover)\\b"
+        }
+      ]
+    },
+    "keywords-modifier": {
+      "patterns": [
+        {
+          "name": "storage.modifier.visibility.cursed",
+          "match": "\\b(priv|crew|public)\\b"
+        },
+        {
+          "name": "storage.modifier.cursed",
+          "match": "\\b(async|unsafe)\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.true.cursed",
+          "match": "\\b(based)\\b"
+        },
+        {
+          "name": "constant.language.boolean.false.cursed",
+          "match": "\\b(cringe|cap)\\b"
+        },
+        {
+          "name": "constant.language.null.cursed",
+          "match": "\\b(nah)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "storage.type.numeric.cursed",
+          "match": "\\b(normie|smol|mid|thicc|snack|meal|drip|drop|byte|rune|extra)\\b"
+        },
+        {
+          "name": "storage.type.boolean.cursed",
+          "match": "\\b(lit)\\b"
+        },
+        {
+          "name": "storage.type.string.cursed",
+          "match": "\\b(tea|txt)\\b"
+        },
+        {
+          "name": "storage.type.character.cursed",
+          "match": "\\b(sip)\\b"
+        },
+        {
+          "name": "support.type.error.cursed",
+          "match": "\\b(memory_yikes|io_yikes|network_yikes|parse_yikes|type_yikes|runtime_yikes|security_yikes|performance_yikes)\\b"
+        }
+      ]
+    },
+    "blank-identifier": {
+      "patterns": [
+        {
+          "name": "variable.language.blank.cursed",
+          "match": "\\b_\\b"
+        }
+      ]
+    },
+    "map-type": {
+      "patterns": [
+        {
+          "match": "\\b(map)\\s*(\\[)",
+          "captures": {
+            "1": { "name": "storage.type.map.cursed" },
+            "2": { "name": "punctuation.definition.typeparameters.begin.cursed" }
+          }
+        }
+      ]
+    },
+    "builtin-functions": {
+      "patterns": [
+        {
+          "match": "\\b(len|cap|append|make|new|delete|copy|close|print|println|puts)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "support.function.builtin.cursed" }
+          }
+        }
+      ]
+    },
+    "channel-type": {
+      "patterns": [
+        {
+          "match": "\\b(dm|chan)\\s*(<)",
+          "captures": {
+            "1": { "name": "storage.type.channel.cursed" },
+            "2": { "name": "punctuation.definition.typeparameters.begin.cursed" }
+          }
+        }
+      ]
+    },
+    "pointer-operator": {
+      "patterns": [
+        {
+          "name": "keyword.operator.pointer.cursed",
+          "match": "\u0D9E"
+        },
+        {
+          "name": "keyword.operator.pointer.at.cursed",
+          "match": "@"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.channel.receive.cursed",
+          "match": "<-"
+        },
+        {
+          "name": "keyword.operator.arrow.cursed",
+          "match": "->"
+        },
+        {
+          "name": "keyword.operator.optional.cursed",
+          "match": "\\?"
+        },
+        {
+          "name": "keyword.operator.assignment.short.cursed",
+          "match": ":="
+        },
+        {
+          "name": "keyword.operator.assignment.compound.cursed",
+          "match": "(\\+=|-=|\\*=|/=|%=|&=|\\|=|\\^=|<<=|>>=)"
+        },
+        {
+          "name": "keyword.operator.comparison.cursed",
+          "match": "(==|!=|<=|>=)"
+        },
+        {
+          "name": "keyword.operator.logical.cursed",
+          "match": "(&&|\\|\\|)"
+        },
+        {
+          "name": "keyword.operator.logical.not.cursed",
+          "match": "!"
+        },
+        {
+          "name": "keyword.operator.arithmetic.cursed",
+          "match": "(\\+\\+|--)"
+        },
+        {
+          "name": "keyword.operator.bitwise.shift.cursed",
+          "match": "(<<|>>)"
+        },
+        {
+          "name": "keyword.operator.variadic.cursed",
+          "match": "\\.\\.\\."
+        },
+        {
+          "name": "keyword.operator.assignment.cursed",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.arithmetic.cursed",
+          "match": "[+\\-*/%]"
+        },
+        {
+          "name": "keyword.operator.comparison.cursed",
+          "match": "[<>]"
+        },
+        {
+          "name": "keyword.operator.bitwise.cursed",
+          "match": "[&|^]"
+        }
+      ]
+    },
+    "package-access": {
+      "patterns": [
+        {
+          "match": "\\b([a-zA-Z_]\\w*)(\\.)([a-zA-Z_]\\w*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "entity.name.namespace.cursed" },
+            "2": { "name": "punctuation.accessor.cursed" },
+            "3": { "name": "entity.name.function.cursed" }
+          }
+        },
+        {
+          "match": "\\b([a-zA-Z_]\\w*)(\\.)([a-zA-Z_]\\w*)",
+          "captures": {
+            "1": { "name": "entity.name.namespace.cursed" },
+            "2": { "name": "punctuation.accessor.cursed" },
+            "3": { "name": "variable.other.property.cursed" }
+          }
+        }
+      ]
+    },
+    "method-call": {
+      "patterns": [
+        {
+          "comment": "Method call: .methodName(",
+          "match": "(\\.)([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "punctuation.accessor.cursed" },
+            "2": { "name": "entity.name.function.method.cursed" }
+          }
+        }
+      ]
+    },
+    "function-call": {
+      "patterns": [
+        {
+          "match": "\\b([a-zA-Z_]\\w*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "entity.name.function.call.cursed" }
+          }
+        }
+      ]
+    },
+    "stdlib": {
+      "patterns": [
+        {
+          "name": "support.module.stdlib.cursed",
+          "match": "\\b(vibez|mathz|stringz|arrayz|testz|cryptz|filez|httpz|timez|jsonz|concurrenz)\\b"
+        }
+      ]
+    },
+    "all-caps-constants": {
+      "patterns": [
+        {
+          "name": "constant.other.caps.cursed",
+          "match": "\\b[A-Z_][A-Z0-9_]{2,}\\b"
+        }
+      ]
+    },
+    "user-types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.cursed",
+          "match": "\\b[A-Z][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.comma.cursed",
+          "match": ","
+        },
+        {
+          "name": "punctuation.terminator.semicolon.cursed",
+          "match": ";"
+        },
+        {
+          "name": "punctuation.accessor.dot.cursed",
+          "match": "\\."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,158 @@
+# CURSED Language Dictionary
+# Keywords, types, built-in functions, and stdlib modules
+
+# Declaration keywords
+slay
+sus
+facts
+vibe
+yeet
+be_like
+squad
+collab
+impl
+struct
+extends
+priv
+crew
+
+# Control flow keywords
+lowkey
+highkey
+periodt
+bestie
+vibe_check
+aight
+ghosted
+simp
+damn
+yolo
+later
+
+# Error handling
+yikes
+fam
+shook
+
+# Concurrency
+stan
+dm_send
+dm_recv
+dm_close
+dm_make
+
+# Constants
+based
+cringe
+nah
+
+# Types
+normie
+smol
+thicc
+snack
+drip
+sip
+rune
+txt
+
+# Stdlib path prefix
+stdlib
+
+# Stdlib modules
+vibez
+mathz
+stringz
+arrayz
+testz
+cryptz
+filez
+httpz
+timez
+jsonz
+concurrenz
+
+# Built-in / stdlib functions
+spill
+spillln
+spillf
+println
+bytefit
+htmlrizzler
+abs_normie
+format_int
+format_float
+format_bool
+current_time_millis
+current_time_nanos
+time_diff
+read_file
+write_file
+file_exists
+create_dir
+is_dir
+get_file_size
+read_line
+memset
+memcpy
+realloc
+gc_collect
+get_memory_stats
+stringify
+parse_object
+parse_array
+find_all
+replace_all
+quick_sort
+bubble_sort
+new_array
+
+# Collection types/methods
+Vec_new
+Vec_len
+Vec_push
+Vec_pop
+Vec_get
+Vec_set
+Map_new
+Map_len
+Map_insert
+Map_get
+Map_remove
+Map_contains_key
+Map_keys
+Set_new
+Set_len
+Set_insert
+Set_contains
+Set_remove
+
+# Common identifiers
+main_character
+no_cap
+yeet_error
+type_check
+for_impl
+print_separator
+
+# Error types
+memory_yikes
+io_yikes
+network_yikes
+parse_yikes
+type_yikes
+runtime_yikes
+security_yikes
+performance_yikes
+
+# Comment keywords (for spell checker context)
+fr
+
+# Fun module names from examples
+cloudz
+kubernetesz
+deploymentz
+errorz
+serdeez
+json_tea
+chaos_mode

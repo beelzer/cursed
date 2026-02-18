@@ -1,0 +1,18 @@
+{
+  "id": "cursed-lang-dictionary",
+  "name": "CURSED Language Dictionary",
+  "description": "Spell checker dictionary for the CURSED programming language",
+  "dictionaryDefinitions": [
+    {
+      "name": "cursed-lang",
+      "path": "./dictionaries/cursed.txt"
+    }
+  ],
+  "dictionaries": ["cursed-lang"],
+  "languageSettings": [
+    {
+      "languageId": "cursed",
+      "dictionaries": ["cursed-lang"]
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+{
+  "Main Function": {
+    "prefix": "main",
+    "body": [
+      "vibe main",
+      "",
+      "yeet \"vibez\"",
+      "",
+      "slay main() {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Main function boilerplate"
+  },
+  "Main Character Entry Point": {
+    "prefix": "main_character",
+    "body": [
+      "slay main_character() {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Main character entry point function"
+  },
+  "Function Definition": {
+    "prefix": "slay",
+    "body": [
+      "slay ${1:name}(${2:params}) ${3:returnType} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Function definition"
+  },
+  "Variable Declaration": {
+    "prefix": "sus",
+    "body": "sus ${1:name} ${2:type} = ${0:value}",
+    "description": "Variable declaration"
+  },
+  "Short Variable": {
+    "prefix": "susshort",
+    "body": "${1:name} := ${0:value}",
+    "description": "Short variable declaration with type inference"
+  },
+  "Constant": {
+    "prefix": "facts",
+    "body": "facts ${1:NAME} = ${0:value}",
+    "description": "Constant declaration"
+  },
+  "If Statement (lowkey)": {
+    "prefix": "lowkey",
+    "body": [
+      "lowkey ${1:condition} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If statement using lowkey"
+  },
+  "If-Else Statement (lowkey/highkey)": {
+    "prefix": "lowkeyhighkey",
+    "body": [
+      "lowkey ${1:condition} {",
+      "\t$2",
+      "} highkey {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If-else statement using lowkey/highkey"
+  },
+  "If Statement (ready)": {
+    "prefix": "ready",
+    "body": [
+      "ready ${1:condition} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If statement using ready"
+  },
+  "If-Else Statement (ready/otherwise)": {
+    "prefix": "readyelse",
+    "body": [
+      "ready ${1:condition} {",
+      "\t$2",
+      "} otherwise {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If-else statement using ready/otherwise"
+  },
+  "For Loop": {
+    "prefix": "bestie",
+    "body": [
+      "bestie ${1:i} := ${2:0}; ${1:i} < ${3:10}; ${1:i}++ {",
+      "\t$0",
+      "}"
+    ],
+    "description": "For loop"
+  },
+  "Range Loop": {
+    "prefix": "bestieflex",
+    "body": [
+      "bestie ${1:idx}, ${2:val} := flex ${3:collection} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Range-based for loop"
+  },
+  "While Loop (periodt)": {
+    "prefix": "periodt",
+    "body": [
+      "periodt ${1:condition} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "While loop using periodt"
+  },
+  "Infinite Loop": {
+    "prefix": "bestieloop",
+    "body": [
+      "bestie {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Infinite loop"
+  },
+  "Switch Statement (vibe_check)": {
+    "prefix": "vibecheck",
+    "body": [
+      "vibe_check ${1:value} {",
+      "\tmood ${2:case1}:",
+      "\t\t$3",
+      "\tmood ${4:case2}:",
+      "\t\t$5",
+      "\tbasic:",
+      "\t\t$0",
+      "}"
+    ],
+    "description": "Switch statement using vibe_check"
+  },
+  "Struct Definition": {
+    "prefix": "squad",
+    "body": [
+      "squad ${1:Name} {",
+      "\tsus ${2:field}",
+      "\t$0",
+      "}"
+    ],
+    "description": "Struct definition"
+  },
+  "Interface Definition": {
+    "prefix": "collab",
+    "body": [
+      "be_like ${1:Name} collab {",
+      "\t${2:method}() ${3:returnType}",
+      "\t$0",
+      "}"
+    ],
+    "description": "Interface definition"
+  },
+  "Error Handling": {
+    "prefix": "fam",
+    "body": [
+      "fam {",
+      "\t${1:val} := ${2:riskyCall()} shook",
+      "\t$3",
+      "} sus ${4:error} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Try-catch error handling"
+  },
+  "Goroutine": {
+    "prefix": "stan",
+    "body": [
+      "stan {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Spawn goroutine"
+  },
+  "Channel Declaration": {
+    "prefix": "dm",
+    "body": "sus ${1:ch} dm<${2:normie}>",
+    "description": "Channel declaration"
+  },
+  "Return (damn)": {
+    "prefix": "damn",
+    "body": "damn ${0:value}",
+    "description": "Return statement using damn"
+  },
+  "Return (yolo)": {
+    "prefix": "yolo",
+    "body": "yolo ${0:value}",
+    "description": "Return statement using yolo"
+  },
+  "Break": {
+    "prefix": "ghosted",
+    "body": "ghosted",
+    "description": "Break out of loop"
+  },
+  "Continue": {
+    "prefix": "simp",
+    "body": "simp",
+    "description": "Continue to next iteration"
+  },
+  "Defer": {
+    "prefix": "later",
+    "body": "later ${0:cleanup()}",
+    "description": "Defer statement"
+  },
+  "Import": {
+    "prefix": "yeet",
+    "body": "yeet \"${1:package}\"",
+    "description": "Import package"
+  },
+  "Print": {
+    "prefix": "spill",
+    "body": "vibez.spill(${0:\"message\"})",
+    "description": "Print output"
+  },
+  "Println": {
+    "prefix": "println",
+    "body": "println(${0:\"message\"})",
+    "description": "Print line"
+  },
+  "Line Comment": {
+    "prefix": "frfr",
+    "body": "fr fr ${0:comment}",
+    "description": "Line comment"
+  },
+  "Block Comment": {
+    "prefix": "nocap",
+    "body": [
+      "no cap",
+      "\t$0",
+      "on god"
+    ],
+    "description": "Block comment"
+  },
+  "Method with Receiver": {
+    "prefix": "slaymethod",
+    "body": [
+      "slay (${1:r} ${2:Type}) ${3:methodName}(${4:params}) ${5:returnType} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Method with receiver"
+  },
+  "Function with Error Return": {
+    "prefix": "slayerr",
+    "body": [
+      "slay ${1:name}(${2:params}) ${3:returnType} yikes {",
+      "\tready ${4:errorCondition} {",
+      "\t\tyikes \"${5:error message}\"",
+      "\t}",
+      "\tdamn ${0:result}",
+      "}"
+    ],
+    "description": "Function returning an error"
+  },
+  "Type Definition": {
+    "prefix": "belike",
+    "body": "be_like ${1:Name} ${0:sourceType}",
+    "description": "Type alias/definition"
+  },
+  "Pattern Matching": {
+    "prefix": "sick",
+    "body": [
+      "sick (${1:value}) {",
+      "\twhen ${2:pattern} -> ${3:result}",
+      "\twhen _ -> ${0:default}",
+      "}"
+    ],
+    "description": "Pattern matching"
+  },
+  "Test Function": {
+    "prefix": "test",
+    "body": [
+      "yeet \"testz\"",
+      "",
+      "slay test_${1:name}() {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Test function"
+  },
+  "Array Declaration": {
+    "prefix": "array",
+    "body": "sus ${1:name} ${2:normie}[] = {${0:elements}}",
+    "description": "Array declaration"
+  },
+  "Map Declaration": {
+    "prefix": "map",
+    "body": "sus ${1:name} map[${2:tea}]${0:normie}",
+    "description": "Map declaration"
+  },
+  "Package Declaration": {
+    "prefix": "vibe",
+    "body": [
+      "vibe ${1:packageName}",
+      "",
+      "$0"
+    ],
+    "description": "Package declaration"
+  },
+  "Implementation Block": {
+    "prefix": "impl",
+    "body": [
+      "impl ${1:Interface} for ${2:Type} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Implementation block"
+  },
+  "Error Return": {
+    "prefix": "yikes",
+    "body": "yikes \"${0:error message}\"",
+    "description": "Return an error"
+  }
+}

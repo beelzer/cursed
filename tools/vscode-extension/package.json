@@ -1,0 +1,135 @@
+{
+  "name": "cursed-lang",
+  "displayName": "CURSED Language",
+  "description": "Language support for the CURSED programming language - programming, but make it gen z",
+  "version": "0.1.0",
+  "publisher": "cursed-lang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ghuntley/cursed"
+  },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "cursed",
+    "gen-z",
+    "programming",
+    "language",
+    "syntax",
+    "highlighting",
+    "cSpell"
+  ],
+  "activationEvents": [
+    "onLanguage:cursed"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "typescript": "^5.0.0",
+    "@vscode/vsce": "^3.0.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "cursed",
+        "aliases": [
+          "CURSED",
+          "Cursed",
+          "cursed"
+        ],
+        "extensions": [
+          ".cursed",
+          ".💀"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "cursed",
+        "scopeName": "source.cursed",
+        "path": "./syntaxes/cursed.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "cursed",
+        "path": "./snippets/cursed.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "cursed.run",
+        "title": "Run CURSED Program",
+        "category": "CURSED"
+      },
+      {
+        "command": "cursed.build",
+        "title": "Build CURSED Program",
+        "category": "CURSED"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "cursed.run",
+        "key": "ctrl+f5",
+        "when": "editorTextFocus && editorLangId == cursed"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorLangId == cursed",
+          "command": "cursed.run",
+          "group": "navigation@1"
+        }
+      ],
+      "explorer/context": [
+        {
+          "when": "resourceExtname == .💀",
+          "command": "cursed.run",
+          "group": "navigation@1"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "CURSED Language",
+      "properties": {
+        "cursed.compiler.path": {
+          "type": "string",
+          "default": "cursed-compiler",
+          "description": "Path to the CURSED compiler executable"
+        }
+      }
+    },
+    "configurationDefaults": {
+      "[cursed]": {
+        "cSpell.words": [
+          "slay", "sus", "facts", "vibe", "yeet", "collab", "impl", "priv", "crew",
+          "lowkey", "highkey", "periodt", "bestie", "aight", "ghosted", "simp", "yolo",
+          "yikes", "fam", "shook",
+          "stan",
+          "based", "cringe", "nah",
+          "normie", "smol", "thicc", "snack", "drip", "sip", "rune", "txt",
+          "vibez", "mathz", "stringz", "arrayz", "testz", "cryptz", "filez", "httpz", "timez", "jsonz", "concurrenz",
+          "spill", "spillln", "spillf", "println", "bytefit", "htmlrizzler",
+          "memset", "memcpy", "realloc", "stringify",
+          "cloudz", "kubernetesz", "deploymentz", "errorz", "serdeez",
+          "fr"
+        ]
+      }
+    }
+  }
+}

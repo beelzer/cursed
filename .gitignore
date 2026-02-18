@@ -21,3 +21,13 @@ devenv.local.nix
 
 # pre-commit
 .pre-commit-config.yaml
+
+# Claude Code
+.claude/
+
+# Gradle build cache
+.gradle/
+
+# Node
+node_modules/
+*.vsix
