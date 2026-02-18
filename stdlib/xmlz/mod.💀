@@ -218,7 +218,7 @@ slay parse_xml_with_config(xml_content tea, config XmlParserConfig) yikes<XmlDoc
     doc.root = root_node
     
     # Validate document structure if requested
-    ready (config.validation != XmlValidationType.None) {
+    lowkey (config.validation != XmlValidationType.None) {
         validate_document(doc, config.validation) fam {
             when err -> yikes "Document validation failed: " + err
         }
@@ -247,12 +247,12 @@ slay generate_xml(doc XmlDocument) tea {
     output = output + generate_xml_declaration(doc)
     
     # DOCTYPE declaration if present
-    ready (doc.doctype != cap) {
+    lowkey (doc.doctype != cap) {
         output = output + generate_doctype_declaration(doc.doctype)
     }
     
     # Root element and children
-    ready (doc.root != cap) {
+    lowkey (doc.root != cap) {
         output = output + generate_element_xml(doc.root, 0)
     }
     
@@ -267,12 +267,12 @@ slay generate_xml_formatted(doc XmlDocument, indent_size drip) tea {
     output = output + generate_xml_declaration(doc) + "\n"
     
     # DOCTYPE declaration if present
-    ready (doc.doctype != cap) {
+    lowkey (doc.doctype != cap) {
         output = output + generate_doctype_declaration(doc.doctype) + "\n"
     }
     
     # Root element and children with formatting
-    ready (doc.root != cap) {
+    lowkey (doc.root != cap) {
         output = output + generate_element_xml_formatted(doc.root, 0, indent_size)
     }
     
@@ -281,14 +281,14 @@ slay generate_xml_formatted(doc XmlDocument, indent_size drip) tea {
 
 # Generate element XML
 slay generate_element_xml(node XmlNode, depth drip) tea {
-    ready (node.node_type != XmlNodeType.Element) {
-        ready (node.node_type == XmlNodeType.Text) {
+    lowkey (node.node_type != XmlNodeType.Element) {
+        lowkey (node.node_type == XmlNodeType.Text) {
             damn escape_xml_text(node.value)
         }
-        ready (node.node_type == XmlNodeType.Comment) {
+        lowkey (node.node_type == XmlNodeType.Comment) {
             damn "<!--" + node.value + "-->"
         }
-        ready (node.node_type == XmlNodeType.CDATA) {
+        lowkey (node.node_type == XmlNodeType.CDATA) {
             damn "<![CDATA[" + node.value + "]]>"
         }
         damn ""
@@ -302,13 +302,13 @@ slay generate_element_xml(node XmlNode, depth drip) tea {
     }
     
     # Self-closing or with children
-    ready (node.children.len() == 0 && node.value == "") {
+    lowkey (node.children.len() == 0 && node.value == "") {
         output = output + "/>"
-    } otherwise {
+    } highkey {
         output = output + ">"
         
         # Text content
-        ready (node.value != "") {
+        lowkey (node.value != "") {
             output = output + escape_xml_text(node.value)
         }
         
@@ -330,18 +330,18 @@ slay generate_element_xml_formatted(node XmlNode, depth drip, indent_size drip) 
         indent = indent + " "
     }
     
-    ready (node.node_type != XmlNodeType.Element) {
-        ready (node.node_type == XmlNodeType.Text) {
+    lowkey (node.node_type != XmlNodeType.Element) {
+        lowkey (node.node_type == XmlNodeType.Text) {
             sus text tea = escape_xml_text(node.value)
-            ready (text.trim() == "") {
+            lowkey (text.trim() == "") {
                 damn ""
             }
             damn text
         }
-        ready (node.node_type == XmlNodeType.Comment) {
+        lowkey (node.node_type == XmlNodeType.Comment) {
             damn indent + "<!--" + node.value + "-->\n"
         }
-        ready (node.node_type == XmlNodeType.CDATA) {
+        lowkey (node.node_type == XmlNodeType.CDATA) {
             damn indent + "<![CDATA[" + node.value + "]]>\n"
         }
         damn ""
@@ -355,28 +355,28 @@ slay generate_element_xml_formatted(node XmlNode, depth drip, indent_size drip) 
     }
     
     # Self-closing or with children
-    ready (node.children.len() == 0 && node.value == "") {
+    lowkey (node.children.len() == 0 && node.value == "") {
         output = output + "/>\n"
-    } otherwise {
+    } highkey {
         output = output + ">"
         
         # Check if we have mixed content (text + elements)
         sus has_text lit = (node.value != "" && node.value.trim() != "")
         sus has_elements lit = (node.children.len() > 0)
         
-        ready (has_text && !has_elements) {
+        lowkey (has_text && !has_elements) {
             # Text-only element
             output = output + escape_xml_text(node.value) + "</" + node.name + ">\n"
-        } otherwise ready (has_elements && !has_text) {
+        } highkey lowkey (has_elements && !has_text) {
             # Element-only content
             output = output + "\n"
             bestie (sus child XmlNode in node.children) {
                 output = output + generate_element_xml_formatted(child, depth + 1, indent_size)
             }
             output = output + indent + "</" + node.name + ">\n"
-        } otherwise {
+        } highkey {
             # Mixed content or empty
-            ready (has_text) {
+            lowkey (has_text) {
                 output = output + escape_xml_text(node.value)
             }
             bestie (sus child XmlNode in node.children) {
@@ -395,7 +395,7 @@ slay generate_element_xml_formatted(node XmlNode, depth drip, indent_size drip) 
 
 # Execute XPath query on document
 slay xpath_query(doc XmlDocument, xpath tea) yikes<XPathResult> {
-    ready (doc.root == cap) {
+    lowkey (doc.root == cap) {
         yikes "Document has no root element"
     }
     
@@ -433,7 +433,7 @@ slay find_first_node(doc XmlDocument, xpath tea) yikes<XmlNode> {
         when err -> yikes err
     }
     
-    ready (nodes.len() == 0) {
+    lowkey (nodes.len() == 0) {
         yikes "No nodes found matching XPath: " + xpath
     }
     
@@ -446,11 +446,11 @@ slay xpath_text(doc XmlDocument, xpath tea) yikes<tea> {
         when err -> yikes err
     }
     
-    ready (result.values.len() > 0) {
+    lowkey (result.values.len() > 0) {
         damn result.values[0]
     }
     
-    ready (result.nodes.len() > 0) {
+    lowkey (result.nodes.len() > 0) {
         damn get_node_text_content(result.nodes[0])
     }
     
@@ -513,7 +513,7 @@ slay validate_well_formed(doc XmlDocument) ValidationResult {
         warnings: []
     }
     
-    ready (doc.root == cap) {
+    lowkey (doc.root == cap) {
         result.valid = nah
         result.errors = ["Document has no root element"]
         damn result
@@ -565,12 +565,12 @@ slay unescape_xml(text tea) tea {
 
 # Get text content of node and all children
 slay get_node_text_content(node XmlNode) tea {
-    ready (node.node_type == XmlNodeType.Text) {
+    lowkey (node.node_type == XmlNodeType.Text) {
         damn node.value
     }
     
     sus content tea = ""
-    ready (node.value != "") {
+    lowkey (node.value != "") {
         content = content + node.value
     }
     
@@ -584,7 +584,7 @@ slay get_node_text_content(node XmlNode) tea {
 # Find child element by name
 slay find_child_element(node XmlNode, name tea) sus XmlNode {
     bestie (sus child XmlNode in node.children) {
-        ready (child.node_type == XmlNodeType.Element && child.name == name) {
+        lowkey (child.node_type == XmlNodeType.Element && child.name == name) {
             damn child
         }
     }
@@ -595,7 +595,7 @@ slay find_child_element(node XmlNode, name tea) sus XmlNode {
 slay find_child_elements(node XmlNode, name tea) XmlNode[value]{
     sus results XmlNode[value] = []
     bestie (sus child XmlNode in node.children) {
-        ready (child.node_type == XmlNodeType.Element && child.name == name) {
+        lowkey (child.node_type == XmlNodeType.Element && child.name == name) {
             results = arrayz.append(results, child)
         }
     }
@@ -605,7 +605,7 @@ slay find_child_elements(node XmlNode, name tea) XmlNode[value]{
 # Get attribute value
 slay get_attribute(node XmlNode, name tea) sus tea {
     bestie (sus attr XmlAttribute in node.attributes) {
-        ready (attr.name == name) {
+        lowkey (attr.name == name) {
             damn attr.value
         }
     }
@@ -720,7 +720,7 @@ slay init_parser_state(content tea, config XmlParserConfig) ParserState {
         namespaces: []
     }
     
-    ready (content.len() > 0) {
+    lowkey (content.len() > 0) {
         state.current_char = stringz.char_at(content, 0)
     }
     
@@ -730,21 +730,21 @@ slay init_parser_state(content tea, config XmlParserConfig) ParserState {
 # Detect XML encoding from BOM or declaration
 slay detect_xml_encoding(content tea) XmlEncoding {
     # Check for UTF-16 BE BOM
-    ready (content.len() >= 2 && 
+    lowkey (content.len() >= 2 && 
            stringz.char_at(content, 0) == "\xFE" && 
            stringz.char_at(content, 1) == "\xFF") {
         damn XmlEncoding.UTF16BE
     }
     
     # Check for UTF-16 LE BOM
-    ready (content.len() >= 2 && 
+    lowkey (content.len() >= 2 && 
            stringz.char_at(content, 0) == "\xFF" && 
            stringz.char_at(content, 1) == "\xFE") {
         damn XmlEncoding.UTF16LE
     }
     
     # Check for UTF-8 BOM
-    ready (content.len() >= 3 && 
+    lowkey (content.len() >= 3 && 
            stringz.char_at(content, 0) == "\xEF" && 
            stringz.char_at(content, 1) == "\xBB" && 
            stringz.char_at(content, 2) == "\xBF") {
@@ -759,7 +759,7 @@ slay detect_xml_encoding(content tea) XmlEncoding {
 slay parse_xml_declaration(state sus ParserState, doc sus XmlDocument) yikes<tea> {
     skip_whitespace(state)
     
-    ready (!starts_with_at_position(state, "<?xml")) {
+    lowkey (!starts_with_at_position(state, "<?xml")) {
         damn "ok"  # No XML declaration is optional
     }
     
@@ -767,7 +767,7 @@ slay parse_xml_declaration(state sus ParserState, doc sus XmlDocument) yikes<tea
     skip_whitespace(state)
     
     # Parse version attribute
-    ready (starts_with_at_position(state, "version=")) {
+    lowkey (starts_with_at_position(state, "version=")) {
         advance_position(state, 8)
         sus version tea = parse_attribute_value(state) fam {
             when err -> yikes "Failed to parse version: " + err
@@ -778,7 +778,7 @@ slay parse_xml_declaration(state sus ParserState, doc sus XmlDocument) yikes<tea
     skip_whitespace(state)
     
     # Parse encoding attribute
-    ready (starts_with_at_position(state, "encoding=")) {
+    lowkey (starts_with_at_position(state, "encoding=")) {
         advance_position(state, 9)
         sus encoding_str tea = parse_attribute_value(state) fam {
             when err -> yikes "Failed to parse encoding: " + err
@@ -789,7 +789,7 @@ slay parse_xml_declaration(state sus ParserState, doc sus XmlDocument) yikes<tea
     skip_whitespace(state)
     
     # Parse standalone attribute
-    ready (starts_with_at_position(state, "standalone=")) {
+    lowkey (starts_with_at_position(state, "standalone=")) {
         advance_position(state, 11)
         sus standalone_str tea = parse_attribute_value(state) fam {
             when err -> yikes "Failed to parse standalone: " + err
@@ -800,7 +800,7 @@ slay parse_xml_declaration(state sus ParserState, doc sus XmlDocument) yikes<tea
     skip_whitespace(state)
     
     # Expect closing ?>
-    ready (!starts_with_at_position(state, "?>")) {
+    lowkey (!starts_with_at_position(state, "?>")) {
         yikes "Expected '?>' to close XML declaration"
     }
     
@@ -813,12 +813,12 @@ slay generate_xml_declaration(doc XmlDocument) tea {
     sus output tea = "<?xml version=\"" + doc.version + "\""
     
     # Add encoding if not UTF-8
-    ready (doc.encoding != XmlEncoding.UTF8) {
+    lowkey (doc.encoding != XmlEncoding.UTF8) {
         output = output + " encoding=\"" + encoding_to_string(doc.encoding) + "\""
     }
     
     # Add standalone if not default
-    ready (doc.standalone) {
+    lowkey (doc.standalone) {
         output = output + " standalone=\"yes\""
     }
     

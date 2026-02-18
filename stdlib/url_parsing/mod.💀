@@ -224,7 +224,7 @@ slay url_add_query_param(key tea, value tea) lit {
     bestie url_is_valid {
         bestie url_query == "" {
             url_query = key + "=" + value
-        } otherwise {
+        } highkey {
             url_query = url_query + "&" + key + "=" + value
         }
         damn based

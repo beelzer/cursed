@@ -6,7 +6,7 @@ fr fr ===== ADVANCED SORTING ALGORITHMS =====
 
 slay quicksort_array(nums drip[value]) drip[value]{
     sus length drip = len(nums)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn nums
     }
     
@@ -17,7 +17,7 @@ slay quicksort_array(nums drip[value]) drip[value]{
 }
 
 slay quicksort_recursive(arr drip[value], low drip, high drip) {
-    ready (low < high) {
+    lowkey (low < high) {
         sus pivot_index drip = partition_array(arr, low, high)
         quicksort_recursive(arr, low, pivot_index - 1)
         quicksort_recursive(arr, pivot_index + 1, high)
@@ -30,7 +30,7 @@ slay partition_array(arr drip[value], low drip, high drip) drip {
     
     sus j drip = low
     bestie (j < high) {
-        ready (arr[j] <= pivot) {
+        lowkey (arr[j] <= pivot) {
             i = i + 1
             swap_elements(arr, i, j)
         }
@@ -42,7 +42,7 @@ slay partition_array(arr drip[value], low drip, high drip) drip {
 }
 
 slay swap_elements(arr drip[value], i drip, j drip) {
-    ready (i != j && i >= 0 && j >= 0 && i < len(arr) && j < len(arr)) {
+    lowkey (i != j && i >= 0 && j >= 0 && i < len(arr) && j < len(arr)) {
         sus temp drip = arr[i]
         arr[i] = arr[j]
         arr[j] = temp
@@ -51,7 +51,7 @@ slay swap_elements(arr drip[value], i drip, j drip) {
 
 slay mergesort_array(nums drip[value]) drip[value]{
     sus length drip = len(nums)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn nums
     }
     
@@ -61,7 +61,7 @@ slay mergesort_array(nums drip[value]) drip[value]{
 }
 
 slay mergesort_recursive(arr drip[value], left drip, right drip) {
-    ready (left >= right) {
+    lowkey (left >= right) {
         damn
     }
     
@@ -98,7 +98,7 @@ slay merge_arrays(arr drip[value], left drip, mid drip, right drip) {
     sus k drip = left
     
     bestie (i < left_size && j < right_size) {
-        ready (left_arr[i] <= right_arr[j]) {
+        lowkey (left_arr[i] <= right_arr[j]) {
             arr[k] = left_arr[i]
             i = i + 1
         } bestie {
@@ -131,7 +131,7 @@ slay binary_search(nums drip[value], target drip) drip {
     bestie (left <= right) {
         sus mid drip = left + (right - left) / 2
         
-        ready (nums[mid] == target) {
+        lowkey (nums[mid] == target) {
             damn mid
         } bestie (nums[mid] < target) {
             left = mid + 1
@@ -150,7 +150,7 @@ slay binary_search_insert_position(nums drip[value], target drip) drip {
     bestie (left < right) {
         sus mid drip = left + (right - left) / 2
         
-        ready (nums[mid] < target) {
+        lowkey (nums[mid] < target) {
             left = mid + 1
         } bestie {
             right = mid
@@ -169,15 +169,15 @@ slay heapify_down(arr drip[value], start drip, end drip) {
         sus child drip = root * 2 + 1
         sus swap drip = root
         
-        ready (arr[swap] < arr[child]) {
+        lowkey (arr[swap] < arr[child]) {
             swap = child
         }
         
-        ready (child + 1 <= end && arr[swap] < arr[child + 1]) {
+        lowkey (child + 1 <= end && arr[swap] < arr[child + 1]) {
             swap = child + 1
         }
         
-        ready (swap == root) {
+        lowkey (swap == root) {
             damn
         } bestie {
             swap_elements(arr, root, swap)
@@ -190,7 +190,7 @@ slay heapsort_array(nums drip[value]) drip[value]{
     sus result drip[value] = copy_array(nums)
     sus length drip = len(result)
     
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn result
     }
     
@@ -216,7 +216,7 @@ fr fr ===== EFFICIENT ARRAY UTILITIES =====
 
 slay copy_array(source drip[value]) drip[value]{
     sus length drip = len(source)
-    ready (length == 0) { damn [] }
+    lowkey (length == 0) { damn [] }
     
     sus result drip[value] = create_sized_array(length)
     sus i drip = 0
@@ -228,13 +228,13 @@ slay copy_array(source drip[value]) drip[value]{
 }
 
 slay create_sized_array(size drip) drip[value]{
-    ready (size <= 0) { damn [] }
-    ready (size == 1) { damn [0] }
-    ready (size == 2) { damn [0, 0] }
-    ready (size == 3) { damn [0, 0, 0] }
-    ready (size == 4) { damn [0, 0, 0, 0] }
-    ready (size == 5) { damn [0, 0, 0, 0, 0] }
-    ready (size == 10) { damn [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+    lowkey (size <= 0) { damn [] }
+    lowkey (size == 1) { damn [0] }
+    lowkey (size == 2) { damn [0, 0] }
+    lowkey (size == 3) { damn [0, 0, 0] }
+    lowkey (size == 4) { damn [0, 0, 0, 0] }
+    lowkey (size == 5) { damn [0, 0, 0, 0, 0] }
+    lowkey (size == 10) { damn [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
     
     # For larger arrays, use efficient construction
     sus result drip[value] = []
@@ -250,15 +250,15 @@ slay append_efficient(arr drip[value], value drip) drip[value]{
     sus length drip = len(arr)
     
     # Use array literal construction for efficiency
-    ready (length == 0) { damn [value] }
-    ready (length == 1) { damn [arr[0], value] }
-    ready (length == 2) { damn [arr[0], arr[1], value] }
-    ready (length == 3) { damn [arr[0], arr[1], arr[2], value] }
-    ready (length == 4) { damn [arr[0], arr[1], arr[2], arr[3], value] }
-    ready (length == 5) { damn [arr[0], arr[1], arr[2], arr[3], arr[4], value] }
+    lowkey (length == 0) { damn [value] }
+    lowkey (length == 1) { damn [arr[0], value] }
+    lowkey (length == 2) { damn [arr[0], arr[1], value] }
+    lowkey (length == 3) { damn [arr[0], arr[1], arr[2], value] }
+    lowkey (length == 4) { damn [arr[0], arr[1], arr[2], arr[3], value] }
+    lowkey (length == 5) { damn [arr[0], arr[1], arr[2], arr[3], arr[4], value] }
     
     # For larger arrays, use chunked construction
-    ready (length < 20) {
+    lowkey (length < 20) {
         sus result drip[value] = [value]
         sus i drip = 0
         bestie (i < length) {
@@ -273,7 +273,7 @@ slay append_efficient(arr drip[value], value drip) drip[value]{
 
 slay reverse_efficient(arr drip[value]) drip[value]{
     sus length drip = len(arr)
-    ready (length <= 1) { damn arr }
+    lowkey (length <= 1) { damn arr }
     
     sus result drip[value] = create_sized_array(length)
     sus i drip = 0
@@ -288,12 +288,12 @@ fr fr ===== PERFORMANCE OPTIMIZED OPERATIONS =====
 
 slay remove_duplicates_sorted(nums drip[value]) drip[value]{
     # O(n) for sorted arrays
-    ready (len(nums) <= 1) { damn nums }
+    lowkey (len(nums) <= 1) { damn nums }
     
     sus result drip[value] = [nums[0]]
     sus i drip = 1
     bestie (i < len(nums)) {
-        ready (nums[i] != nums[i-1]) {
+        lowkey (nums[i] != nums[i-1]) {
             result = append_efficient(result, nums[i])
         }
         i = i + 1
@@ -309,7 +309,7 @@ slay remove_duplicates_unsorted(nums drip[value]) drip[value]{
 
 slay find_kth_largest(nums drip[value], k drip) drip {
     # O(n log n) approach using sorting
-    ready (k <= 0 || k > len(nums)) { damn 0 }
+    lowkey (k <= 0 || k > len(nums)) { damn 0 }
     
     sus sorted_array drip[value] = quicksort_array(nums)
     damn sorted_array[len(nums) - k]
@@ -317,11 +317,11 @@ slay find_kth_largest(nums drip[value], k drip) drip {
 
 slay median_optimized(nums drip[value]) drip {
     sus length drip = len(nums)
-    ready (length == 0) { damn 0 }
+    lowkey (length == 0) { damn 0 }
     
     sus sorted_array drip[value] = quicksort_array(nums)
     
-    ready (length % 2 == 1) {
+    lowkey (length % 2 == 1) {
         damn sorted_array[length / 2]
     } bestie {
         sus mid1 drip = sorted_array[length / 2 - 1]
@@ -343,7 +343,7 @@ yeet "arrayz/mod_original"
 
 fr fr Performance testing functions
 slay test_sorting_performance(size drip) {
-    ready (size <= 0) { damn }
+    lowkey (size <= 0) { damn }
     
     # Create test array
     sus test_array drip[value] = create_test_array(size)

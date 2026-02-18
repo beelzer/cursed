@@ -249,17 +249,17 @@ slay renderz_initialize(api normie, width normie, height normie) RenderContext {
     context.draw_calls = 0
     context.triangle_count = 0
     
-    ready (api == GRAPHICS_API_OPENGL) {
+    lowkey (api == GRAPHICS_API_OPENGL) {
         renderz_init_opengl_enhanced(width, height)
-    } otherwise (api == GRAPHICS_API_VULKAN) {
+    } highkey (api == GRAPHICS_API_VULKAN) {
         renderz_init_vulkan_enhanced(width, height)
-    } otherwise (api == GRAPHICS_API_DIRECTX11) {
+    } highkey (api == GRAPHICS_API_DIRECTX11) {
         renderz_init_directx11_enhanced(width, height)
-    } otherwise (api == GRAPHICS_API_DIRECTX12) {
+    } highkey (api == GRAPHICS_API_DIRECTX12) {
         renderz_init_directx12_enhanced(width, height)
-    } otherwise (api == GRAPHICS_API_METAL) {
+    } highkey (api == GRAPHICS_API_METAL) {
         renderz_init_metal_enhanced(width, height)
-    } otherwise {
+    } highkey {
         renderz_init_software_enhanced(width, height)
     }
     
@@ -274,17 +274,17 @@ slay renderz_shutdown(context RenderContext) lit {
     fr fr Clean up resources before shutdown
     renderz_cleanup_default_resources()
     
-    ready (context.api == GRAPHICS_API_OPENGL) {
+    lowkey (context.api == GRAPHICS_API_OPENGL) {
         renderz_cleanup_opengl_enhanced()
-    } otherwise (context.api == GRAPHICS_API_VULKAN) {
+    } highkey (context.api == GRAPHICS_API_VULKAN) {
         renderz_cleanup_vulkan_enhanced()
-    } otherwise (context.api == GRAPHICS_API_DIRECTX11) {
+    } highkey (context.api == GRAPHICS_API_DIRECTX11) {
         renderz_cleanup_directx11_enhanced()
-    } otherwise (context.api == GRAPHICS_API_DIRECTX12) {
+    } highkey (context.api == GRAPHICS_API_DIRECTX12) {
         renderz_cleanup_directx12_enhanced()
-    } otherwise (context.api == GRAPHICS_API_METAL) {
+    } highkey (context.api == GRAPHICS_API_METAL) {
         renderz_cleanup_metal_enhanced()
-    } otherwise {
+    } highkey {
         renderz_cleanup_software_enhanced()
     }
     
@@ -307,12 +307,12 @@ slay renderz_create_shader(vertex_source tea, fragment_source tea) Shader {
     
     fr fr Actual shader compilation with error checking
     sus compile_result tea = renderz_compile_shader_program_enhanced(shader.id, vertex_source, fragment_source)
-    ready (stringz.starts_with(compile_result, "SUCCESS")) {
+    lowkey (stringz.starts_with(compile_result, "SUCCESS")) {
         shader.compiled = true
         shader.uniform_count = renderz_discover_uniforms_enhanced(shader.id, shader.uniforms, shader.uniform_locations)
         shader.compilation_log = compile_result
         vibez.spill("Shader compiled successfully, ID:", shader.id, "Uniforms:", shader.uniform_count)
-    } otherwise {
+    } highkey {
         shader.compilation_log = compile_result
         vibez.spill("Error compiling shader:", compile_result)
     }
@@ -326,7 +326,7 @@ slay renderz_create_shader_from_files(vertex_file tea, fragment_file tea) Shader
     sus vertex_source tea = filez.read_file(vertex_file)
     sus fragment_source tea = filez.read_file(fragment_file)
     
-    ready (vertex_source == "" || fragment_source == "") {
+    lowkey (vertex_source == "" || fragment_source == "") {
         vibez.spill("Error: Could not read shader files")
         sus empty_shader Shader
         damn empty_shader
@@ -347,7 +347,7 @@ slay renderz_create_texture_from_file(filename tea) Texture {
     yeet "imagez"
     
     sus image_data imagez.ImageData = imagez.load_image(filename)
-    ready (image_data.width == 0 || image_data.height == 0) {
+    lowkey (image_data.width == 0 || image_data.height == 0) {
         vibez.spill("Error: Could not load image:", filename)
         sus empty_texture Texture
         damn empty_texture
@@ -369,11 +369,11 @@ slay renderz_create_texture(image_data imagez.ImageData) Texture {
     texture.wrap_t = 1 fr fr Repeat
     texture.is_render_target = false
     
-    ready (image_data.channels == 3) {
+    lowkey (image_data.channels == 3) {
         texture.format = TEXTURE_RGB8
-    } otherwise (image_data.channels == 4) {
+    } highkey (image_data.channels == 4) {
         texture.format = TEXTURE_RGBA8
-    } otherwise {
+    } highkey {
         texture.format = TEXTURE_RGB8
     }
     
@@ -386,13 +386,13 @@ slay renderz_create_texture(image_data imagez.ImageData) Texture {
         texture.format, texture.data, image_data.channels
     )
     
-    ready (upload_success) {
+    lowkey (upload_success) {
         renderz_set_texture_parameters_enhanced(
             texture.id, texture.filter_min, texture.filter_mag, 
             texture.wrap_s, texture.wrap_t
         )
         vibez.spill("Texture created, ID:", texture.id, "Size:", texture.width, "x", texture.height, "Memory:", texture.gpu_size, "bytes")
-    } otherwise {
+    } highkey {
         vibez.spill("Error: Failed to upload texture data")
     }
     
@@ -404,7 +404,7 @@ slay renderz_create_cubemap_texture(faces imagez[6].ImageData) Texture {
     texture.id = renderz_generate_texture_id()
     texture.width = faces[0].width
     texture.height = faces[0].height
-    texture.format = ready (faces[0].channels == 4) TEXTURE_RGBA8 otherwise TEXTURE_RGB8
+    texture.format = lowkey (faces[0].channels == 4) TEXTURE_RGBA8 highkey TEXTURE_RGB8
     texture.mip_levels = 1
     texture.filter_min = 1
     texture.filter_mag = 1
@@ -413,9 +413,9 @@ slay renderz_create_cubemap_texture(faces imagez[6].ImageData) Texture {
     texture.is_render_target = false
     
     sus success lit = renderz_create_cubemap_enhanced(texture.id, faces, 6)
-    ready (success) {
+    lowkey (success) {
         vibez.spill("Cubemap texture created, ID:", texture.id)
-    } otherwise {
+    } highkey {
         vibez.spill("Error: Failed to create cubemap texture")
     }
     
@@ -429,7 +429,7 @@ slay renderz_create_font_atlas(font_path tea, font_size drip) FontAtlas {
     
     fr fr Load font file and generate bitmap atlas
     sus font_data tea = renderz_load_font_file(font_path)
-    ready (font_data == "") {
+    lowkey (font_data == "") {
         vibez.spill("Error: Could not load font file:", font_path)
         damn atlas
     }
@@ -454,13 +454,13 @@ slay renderz_create_font_atlas(font_path tea, font_size drip) FontAtlas {
         sus glyph_bitmap normie[1024] fr fr 32x32 max glyph
         sus glyph_info GlyphInfo = renderz_render_glyph_to_bitmap(font_data, char, font_size, glyph_bitmap)
         
-        ready (current_x + glyph_info.width > atlas_width) {
+        lowkey (current_x + glyph_info.width > atlas_width) {
             current_x = 0
             current_y = current_y + max_height + 2
             max_height = 0
         }
         
-        ready (current_y + glyph_info.height > atlas_height) {
+        lowkey (current_y + glyph_info.height > atlas_height) {
             vibez.spill("Warning: Font atlas texture overflow")
             break
         }
@@ -477,7 +477,7 @@ slay renderz_create_font_atlas(font_path tea, font_size drip) FontAtlas {
         atlas.glyph_count = atlas.glyph_count + 1
         
         current_x = current_x + glyph_info.width + 2
-        ready (glyph_info.height > max_height) {
+        lowkey (glyph_info.height > max_height) {
             max_height = glyph_info.height
         }
         
@@ -508,7 +508,7 @@ slay renderz_draw_text_enhanced(text tea, x drip, y drip, atlas FontAtlas, color
         sus char normie = stringz.char_at(text, i)
         
         fr fr Handle newlines
-        ready (char == 10) {  fr fr '\n'
+        lowkey (char == 10) {  fr fr '\n'
             current_x = x
             current_y = current_y + atlas.line_height
             i = i + 1
@@ -517,7 +517,7 @@ slay renderz_draw_text_enhanced(text tea, x drip, y drip, atlas FontAtlas, color
         
         fr fr Find glyph info for character
         sus glyph_index normie = renderz_find_glyph_in_atlas(atlas, char)
-        ready (glyph_index == -1) {
+        lowkey (glyph_index == -1) {
             i = i + 1
             continue
         }
@@ -694,17 +694,17 @@ slay renderz_rasterize_triangle(v1 Vertex, v2 Vertex, v3 Vertex, render_target R
     
     fr fr Sort vertices by Y coordinate (top to bottom)
     sus vertices Vertex[3] = [v1, v2, v3]
-    ready (vertices[0].position.y > vertices[1].position.y) {
+    lowkey (vertices[0].position.y > vertices[1].position.y) {
         sus temp Vertex = vertices[0]
         vertices[0] = vertices[1]
         vertices[1] = temp
     }
-    ready (vertices[1].position.y > vertices[2].position.y) {
+    lowkey (vertices[1].position.y > vertices[2].position.y) {
         sus temp Vertex = vertices[1]
         vertices[1] = vertices[2]
         vertices[2] = temp
         
-        ready (vertices[0].position.y > vertices[1].position.y) {
+        lowkey (vertices[0].position.y > vertices[1].position.y) {
             temp = vertices[0]
             vertices[0] = vertices[1]
             vertices[1] = temp
@@ -716,7 +716,7 @@ slay renderz_rasterize_triangle(v1 Vertex, v2 Vertex, v3 Vertex, render_target R
     
     fr fr Calculate triangle area for barycentric coordinates
     sus area drip = renderz_triangle_area_2d(vertices[0].position, vertices[1].position, vertices[2].position)
-    ready (area <= 0.0) {
+    lowkey (area <= 0.0) {
         damn false fr fr Degenerate triangle
     }
     
@@ -729,7 +729,7 @@ slay renderz_rasterize_triangle(v1 Vertex, v2 Vertex, v3 Vertex, render_target R
         fr fr Find edge intersections
         intersection_count = renderz_find_scanline_intersections(vertices, 3, y, intersections)
         
-        ready (intersection_count == 2) {
+        lowkey (intersection_count == 2) {
             sus x_start normie = mathz.min(intersections[0], intersections[1])
             sus x_end normie = mathz.max(intersections[0], intersections[1])
             
@@ -746,7 +746,7 @@ slay renderz_rasterize_triangle(v1 Vertex, v2 Vertex, v3 Vertex, render_target R
                 sus interpolated_depth drip = renderz_interpolate_depth(vertices, bary)
                 
                 fr fr Depth test
-                ready (renderz_depth_test(x, y, interpolated_depth, render_target)) {
+                lowkey (renderz_depth_test(x, y, interpolated_depth, render_target)) {
                     fr fr Pixel shader processing
                     sus final_color Vec4 = renderz_fragment_shader(interpolated_color, interpolated_uv, interpolated_normal)
                     renderz_set_pixel_color(x, y, final_color, render_target)
@@ -771,13 +771,13 @@ slay renderz_calculate_lighting(position Vec3, normal Vec3, view_dir Vec3, light
     bestie (i < light_count) {
         sus light Light = lights[i]
         
-        ready (light.light_type == 1) {  fr fr Directional light
+        lowkey (light.light_type == 1) {  fr fr Directional light
             sus light_contribution Vec4 = renderz_calculate_directional_light(light, position, normal, view_dir, material)
             final_color = renderz_add_colors(final_color, light_contribution)
-        } otherwise ready (light.light_type == 2) {  fr fr Point light
+        } highkey lowkey (light.light_type == 2) {  fr fr Point light
             sus light_contribution Vec4 = renderz_calculate_point_light(light, position, normal, view_dir, material)
             final_color = renderz_add_colors(final_color, light_contribution)
-        } otherwise ready (light.light_type == 3) {  fr fr Spot light
+        } highkey lowkey (light.light_type == 3) {  fr fr Spot light
             sus light_contribution Vec4 = renderz_calculate_spot_light(light, position, normal, view_dir, material)
             final_color = renderz_add_colors(final_color, light_contribution)
         }
@@ -825,7 +825,7 @@ slay renderz_calculate_point_light(light Light, position Vec3, normal Vec3, view
     attenuation = mathz.min(attenuation, 1.0)
     
     fr fr Apply distance falloff
-    ready (distance > light.range) {
+    lowkey (distance > light.range) {
         damn renderz_vec4(0.0, 0.0, 0.0, 0.0)
     }
     
@@ -913,7 +913,7 @@ slay renderz_vec4(x drip, y drip, z drip, w drip) Vec4 {
 
 slay renderz_normalize_vec3(v Vec3) Vec3 {
     sus length drip = mathz.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
-    ready (length < 0.001) {
+    lowkey (length < 0.001) {
         damn renderz_vec3(0.0, 1.0, 0.0)  fr fr Default up vector
     }
     
@@ -980,17 +980,17 @@ slay renderz_init_opengl_enhanced(width normie, height normie) lit {
 slay renderz_compile_shader_program_enhanced(id normie, vertex_source tea, fragment_source tea) tea {
     fr fr Actual shader compilation with error reporting
     sus vertex_compiled lit = renderz_compile_vertex_shader(id, vertex_source)
-    ready (!vertex_compiled) {
+    lowkey (!vertex_compiled) {
         damn "ERROR: Vertex shader compilation failed - " + renderz_get_shader_compile_log(id)
     }
     
     sus fragment_compiled lit = renderz_compile_fragment_shader(id, fragment_source)
-    ready (!fragment_compiled) {
+    lowkey (!fragment_compiled) {
         damn "ERROR: Fragment shader compilation failed - " + renderz_get_shader_compile_log(id)
     }
     
     sus linked lit = renderz_link_shader_program(id)
-    ready (!linked) {
+    lowkey (!linked) {
         damn "ERROR: Shader program linking failed - " + renderz_get_program_link_log(id)
     }
     
@@ -1002,13 +1002,13 @@ slay renderz_upload_texture_data_enhanced(id normie, width normie, height normie
     sus gl_format normie = renderz_cursed_format_to_gl_format(format)
     sus gl_type normie = 0x1401  fr fr GL_UNSIGNED_BYTE
     
-    ready (channels == 3) {
+    lowkey (channels == 3) {
         sus gl_internal_format normie = 0x1907  fr fr GL_RGB
         renderz_gl_tex_image_2d(id, 0, gl_internal_format, width, height, 0, gl_format, gl_type, data)
-    } otherwise ready (channels == 4) {
+    } highkey lowkey (channels == 4) {
         sus gl_internal_format normie = 0x1908  fr fr GL_RGBA
         renderz_gl_tex_image_2d(id, 0, gl_internal_format, width, height, 0, gl_format, gl_type, data)
-    } otherwise {
+    } highkey {
         vibez.spill("Error: Unsupported texture channel count:", channels)
         damn false
     }
@@ -1022,7 +1022,7 @@ slay renderz_render_glyph_to_bitmap(font_data tea, character normie, font_size d
     
     fr fr This would use a real font rasterization library
     fr fr For now, generate simple character shapes
-    ready (character >= 32 && character <= 126) {
+    lowkey (character >= 32 && character <= 126) {
         glyph.width = font_size * 0.6
         glyph.height = font_size
         glyph.offset_x = 0.0
@@ -1047,11 +1047,11 @@ slay renderz_generate_character_bitmap(character normie, font_size drip, bitmap 
     }
     
     fr fr Draw simple character shapes based on ASCII value
-    ready (character == 65) {  fr fr 'A'
+    lowkey (character == 65) {  fr fr 'A'
         renderz_draw_character_a(bitmap, width, height)
-    } otherwise ready (character == 66) {  fr fr 'B'
+    } highkey lowkey (character == 66) {  fr fr 'B'
         renderz_draw_character_b(bitmap, width, height)
-    } otherwise {
+    } highkey {
         fr fr Default rectangle outline
         renderz_draw_character_default(bitmap, width, height)
     }

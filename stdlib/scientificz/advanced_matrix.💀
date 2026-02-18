@@ -97,7 +97,7 @@ slay matrix_transpose(m Matrix) Matrix {
 }
 
 slay matrix_add(a Matrix, b Matrix) Matrix {
-    ready (a.rows != b.rows || a.cols != b.cols) {
+    lowkey (a.rows != b.rows || a.cols != b.cols) {
         vibez.spill("[Matrix] Error: Incompatible dimensions for addition")
         damn create_zero_matrix(1, 1)
     }
@@ -112,7 +112,7 @@ slay matrix_add(a Matrix, b Matrix) Matrix {
 }
 
 slay matrix_subtract(a Matrix, b Matrix) Matrix {
-    ready (a.rows != b.rows || a.cols != b.cols) {
+    lowkey (a.rows != b.rows || a.cols != b.cols) {
         vibez.spill("[Matrix] Error: Incompatible dimensions for subtraction")
         damn create_zero_matrix(1, 1)
     }
@@ -139,7 +139,7 @@ slay matrix_scalar_multiply(m Matrix, scalar drip) Matrix {
 # ===== GAUSSIAN ELIMINATION WITH PARTIAL PIVOTING =====
 
 slay lu_decomposition_pivoting(m Matrix) LuDecomposition {
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: LU decomposition requires square matrix")
         damn create_empty_lu_decomposition()
     }
@@ -166,14 +166,14 @@ slay lu_decomposition_pivoting(m Matrix) LuDecomposition {
         
         bestie (sus i drip = k + 1; i < n; i = i + 1) {
             sus abs_val_current drip = abs_val(u_data[i * n + k])
-            ready (abs_val_current > max_val) {
+            lowkey (abs_val_current > max_val) {
                 max_val = abs_val_current
                 pivot_row = i
             }
         }
         
         # Check for singularity
-        ready (max_val < 1e-12) {
+        lowkey (max_val < 1e-12) {
             # Matrix is singular, stop here
             break
         }
@@ -181,7 +181,7 @@ slay lu_decomposition_pivoting(m Matrix) LuDecomposition {
         rank = rank + 1
         
         # Swap rows if necessary
-        ready (pivot_row != k) {
+        lowkey (pivot_row != k) {
             swap_matrix_rows(u_data, n, k, pivot_row)
             swap_matrix_rows(l_data, n, k, pivot_row)
             swap_matrix_rows(p_data, n, k, pivot_row)
@@ -212,7 +212,7 @@ slay lu_decomposition_pivoting(m Matrix) LuDecomposition {
 }
 
 slay matrix_inverse_lu(m Matrix) Matrix {
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: Cannot invert non-square matrix")
         damn create_zero_matrix(1, 1)
     }
@@ -220,7 +220,7 @@ slay matrix_inverse_lu(m Matrix) Matrix {
     sus n drip = m.rows
     sus lu LuDecomposition = lu_decomposition_pivoting(m)
     
-    ready (abs_val(lu.determinant) < 1e-12) {
+    lowkey (abs_val(lu.determinant) < 1e-12) {
         vibez.spill("[Matrix] Error: Matrix is singular (determinant ≈ 0)")
         damn create_zero_matrix(1, 1)
     }
@@ -235,7 +235,7 @@ slay matrix_inverse_lu(m Matrix) Matrix {
         sus b drip[value] = create_zeros(n)
         bestie (sus i drip = 0; i < n; i = i + 1) {
             bestie (sus j drip = 0; j < n; j = j + 1) {
-                ready (lu.p.data[i * n + j] == 1.0) {
+                lowkey (lu.p.data[i * n + j] == 1.0) {
                     b[i] = identity.data[j * n + col]
                     break
                 }
@@ -300,7 +300,7 @@ slay qr_decomposition_householder(m Matrix) QrDecomposition {
         
         sus col_norm drip = sqrt_advanced(col_norm_sq)
         
-        ready (col_norm < 1e-12) {
+        lowkey (col_norm < 1e-12) {
             continue  # Skip if column is effectively zero
         }
         
@@ -310,16 +310,16 @@ slay qr_decomposition_householder(m Matrix) QrDecomposition {
         sus v drip[value] = create_zeros(rows)
         sus alpha drip = r_data[k * cols + k]
         
-        ready (alpha >= 0) {
+        lowkey (alpha >= 0) {
             alpha = col_norm
-        } otherwise {
+        } highkey {
             alpha = -col_norm
         }
         
         bestie (sus i drip = k; i < rows; i = i + 1) {
-            ready (i == k) {
+            lowkey (i == k) {
                 v[i] = r_data[i * cols + k] - alpha
-            } otherwise {
+            } highkey {
                 v[i] = r_data[i * cols + k]
             }
         }
@@ -330,7 +330,7 @@ slay qr_decomposition_householder(m Matrix) QrDecomposition {
             v_norm_sq = v_norm_sq + (v[i] * v[i])
         }
         
-        ready (v_norm_sq < 1e-12) {
+        lowkey (v_norm_sq < 1e-12) {
             continue
         }
         
@@ -398,11 +398,11 @@ slay svd_decomposition_jacobi(m Matrix) SvdDecomposition {
     sus nuclear_norm drip = 0.0
     
     bestie (sus i drip = 0; i < min_dim; i = i + 1) {
-        ready (v_eigen.eigenvalues[i] > 1e-12) {
+        lowkey (v_eigen.eigenvalues[i] > 1e-12) {
             sigma[i] = sqrt_advanced(v_eigen.eigenvalues[i])
             nuclear_norm = nuclear_norm + sigma[i]
             rank = rank + 1
-        } otherwise {
+        } highkey {
             sigma[i] = 0.0
         }
     }
@@ -411,9 +411,9 @@ slay svd_decomposition_jacobi(m Matrix) SvdDecomposition {
     sort_singular_values_and_vectors(sigma, v_eigen.eigenvectors, u_eigen.eigenvectors, min_dim)
     
     sus condition_number drip = 0.0
-    ready (rank > 0 && sigma[min_dim - 1] > 1e-12) {
+    lowkey (rank > 0 && sigma[min_dim - 1] > 1e-12) {
         condition_number = sigma[0] / sigma[min_dim - 1]
-    } otherwise {
+    } highkey {
         condition_number = 1e12  # Very large for singular matrices
     }
     
@@ -430,7 +430,7 @@ slay svd_decomposition_jacobi(m Matrix) SvdDecomposition {
 # ===== EIGENVALUE DECOMPOSITION USING JACOBI METHOD =====
 
 slay eigendecomposition_jacobi(m Matrix) EigenDecomposition {
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: Eigendecomposition requires square matrix")
         damn create_empty_eigen_decomposition()
     }
@@ -460,7 +460,7 @@ slay eigendecomposition_jacobi(m Matrix) EigenDecomposition {
         bestie (sus i drip = 0; i < n - 1; i = i + 1) {
             bestie (sus j drip = i + 1; j < n; j = j + 1) {
                 sus abs_val_curr drip = abs_val(a_data[i * n + j])
-                ready (abs_val_curr > max_val) {
+                lowkey (abs_val_curr > max_val) {
                     max_val = abs_val_curr
                     p = i
                     q = j
@@ -469,7 +469,7 @@ slay eigendecomposition_jacobi(m Matrix) EigenDecomposition {
         }
         
         # Check for convergence
-        ready (max_val < tolerance) {
+        lowkey (max_val < tolerance) {
             break
         }
         
@@ -477,13 +477,13 @@ slay eigendecomposition_jacobi(m Matrix) EigenDecomposition {
         sus tau drip = (a_data[q * n + q] - a_data[p * n + p]) / (2.0 * a_data[p * n + q])
         sus t drip = 0.0
         
-        ready (abs_val(tau) < 1e12) {
+        lowkey (abs_val(tau) < 1e12) {
             sus sign_tau drip = 1.0
-            ready (tau < 0) {
+            lowkey (tau < 0) {
                 sign_tau = -1.0
             }
             t = sign_tau / (abs_val(tau) + sqrt_advanced(1.0 + tau * tau))
-        } otherwise {
+        } highkey {
             t = 1.0 / (2.0 * tau)
         }
         
@@ -519,7 +519,7 @@ slay eigendecomposition_jacobi(m Matrix) EigenDecomposition {
 # ===== ITERATIVE METHODS FOR SOLVING LINEAR SYSTEMS =====
 
 slay conjugate_gradient_solve(a Matrix, b drip[value], x0 drip[value], tolerance drip, max_iterations drip) IterativeResult {
-    ready (!a.is_square || a.rows != len_array(b)) {
+    lowkey (!a.is_square || a.rows != len_array(b)) {
         vibez.spill("[Matrix] Error: Incompatible dimensions for CG solver")
         damn create_empty_iterative_result()
     }
@@ -540,7 +540,7 @@ slay conjugate_gradient_solve(a Matrix, b drip[value], x0 drip[value], tolerance
         sus residual_norm drip = sqrt_advanced(rsold)
         convergence_history[iteration] = residual_norm
         
-        ready (residual_norm < tolerance) {
+        lowkey (residual_norm < tolerance) {
             break
         }
         
@@ -548,7 +548,7 @@ slay conjugate_gradient_solve(a Matrix, b drip[value], x0 drip[value], tolerance
         sus ap drip[value] = matrix_vector_multiply(a, p)
         sus pap drip = vector_dot_product(p, ap, n)
         
-        ready (abs_val(pap) < 1e-15) {
+        lowkey (abs_val(pap) < 1e-15) {
             break  # Avoid division by zero
         }
         
@@ -566,7 +566,7 @@ slay conjugate_gradient_solve(a Matrix, b drip[value], x0 drip[value], tolerance
         
         sus rsnew drip = vector_dot_product(r, r, n)
         
-        ready (rsnew < tolerance * tolerance) {
+        lowkey (rsnew < tolerance * tolerance) {
             iteration = iteration + 1
             break
         }
@@ -610,7 +610,7 @@ slay gmres_solve(a Matrix, b drip[value], x0 drip[value], restart_dim drip, tole
         
         convergence_history[total_iterations] = residual_norm
         
-        ready (residual_norm < tolerance) {
+        lowkey (residual_norm < tolerance) {
             break
         }
         
@@ -680,7 +680,7 @@ slay calculate_infinity_condition_number(m Matrix) drip {
     
     # Try to compute inverse
     sus inverse Matrix = matrix_inverse_lu(m)
-    ready (inverse.rows == 1 && inverse.cols == 1 && inverse.data[0] == 0) {
+    lowkey (inverse.rows == 1 && inverse.cols == 1 && inverse.data[0] == 0) {
         # Matrix is singular
         damn 1e12
     }
@@ -698,7 +698,7 @@ slay matrix_infinity_norm(m Matrix) drip {
         bestie (sus j drip = 0; j < m.cols; j = j + 1) {
             row_sum = row_sum + abs_val(m.data[i * m.cols + j])
         }
-        ready (row_sum > max_row_sum) {
+        lowkey (row_sum > max_row_sum) {
             max_row_sum = row_sum
         }
     }
@@ -715,11 +715,11 @@ slay create_toeplitz_matrix(first_row drip[value], first_col drip[value]) Matrix
     
     bestie (sus i drip = 0; i < m; i = i + 1) {
         bestie (sus j drip = 0; j < n; j = j + 1) {
-            ready (i == j) {
+            lowkey (i == j) {
                 data[i * n + j] = first_row[0]  # Should be same as first_col[0]
-            } otherwise ready (j > i) {
+            } highkey lowkey (j > i) {
                 data[i * n + j] = first_row[j - i]
-            } otherwise {
+            } highkey {
                 data[i * n + j] = first_col[i - j]
             }
         }
@@ -770,7 +770,7 @@ slay create_circulant_matrix(first_row drip[value]) Matrix {
 
 slay matrix_exponential_pade(m Matrix, order drip) Matrix {
     # Padé approximation for matrix exponential
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: Matrix exponential requires square matrix")
         damn create_zero_matrix(1, 1)
     }
@@ -822,7 +822,7 @@ slay matrix_exponential_pade(m Matrix, order drip) Matrix {
 
 slay matrix_logarithm_series(m Matrix, terms drip) Matrix {
     # Matrix logarithm using power series: log(I + X) = X - X²/2 + X³/3 - ...
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: Matrix logarithm requires square matrix")
         damn create_zero_matrix(1, 1)
     }
@@ -833,7 +833,7 @@ slay matrix_logarithm_series(m Matrix, terms drip) Matrix {
     
     # Check convergence condition ||X|| < 1
     sus x_norm drip = matrix_infinity_norm(x)
-    ready (x_norm >= 1.0) {
+    lowkey (x_norm >= 1.0) {
         vibez.spill("[Matrix] Warning: Matrix logarithm may not converge")
     }
     
@@ -842,14 +842,14 @@ slay matrix_logarithm_series(m Matrix, terms drip) Matrix {
     
     bestie (sus k drip = 1; k <= terms; k = k + 1) {
         sus sign drip = 1.0
-        ready (k % 2 == 0) {
+        lowkey (k % 2 == 0) {
             sign = -1.0
         }
         
         sus term Matrix = matrix_scalar_multiply(power, sign / k)
         result = matrix_add(result, term)
         
-        ready (k < terms) {
+        lowkey (k < terms) {
             power = matrix_multiply(power, x)
         }
     }
@@ -859,16 +859,16 @@ slay matrix_logarithm_series(m Matrix, terms drip) Matrix {
 
 slay matrix_power_integer(m Matrix, exponent drip) Matrix {
     # Fast matrix exponentiation using binary method
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: Matrix power requires square matrix")
         damn create_zero_matrix(1, 1)
     }
     
-    ready (exponent == 0) {
+    lowkey (exponent == 0) {
         damn create_identity_matrix(m.rows)
     }
     
-    ready (exponent < 0) {
+    lowkey (exponent < 0) {
         sus inverse Matrix = matrix_inverse_lu(m)
         damn matrix_power_integer(inverse, -exponent)
     }
@@ -878,7 +878,7 @@ slay matrix_power_integer(m Matrix, exponent drip) Matrix {
     sus exp drip = exponent
     
     bestie (exp > 0) {
-        ready (exp % 2 == 1) {
+        lowkey (exp % 2 == 1) {
             result = matrix_multiply(result, base)
         }
         base = matrix_multiply(base, base)
@@ -969,19 +969,19 @@ slay vector_norm(v drip[value], n drip) drip {
 }
 
 slay sqrt_advanced(x drip) drip {
-    ready (x <= 0) {
+    lowkey (x <= 0) {
         damn 0
     }
     
     # Newton-Raphson with better initial guess
     sus guess drip = x
-    ready (x > 1) {
+    lowkey (x > 1) {
         guess = x / 2
     }
     
     bestie (sus i drip = 0; i < 30; i = i + 1) {
         sus new_guess drip = (guess + x / guess) / 2
-        ready (abs_val(new_guess - guess) < 1e-15) {
+        lowkey (abs_val(new_guess - guess) < 1e-15) {
             break
         }
         guess = new_guess
@@ -990,20 +990,20 @@ slay sqrt_advanced(x drip) drip {
 }
 
 slay min_val(a drip, b drip) drip {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b
 }
 
 slay check_matrix_symmetry(m Matrix) lit {
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         damn fake
     }
     
     bestie (sus i drip = 0; i < m.rows; i = i + 1) {
         bestie (sus j drip = 0; j < m.cols; j = j + 1) {
-            ready (abs_val(m.data[i * m.cols + j] - m.data[j * m.cols + i]) > 1e-12) {
+            lowkey (abs_val(m.data[i * m.cols + j] - m.data[j * m.cols + i]) > 1e-12) {
                 damn fake
             }
         }
@@ -1015,7 +1015,7 @@ slay check_matrix_symmetry(m Matrix) lit {
 slay apply_jacobi_rotation(a_data drip[value], eigenvecs_data drip[value], n drip, p drip, q drip, c drip, s drip) {
     # Apply rotation to matrix A
     bestie (sus j drip = 0; j < n; j = j + 1) {
-        ready (j != p && j != q) {
+        lowkey (j != p && j != q) {
             sus a_pj drip = a_data[p * n + j]
             sus a_qj drip = a_data[q * n + j]
             a_data[p * n + j] = c * a_pj - s * a_qj
@@ -1047,7 +1047,7 @@ slay sort_eigenvalues_and_vectors(eigenvals drip[value], eigenvecs_data drip[val
     # Bubble sort eigenvalues and corresponding eigenvectors in descending order
     bestie (sus i drip = 0; i < n - 1; i = i + 1) {
         bestie (sus j drip = 0; j < n - i - 1; j = j + 1) {
-            ready (eigenvals[j] < eigenvals[j + 1]) {
+            lowkey (eigenvals[j] < eigenvals[j + 1]) {
                 # Swap eigenvalues
                 sus temp_val drip = eigenvals[j]
                 eigenvals[j] = eigenvals[j + 1]
@@ -1068,7 +1068,7 @@ slay sort_singular_values_and_vectors(sigma drip[value], v_matrix Matrix, u_matr
     # Sort singular values in descending order with corresponding vectors
     bestie (sus i drip = 0; i < n - 1; i = i + 1) {
         bestie (sus j drip = 0; j < n - i - 1; j = j + 1) {
-            ready (sigma[j] < sigma[j + 1]) {
+            lowkey (sigma[j] < sigma[j + 1]) {
                 # Swap singular values
                 sus temp_val drip = sigma[j]
                 sigma[j] = sigma[j + 1]
@@ -1099,15 +1099,15 @@ slay calculate_condition_number_qr(r_data drip[value], min_dim drip, cols drip) 
     
     bestie (sus i drip = 1; i < min_dim; i = i + 1) {
         sus diag_val drip = abs_val(r_data[i * cols + i])
-        ready (diag_val > max_diag) {
+        lowkey (diag_val > max_diag) {
             max_diag = diag_val
         }
-        ready (diag_val < min_diag && diag_val > 1e-15) {
+        lowkey (diag_val < min_diag && diag_val > 1e-15) {
             min_diag = diag_val
         }
     }
     
-    ready (min_diag < 1e-15) {
+    lowkey (min_diag < 1e-15) {
         damn 1e12
     }
     
@@ -1120,15 +1120,15 @@ slay calculate_eigenvalue_condition_number(eigenvals drip[value], n drip) drip {
     
     bestie (sus i drip = 1; i < n; i = i + 1) {
         sus abs_eigenval drip = abs_val(eigenvals[i])
-        ready (abs_eigenval > max_eigenval) {
+        lowkey (abs_eigenval > max_eigenval) {
             max_eigenval = abs_eigenval
         }
-        ready (abs_eigenval < min_eigenval && abs_eigenval > 1e-15) {
+        lowkey (abs_eigenval < min_eigenval && abs_eigenval > 1e-15) {
             min_eigenval = abs_eigenval
         }
     }
     
-    ready (min_eigenval < 1e-15) {
+    lowkey (min_eigenval < 1e-15) {
         damn 1e12
     }
     
@@ -1138,7 +1138,7 @@ slay calculate_eigenvalue_condition_number(eigenvals drip[value], n drip) drip {
 slay pade_coefficient(order drip, k drip, numerator lit) drip {
     # Simplified Padé coefficients
     sus sign drip = 1.0
-    ready (!numerator && k % 2 == 1) {
+    lowkey (!numerator && k % 2 == 1) {
         sign = -1.0
     }
     

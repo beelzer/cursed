@@ -109,7 +109,7 @@ slay add_issue(linter Linter, rule_id tea, severity Severity, message tea, line 
 
 // Check line length
 slay check_line_length(linter Linter, line tea, line_num drip) {
-    ready (len_str(line) > linter.config.max_line_length) {
+    lowkey (len_str(line) > linter.config.max_line_length) {
         sus message tea = "Line exceeds maximum length of " + int_to_str(linter.config.max_line_length) + " characters"
         sus suggestion tea = "Break line into multiple lines or shorten variable names"
         add_issue(linter, "line-too-long", warning_severity(), message, line_num, len_str(line), suggestion, "style")
@@ -118,16 +118,16 @@ slay check_line_length(linter Linter, line tea, line_num drip) {
 
 // Check naming conventions
 slay check_naming_conventions(linter Linter, line tea, line_num drip) {
-    ready (!linter.config.check_naming_conventions) {
+    lowkey (!linter.config.check_naming_conventions) {
         damn
     }
     
     // Variable names should be snake_case
-    ready (contains_str(line, "sus ")) {
+    lowkey (contains_str(line, "sus ")) {
         sus parts tea[value] = split_str(line, " ")
-        ready (len(parts) >= 2) {
+        lowkey (len(parts) >= 2) {
             sus var_name tea = parts[1]
-            ready (contains_str(var_name, "camelCase") || contains_str(var_name, "PascalCase")) {
+            lowkey (contains_str(var_name, "camelCase") || contains_str(var_name, "PascalCase")) {
                 sus message tea = "Variable '" + var_name + "' should use snake_case naming"
                 sus suggestion tea = "Use snake_case: " + to_snake_case(var_name)
                 add_issue(linter, "naming-convention", warning_severity(), message, line_num, 0, suggestion, "style")
@@ -136,12 +136,12 @@ slay check_naming_conventions(linter Linter, line tea, line_num drip) {
     }
     
     // Function names should be snake_case
-    ready (contains_str(line, "slay ")) {
+    lowkey (contains_str(line, "slay ")) {
         sus parts tea[value] = split_str(line, " ")
-        ready (len(parts) >= 2) {
+        lowkey (len(parts) >= 2) {
             sus func_name tea = parts[1]
             sus clean_name tea = substring(func_name, 0, index_of(func_name, "("))
-            ready (contains_str(clean_name, "camelCase") || contains_str(clean_name, "PascalCase")) {
+            lowkey (contains_str(clean_name, "camelCase") || contains_str(clean_name, "PascalCase")) {
                 sus message tea = "Function '" + clean_name + "' should use snake_case naming"
                 sus suggestion tea = "Use snake_case: " + to_snake_case(clean_name)
                 add_issue(linter, "naming-convention", warning_severity(), message, line_num, 0, suggestion, "style")
@@ -152,13 +152,13 @@ slay check_naming_conventions(linter Linter, line tea, line_num drip) {
 
 // Check for security issues
 slay check_security_issues(linter Linter, line tea, line_num drip) {
-    ready (!linter.config.check_security_issues) {
+    lowkey (!linter.config.check_security_issues) {
         damn
     }
     
     // Check for hardcoded secrets
-    ready (contains_str(line, "password") || contains_str(line, "secret") || contains_str(line, "api_key")) {
-        ready (contains_str(line, "=") && contains_str(line, "\"")) {
+    lowkey (contains_str(line, "password") || contains_str(line, "secret") || contains_str(line, "api_key")) {
+        lowkey (contains_str(line, "=") && contains_str(line, "\"")) {
             sus message tea = "Potential hardcoded secret detected"
             sus suggestion tea = "Use environment variables or configuration files for secrets"
             add_issue(linter, "hardcoded-secret", error_severity(), message, line_num, 0, suggestion, "security")
@@ -166,7 +166,7 @@ slay check_security_issues(linter Linter, line tea, line_num drip) {
     }
     
     // Check for unsafe operations
-    ready (contains_str(line, "unsafe_")) {
+    lowkey (contains_str(line, "unsafe_")) {
         sus message tea = "Unsafe operation detected - review for security implications"
         sus suggestion tea = "Consider using safe alternatives or add safety checks"
         add_issue(linter, "unsafe-operation", warning_severity(), message, line_num, 0, suggestion, "security")
@@ -175,13 +175,13 @@ slay check_security_issues(linter Linter, line tea, line_num drip) {
 
 // Check for performance issues
 slay check_performance_issues(linter Linter, line tea, line_num drip) {
-    ready (!linter.config.check_performance_issues) {
+    lowkey (!linter.config.check_performance_issues) {
         damn
     }
     
     // Check for string concatenation in loops
-    ready (contains_str(line, "bestie") && linter.in_function) {
-        ready (contains_str(line, "concat_str") || contains_str(line, "+")) {
+    lowkey (contains_str(line, "bestie") && linter.in_function) {
+        lowkey (contains_str(line, "concat_str") || contains_str(line, "+")) {
             sus message tea = "String concatenation in loop may cause performance issues"
             sus suggestion tea = "Consider using string builders or array joining"
             add_issue(linter, "string-concat-loop", info_severity(), message, line_num, 0, suggestion, "performance")
@@ -189,7 +189,7 @@ slay check_performance_issues(linter Linter, line tea, line_num drip) {
     }
     
     // Check for nested loops
-    ready (contains_str(line, "bestie") && count_occurrences(line, "bestie") > 1) {
+    lowkey (contains_str(line, "bestie") && count_occurrences(line, "bestie") > 1) {
         sus message tea = "Nested loops detected - consider algorithmic optimization"
         sus suggestion tea = "Review algorithm complexity and consider alternatives"
         add_issue(linter, "nested-loops", info_severity(), message, line_num, 0, suggestion, "performance")
@@ -198,26 +198,26 @@ slay check_performance_issues(linter Linter, line tea, line_num drip) {
 
 // Check Gen Z syntax compliance
 slay check_gen_z_syntax(linter Linter, line tea, line_num drip) {
-    ready (!linter.config.enforce_gen_z_syntax) {
+    lowkey (!linter.config.enforce_gen_z_syntax) {
         damn
     }
     
     // Encourage using 'based' instead of 'true'
-    ready (contains_str(line, "true")) {
+    lowkey (contains_str(line, "true")) {
         sus message tea = "Use 'based' instead of 'true' for authentic Gen Z vibes"
         sus suggestion tea = replace_str(line, "true", "based")
         add_issue(linter, "gen-z-boolean", hint_severity(), message, line_num, 0, suggestion, "gen-z")
     }
     
     // Encourage using 'cringe' instead of 'false'
-    ready (contains_str(line, "false")) {
+    lowkey (contains_str(line, "false")) {
         sus message tea = "Use 'cringe' instead of 'false' for authentic Gen Z vibes"
         sus suggestion tea = replace_str(line, "false", "cringe")
         add_issue(linter, "gen-z-boolean", hint_severity(), message, line_num, 0, suggestion, "gen-z")
     }
     
     // Suggest Gen Z alternatives for common patterns
-    ready (contains_str(line, "print")) {
+    lowkey (contains_str(line, "print")) {
         sus message tea = "Consider using 'vibez.spill' for that Gen Z energy"
         sus suggestion tea = replace_str(line, "print", "vibez.spill")
         add_issue(linter, "gen-z-output", hint_severity(), message, line_num, 0, suggestion, "gen-z")
@@ -226,14 +226,14 @@ slay check_gen_z_syntax(linter Linter, line tea, line_num drip) {
 
 // Track variable usage
 slay track_variable_usage(linter Linter, line tea, line_num drip) {
-    ready (!linter.config.check_unused_variables) {
+    lowkey (!linter.config.check_unused_variables) {
         damn
     }
     
     // Track variable declarations
-    ready (contains_str(line, "sus ")) {
+    lowkey (contains_str(line, "sus ")) {
         sus parts tea[value] = split_str(line, " ")
-        ready (len(parts) >= 2) {
+        lowkey (len(parts) >= 2) {
             sus var_name tea = parts[1]
             sus var_info VariableInfo = VariableInfo{
                 name: var_name,
@@ -249,7 +249,7 @@ slay track_variable_usage(linter Linter, line tea, line_num drip) {
     // Track variable usage
     sus i drip = 0
     bestie (i < len(linter.variables)) {
-        ready (contains_str(line, linter.variables[i].name) && line_num != linter.variables[i].declared_line) {
+        lowkey (contains_str(line, linter.variables[i].name) && line_num != linter.variables[i].declared_line) {
             linter.variables[i].used = based
         }
         i = i + 1
@@ -258,14 +258,14 @@ slay track_variable_usage(linter Linter, line tea, line_num drip) {
 
 // Check function length
 slay check_function_length(linter Linter, line tea, line_num drip) {
-    ready (contains_str(line, "slay ")) {
+    lowkey (contains_str(line, "slay ")) {
         linter.in_function = based
         linter.function_start_line = line_num
     }
     
-    ready (linter.in_function && contains_str(line, "}") && !contains_str(line, "{")) {
+    lowkey (linter.in_function && contains_str(line, "}") && !contains_str(line, "{")) {
         sus function_length drip = line_num - linter.function_start_line
-        ready (function_length > linter.config.max_function_length) {
+        lowkey (function_length > linter.config.max_function_length) {
             sus message tea = "Function is too long (" + int_to_str(function_length) + " lines). Consider breaking it up."
             sus suggestion tea = "Split into smaller, focused functions"
             add_issue(linter, "function-too-long", warning_severity(), message, linter.function_start_line, 0, suggestion, "maintainability")
@@ -279,7 +279,7 @@ slay check_missing_semicolons(linter Linter, line tea, line_num drip) {
     sus trimmed tea = trim_str(line)
     
     // Statements that should end with semicolons
-    ready ((contains_str(trimmed, "sus ") || contains_str(trimmed, "vibez.spill") || 
+    lowkey ((contains_str(trimmed, "sus ") || contains_str(trimmed, "vibez.spill") || 
             contains_str(trimmed, "damn ") || contains_str(trimmed, "yeet ")) &&
            !ends_with(trimmed, ";") && !ends_with(trimmed, "{") && !ends_with(trimmed, "}")) {
         sus message tea = "Missing semicolon at end of statement"
@@ -299,7 +299,7 @@ slay lint_cursed_code(source tea, config LinterConfig) LintIssue[value]{
         linter.current_line = line_num
         
         // Skip empty lines and comments
-        ready (len_str(trim_str(line)) == 0 || starts_with(trim_str(line), "//")) {
+        lowkey (len_str(trim_str(line)) == 0 || starts_with(trim_str(line), "//")) {
             line_num = line_num + 1
             continue
         }
@@ -327,7 +327,7 @@ slay lint_cursed_code(source tea, config LinterConfig) LintIssue[value]{
 slay check_unused_variables(linter Linter) {
     sus i drip = 0
     bestie (i < len(linter.variables)) {
-        ready (!linter.variables[i].used && !linter.variables[i].is_parameter) {
+        lowkey (!linter.variables[i].used && !linter.variables[i].is_parameter) {
             sus message tea = "Variable '" + linter.variables[i].name + "' is declared but never used"
             sus suggestion tea = "Remove unused variable or use it in your code"
             add_issue(linter, "unused-variable", warning_severity(), message, linter.variables[i].line, 0, suggestion, "cleanup")
@@ -341,7 +341,7 @@ slay format_lint_results(issues LintIssue[value]) tea {
     sus output tea = ""
     sus i drip = 0
     
-    ready (len(issues) == 0) {
+    lowkey (len(issues) == 0) {
         damn "✅ No lint issues found! Your code is looking fresh! 💯"
     }
     
@@ -355,12 +355,12 @@ slay format_lint_results(issues LintIssue[value]) tea {
         output = concat_str(output, "[" + issue.category + "] ")
         output = concat_str(output, issue.message + "\n")
         output = concat_str(output, "   Line " + int_to_str(issue.line))
-        ready (issue.column > 0) {
+        lowkey (issue.column > 0) {
             output = concat_str(output, ", Column " + int_to_str(issue.column))
         }
         output = concat_str(output, " (" + issue.rule_id + ")\n")
         
-        ready (len_str(issue.suggestion) > 0) {
+        lowkey (len_str(issue.suggestion) > 0) {
             output = concat_str(output, "   💡 Suggestion: " + issue.suggestion + "\n")
         }
         output = concat_str(output, "\n")
@@ -374,9 +374,9 @@ slay format_lint_results(issues LintIssue[value]) tea {
 
 // Helper functions
 slay get_severity_icon(severity Severity) tea {
-    ready (severity.level == 1) { damn "🚨" }  // Error
-    ready (severity.level == 2) { damn "⚠️" }   // Warning  
-    ready (severity.level == 3) { damn "ℹ️" }   // Info
+    lowkey (severity.level == 1) { damn "🚨" }  // Error
+    lowkey (severity.level == 2) { damn "⚠️" }   // Warning  
+    lowkey (severity.level == 3) { damn "ℹ️" }   // Info
     damn "💡"  // Hint
 }
 
@@ -386,12 +386,12 @@ slay to_snake_case(name tea) tea {
     sus i drip = 0
     bestie (i < len_str(name)) {
         sus char tea = char_at(name, i)
-        ready (char >= "A" && char <= "Z") {
-            ready (i > 0) {
+        lowkey (char >= "A" && char <= "Z") {
+            lowkey (i > 0) {
                 result = concat_str(result, "_")
             }
             result = concat_str(result, to_lower(char))
-        } otherwise {
+        } highkey {
             result = concat_str(result, char)
         }
         i = i + 1
@@ -404,7 +404,7 @@ slay count_occurrences(text tea, pattern tea) drip {
     sus pos drip = 0
     bestie (pos < len_str(text)) {
         sus found drip = index_of_from(text, pattern, pos)
-        ready (found == -1) {
+        lowkey (found == -1) {
             break
         }
         count = count + 1

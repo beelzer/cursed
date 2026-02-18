@@ -66,7 +66,7 @@ slay new_rpc_registry() RpcRegistry {
 
 # Register RPC method
 slay register_method(registry &RpcRegistry, method_name tea, handler RpcHandler) yikes<tea> {
-    ready (method_name == "") {
+    lowkey (method_name == "") {
         yikes "Method name cannot be empty"
     }
     
@@ -93,7 +93,7 @@ slay parse_rpc_request(json_data tea) yikes<RpcRequest> {
         when _ -> yikes "Missing jsonrpc field"
     }
     
-    ready (version != "2.0") {
+    lowkey (version != "2.0") {
         yikes "Invalid JSON-RPC version, must be 2.0"
     }
     
@@ -104,7 +104,7 @@ slay parse_rpc_request(json_data tea) yikes<RpcRequest> {
         when _ -> yikes "Missing method field"
     }
     
-    ready (request.method == "") {
+    lowkey (request.method == "") {
         yikes "Method name cannot be empty"
     }
     
@@ -195,16 +195,16 @@ slay process_rpc_request(registry &RpcRegistry, request RpcRequest) yikes<RpcRes
 
 # Validate RPC request structure
 slay validate_rpc_request(request RpcRequest) yikes<lit> {
-    ready (request.jsonrpc != "2.0") {
+    lowkey (request.jsonrpc != "2.0") {
         yikes "Invalid JSON-RPC version"
     }
     
-    ready (request.method == "") {
+    lowkey (request.method == "") {
         yikes "Method name is required"
     }
     
     # Method names starting with "rpc." are reserved
-    ready (stringz.starts_with(request.method, "rpc.")) {
+    lowkey (stringz.starts_with(request.method, "rpc.")) {
         yikes "Method names starting with 'rpc.' are reserved"
     }
     
@@ -226,7 +226,7 @@ slay process_batch_request(registry &RpcRegistry, json_data tea) yikes<tea> {
         when _ -> yikes "Invalid batch request format"
     }
     
-    ready (len(json_array) == 0) {
+    lowkey (len(json_array) == 0) {
         yikes "Batch request cannot be empty"
     }
     
@@ -249,7 +249,7 @@ slay process_batch_request(registry &RpcRegistry, json_data tea) yikes<tea> {
         }
         
         # Skip notifications in batch response
-        ready (!is_notification(request)) {
+        lowkey (!is_notification(request)) {
             responses = append(responses, response)
         }
     }

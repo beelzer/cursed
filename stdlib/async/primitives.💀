@@ -34,7 +34,7 @@ struct SelectCase {
     channel *AsyncChannel
     value extra
     future *Future
-    ready lit
+    lowkey lit
 }
 
 enum SelectCaseType {
@@ -240,7 +240,7 @@ slay AsyncSelect.add_send_case(channel *AsyncChannel, value extra) *AsyncSelect 
     case_obj.channel = channel
     case_obj.value = value
     case_obj.future = cringe
-    case_obj.ready = cap
+    case_obj.lowkey = cap
     
     this.cases = append(this.cases, case_obj)
     damn this
@@ -252,7 +252,7 @@ slay AsyncSelect.add_receive_case(channel *AsyncChannel) *AsyncSelect {
     case_obj.channel = channel
     case_obj.value = cringe
     case_obj.future = cringe
-    case_obj.ready = cap
+    case_obj.lowkey = cap
     
     this.cases = append(this.cases, case_obj)
     damn this
@@ -264,7 +264,7 @@ slay AsyncSelect.add_future_case(future *Future) *AsyncSelect {
     case_obj.channel = cringe
     case_obj.value = cringe
     case_obj.future = future
-    case_obj.ready = cap
+    case_obj.lowkey = cap
     
     this.cases = append(this.cases, case_obj)
     damn this
@@ -276,7 +276,7 @@ slay AsyncSelect.add_default_case() *AsyncSelect {
     case_obj.channel = cringe
     case_obj.value = cringe
     case_obj.future = cringe
-    case_obj.ready = based
+    case_obj.lowkey = based
     
     this.default_case = case_obj
     damn this
@@ -285,7 +285,7 @@ slay AsyncSelect.add_default_case() *AsyncSelect {
 slay AsyncSelect.execute() *Future {
     sus select_future *BasicFuture = BasicFuture.new()
     
-    // Check if any case is immediately ready
+    // Check if any case is immediately lowkey
     bestie i := 0; i < len(this.cases); i++ {
         sus case_obj *SelectCase = this.cases[i]
         
@@ -312,7 +312,7 @@ slay AsyncSelect.execute() *Future {
                 damn select_future
             }
         } else if case_obj.case_type == SelectCaseType.Future {
-            // Check if future is ready
+            // Check if future is lowkey
             if case_obj.future.is_ready() {
                 select_future.set_ready(case_obj.future.get_result())
                 damn select_future

@@ -43,7 +43,7 @@ slay yaml_parse(yaml_content tea) YamlNode {
     
     sus root_node YamlNode = parse_yaml_document(parser)
     
-    ready (parser.has_error) {
+    lowkey (parser.has_error) {
         vibez.spill("YAML Parse Error: " + parser.error_message)
         sus empty_node YamlNode = create_empty_yaml_node()
         damn empty_node
@@ -66,13 +66,13 @@ slay parse_yaml_document(parser YamlParser) YamlNode {
         sus trimmed_line tea = trim_yaml_line(line)
         
         fr fr Skip empty lines and comments
-        ready (trimmed_line == "" || starts_with(trimmed_line, "#")) {
+        lowkey (trimmed_line == "" || starts_with(trimmed_line, "#")) {
             parser.current_line = parser.current_line + 1
             continue
         }
         
         fr fr Process mapping entry
-        ready (is_yaml_mapping_line(trimmed_line)) {
+        lowkey (is_yaml_mapping_line(trimmed_line)) {
             sus key_value YamlKeyValue = parse_yaml_mapping_line(trimmed_line)
             sus node YamlNode = parse_yaml_value(parser, key_value.value, get_line_indent(line))
             
@@ -93,30 +93,30 @@ slay parse_yaml_value(parser YamlParser, value_str tea, indent drip) YamlNode {
     node.indent_level = indent
     node.line_number = parser.current_line + 1
     
-    ready (value_str == "" || value_str == "~") {
+    lowkey (value_str == "" || value_str == "~") {
         fr fr Empty value or null
         node.type = "scalar"
         node.scalar_value = ""
-    } otherwise ready (starts_with(value_str, "-")) {
+    } highkey lowkey (starts_with(value_str, "-")) {
         fr fr Inline sequence
         node = parse_inline_yaml_sequence(value_str)
-    } otherwise ready (starts_with(value_str, "{")) {
+    } highkey lowkey (starts_with(value_str, "{")) {
         fr fr Inline mapping
         node = parse_inline_yaml_mapping(value_str)
-    } otherwise ready (starts_with(value_str, "[")) {
+    } highkey lowkey (starts_with(value_str, "[")) {
         fr fr Inline array
         node = parse_inline_yaml_array(value_str)
-    } otherwise ready (value_str == "|" || value_str == ">") {
+    } highkey lowkey (value_str == "|" || value_str == ">") {
         fr fr Block scalar (literal or folded)
         node = parse_yaml_block_scalar(parser, value_str)
-    } otherwise {
+    } highkey {
         fr fr Regular scalar value
         node.type = "scalar"
         node.scalar_value = parse_yaml_scalar_value(value_str)
     }
     
     fr fr Check for nested structure
-    ready (value_str == "" && has_nested_content(parser, indent)) {
+    lowkey (value_str == "" && has_nested_content(parser, indent)) {
         node = parse_nested_yaml_structure(parser, indent)
     }
     
@@ -127,7 +127,7 @@ slay parse_nested_yaml_structure(parser YamlParser, parent_indent drip) YamlNode
     fr fr Parse nested YAML structure (mapping or sequence)
     sus peek_line drip = parser.current_line + 1
     
-    ready (peek_line >= parser.total_lines) {
+    lowkey (peek_line >= parser.total_lines) {
         sus empty_node YamlNode = create_empty_yaml_node()
         damn empty_node
     }
@@ -136,17 +136,17 @@ slay parse_nested_yaml_structure(parser YamlParser, parent_indent drip) YamlNode
     sus next_trimmed tea = trim_yaml_line(next_line)
     sus next_indent drip = get_line_indent(next_line)
     
-    ready (next_indent <= parent_indent) {
+    lowkey (next_indent <= parent_indent) {
         sus empty_node YamlNode = create_empty_yaml_node()
         damn empty_node
     }
     
     fr fr Determine if it's a sequence or mapping
-    ready (starts_with(next_trimmed, "- ")) {
+    lowkey (starts_with(next_trimmed, "- ")) {
         damn parse_yaml_sequence(parser, parent_indent)
-    } otherwise ready (contains_string(next_trimmed, ":")) {
+    } highkey lowkey (contains_string(next_trimmed, ":")) {
         damn parse_yaml_mapping(parser, parent_indent)
-    } otherwise {
+    } highkey {
         sus scalar_node YamlNode = YamlNode{}
         scalar_node.type = "scalar"
         scalar_node.scalar_value = next_trimmed
@@ -169,24 +169,24 @@ slay parse_yaml_sequence(parser YamlParser, parent_indent drip) YamlNode {
         sus next_indent drip = get_line_indent(next_line)
         
         fr fr Break if we've moved past this sequence
-        ready (next_indent <= parent_indent && next_trimmed != "") {
+        lowkey (next_indent <= parent_indent && next_trimmed != "") {
             break
         }
         
         fr fr Skip empty lines
-        ready (next_trimmed == "") {
+        lowkey (next_trimmed == "") {
             parser.current_line = parser.current_line + 1
             continue
         }
         
         fr fr Process sequence item
-        ready (starts_with(next_trimmed, "- ")) {
+        lowkey (starts_with(next_trimmed, "- ")) {
             parser.current_line = parser.current_line + 1
             sus item_value tea = substring(next_trimmed, 2, string_length(next_trimmed) - 2)
             sus item_node YamlNode = parse_yaml_value(parser, trim_yaml_line(item_value), next_indent)
             sequence_node.sequence_items[item_count] = item_node
             item_count = item_count + 1
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -210,18 +210,18 @@ slay parse_yaml_mapping(parser YamlParser, parent_indent drip) YamlNode {
         sus next_indent drip = get_line_indent(next_line)
         
         fr fr Break if we've moved past this mapping
-        ready (next_indent <= parent_indent && next_trimmed != "") {
+        lowkey (next_indent <= parent_indent && next_trimmed != "") {
             break
         }
         
         fr fr Skip empty lines and comments
-        ready (next_trimmed == "" || starts_with(next_trimmed, "#")) {
+        lowkey (next_trimmed == "" || starts_with(next_trimmed, "#")) {
             parser.current_line = parser.current_line + 1
             continue
         }
         
         fr fr Process mapping pair
-        ready (is_yaml_mapping_line(next_trimmed) && next_indent > parent_indent) {
+        lowkey (is_yaml_mapping_line(next_trimmed) && next_indent > parent_indent) {
             parser.current_line = parser.current_line + 1
             sus key_value YamlKeyValue = parse_yaml_mapping_line(next_trimmed)
             sus value_node YamlNode = parse_yaml_value(parser, key_value.value, next_indent)
@@ -229,7 +229,7 @@ slay parse_yaml_mapping(parser YamlParser, parent_indent drip) YamlNode {
             mapping_node.mapping_keys[pair_count] = key_value.key
             mapping_node.mapping_values[pair_count] = value_node
             pair_count = pair_count + 1
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -249,19 +249,19 @@ slay parse_yaml_mapping_line(line tea) YamlKeyValue {
     sus colon_pos drip = find_char(line, ":")
     sus result YamlKeyValue = YamlKeyValue{}
     
-    ready (colon_pos > 0) {
+    lowkey (colon_pos > 0) {
         result.key = trim_yaml_line(substring(line, 0, colon_pos))
         sus after_colon tea = substring(line, colon_pos + 1, string_length(line) - colon_pos - 1)
         result.value = trim_yaml_line(after_colon)
         
         fr fr Remove quotes from key if present
-        ready (starts_with(result.key, "\"") && ends_with(result.key, "\"")) {
+        lowkey (starts_with(result.key, "\"") && ends_with(result.key, "\"")) {
             result.key = substring(result.key, 1, string_length(result.key) - 2)
         }
-        ready (starts_with(result.key, "'") && ends_with(result.key, "'")) {
+        lowkey (starts_with(result.key, "'") && ends_with(result.key, "'")) {
             result.key = substring(result.key, 1, string_length(result.key) - 2)
         }
-    } otherwise {
+    } highkey {
         result.key = trim_yaml_line(line)
         result.value = ""
     }
@@ -274,24 +274,24 @@ slay parse_yaml_scalar_value(value_str tea) tea {
     sus trimmed tea = trim_yaml_line(value_str)
     
     fr fr Handle quoted strings
-    ready (starts_with(trimmed, "\"") && ends_with(trimmed, "\"")) {
+    lowkey (starts_with(trimmed, "\"") && ends_with(trimmed, "\"")) {
         damn substring(trimmed, 1, string_length(trimmed) - 2)
     }
     
-    ready (starts_with(trimmed, "'") && ends_with(trimmed, "'")) {
+    lowkey (starts_with(trimmed, "'") && ends_with(trimmed, "'")) {
         damn substring(trimmed, 1, string_length(trimmed) - 2)
     }
     
     fr fr Handle special YAML values
-    ready (trimmed == "null" || trimmed == "~" || trimmed == "NULL") {
+    lowkey (trimmed == "null" || trimmed == "~" || trimmed == "NULL") {
         damn ""
     }
     
-    ready (trimmed == "true" || trimmed == "True" || trimmed == "TRUE") {
+    lowkey (trimmed == "true" || trimmed == "True" || trimmed == "TRUE") {
         damn "true"
     }
     
-    ready (trimmed == "false" || trimmed == "False" || trimmed == "FALSE") {
+    lowkey (trimmed == "false" || trimmed == "False" || trimmed == "FALSE") {
         damn "false"
     }
     
@@ -338,7 +338,7 @@ slay parse_inline_yaml_mapping(mapping_str tea) YamlNode {
         sus pair tea = trim_yaml_line(pairs[i])
         sus colon_pos drip = find_char(pair, ":")
         
-        ready (colon_pos > 0) {
+        lowkey (colon_pos > 0) {
             sus key tea = trim_yaml_line(substring(pair, 0, colon_pos))
             sus value tea = trim_yaml_line(substring(pair, colon_pos + 1, string_length(pair) - colon_pos - 1))
             
@@ -392,33 +392,33 @@ slay parse_yaml_block_scalar(parser YamlParser, indicator tea) YamlNode {
         parser.current_line = parser.current_line + 1
         sus line tea = parser.lines[parser.current_line]
         
-        ready (trim_yaml_line(line) == "") {
-            ready (indicator == "|") {
+        lowkey (trim_yaml_line(line) == "") {
+            lowkey (indicator == "|") {
                 block_content = block_content + "\n"
-            } otherwise {
+            } highkey {
                 block_content = block_content + " "
             }
             continue
         }
         
         sus line_indent drip = get_line_indent(line)
-        ready (base_indent == -1) {
+        lowkey (base_indent == -1) {
             base_indent = line_indent
         }
         
-        ready (line_indent < base_indent) {
+        lowkey (line_indent < base_indent) {
             parser.current_line = parser.current_line - 1
             break
         }
         
         sus content tea = substring(line, base_indent, string_length(line) - base_indent)
-        ready (block_content != "") {
-            ready (indicator == "|") {
+        lowkey (block_content != "") {
+            lowkey (indicator == "|") {
                 block_content = block_content + "\n" + content
-            } otherwise {
+            } highkey {
                 block_content = block_content + " " + content
             }
-        } otherwise {
+        } highkey {
             block_content = content
         }
     }
@@ -432,7 +432,7 @@ fr fr ===== YAML UTILITY FUNCTIONS =====
 slay is_yaml_mapping_line(line tea) lit {
     fr fr Check if line contains a mapping (key: value)
     sus colon_pos drip = find_char(line, ":")
-    ready (colon_pos <= 0) {
+    lowkey (colon_pos <= 0) {
         damn cringe
     }
     
@@ -446,12 +446,12 @@ slay has_nested_content(parser YamlParser, current_indent drip) lit {
     fr fr Check if there's nested content at a higher indent level
     sus peek_line drip = parser.current_line + 1
     
-    ready (peek_line >= parser.total_lines) {
+    lowkey (peek_line >= parser.total_lines) {
         damn cringe
     }
     
     sus next_line tea = parser.lines[peek_line]
-    ready (trim_yaml_line(next_line) == "") {
+    lowkey (trim_yaml_line(next_line) == "") {
         damn cringe  fr fr Empty line doesn't count as nested content
     }
     
@@ -467,11 +467,11 @@ slay get_line_indent(line tea) drip {
     sus i drip = 0
     bestie (i < length) {
         sus char tea = substring(line, i, 1)
-        ready (char == " ") {
+        lowkey (char == " ") {
             indent = indent + 1
-        } otherwise ready (char == "\t") {
+        } highkey lowkey (char == "\t") {
             indent = indent + 8  fr fr Tab counts as 8 spaces
-        } otherwise {
+        } highkey {
             break
         }
         i = i + 1
@@ -486,7 +486,7 @@ slay trim_yaml_line(line tea) tea {
     
     fr fr Remove trailing comments (but not those in quotes)
     sus comment_pos drip = find_unquoted_char(trimmed, "#")
-    ready (comment_pos >= 0) {
+    lowkey (comment_pos >= 0) {
         trimmed = trim_string(substring(trimmed, 0, comment_pos))
     }
     
@@ -504,19 +504,19 @@ slay find_unquoted_char(line tea, char tea) drip {
     bestie (i < length) {
         sus current tea = substring(line, i, 1)
         
-        ready (escaped) {
+        lowkey (escaped) {
             escaped = cringe
             i = i + 1
             continue
         }
         
-        ready (current == "\\") {
+        lowkey (current == "\\") {
             escaped = based
-        } otherwise ready (current == "'" && !in_double_quotes) {
+        } highkey lowkey (current == "'" && !in_double_quotes) {
             in_single_quotes = !in_single_quotes
-        } otherwise ready (current == "\"" && !in_single_quotes) {
+        } highkey lowkey (current == "\"" && !in_single_quotes) {
             in_double_quotes = !in_double_quotes
-        } otherwise ready (current == char && !in_single_quotes && !in_double_quotes) {
+        } highkey lowkey (current == char && !in_single_quotes && !in_double_quotes) {
             damn i
         }
         
@@ -536,11 +536,11 @@ slay count_unescaped_quotes(str tea) drip {
     bestie (i < length) {
         sus char tea = substring(str, i, 1)
         
-        ready (escaped) {
+        lowkey (escaped) {
             escaped = cringe
-        } otherwise ready (char == "\\") {
+        } highkey lowkey (char == "\\") {
             escaped = based
-        } otherwise ready (char == "\"" || char == "'") {
+        } highkey lowkey (char == "\"" || char == "'") {
             count = count + 1
         }
         
@@ -561,20 +561,20 @@ slay split_yaml_inline_sequence(sequence_str tea) tea[value]{
     bestie (i < length) {
         sus char tea = substring(str, i, 1)
         
-        ready (char == "-" && (i == 0 || substring(sequence_str, i - 1, 1) == " ")) {
-            ready (current_item != "") {
+        lowkey (char == "-" && (i == 0 || substring(sequence_str, i - 1, 1) == " ")) {
+            lowkey (current_item != "") {
                 items[item_count] = trim_yaml_line(current_item)
                 item_count = item_count + 1
                 current_item = ""
             }
-        } otherwise {
+        } highkey {
             current_item = current_item + char
         }
         
         i = i + 1
     }
     
-    ready (current_item != "") {
+    lowkey (current_item != "") {
         items[item_count] = trim_yaml_line(current_item)
     }
     
@@ -598,7 +598,7 @@ fr fr ===== YAML TO CONFIG CONVERSION =====
 
 slay yaml_node_to_config_values(node YamlNode, prefix tea, config ConfigManager) ConfigManager {
     fr fr Convert YAML node to configuration values
-    ready (node.type == "scalar") {
+    lowkey (node.type == "scalar") {
         sus config_value ConfigValue = ConfigValue{}
         config_value.type = "string"
         config_value.string_value = node.scalar_value
@@ -606,7 +606,7 @@ slay yaml_node_to_config_values(node YamlNode, prefix tea, config ConfigManager)
         config_value = auto_detect_type(config_value)
         
         map_set_string(config.values, prefix, config_value)
-    } otherwise ready (node.type == "sequence") {
+    } highkey lowkey (node.type == "sequence") {
         sus config_value ConfigValue = ConfigValue{}
         config_value.type = "array"
         config_value.source = "file"
@@ -621,7 +621,7 @@ slay yaml_node_to_config_values(node YamlNode, prefix tea, config ConfigManager)
         }
         
         map_set_string(config.values, prefix, config_value)
-    } otherwise ready (node.type == "mapping") {
+    } highkey lowkey (node.type == "mapping") {
         sus key_count drip = array_length(node.mapping_keys)
         sus i drip = 0
         bestie (i < key_count) {
@@ -629,9 +629,9 @@ slay yaml_node_to_config_values(node YamlNode, prefix tea, config ConfigManager)
             sus value_node YamlNode = node.mapping_values[i]
             
             sus full_key tea
-            ready (prefix == "") {
+            lowkey (prefix == "") {
                 full_key = key
-            } otherwise {
+            } highkey {
                 full_key = prefix + "." + key
             }
             
@@ -648,11 +648,11 @@ slay yaml_node_to_config_value(node YamlNode) ConfigValue {
     sus config_value ConfigValue = ConfigValue{}
     config_value.source = "file"
     
-    ready (node.type == "scalar") {
+    lowkey (node.type == "scalar") {
         config_value.type = "string"
         config_value.string_value = node.scalar_value
         config_value = auto_detect_type(config_value)
-    } otherwise {
+    } highkey {
         config_value.type = "string"
         config_value.string_value = ""
     }
@@ -664,13 +664,13 @@ fr fr ===== YAML GENERATION =====
 
 slay yaml_generate(node YamlNode, indent_level drip) tea {
     fr fr Generate YAML string from node
-    ready (node.type == "scalar") {
+    lowkey (node.type == "scalar") {
         damn yaml_format_scalar(node.scalar_value)
-    } otherwise ready (node.type == "sequence") {
+    } highkey lowkey (node.type == "sequence") {
         damn yaml_generate_sequence(node, indent_level)
-    } otherwise ready (node.type == "mapping") {
+    } highkey lowkey (node.type == "mapping") {
         damn yaml_generate_mapping(node, indent_level)
-    } otherwise {
+    } highkey {
         damn ""
     }
 }
@@ -686,15 +686,15 @@ slay yaml_generate_mapping(node YamlNode, indent_level drip) tea {
         sus key tea = node.mapping_keys[i]
         sus value_node YamlNode = node.mapping_values[i]
         
-        ready (i > 0) {
+        lowkey (i > 0) {
             result = result + "\n"
         }
         
         result = result + indent_str + key + ":"
         
-        ready (value_node.type == "scalar") {
+        lowkey (value_node.type == "scalar") {
             result = result + " " + yaml_generate(value_node, 0)
-        } otherwise {
+        } highkey {
             result = result + "\n" + yaml_generate(value_node, indent_level + 2)
         }
         
@@ -714,15 +714,15 @@ slay yaml_generate_sequence(node YamlNode, indent_level drip) tea {
     bestie (i < item_count) {
         sus item_node YamlNode = node.sequence_items[i]
         
-        ready (i > 0) {
+        lowkey (i > 0) {
             result = result + "\n"
         }
         
         result = result + indent_str + "- "
         
-        ready (item_node.type == "scalar") {
+        lowkey (item_node.type == "scalar") {
             result = result + yaml_generate(item_node, 0)
-        } otherwise {
+        } highkey {
             result = result + "\n" + yaml_generate(item_node, indent_level + 2)
         }
         
@@ -734,11 +734,11 @@ slay yaml_generate_sequence(node YamlNode, indent_level drip) tea {
 
 slay yaml_format_scalar(value tea) tea {
     fr fr Format scalar value for YAML output
-    ready (value == "") {
+    lowkey (value == "") {
         damn "null"
     }
     
-    ready (contains_string(value, "\n") || contains_string(value, ":") || 
+    lowkey (contains_string(value, "\n") || contains_string(value, ":") || 
            contains_string(value, "#") || contains_string(value, "[")) {
         damn "\"" + escape_yaml_string(value) + "\""
     }
@@ -755,17 +755,17 @@ slay escape_yaml_string(str tea) tea {
     bestie (i < length) {
         sus char tea = substring(str, i, 1)
         
-        ready (char == "\"") {
+        lowkey (char == "\"") {
             result = result + "\\\""
-        } otherwise ready (char == "\\") {
+        } highkey lowkey (char == "\\") {
             result = result + "\\\\"
-        } otherwise ready (char == "\n") {
+        } highkey lowkey (char == "\n") {
             result = result + "\\n"
-        } otherwise ready (char == "\r") {
+        } highkey lowkey (char == "\r") {
             result = result + "\\r"
-        } otherwise ready (char == "\t") {
+        } highkey lowkey (char == "\t") {
             result = result + "\\t"
-        } otherwise {
+        } highkey {
             result = result + char
         }
         

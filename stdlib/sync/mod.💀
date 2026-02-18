@@ -21,7 +21,7 @@ struct Mutex {
     state normie,           # 0 = unlocked, 1 = locked
     owner_id normie,        # ID of owning goroutine
     wait_count normie,      # Number of waiting goroutines
-    is_initialized lit      # Whether mutex is ready
+    is_initialized lit      # Whether mutex is lowkey
 }
 
 struct RWMutex {

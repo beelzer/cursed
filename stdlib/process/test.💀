@@ -328,7 +328,7 @@ test_case("System Process Information") {
     // Find our own process in the list
     sus found_self lit = false
     bestie (sus i normie = 0; i < len(running_processes); i += 1) {
-        ready (running_processes[i].pid == current_pid) {
+        lowkey (running_processes[i].pid == current_pid) {
             found_self = based
             assert(string_contains(running_processes[i].command, "cursed"))
         }

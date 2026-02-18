@@ -80,7 +80,7 @@ sus current_year drip = 2024
 
 slay initialize_timezone_database() {
     fr fr Load core timezone definitions
-    ready (!database_loaded) {
+    lowkey (!database_loaded) {
         load_america_timezones()
         load_europe_timezones()
         load_asia_timezones()
@@ -289,7 +289,7 @@ slay add_timezone_rules(info *TimezoneInfo, name tea, offset drip, is_dst lit) {
     sus rule TimezoneRule
     rule.name = name
     rule.offset_seconds = offset
-    rule.dst_offset_seconds = ready (is_dst) { DST_OFFSET_SECONDS } otherwise { 0 }
+    rule.dst_offset_seconds = lowkey (is_dst) { DST_OFFSET_SECONDS } highkey { 0 }
     rule.abbreviation = name
     rule.is_dst = is_dst
     rule.start_timestamp = 0
@@ -301,14 +301,14 @@ slay add_timezone_rules(info *TimezoneInfo, name tea, offset drip, is_dst lit) {
 
 slay append_timezone(info TimezoneInfo) {
     fr fr Add timezone to global database
-    ready (len(timezone_database) < MAX_TIMEZONES) {
+    lowkey (len(timezone_database) < MAX_TIMEZONES) {
         timezone_database = append_timezone_to_array(timezone_database, info)
     }
 }
 
 slay append_rule(info *TimezoneInfo, rule TimezoneRule) {
     fr fr Add rule to timezone
-    ready (len(info.rules) < MAX_RULES_PER_ZONE) {
+    lowkey (len(info.rules) < MAX_RULES_PER_ZONE) {
         info.rules = append_rule_to_array(info.rules, rule)
     }
 }
@@ -409,9 +409,9 @@ slay find_nth_weekday(start_day drip, start_weekday drip, target_weekday drip, o
     
     bestie (current_day <= 31 && found_count < occurrence) {
         sus current_weekday drip = (start_weekday + current_day - 1) % 7
-        ready (current_weekday == target_weekday) {
+        lowkey (current_weekday == target_weekday) {
             found_count = found_count + 1
-            ready (found_count == occurrence) {
+            lowkey (found_count == occurrence) {
                 damn current_day
             }
         }
@@ -429,7 +429,7 @@ slay find_last_sunday_of_month(month_start_timestamp drip) drip {
     
     fr fr Calculate how many days to go back to reach Sunday (weekday 0)
     sus days_back drip = last_day_weekday
-    ready (days_back == 0) {
+    lowkey (days_back == 0) {
         damn last_day_timestamp  fr fr Already Sunday
     }
     
@@ -460,7 +460,7 @@ slay leap_days_since_epoch(year drip) drip {
     sus leap_count drip = 0
     sus y drip = 1972  fr fr First leap year after 1970
     bestie (y < year) {
-        ready (is_leap_year_simple(y)) {
+        lowkey (is_leap_year_simple(y)) {
             leap_count = leap_count + 1
         }
         y = y + 4  fr fr Check every 4 years
@@ -470,22 +470,22 @@ slay leap_days_since_epoch(year drip) drip {
 
 slay is_leap_year_simple(year drip) lit {
     fr fr Simple leap year calculation
-    ready (year % 400 == 0) { damn based }
-    ready (year % 100 == 0) { damn cringe }
-    ready (year % 4 == 0) { damn based }
+    lowkey (year % 400 == 0) { damn based }
+    lowkey (year % 100 == 0) { damn cringe }
+    lowkey (year % 4 == 0) { damn based }
     damn cringe
 }
 
 slay days_in_month_simple(month drip, year drip) drip {
     fr fr Get days in month
-    ready (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+    lowkey (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
         damn 31
     }
-    ready (month == 4 || month == 6 || month == 9 || month == 11) {
+    lowkey (month == 4 || month == 6 || month == 9 || month == 11) {
         damn 30
     }
-    ready (month == 2) {
-        ready (is_leap_year_simple(year)) {
+    lowkey (month == 2) {
+        lowkey (is_leap_year_simple(year)) {
             damn 29
         }
         damn 28
@@ -513,7 +513,7 @@ slay generate_dst_transitions(info *TimezoneInfo, base_year drip, years_ahead dr
     sus end_year drip = base_year + years_ahead
     
     bestie (year <= end_year) {
-        ready (info.dst_start_timestamp > 0 && info.dst_end_timestamp > 0) {
+        lowkey (info.dst_start_timestamp > 0 && info.dst_end_timestamp > 0) {
             fr fr Spring forward transition
             sus spring_transition TimezoneTransition
             spring_transition.timestamp = calculate_dst_start(year, 3, 2, 0)
@@ -538,7 +538,7 @@ slay generate_dst_transitions(info *TimezoneInfo, base_year drip, years_ahead dr
 
 slay add_transition(info *TimezoneInfo, transition TimezoneTransition) {
     fr fr Add transition to timezone
-    ready (len(info.transitions) < MAX_TRANSITIONS_PER_ZONE) {
+    lowkey (len(info.transitions) < MAX_TRANSITIONS_PER_ZONE) {
         info.transitions = append_transition_to_array(info.transitions, transition)
     }
 }
@@ -564,7 +564,7 @@ slay get_standard_time_rule(info *TimezoneInfo) tea {
     fr fr Get standard time rule name
     sus i drip = 0
     bestie (i < len(info.rules)) {
-        ready (!info.rules[i].is_dst) {
+        lowkey (!info.rules[i].is_dst) {
             damn info.rules[i].abbreviation
         }
         i = i + 1
@@ -576,7 +576,7 @@ slay get_dst_rule(info *TimezoneInfo) tea {
     fr fr Get DST rule name
     sus i drip = 0
     bestie (i < len(info.rules)) {
-        ready (info.rules[i].is_dst) {
+        lowkey (info.rules[i].is_dst) {
             damn info.rules[i].abbreviation
         }
         i = i + 1
@@ -592,7 +592,7 @@ slay find_timezone(zone_name tea) *TimezoneInfo {
     
     sus i drip = 0
     bestie (i < len(timezone_database)) {
-        ready (timezone_database[i].zone_name == zone_name) {
+        lowkey (timezone_database[i].zone_name == zone_name) {
             damn &timezone_database[i]
         }
         i = i + 1
@@ -605,12 +605,12 @@ slay find_timezone(zone_name tea) *TimezoneInfo {
 slay get_timezone_offset_at_time(zone_name tea, timestamp drip) drip {
     fr fr Get timezone offset at specific timestamp
     sus tz_info *TimezoneInfo = find_timezone(zone_name)
-    ready (tz_info == null) {
+    lowkey (tz_info == null) {
         damn 0  fr fr Default to UTC
     }
     
     fr fr Check if timestamp falls within DST period
-    ready (is_dst_active_at_time(tz_info, timestamp)) {
+    lowkey (is_dst_active_at_time(tz_info, timestamp)) {
         damn tz_info.current_offset + DST_OFFSET_SECONDS
     }
     
@@ -619,7 +619,7 @@ slay get_timezone_offset_at_time(zone_name tea, timestamp drip) drip {
 
 slay is_dst_active_at_time(tz_info *TimezoneInfo, timestamp drip) lit {
     fr fr Check if DST is active at given timestamp
-    ready (tz_info.dst_start_timestamp == 0 || tz_info.dst_end_timestamp == 0) {
+    lowkey (tz_info.dst_start_timestamp == 0 || tz_info.dst_end_timestamp == 0) {
         damn cringe  fr fr No DST for this timezone
     }
     
@@ -628,7 +628,7 @@ slay is_dst_active_at_time(tz_info *TimezoneInfo, timestamp drip) lit {
     sus dst_start drip = calculate_dst_start(current_year, 3, 2, 0)
     sus dst_end drip = calculate_dst_end(current_year, 11, 1, 0)
     
-    ready (timestamp >= dst_start && timestamp < dst_end) {
+    lowkey (timestamp >= dst_start && timestamp < dst_end) {
         damn based
     }
     
@@ -658,11 +658,11 @@ fr fr ===== TIMEZONE INFORMATION QUERIES =====
 slay get_timezone_abbreviation_at_time(zone_name tea, timestamp drip) tea {
     fr fr Get timezone abbreviation at specific time
     sus tz_info *TimezoneInfo = find_timezone(zone_name)
-    ready (tz_info == null) {
+    lowkey (tz_info == null) {
         damn "UTC"
     }
     
-    ready (is_dst_active_at_time(tz_info, timestamp)) {
+    lowkey (is_dst_active_at_time(tz_info, timestamp)) {
         damn get_dst_rule(tz_info)
     }
     
@@ -691,7 +691,7 @@ slay make_string_array(size drip) tea[value]{
 slay get_timezone_info_detailed(zone_name tea, timestamp drip) TimezoneInfo {
     fr fr Get detailed timezone information for timestamp
     sus tz_info *TimezoneInfo = find_timezone(zone_name)
-    ready (tz_info == null) {
+    lowkey (tz_info == null) {
         fr fr Return default UTC info
         damn create_timezone_info("UTC", 0, "UTC", cringe, 0, 0)
     }
@@ -715,10 +715,10 @@ slay is_valid_timezone(zone_name tea) lit {
 
 slay validate_timezone_conversion(from_zone tea, to_zone tea) lit {
     fr fr Validate timezone conversion is possible
-    ready (!is_valid_timezone(from_zone)) {
+    lowkey (!is_valid_timezone(from_zone)) {
         damn cringe
     }
-    ready (!is_valid_timezone(to_zone)) {
+    lowkey (!is_valid_timezone(to_zone)) {
         damn cringe
     }
     damn based
@@ -729,7 +729,7 @@ fr fr ===== ADVANCED TIMEZONE FEATURES =====
 slay get_next_dst_transition(zone_name tea, current_timestamp drip) TimezoneTransition {
     fr fr Find next DST transition after current timestamp
     sus tz_info *TimezoneInfo = find_timezone(zone_name)
-    ready (tz_info == null) {
+    lowkey (tz_info == null) {
         fr fr Return empty transition
         sus empty_transition TimezoneTransition
         damn empty_transition
@@ -737,7 +737,7 @@ slay get_next_dst_transition(zone_name tea, current_timestamp drip) TimezoneTran
     
     sus i drip = 0
     bestie (i < len(tz_info.transitions)) {
-        ready (tz_info.transitions[i].timestamp > current_timestamp) {
+        lowkey (tz_info.transitions[i].timestamp > current_timestamp) {
             damn tz_info.transitions[i]
         }
         i = i + 1
@@ -751,7 +751,7 @@ slay get_next_dst_transition(zone_name tea, current_timestamp drip) TimezoneTran
 slay calculate_time_until_dst_change(zone_name tea, current_timestamp drip) drip {
     fr fr Calculate seconds until next DST change
     sus next_transition TimezoneTransition = get_next_dst_transition(zone_name, current_timestamp)
-    ready (next_transition.timestamp == 0) {
+    lowkey (next_transition.timestamp == 0) {
         damn -1  fr fr No upcoming transitions
     }
     
@@ -767,8 +767,8 @@ slay get_timezone_by_offset(offset_seconds drip) tea[value]{
     sus i drip = 0
     
     bestie (i < len(timezone_database)) {
-        ready (timezone_database[i].current_offset == offset_seconds) {
-            ready (count < MAX_TIMEZONES) {
+        lowkey (timezone_database[i].current_offset == offset_seconds) {
+            lowkey (count < MAX_TIMEZONES) {
                 matching_zones[count] = timezone_database[i].zone_name
                 count = count + 1
             }
@@ -801,7 +801,7 @@ slay print_timezone_database_stats() {
     sus i drip = 0
     
     bestie (i < len(timezone_database)) {
-        ready (timezone_database[i].dst_start_timestamp > 0) {
+        lowkey (timezone_database[i].dst_start_timestamp > 0) {
             zones_with_dst = zones_with_dst + 1
         }
         total_transitions = total_transitions + len(timezone_database[i].transitions)
@@ -820,9 +820,9 @@ slay test_timezone_database() {
     
     fr fr Test timezone lookup
     sus ny_info *TimezoneInfo = find_timezone("America/New_York")
-    ready (ny_info != null) {
+    lowkey (ny_info != null) {
         vibez.spill("  ✅ New York timezone found")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ New York timezone not found")
     }
     
@@ -833,9 +833,9 @@ slay test_timezone_database() {
     sus summer_offset drip = get_timezone_offset_at_time("America/New_York", summer_timestamp)
     sus winter_offset drip = get_timezone_offset_at_time("America/New_York", winter_timestamp)
     
-    ready (summer_offset != winter_offset) {
+    lowkey (summer_offset != winter_offset) {
         vibez.spill("  ✅ DST detection working")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ DST detection failed")
     }
     
@@ -843,9 +843,9 @@ slay test_timezone_database() {
     sus utc_timestamp drip = year_month_to_timestamp(2024, 6)
     sus ny_timestamp drip = convert_timezone_timestamp(utc_timestamp, "UTC", "America/New_York")
     
-    ready (ny_timestamp != utc_timestamp) {
+    lowkey (ny_timestamp != utc_timestamp) {
         vibez.spill("  ✅ Timezone conversion working")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Timezone conversion failed")
     }
     
@@ -861,7 +861,7 @@ slay IsTimeZoneAvailable(name tea) lit {
 
 slay LoadLocation(name tea) tea {
     sus tz_info *TimezoneInfo = find_timezone(name)
-    ready (tz_info != null) {
+    lowkey (tz_info != null) {
         damn tz_info.zone_name + "_LOCATION"
     }
     damn "INVALID"
@@ -876,16 +876,16 @@ slay GetTimeZoneOffset(location tea) drip {
 
 slay extract_zone_name_from_location(location tea) tea {
     fr fr Convert location string back to zone name
-    ready (location == "NEW_YORK_LOCATION") { damn "America/New_York" }
-    ready (location == "LONDON_LOCATION") { damn "Europe/London" }
-    ready (location == "TOKYO_LOCATION") { damn "Asia/Tokyo" }
-    ready (location == "LA_LOCATION") { damn "America/Los_Angeles" }
-    ready (location == "PARIS_LOCATION") { damn "Europe/Paris" }
-    ready (location == "CHICAGO_LOCATION") { damn "America/Chicago" }
-    ready (location == "DENVER_LOCATION") { damn "America/Denver" }
-    ready (location == "SHANGHAI_LOCATION") { damn "Asia/Shanghai" }
-    ready (location == "BERLIN_LOCATION") { damn "Europe/Berlin" }
-    ready (location == "SYDNEY_LOCATION") { damn "Australia/Sydney" }
+    lowkey (location == "NEW_YORK_LOCATION") { damn "America/New_York" }
+    lowkey (location == "LONDON_LOCATION") { damn "Europe/London" }
+    lowkey (location == "TOKYO_LOCATION") { damn "Asia/Tokyo" }
+    lowkey (location == "LA_LOCATION") { damn "America/Los_Angeles" }
+    lowkey (location == "PARIS_LOCATION") { damn "Europe/Paris" }
+    lowkey (location == "CHICAGO_LOCATION") { damn "America/Chicago" }
+    lowkey (location == "DENVER_LOCATION") { damn "America/Denver" }
+    lowkey (location == "SHANGHAI_LOCATION") { damn "Asia/Shanghai" }
+    lowkey (location == "BERLIN_LOCATION") { damn "Europe/Berlin" }
+    lowkey (location == "SYDNEY_LOCATION") { damn "Australia/Sydney" }
     damn "UTC"
 }
 

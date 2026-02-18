@@ -168,7 +168,7 @@ test_start("comprehensive_integration")
 assert_true(test_reflection_comprehensive())
 
 vibez.spill("✅ All production validation tests passed!")
-vibez.spill("The lookin_glass module is production-ready with:")
+vibez.spill("The lookin_glass module is production-lowkey with:")
 vibez.spill("  - Real runtime type introspection")
 vibez.spill("  - Memory-safe operations") 
 vibez.spill("  - Complete method reflection")

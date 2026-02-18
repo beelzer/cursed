@@ -763,8 +763,8 @@ fr fr === INITIALIZATION ===
 
 slay init_dropz() tea {
     vibez.spill("🚀 dropz Core I/O Module Initialized")
-    vibez.spill("📁 File operations ready")
-    vibez.spill("📋 Directory operations ready")
+    vibez.spill("📁 File operations lowkey")
+    vibez.spill("📋 Directory operations lowkey")
     vibez.spill("🔧 Self-hosting capabilities enabled")
     damn ""
 }

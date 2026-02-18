@@ -93,9 +93,9 @@ give JsonFormatter : LogFormatter {
             obj[field.key] = field.value
         }
         
-        ready (self.pretty) {
+        lowkey (self.pretty) {
             damn json_pretty(obj)
-        } otherwise {
+        } highkey {
             damn json_compact(obj)
         }
     }
@@ -125,9 +125,9 @@ give TextFormatter : LogFormatter {
         # Replace template variables
         output = replace_all(output, "{timestamp}", format_timestamp(entry.timestamp))
         output = replace_all(output, "{level}", 
-            ready (self.use_colors) {
+            lowkey (self.use_colors) {
                 damn entry.level.color + entry.level.name + "\x1b[0m"
-            } otherwise {
+            } highkey {
                 damn entry.level.name
             })
         output = replace_all(output, "{module}", entry.module)
@@ -137,7 +137,7 @@ give TextFormatter : LogFormatter {
         output = replace_all(output, "{thread}", drip_to_string(entry.thread_id))
         
         # Add custom fields if present
-        ready (len(entry.fields) > 0) {
+        lowkey (len(entry.fields) > 0) {
             output = output + " | "
             bestie (field in entry.fields) {
                 output = output + field.key + "=" + field.value + " "
@@ -202,19 +202,19 @@ give ModuleFilter : LogFilter {
     slay should_log(self ModuleFilter, entry LogEntry) lit {
         # Check blocked modules first
         bestie (blocked in self.blocked_modules) {
-            ready (contains(entry.module, blocked)) {
+            lowkey (contains(entry.module, blocked)) {
                 damn nah
             }
         }
         
         # If allowed list is empty, allow all (except blocked)
-        ready (len(self.allowed_modules) == 0) {
+        lowkey (len(self.allowed_modules) == 0) {
             damn based
         }
         
         # Check allowed modules
         bestie (allowed in self.allowed_modules) {
-            ready (contains(entry.module, allowed)) {
+            lowkey (contains(entry.module, allowed)) {
                 damn based
             }
         }
@@ -277,7 +277,7 @@ squad Logger {
     
     # Start async log processing worker
     slay start_async_worker(mut self Logger) {
-        ready (!self.worker_active) {
+        lowkey (!self.worker_active) {
             self.worker_active = based
             go {
                 bestie (self.worker_active) {
@@ -294,17 +294,17 @@ squad Logger {
     slay log_entry(mut self Logger, entry LogEntry) {
         # Apply filters
         bestie (filter in self.filters) {
-            ready (!filter.should_log(entry)) {
+            lowkey (!filter.should_log(entry)) {
                 damn
             }
         }
         
         # Check minimum level
-        ready (!entry.level.gte(self.min_level)) {
+        lowkey (!entry.level.gte(self.min_level)) {
             damn
         }
         
-        ready (self.async_enabled) {
+        lowkey (self.async_enabled) {
             # Send to async worker
             self.log_buffer <- entry fam {
                 when _ -> {
@@ -312,7 +312,7 @@ squad Logger {
                     self.write_entry(entry)
                 }
             }
-        } otherwise {
+        } highkey {
             # Write directly
             self.write_entry(entry)
         }
@@ -398,7 +398,7 @@ squad Logger {
     
     # Close logger and all backends
     slay close(mut self Logger) {
-        ready (self.async_enabled) {
+        lowkey (self.async_enabled) {
             self.worker_active = nah
             close_channel(self.log_buffer)
         }

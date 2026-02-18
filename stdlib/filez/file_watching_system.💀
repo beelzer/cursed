@@ -45,11 +45,11 @@ fr fr ===== MAIN FILE WATCHING API =====
 
 slay start_file_watcher(path tea, callback slay(WatchEvent) lit) (drip, tea) {
     fr fr Start watching a single file for changes
-    ready (path == "") {
+    lowkey (path == "") {
         damn (0, "Empty path not allowed")
     }
     
-    ready (!file_exists_internal(path)) {
+    lowkey (!file_exists_internal(path)) {
         damn (0, "File not found: " + path)
     }
     
@@ -65,11 +65,11 @@ slay start_file_watcher(path tea, callback slay(WatchEvent) lit) (drip, tea) {
 
 slay start_directory_watcher(path tea, recursive lit, callback slay(WatchEvent) lit) (drip, tea) {
     fr fr Start watching directory for changes (optionally recursive)
-    ready (path == "") {
+    lowkey (path == "") {
         damn (0, "Empty path not allowed")
     }
     
-    ready (!directory_exists(path)) {
+    lowkey (!directory_exists(path)) {
         damn (0, "Directory not found: " + path)
     }
     
@@ -85,11 +85,11 @@ slay start_directory_watcher(path tea, recursive lit, callback slay(WatchEvent) 
 
 slay start_watcher_with_filter(path tea, filter WatchFilter, callback slay(WatchEvent) lit) (drip, tea) {
     fr fr Start watching with custom filter settings
-    ready (path == "") {
+    lowkey (path == "") {
         damn (0, "Empty path not allowed")
     }
     
-    ready (!path_exists_internal(path)) {
+    lowkey (!path_exists_internal(path)) {
         damn (0, "Path not found: " + path)
     }
     
@@ -107,13 +107,13 @@ slay start_watcher_with_filter(path tea, filter WatchFilter, callback slay(Watch
     
     fr fr Start platform-specific monitoring
     sus start_error tea = platform_start_watching(&watcher)
-    ready (start_error != "") {
+    lowkey (start_error != "") {
         damn (0, start_error)
     }
     
     fr fr Register watcher
     sus register_error tea = register_watcher(watcher)
-    ready (register_error != "") {
+    lowkey (register_error != "") {
         platform_stop_watching(watch_id)
         damn (0, register_error)
     }
@@ -123,24 +123,24 @@ slay start_watcher_with_filter(path tea, filter WatchFilter, callback slay(Watch
 
 slay stop_file_watcher(watch_id drip) tea {
     fr fr Stop file watcher by ID
-    ready (watch_id <= 0) {
+    lowkey (watch_id <= 0) {
         damn "Invalid watch ID"
     }
     
     sus watcher_opt FileWatcher = get_watcher_by_id(watch_id)
-    ready (!is_valid_watcher(watcher_opt)) {
+    lowkey (!is_valid_watcher(watcher_opt)) {
         damn "Watcher not found: " + int_to_string(watch_id)
     }
     
     fr fr Stop platform-specific monitoring
     sus stop_error tea = platform_stop_watching(watch_id)
-    ready (stop_error != "") {
+    lowkey (stop_error != "") {
         damn stop_error
     }
     
     fr fr Unregister watcher
     sus unregister_error tea = unregister_watcher(watch_id)
-    ready (unregister_error != "") {
+    lowkey (unregister_error != "") {
         damn unregister_error
     }
     
@@ -149,12 +149,12 @@ slay stop_file_watcher(watch_id drip) tea {
 
 slay get_watcher_status(watch_id drip) (lit, tea) {
     fr fr Check if watcher is active
-    ready (watch_id <= 0) {
+    lowkey (watch_id <= 0) {
         damn (cringe, "Invalid watch ID")
     }
     
     sus watcher_opt FileWatcher = get_watcher_by_id(watch_id)
-    ready (!is_valid_watcher(watcher_opt)) {
+    lowkey (!is_valid_watcher(watcher_opt)) {
         damn (cringe, "Watcher not found")
     }
     
@@ -169,7 +169,7 @@ slay list_active_watchers() (drip[value], tea) {
     sus all_watchers FileWatcher[value] = get_all_watchers()
     sus i drip = 0
     bestie (i < array_length(all_watchers)) {
-        ready (all_watchers[i].is_active) {
+        lowkey (all_watchers[i].is_active) {
             active_ids[count] = all_watchers[i].watch_id
             count = count + 1
         }
@@ -185,15 +185,15 @@ slay platform_start_watching(watcher *FileWatcher) tea {
     fr fr Start platform-specific file watching
     sus platform tea = get_platform_name()
     
-    ready (platform == "linux") {
+    lowkey (platform == "linux") {
         damn linux_start_inotify_watching(watcher)
     }
     
-    ready (platform == "macos") {
+    lowkey (platform == "macos") {
         damn macos_start_kqueue_watching(watcher)
     }
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         damn windows_start_directory_watching(watcher)
     }
     
@@ -204,15 +204,15 @@ slay platform_stop_watching(watch_id drip) tea {
     fr fr Stop platform-specific file watching
     sus platform tea = get_platform_name()
     
-    ready (platform == "linux") {
+    lowkey (platform == "linux") {
         damn linux_stop_inotify_watching(watch_id)
     }
     
-    ready (platform == "macos") {
+    lowkey (platform == "macos") {
         damn macos_stop_kqueue_watching(watch_id)
     }
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         damn windows_stop_directory_watching(watch_id)
     }
     
@@ -227,7 +227,7 @@ slay linux_start_inotify_watching(watcher *FileWatcher) tea {
     
     fr fr Create inotify instance
     sus inotify_fd drip = runtime_inotify_init()
-    ready (inotify_fd < 0) {
+    lowkey (inotify_fd < 0) {
         damn "Failed to initialize inotify"
     }
     
@@ -236,7 +236,7 @@ slay linux_start_inotify_watching(watcher *FileWatcher) tea {
     
     fr fr Add watch descriptor
     sus watch_descriptor drip = runtime_inotify_add_watch(inotify_fd, watcher.path, mask)
-    ready (watch_descriptor < 0) {
+    lowkey (watch_descriptor < 0) {
         runtime_close_fd(inotify_fd)
         damn "Failed to add inotify watch for: " + watcher.path
     }
@@ -256,12 +256,12 @@ slay linux_start_inotify_watching(watcher *FileWatcher) tea {
 slay linux_stop_inotify_watching(watch_id drip) tea {
     fr fr Stop Linux inotify watching
     sus watcher_opt FileWatcher = get_watcher_by_id(watch_id)
-    ready (!is_valid_watcher(watcher_opt)) {
+    lowkey (!is_valid_watcher(watcher_opt)) {
         damn "Watcher not found"
     }
     
     sus inotify_fd drip = watcher_opt.native_handle
-    ready (inotify_fd > 0) {
+    lowkey (inotify_fd > 0) {
         runtime_close_fd(inotify_fd)
     }
     
@@ -277,7 +277,7 @@ slay linux_process_inotify_events(watch_id drip, inotify_fd drip, watch_descript
     
     bestie (is_watcher_active(watch_id)) {
         sus bytes_read drip = runtime_read_fd(inotify_fd, buffer, 4096)
-        ready (bytes_read <= 0) {
+        lowkey (bytes_read <= 0) {
             vibez.spill("[Linux] inotify read error for watcher: " + int_to_string(watch_id))
             break
         }
@@ -300,20 +300,20 @@ slay calculate_inotify_mask(filter WatchFilter) drip {
     fr fr Convert filter to inotify mask
     sus mask drip = 0
     
-    ready (contains_event_type(filter.event_types, EVENT_CREATED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_CREATED)) {
         mask = mask | 256  fr fr IN_CREATE
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_MODIFIED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_MODIFIED)) {
         mask = mask | 2    fr fr IN_MODIFY
         mask = mask | 32   fr fr IN_CLOSE_WRITE
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_DELETED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_DELETED)) {
         mask = mask | 512  fr fr IN_DELETE
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_MOVED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_MOVED)) {
         mask = mask | 64   fr fr IN_MOVED_FROM
         mask = mask | 128  fr fr IN_MOVED_TO
     }
@@ -329,13 +329,13 @@ slay macos_start_kqueue_watching(watcher *FileWatcher) tea {
     
     fr fr Create kqueue instance
     sus kqueue_fd drip = runtime_kqueue()
-    ready (kqueue_fd < 0) {
+    lowkey (kqueue_fd < 0) {
         damn "Failed to create kqueue"
     }
     
     fr fr Open file/directory for monitoring
     sus file_fd drip = runtime_open_for_watching(watcher.path)
-    ready (file_fd < 0) {
+    lowkey (file_fd < 0) {
         runtime_close_fd(kqueue_fd)
         damn "Failed to open path for watching: " + watcher.path
     }
@@ -343,7 +343,7 @@ slay macos_start_kqueue_watching(watcher *FileWatcher) tea {
     fr fr Configure kevent filter
     sus kevent_filter drip = calculate_kevent_filter(watcher.filter)
     sus add_result drip = runtime_kevent_add(kqueue_fd, file_fd, kevent_filter)
-    ready (add_result < 0) {
+    lowkey (add_result < 0) {
         runtime_close_fd(file_fd)
         runtime_close_fd(kqueue_fd)
         damn "Failed to add kevent filter"
@@ -364,12 +364,12 @@ slay macos_start_kqueue_watching(watcher *FileWatcher) tea {
 slay macos_stop_kqueue_watching(watch_id drip) tea {
     fr fr Stop macOS kqueue watching
     sus watcher_opt FileWatcher = get_watcher_by_id(watch_id)
-    ready (!is_valid_watcher(watcher_opt)) {
+    lowkey (!is_valid_watcher(watcher_opt)) {
         damn "Watcher not found"
     }
     
     sus kqueue_fd drip = watcher_opt.native_handle
-    ready (kqueue_fd > 0) {
+    lowkey (kqueue_fd > 0) {
         runtime_close_fd(kqueue_fd)
     }
     
@@ -385,12 +385,12 @@ slay macos_process_kevent_events(watch_id drip, kqueue_fd drip, file_fd drip) {
         sus event_data drip[value] = create_byte_buffer(1024)
         sus events_count drip = runtime_kevent_wait(kqueue_fd, event_data, 1024, 1000)
         
-        ready (events_count < 0) {
+        lowkey (events_count < 0) {
             vibez.spill("[macOS] kevent error for watcher: " + int_to_string(watch_id))
             break
         }
         
-        ready (events_count > 0) {
+        lowkey (events_count > 0) {
             fr fr Parse kevent events
             sus events WatchEvent[value] = parse_kevent_buffer(event_data, events_count, watch_id)
             
@@ -410,15 +410,15 @@ slay calculate_kevent_filter(filter WatchFilter) drip {
     fr fr Convert filter to kevent filter flags
     sus flags drip = 0
     
-    ready (contains_event_type(filter.event_types, EVENT_MODIFIED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_MODIFIED)) {
         flags = flags | 1  fr fr NOTE_WRITE
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_DELETED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_DELETED)) {
         flags = flags | 2  fr fr NOTE_DELETE
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_ATTRIBUTES)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_ATTRIBUTES)) {
         flags = flags | 4  fr fr NOTE_ATTRIB
     }
     
@@ -433,7 +433,7 @@ slay windows_start_directory_watching(watcher *FileWatcher) tea {
     
     fr fr Open directory handle
     sus dir_handle drip = runtime_open_directory(watcher.path)
-    ready (dir_handle <= 0) {
+    lowkey (dir_handle <= 0) {
         damn "Failed to open directory: " + watcher.path
     }
     
@@ -455,12 +455,12 @@ slay windows_start_directory_watching(watcher *FileWatcher) tea {
 slay windows_stop_directory_watching(watch_id drip) tea {
     fr fr Stop Windows directory watching
     sus watcher_opt FileWatcher = get_watcher_by_id(watch_id)
-    ready (!is_valid_watcher(watcher_opt)) {
+    lowkey (!is_valid_watcher(watcher_opt)) {
         damn "Watcher not found"
     }
     
     sus dir_handle drip = watcher_opt.native_handle
-    ready (dir_handle > 0) {
+    lowkey (dir_handle > 0) {
         runtime_close_handle(dir_handle)
     }
     
@@ -478,12 +478,12 @@ slay windows_process_directory_changes(watch_id drip, dir_handle drip, notify_fi
     bestie (is_watcher_active(watch_id)) {
         sus bytes_returned drip = runtime_read_directory_changes(dir_handle, buffer, 8192, recursive, notify_filter, overlap_buffer)
         
-        ready (bytes_returned < 0) {
+        lowkey (bytes_returned < 0) {
             vibez.spill("[Windows] ReadDirectoryChangesW error for watcher: " + int_to_string(watch_id))
             break
         }
         
-        ready (bytes_returned > 0) {
+        lowkey (bytes_returned > 0) {
             fr fr Parse FILE_NOTIFY_INFORMATION structures
             sus events WatchEvent[value] = parse_windows_notify_buffer(buffer, bytes_returned, watch_id)
             
@@ -503,20 +503,20 @@ slay calculate_windows_notify_filter(filter WatchFilter) drip {
     fr fr Convert filter to Windows notify filter
     sus flags drip = 0
     
-    ready (contains_event_type(filter.event_types, EVENT_CREATED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_CREATED)) {
         flags = flags | 64   fr fr FILE_NOTIFY_CHANGE_CREATION
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_MODIFIED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_MODIFIED)) {
         flags = flags | 16   fr fr FILE_NOTIFY_CHANGE_LAST_WRITE
         flags = flags | 32   fr fr FILE_NOTIFY_CHANGE_SIZE
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_DELETED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_DELETED)) {
         flags = flags | 64   fr fr FILE_NOTIFY_CHANGE_CREATION (also covers deletion)
     }
     
-    ready (contains_event_type(filter.event_types, EVENT_MOVED)) {
+    lowkey (contains_event_type(filter.event_types, EVENT_MOVED)) {
         flags = flags | 8    fr fr FILE_NOTIFY_CHANGE_FILE_NAME
         flags = flags | 2    fr fr FILE_NOTIFY_CHANGE_DIR_NAME
     }
@@ -529,18 +529,18 @@ fr fr ===== EVENT PROCESSING AND DELIVERY =====
 slay deliver_event_to_watcher(watch_id drip, event WatchEvent) {
     fr fr Deliver event to watcher callback
     sus watcher_opt FileWatcher = get_watcher_by_id(watch_id)
-    ready (!is_valid_watcher(watcher_opt)) {
+    lowkey (!is_valid_watcher(watcher_opt)) {
         vibez.spill("Warning: Event delivered to invalid watcher: " + int_to_string(watch_id))
         damn
     }
     
     fr fr Apply pattern filtering
-    ready (!matches_filter_patterns(event.path, watcher_opt.filter.patterns)) {
+    lowkey (!matches_filter_patterns(event.path, watcher_opt.filter.patterns)) {
         damn  fr fr Event filtered out by pattern
     }
     
     fr fr Call user callback
-    ready (watcher_opt.callback != void) {
+    lowkey (watcher_opt.callback != void) {
         watcher_opt.callback(event)
     }
     
@@ -550,13 +550,13 @@ slay deliver_event_to_watcher(watch_id drip, event WatchEvent) {
 
 slay matches_filter_patterns(path tea, patterns tea[value]) lit {
     fr fr Check if path matches any of the glob patterns
-    ready (array_length(patterns) == 0) {
+    lowkey (array_length(patterns) == 0) {
         damn based  fr fr No patterns = match everything
     }
     
     sus i drip = 0
     bestie (i < array_length(patterns)) {
-        ready (glob_match(patterns[i], path)) {
+        lowkey (glob_match(patterns[i], path)) {
             damn based
         }
         i = i + 1
@@ -567,16 +567,16 @@ slay matches_filter_patterns(path tea, patterns tea[value]) lit {
 
 slay glob_match(pattern tea, path tea) lit {
     fr fr Simple glob pattern matching (* and ? wildcards)
-    ready (pattern == "*") {
+    lowkey (pattern == "*") {
         damn based  fr fr Match everything
     }
     
-    ready (pattern == path) {
+    lowkey (pattern == path) {
         damn based  fr fr Exact match
     }
     
     fr fr Simple wildcard matching implementation
-    ready (ends_with(pattern, "*") && starts_with(path, substring(pattern, 0, string_length(pattern) - 1))) {
+    lowkey (ends_with(pattern, "*") && starts_with(path, substring(pattern, 0, string_length(pattern) - 1))) {
         damn based
     }
     
@@ -589,12 +589,12 @@ slay poll_events(watch_id drip, max_events drip) (WatchEvent[value], tea) {
     fr fr Poll for events without blocking (non-callback mode)
     sus empty_events WatchEvent[value] = []
     
-    ready (watch_id <= 0) {
+    lowkey (watch_id <= 0) {
         damn (empty_events, "Invalid watch ID")
     }
     
     sus watcher_opt FileWatcher = get_watcher_by_id(watch_id)
-    ready (!is_valid_watcher(watcher_opt)) {
+    lowkey (!is_valid_watcher(watcher_opt)) {
         damn (empty_events, "Watcher not found")
     }
     
@@ -606,7 +606,7 @@ slay poll_events(watch_id drip, max_events drip) (WatchEvent[value], tea) {
 slay add_event_to_buffer(watcher FileWatcher, event WatchEvent) {
     fr fr Add event to circular buffer
     sus buffer_size drip = array_length(watcher.event_buffer)
-    ready (buffer_size > 0) {
+    lowkey (buffer_size > 0) {
         fr fr Simple circular buffer implementation
         sus next_index drip = get_next_buffer_index(watcher.watch_id)
         watcher.event_buffer[next_index] = event
@@ -622,7 +622,7 @@ sus next_watch_id drip = 1
 
 slay register_watcher(watcher FileWatcher) tea {
     fr fr Register new watcher in global registry
-    ready (global_watcher_count >= 100) {
+    lowkey (global_watcher_count >= 100) {
         damn "Maximum number of watchers reached"
     }
     
@@ -635,7 +635,7 @@ slay unregister_watcher(watch_id drip) tea {
     fr fr Remove watcher from registry
     sus i drip = 0
     bestie (i < global_watcher_count) {
-        ready (global_watchers[i].watch_id == watch_id) {
+        lowkey (global_watchers[i].watch_id == watch_id) {
             fr fr Shift remaining watchers down
             sus j drip = i
             bestie (j < global_watcher_count - 1) {
@@ -655,7 +655,7 @@ slay get_watcher_by_id(watch_id drip) FileWatcher {
     fr fr Find watcher by ID
     sus i drip = 0
     bestie (i < global_watcher_count) {
-        ready (global_watchers[i].watch_id == watch_id) {
+        lowkey (global_watchers[i].watch_id == watch_id) {
             damn global_watchers[i]
         }
         i = i + 1
@@ -697,7 +697,7 @@ slay is_watcher_active(watch_id drip) lit {
 slay mark_watcher_inactive(watch_id drip) {
     sus i drip = 0
     bestie (i < global_watcher_count) {
-        ready (global_watchers[i].watch_id == watch_id) {
+        lowkey (global_watchers[i].watch_id == watch_id) {
             global_watchers[i].is_active = cringe
             damn
         }
@@ -728,7 +728,7 @@ slay create_all_events_array() drip[value]{
 slay contains_event_type(event_types drip[value], event_type drip) lit {
     sus i drip = 0
     bestie (i < array_length(event_types)) {
-        ready (event_types[i] == event_type) {
+        lowkey (event_types[i] == event_type) {
             damn based
         }
         i = i + 1

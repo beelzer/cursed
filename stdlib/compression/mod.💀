@@ -57,7 +57,7 @@ fr fr Enhanced decompression with validation
 slay decompress_with_validation(compressed_data tea) CompressionResult {
     sus algorithm normie = auto_detect_algorithm(compressed_data)
     
-    ready algorithm == 0 {
+    lowkey algorithm == 0 {
         damn CompressionResult{
             compressed_data: "",
             original_size: 0,

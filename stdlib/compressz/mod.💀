@@ -59,7 +59,7 @@ slay gzip_decompress(compressed_data CompressedData) tea {
     sus data tea = compressed_data.data
     
     fr fr Verify GZIP header
-    ready (!verify_gzip_header(data)) {
+    lowkey (!verify_gzip_header(data)) {
         damn ""
     }
     
@@ -74,7 +74,7 @@ slay gzip_decompress(compressed_data CompressedData) tea {
     fr fr Verify CRC32 (optional for performance)
     sus expected_crc drip = extract_gzip_crc(data)
     sus actual_crc drip = calculate_crc32(decompressed)
-    ready (expected_crc != actual_crc) {
+    lowkey (expected_crc != actual_crc) {
         vibez.spill("GZIP CRC32 mismatch - data may be corrupted")
     }
     
@@ -104,7 +104,7 @@ slay deflate_compress(data tea, level drip) CompressedData {
 
 slay deflate_compress_internal(data tea, context CompressionContext) tea {
     fr fr LZ77 + Huffman coding implementation
-    ready (string_length(data) == 0) {
+    lowkey (string_length(data) == 0) {
         damn ""
     }
     
@@ -153,11 +153,11 @@ slay lz77_compress(data tea, window_size drip) tea {
         sus match_length drip = extract_match_length(match_result)
         sus match_distance drip = extract_match_distance(match_result)
         
-        ready (match_length >= 3) {
+        lowkey (match_length >= 3) {
             fr fr Encode as (distance, length) pair
             result = result + encode_lz77_match(match_distance, match_length)
             pos = pos + match_length
-        } otherwise {
+        } highkey {
             fr fr Encode as literal character
             sus char tea = substring(data, pos, 1)
             result = result + encode_lz77_literal(char)
@@ -177,12 +177,12 @@ slay lz77_decompress(compressed tea) tea {
     bestie (pos < comp_len) {
         sus token tea = substring(compressed, pos, 1)
         
-        ready (is_lz77_literal(token)) {
+        lowkey (is_lz77_literal(token)) {
             fr fr Literal character
             sus char tea = decode_lz77_literal(compressed, pos)
             result = result + char
             pos = pos + 2  fr fr Token + character
-        } otherwise {
+        } highkey {
             fr fr Distance/length pair
             sus distance drip = decode_lz77_distance(compressed, pos)
             sus length drip = decode_lz77_length(compressed, pos + 2)
@@ -192,7 +192,7 @@ slay lz77_decompress(compressed tea) tea {
             sus i drip = 0
             bestie (i < length) {
                 sus copy_pos drip = start_pos + i
-                ready (copy_pos >= 0 && copy_pos < string_length(result)) {
+                lowkey (copy_pos >= 0 && copy_pos < string_length(result)) {
                     sus char tea = substring(result, copy_pos, 1)
                     result = result + char
                 }
@@ -224,15 +224,15 @@ slay find_longest_match(data tea, current_pos drip, window_size drip) tea {
             sus current_char tea = substring(data, current_pos + match_len, 1)
             sus window_char tea = substring(data, search_pos + match_len, 1)
             
-            ready (current_char == window_char) {
+            lowkey (current_char == window_char) {
                 match_len = match_len + 1
-            } otherwise {
+            } highkey {
                 break
             }
         }
         
         fr fr Update best match
-        ready (match_len > best_length) {
+        lowkey (match_len > best_length) {
             best_length = match_len
             best_distance = current_pos - search_pos
         }
@@ -299,13 +299,13 @@ slay huffman_decode(compressed tea, tree tea) tea {
     bestie (bit_pos < string_length(compressed) * 8) {
         sus bit drip = get_bit(compressed, bit_pos)
         
-        ready (bit == 0) {
+        lowkey (bit == 0) {
             current_node = get_left_child(current_node)
-        } otherwise {
+        } highkey {
             current_node = get_right_child(current_node)
         }
         
-        ready (is_huffman_leaf(current_node)) {
+        lowkey (is_huffman_leaf(current_node)) {
             sus char tea = get_huffman_character(current_node)
             result = result + char
             current_node = tree  fr fr Reset to root
@@ -331,9 +331,9 @@ slay calculate_crc32(data tea) drip {
         
         sus bit drip = 0
         bestie (bit < 8) {
-            ready ((crc & 1) == 1) {
+            lowkey ((crc & 1) == 1) {
                 crc = (crc >> 1) ^ 3988292384  fr fr 0xEDB88320
-            } otherwise {
+            } highkey {
                 crc = crc >> 1
             }
             bit = bit + 1
@@ -358,7 +358,7 @@ slay create_gzip_header(data tea) tea {
 }
 
 slay verify_gzip_header(data tea) lit {
-    ready (string_length(data) < 10) {
+    lowkey (string_length(data) < 10) {
         damn cringe
     }
     
@@ -366,7 +366,7 @@ slay verify_gzip_header(data tea) lit {
     sus magic2 drip = char_to_number(substring(data, 1, 1))
     sus method drip = char_to_number(substring(data, 2, 1))
     
-    ready (magic1 == 31 && magic2 == 139 && method == 8) {
+    lowkey (magic1 == 31 && magic2 == 139 && method == 8) {
         damn based
     }
     
@@ -410,7 +410,7 @@ slay zip_compress_file(filename tea, data tea) tea {
 slay zip_extract_file(zip_data tea, filename tea) tea {
     fr fr Extract file from ZIP archive
     sus file_offset drip = find_zip_file_entry(zip_data, filename)
-    ready (file_offset < 0) {
+    lowkey (file_offset < 0) {
         damn ""
     }
     
@@ -427,15 +427,15 @@ slay auto_detect_best_compression(data tea) drip {
     sus data_size drip = string_length(data)
     sus entropy normie = calculate_entropy(data)
     
-    ready (data_size < 1024) {
+    lowkey (data_size < 1024) {
         damn 1  fr fr Fast compression for small data
     }
     
-    ready (entropy > 0.8) {
+    lowkey (entropy > 0.8) {
         damn 3  fr fr Low compression for high entropy data
     }
     
-    ready (entropy < 0.3) {
+    lowkey (entropy < 0.3) {
         damn 9  fr fr Maximum compression for low entropy data
     }
     
@@ -450,7 +450,7 @@ slay calculate_entropy(data tea) normie {
     
     sus i drip = 0
     bestie (i < 256) {
-        ready (frequencies[i] > 0) {
+        lowkey (frequencies[i] > 0) {
             sus probability normie = normie(frequencies[i]) / total
             entropy = entropy - (probability * mathz.log2(probability))
         }
@@ -542,14 +542,14 @@ fr fr ===== REAL COMPRESSION ALGORITHM IMPLEMENTATIONS =====
 slay extract_gzip_crc(data tea) drip {
     fr fr Extract CRC32 from GZIP trailer (last 8 bytes)
     sus data_len drip = string_length(data)
-    ready (data_len < 8) { damn 0 }
+    lowkey (data_len < 8) { damn 0 }
     damn decode_uint32_le(data, data_len - 8)
 }
 
 slay extract_match_length(result tea) drip {
     fr fr Extract length from encoded match result "distance,length"
     sus comma_pos drip = find_comma_position(result)
-    ready (comma_pos < 0) { damn 0 }
+    lowkey (comma_pos < 0) { damn 0 }
     sus length_str tea = substring(result, comma_pos + 1, string_length(result) - comma_pos - 1)
     damn string_to_number(length_str)
 }
@@ -557,7 +557,7 @@ slay extract_match_length(result tea) drip {
 slay extract_match_distance(result tea) drip {
     fr fr Extract distance from encoded match result "distance,length"
     sus comma_pos drip = find_comma_position(result)
-    ready (comma_pos < 0) { damn 0 }
+    lowkey (comma_pos < 0) { damn 0 }
     sus distance_str tea = substring(result, 0, comma_pos)
     damn string_to_number(distance_str)
 }
@@ -566,7 +566,7 @@ slay find_comma_position(data tea) drip {
     sus len drip = string_length(data)
     sus i drip = 0
     bestie (i < len) {
-        ready (substring(data, i, 1) == ",") { damn i }
+        lowkey (substring(data, i, 1) == ",") { damn i }
         i = i + 1
     }
     damn -1
@@ -586,26 +586,26 @@ slay encode_lz77_literal(char tea) tea {
 }
 
 slay is_lz77_literal(token tea) lit {
-    ready (string_length(token) == 0) { damn cringe }
+    lowkey (string_length(token) == 0) { damn cringe }
     sus type_byte drip = char_to_number(substring(token, 0, 1))
     damn type_byte == 0
 }
 
 slay decode_lz77_literal(data tea, pos drip) tea {
     fr fr Decode literal character from position
-    ready (pos + 1 >= string_length(data)) { damn "" }
+    lowkey (pos + 1 >= string_length(data)) { damn "" }
     damn substring(data, pos + 1, 1)
 }
 
 slay decode_lz77_distance(data tea, pos drip) drip {
     fr fr Decode distance from 2-byte big-endian format
-    ready (pos + 2 >= string_length(data)) { damn 1 }
+    lowkey (pos + 2 >= string_length(data)) { damn 1 }
     damn decode_uint16_be(data, pos + 1)
 }
 
 slay decode_lz77_length(data tea, pos drip) drip {
     fr fr Decode length from single byte
-    ready (pos + 3 >= string_length(data)) { damn 1 }
+    lowkey (pos + 3 >= string_length(data)) { damn 1 }
     damn char_to_number(substring(data, pos + 3, 1))
 }
 
@@ -635,7 +635,7 @@ slay create_huffman_nodes(frequencies drip[value]) tea[value]{
     sus nodes tea[value] = []
     sus i drip = 0
     bestie (i < 256) {
-        ready (frequencies[i] > 0) {
+        lowkey (frequencies[i] > 0) {
             sus node_data tea = create_huffman_leaf_node(char(i), frequencies[i])
             nodes = append_huffman_node(nodes, node_data)
         }
@@ -657,7 +657,7 @@ slay extract_min_frequency_node(nodes tea[value]) tea {
     
     bestie (i < array_length(nodes)) {
         sus freq drip = extract_huffman_frequency(nodes[i])
-        ready (freq < min_freq) {
+        lowkey (freq < min_freq) {
             min_freq = freq
             min_index = i
         }
@@ -673,7 +673,7 @@ slay extract_min_frequency_node(nodes tea[value]) tea {
 slay extract_huffman_frequency(node tea) drip {
     fr fr Extract frequency from node string
     sus parts tea[value] = split_huffman_node(node)
-    ready (array_length(parts) >= 3) {
+    lowkey (array_length(parts) >= 3) {
         damn string_to_number(parts[2])
     }
     damn 0
@@ -687,16 +687,16 @@ slay split_huffman_node(node tea) tea[value]{
     
     bestie (i < string_length(node)) {
         sus char tea = substring(node, i, 1)
-        ready (char == ":") {
+        lowkey (char == ":") {
             parts = append_string_array(parts, current)
             current = ""
-        } otherwise {
+        } highkey {
             current = current + char
         }
         i = i + 1
     }
     
-    ready (string_length(current) > 0) {
+    lowkey (string_length(current) > 0) {
         parts = append_string_array(parts, current)
     }
     
@@ -732,23 +732,23 @@ slay append_huffman_node(nodes tea[value], node tea) tea[value]{
 
 slay get_huffman_code(tree tea, char tea) tea {
     fr fr Get Huffman code for character (simplified binary tree traversal)
-    ready (is_huffman_leaf_node(tree)) {
+    lowkey (is_huffman_leaf_node(tree)) {
         sus leaf_char tea = extract_leaf_character(tree)
-        ready (leaf_char == char) { damn "0" }
+        lowkey (leaf_char == char) { damn "0" }
         damn ""
     }
     
     fr fr Try left subtree (0)
     sus left_subtree tea = get_left_child(tree)
     sus left_code tea = get_huffman_code(left_subtree, char)
-    ready (string_length(left_code) > 0) {
+    lowkey (string_length(left_code) > 0) {
         damn "0" + left_code
     }
     
     fr fr Try right subtree (1)
     sus right_subtree tea = get_right_child(tree)
     sus right_code tea = get_huffman_code(right_subtree, char)
-    ready (string_length(right_code) > 0) {
+    lowkey (string_length(right_code) > 0) {
         damn "1" + right_code
     }
     
@@ -760,15 +760,15 @@ slay is_huffman_leaf_node(node tea) lit {
 }
 
 slay extract_leaf_character(node tea) tea {
-    ready (!is_huffman_leaf_node(node)) { damn "" }
+    lowkey (!is_huffman_leaf_node(node)) { damn "" }
     sus parts tea[value] = split_huffman_node(node)
-    ready (array_length(parts) >= 2) { damn parts[1] }
+    lowkey (array_length(parts) >= 2) { damn parts[1] }
     damn ""
 }
 
 slay starts_with(text tea, prefix tea) lit {
     sus prefix_len drip = string_length(prefix)
-    ready (string_length(text) < prefix_len) { damn cringe }
+    lowkey (string_length(text) < prefix_len) { damn cringe }
     damn substring(text, 0, prefix_len) == prefix
 }
 
@@ -776,27 +776,27 @@ slay get_bit(data tea, bit_pos drip) drip {
     fr fr Extract bit from binary data
     sus byte_pos drip = bit_pos / 8
     sus bit_offset drip = bit_pos % 8
-    ready (byte_pos >= string_length(data)) { damn 0 }
+    lowkey (byte_pos >= string_length(data)) { damn 0 }
     
     sus byte_val drip = char_to_number(substring(data, byte_pos, 1))
     sus mask drip = 128 >> bit_offset  fr fr 0x80 >> bit_offset
-    ready ((byte_val & mask) != 0) { damn 1 }
+    lowkey ((byte_val & mask) != 0) { damn 1 }
     damn 0
 }
 
 slay get_left_child(node tea) tea {
     fr fr Extract left child from internal node
-    ready (is_huffman_leaf_node(node)) { damn node }
+    lowkey (is_huffman_leaf_node(node)) { damn node }
     sus parts tea[value] = split_on_pipe(extract_children_part(node))
-    ready (array_length(parts) >= 1) { damn parts[0] }
+    lowkey (array_length(parts) >= 1) { damn parts[0] }
     damn node
 }
 
 slay get_right_child(node tea) tea {
     fr fr Extract right child from internal node
-    ready (is_huffman_leaf_node(node)) { damn node }
+    lowkey (is_huffman_leaf_node(node)) { damn node }
     sus parts tea[value] = split_on_pipe(extract_children_part(node))
-    ready (array_length(parts) >= 2) { damn parts[1] }
+    lowkey (array_length(parts) >= 2) { damn parts[1] }
     damn node
 }
 
@@ -804,7 +804,7 @@ slay extract_children_part(node tea) tea {
     fr fr Extract children part from "INTERNAL:child1|child2:freq"
     sus colon_pos drip = find_nth_colon(node, 1)
     sus last_colon drip = find_last_colon(node)
-    ready (colon_pos >= 0 && last_colon >= 0 && last_colon > colon_pos) {
+    lowkey (colon_pos >= 0 && last_colon >= 0 && last_colon > colon_pos) {
         damn substring(node, colon_pos + 1, last_colon - colon_pos - 1)
     }
     damn ""
@@ -814,9 +814,9 @@ slay find_nth_colon(text tea, n drip) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < string_length(text)) {
-        ready (substring(text, i, 1) == ":") {
+        lowkey (substring(text, i, 1) == ":") {
             count = count + 1
-            ready (count == n) { damn i }
+            lowkey (count == n) { damn i }
         }
         i = i + 1
     }
@@ -826,7 +826,7 @@ slay find_nth_colon(text tea, n drip) drip {
 slay find_last_colon(text tea) drip {
     sus i drip = string_length(text) - 1
     bestie (i >= 0) {
-        ready (substring(text, i, 1) == ":") { damn i }
+        lowkey (substring(text, i, 1) == ":") { damn i }
         i = i - 1
     }
     damn -1
@@ -840,16 +840,16 @@ slay split_on_pipe(text tea) tea[value]{
     
     bestie (i < string_length(text)) {
         sus char tea = substring(text, i, 1)
-        ready (char == "|") {
+        lowkey (char == "|") {
             parts = append_string_array(parts, current)
             current = ""
-        } otherwise {
+        } highkey {
             current = current + char
         }
         i = i + 1
     }
     
-    ready (string_length(current) > 0) {
+    lowkey (string_length(current) > 0) {
         parts = append_string_array(parts, current)
     }
     
@@ -873,7 +873,7 @@ slay create_deflate_block_header() tea {
 
 slay extract_deflate_block_data(data tea) tea {
     fr fr Skip DEFLATE block header (2 bytes) and extract payload
-    ready (string_length(data) <= 2) { damn "" }
+    lowkey (string_length(data) <= 2) { damn "" }
     damn substring(data, 2, string_length(data) - 2)
 }
 
@@ -957,7 +957,7 @@ slay find_zip_file_entry(zip_data tea, filename tea) drip {
     fr fr Find file entry in ZIP central directory (simplified)
     sus signature tea = char(80) + char(75) + char(1) + char(2)
     sus pos drip = find_string_in_data(zip_data, signature)
-    ready (pos >= 0) { damn pos }
+    lowkey (pos >= 0) { damn pos }
     damn -1
 }
 
@@ -971,13 +971,13 @@ slay find_string_in_data(data tea, pattern tea) drip {
         sus match lit = based
         sus j drip = 0
         bestie (j < pattern_len) {
-            ready (substring(data, i + j, 1) != substring(pattern, j, 1)) {
+            lowkey (substring(data, i + j, 1) != substring(pattern, j, 1)) {
                 match = cringe
                 break
             }
             j = j + 1
         }
-        ready (match) { damn i }
+        lowkey (match) { damn i }
         i = i + 1
     }
     damn -1
@@ -1000,8 +1000,8 @@ fr fr ===== UTILITY FUNCTIONS =====
 
 slay number_to_string(num drip) tea {
     fr fr Convert number to string (simplified)
-    ready (num == 0) { damn "0" }
-    ready (num < 0) { damn "-" + number_to_string(-num) }
+    lowkey (num == 0) { damn "0" }
+    lowkey (num < 0) { damn "-" + number_to_string(-num) }
     
     sus result tea = ""
     bestie (num > 0) {
@@ -1020,7 +1020,7 @@ slay string_to_number(str tea) drip {
     
     bestie (i < len) {
         sus char_code drip = char_to_number(substring(str, i, 1))
-        ready (char_code >= 48 && char_code <= 57) {  fr fr '0' to '9'
+        lowkey (char_code >= 48 && char_code <= 57) {  fr fr '0' to '9'
             result = result * 10 + (char_code - 48)
         }
         i = i + 1

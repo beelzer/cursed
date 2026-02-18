@@ -38,7 +38,7 @@ slay init_zip() {
 
 # Add file to ZIP archive
 slay zip_add_file(local_path tea, archive_path tea, data tea) yikes<lit> {
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         yikes "archive path cannot be empty"
     }
     
@@ -62,13 +62,13 @@ slay zip_add_file(local_path tea, archive_path tea, data tea) yikes<lit> {
 
 # Add directory to ZIP archive
 slay zip_add_directory(local_path tea, archive_path tea) yikes<lit> {
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         yikes "archive path cannot be empty"
     }
     
     # Ensure directory path ends with slash
     sus dir_path tea = archive_path
-    ready (!ends_with(dir_path, "/")) {
+    lowkey (!ends_with(dir_path, "/")) {
         dir_path = dir_path + "/"
     }
     
@@ -97,7 +97,7 @@ slay zip_extract_file(archive_path tea, output_path tea) yikes<tea> {
         when _ -> yikes "file not found in archive: " + archive_path
     }
     
-    ready (entry.is_directory) {
+    lowkey (entry.is_directory) {
         yikes "cannot extract directory as file: " + archive_path
     }
     
@@ -129,7 +129,7 @@ slay zip_get_entry_count() drip {
 slay find_zip_entry(filename tea) yikes<ZipEntry> {
     bestie (drip i = 0; i < len(zip_entries); i = i + 1) {
         sus entry ZipEntry = zip_entries[i]
-        ready (entry.filename == filename) {
+        lowkey (entry.filename == filename) {
             damn entry
         }
     }
@@ -162,10 +162,10 @@ slay zip_get_file_info(filename tea) yikes<tea> {
 
 # Get compression method name
 slay get_compression_method_name(method drip) tea {
-    ready (method == ZIP_STORE) {
+    lowkey (method == ZIP_STORE) {
         damn "Store (no compression)"
     }
-    ready (method == ZIP_DEFLATE) {
+    lowkey (method == ZIP_DEFLATE) {
         damn "Deflate"
     }
     damn "Unknown"
@@ -185,11 +185,11 @@ slay calculate_crc32(data tea) drip {
 # Extract data from ZIP entry (simplified)
 slay extract_zip_data(entry ZipEntry) tea {
     # Simulate data extraction based on compression method
-    ready (entry.compression_method == ZIP_STORE) {
+    lowkey (entry.compression_method == ZIP_STORE) {
         vibez.spill("ZIP: Extracting uncompressed data")
         damn "extracted_data_from_" + entry.filename
     }
-    ready (entry.compression_method == ZIP_DEFLATE) {
+    lowkey (entry.compression_method == ZIP_DEFLATE) {
         vibez.spill("ZIP: Decompressing deflated data")
         damn "decompressed_data_from_" + entry.filename
     }
@@ -201,7 +201,7 @@ slay zip_validate() lit {
     vibez.spill("ZIP: Validating archive structure")
     
     # Check for valid entries
-    ready (len(zip_entries) == 0) {
+    lowkey (len(zip_entries) == 0) {
         vibez.spill("ZIP: Warning - empty archive")
         damn based
     }
@@ -211,12 +211,12 @@ slay zip_validate() lit {
         sus entry ZipEntry = zip_entries[i]
         
         # Basic validation checks
-        ready (entry.filename == "") {
+        lowkey (entry.filename == "") {
             vibez.spill("ZIP: Invalid entry - empty filename")
             damn cap
         }
         
-        ready (entry.compressed_size < 0 || entry.uncompressed_size < 0) {
+        lowkey (entry.compressed_size < 0 || entry.uncompressed_size < 0) {
             vibez.spill("ZIP: Invalid entry - negative size")
             damn cap
         }
@@ -240,15 +240,15 @@ slay zip_get_stats() tea {
         total_compressed = total_compressed + entry.compressed_size
         total_uncompressed = total_uncompressed + entry.uncompressed_size
         
-        ready (entry.is_directory) {
+        lowkey (entry.is_directory) {
             directory_count = directory_count + 1
-        } otherwise {
+        } highkey {
             file_count = file_count + 1
         }
     }
     
     sus compression_ratio meal = 0.0
-    ready (total_uncompressed > 0) {
+    lowkey (total_uncompressed > 0) {
         compression_ratio = to_float(total_compressed) / to_float(total_uncompressed)
     }
     
@@ -279,7 +279,7 @@ slay zip_decompress_deflate(compressed_data tea) tea {
     # Simplified deflate decompression simulation
     vibez.spill("ZIP: Decompressing deflated data")
     
-    ready (starts_with(compressed_data, "DEFLATE:")) {
+    lowkey (starts_with(compressed_data, "DEFLATE:")) {
         sus decompressed tea = substring(compressed_data, 8, len(compressed_data))
         vibez.spill("ZIP: Decompressed " + to_string(len(compressed_data)) + " bytes to " + to_string(len(decompressed)) + " bytes")
         damn decompressed
@@ -316,7 +316,7 @@ slay starts_with(str tea, prefix tea) lit {
     sus str_len drip = len(str)
     sus prefix_len drip = len(prefix)
     
-    ready (prefix_len > str_len) {
+    lowkey (prefix_len > str_len) {
         damn cap
     }
     
@@ -338,7 +338,7 @@ slay to_string_float(value meal) tea {
 
 # ZIP password protection (simplified)
 slay zip_set_encryption(password tea, method tea) yikes<lit> {
-    ready (password == "") {
+    lowkey (password == "") {
         yikes "password cannot be empty"
     }
     
@@ -358,9 +358,9 @@ slay zip_repair() lit {
     # Simulate repair process
     sus repaired lit = based
     
-    ready (repaired) {
+    lowkey (repaired) {
         vibez.spill("ZIP: Archive repaired successfully")
-    } otherwise {
+    } highkey {
         vibez.spill("ZIP: Archive repair failed")
     }
     
@@ -376,7 +376,7 @@ slay zip_optimize() lit {
     
     bestie (drip i = 0; i < len(zip_entries); i = i + 1) {
         sus entry ZipEntry = zip_entries[i]
-        ready (!entry.is_directory) {
+        lowkey (!entry.is_directory) {
             # Add files first, then directories
             append_zip_entry(entry)
         }

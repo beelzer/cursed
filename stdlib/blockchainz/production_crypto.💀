@@ -48,7 +48,7 @@ slay ecdsa_sign_production(message_hash drip[value], private_key drip[value]) EC
     fr fr Production ECDSA signing with proper curve operations
     fr fr RFC 6979 deterministic k generation for security
     
-    ready len(message_hash) != 32 {
+    lowkey len(message_hash) != 32 {
         vibez.spill("ERROR: Message hash must be 32 bytes for ECDSA")
         damn ECDSASignature{r: [], s: [], recovery_id: 0}
     }
@@ -60,7 +60,7 @@ slay ecdsa_sign_production(message_hash drip[value], private_key drip[value]) EC
     sus r_point EllipticPoint = scalar_mult(k, secp256k1_generator())
     sus r drip[value] = mod_n(r_point.x)
     
-    ready is_zero(r) {
+    lowkey is_zero(r) {
         vibez.spill("ERROR: Invalid r value in ECDSA signature")
         damn ECDSASignature{r: [], s: [], recovery_id: 0}
     }
@@ -72,7 +72,7 @@ slay ecdsa_sign_production(message_hash drip[value], private_key drip[value]) EC
     sus s drip[value] = mod_mult(k_inv, z_plus_r_private, SECP256K1_N)
     
     # Low-s canonical form (BIP 62)
-    ready compare_bigint(s, half_n()) > 0 {
+    lowkey compare_bigint(s, half_n()) > 0 {
         s = mod_sub(SECP256K1_N, s, SECP256K1_N)
     }
     
@@ -88,11 +88,11 @@ slay ecdsa_sign_production(message_hash drip[value], private_key drip[value]) EC
 slay ecdsa_verify_production(message_hash drip[value], signature ECDSASignature, public_key drip[value]) lit {
     fr fr Production ECDSA verification with proper curve math
     
-    ready is_zero(signature.r) || is_zero(signature.s) {
+    lowkey is_zero(signature.r) || is_zero(signature.s) {
         damn cringe
     }
     
-    ready compare_bigint(signature.r, SECP256K1_N) >= 0 || compare_bigint(signature.s, SECP256K1_N) >= 0 {
+    lowkey compare_bigint(signature.r, SECP256K1_N) >= 0 || compare_bigint(signature.s, SECP256K1_N) >= 0 {
         damn cringe
     }
     
@@ -107,7 +107,7 @@ slay ecdsa_verify_production(message_hash drip[value], signature ECDSASignature,
     sus point2 EllipticPoint = scalar_mult(u2, pub_point)
     sus result_point EllipticPoint = point_add(point1, point2)
     
-    ready result_point.infinity {
+    lowkey result_point.infinity {
         damn cringe
     }
     
@@ -124,9 +124,9 @@ slay bitcoin_address_from_public_key(public_key drip[value], network tea) tea {
     sus pubkey_hash drip[value] = ripemd160_hash(sha256_hash(stringz.from_bytes(public_key)))
     
     sus version_byte drip = 0x00  # Mainnet P2PKH
-    ready network == "testnet" {
+    lowkey network == "testnet" {
         version_byte = 0x6F  # Testnet P2PKH
-    } otherwise ready network == "segwit" {
+    } highkey lowkey network == "segwit" {
         damn generate_bech32_address(pubkey_hash)
     }
     
@@ -143,7 +143,7 @@ slay ethereum_address_from_public_key(public_key drip[value]) tea {
     fr fr Generate Ethereum address from uncompressed public key
     fr fr Ethereum uses Keccak-256 instead of SHA-256
     
-    ready len(public_key) != 64 {
+    lowkey len(public_key) != 64 {
         vibez.spill("ERROR: Ethereum requires uncompressed public key (64 bytes)")
         damn ""
     }
@@ -219,7 +219,7 @@ slay keccak256_hash(data drip[value]) drip[value]{
         sus to_copy drip = mathz.min(rate, output_length - len(output))
         output = append_bytes(output, slice(squeezed, 0, to_copy))
         
-        ready len(output) < output_length {
+        lowkey len(output) < output_length {
             state = keccak_permutation(state)
         }
     }
@@ -255,7 +255,7 @@ slay base58_encode_bitcoin(data drip[value]) tea {
         result = "1" + result
     }
     
-    ready result == "" {
+    lowkey result == "" {
         damn "1"
     }
     
@@ -274,7 +274,7 @@ squad ProductionMerkleTree {
 slay build_production_merkle_tree(transactions drip[value][value]) ProductionMerkleTree {
     fr fr Build production-grade Merkle tree with proper padding
     
-    ready len(transactions) == 0 {
+    lowkey len(transactions) == 0 {
         damn ProductionMerkleTree{root: [], leaves: [], depth: 0, node_count: 0}
     }
     
@@ -290,7 +290,7 @@ slay build_production_merkle_tree(transactions drip[value][value]) ProductionMer
             sus left drip[value] = current_level[i]
             sus right drip[value] = left  # Default to left if odd number
             
-            ready i + 1 < len(current_level) {
+            lowkey i + 1 < len(current_level) {
                 right = current_level[i + 1]
             }
             
@@ -317,7 +317,7 @@ slay build_production_merkle_tree(transactions drip[value][value]) ProductionMer
 slay generate_merkle_proof(tree ProductionMerkleTree, leaf_index drip) drip[value][value] {
     fr fr Generate Merkle proof for transaction inclusion
     
-    ready leaf_index >= len(tree.leaves) {
+    lowkey leaf_index >= len(tree.leaves) {
         damn []
     }
     
@@ -327,11 +327,11 @@ slay generate_merkle_proof(tree ProductionMerkleTree, leaf_index drip) drip[valu
     
     bestie len(current_level) > 1 {
         fr fr SECURITY FIX: Use proper sibling calculation for Merkle tree
-        sus sibling_index drip = ready current_index % 2 == 0 { current_index + 1 } otherwise { current_index - 1 }
+        sus sibling_index drip = lowkey current_index % 2 == 0 { current_index + 1 } highkey { current_index - 1 }
         
-        ready sibling_index < len(current_level) {
+        lowkey sibling_index < len(current_level) {
             proof = append(proof, current_level[sibling_index])
-        } otherwise {
+        } highkey {
             # No sibling, use same node (Bitcoin behavior)
             proof = append(proof, current_level[current_index])
         }
@@ -342,7 +342,7 @@ slay generate_merkle_proof(tree ProductionMerkleTree, leaf_index drip) drip[valu
             sus left drip[value] = current_level[i]
             sus right drip[value] = left
             
-            ready i + 1 < len(current_level) {
+            lowkey i + 1 < len(current_level) {
                 right = current_level[i + 1]
             }
             
@@ -369,10 +369,10 @@ slay verify_merkle_proof(leaf_hash drip[value], proof drip[value][value], root_h
         sus sibling_hash drip[value] = proof[i]
         sus combined drip[value] = []
         
-        ready (current_index & 1) == 0 {
+        lowkey (current_index & 1) == 0 {
             # Current node is left child
             combined = append_bytes(current_hash, sibling_hash)
-        } otherwise {
+        } highkey {
             # Current node is right child  
             combined = append_bytes(sibling_hash, current_hash)
         }
@@ -423,11 +423,11 @@ slay derive_child_key(wallet HDWallet, index drip, hardened lit) KeyPair {
     sus data drip[value] = []
     sus key_for_hmac drip[value] = wallet.master_private_key
     
-    ready hardened {
+    lowkey hardened {
         # Hardened derivation: 0x00 || private_key || index
         data = append_bytes([0x00], wallet.master_private_key)
         data = append_bytes(data, u32_to_bytes_be(index + 0x80000000))
-    } otherwise {
+    } highkey {
         # Non-hardened derivation: public_key || index
         data = append_bytes(wallet.master_public_key, u32_to_bytes_be(index))
     }
@@ -466,7 +466,7 @@ slay sign_bitcoin_transaction(tx BitcoinTransaction, private_key drip[value], in
     
     # Clear all input scripts except the one being signed
     bestie i := 0; i < len(tx_copy.inputs); i++ {
-        ready i == input_index {
+        lowkey i == input_index {
             # Keep the previous output script for signing
             continue
         }
@@ -490,7 +490,7 @@ slay sign_bitcoin_transaction(tx BitcoinTransaction, private_key drip[value], in
 slay validate_transaction_signature(tx BitcoinTransaction, input_index drip, public_key drip[value], signature drip[value]) lit {
     fr fr Validate Bitcoin transaction signature
     
-    ready len(signature) == 0 {
+    lowkey len(signature) == 0 {
         damn cringe
     }
     
@@ -503,7 +503,7 @@ slay validate_transaction_signature(tx BitcoinTransaction, input_index drip, pub
     
     # Clear scripts for verification
     bestie i := 0; i < len(tx_copy.inputs); i++ {
-        ready i == input_index {
+        lowkey i == input_index {
             continue
         }
         tx_copy.inputs[i].script_sig = []
@@ -541,7 +541,7 @@ slay mine_block_production(block_header BlockHeader, target drip[value]) BlockHe
         sus hash drip[value] = sha256_hash(stringz.from_bytes(sha256_hash(stringz.from_bytes(header_bytes))))
         sus hash_bigint drip[value] = bytes_to_bigint(hash)
         
-        ready compare_bigint(hash_bigint, target) < 0 {
+        lowkey compare_bigint(hash_bigint, target) < 0 {
             vibez.spill("Block mined! Nonce:", int_to_string(nonce))
             break
         }
@@ -549,7 +549,7 @@ slay mine_block_production(block_header BlockHeader, target drip[value]) BlockHe
         nonce = nonce + 1
         
         # Progress indicator for long mining operations
-        ready (nonce % 100000) == 0 {
+        lowkey (nonce % 100000) == 0 {
             vibez.spill("Mining progress:", int_to_string(nonce / 1000), "K nonces tried")
         }
     }
@@ -563,7 +563,7 @@ slay adjust_difficulty(blocks Block[value]) drip {
     sus retarget_interval drip = 2016
     sus target_timespan drip = 14 * 24 * 60 * 60  # 2 weeks in seconds
     
-    ready len(blocks) < retarget_interval {
+    lowkey len(blocks) < retarget_interval {
         damn 1  # Default difficulty
     }
     
@@ -576,9 +576,9 @@ slay adjust_difficulty(blocks Block[value]) drip {
     sus min_timespan drip = target_timespan / 4
     sus max_timespan drip = target_timespan * 4
     
-    ready actual_timespan < min_timespan {
+    lowkey actual_timespan < min_timespan {
         actual_timespan = min_timespan
-    } otherwise ready actual_timespan > max_timespan {
+    } highkey lowkey actual_timespan > max_timespan {
         actual_timespan = max_timespan
     }
     
@@ -620,7 +620,7 @@ slay rfc6979_generate_k(private_key drip[value], message_hash drip[value]) drip[
         v = hmac_sha256(k, v)
         sus candidate drip[value] = bytes_to_bigint(v)
         
-        ready !is_zero(candidate) && compare_bigint(candidate, SECP256K1_N) < 0 {
+        lowkey !is_zero(candidate) && compare_bigint(candidate, SECP256K1_N) < 0 {
             damn bigint_to_bytes_32(candidate)
         }
         
@@ -640,7 +640,7 @@ slay generate_private_key() drip[value]{
         sus candidate drip[value] = generate_random_bytes(32)
         sus candidate_bigint drip[value] = bytes_to_bigint(candidate)
         
-        ready !is_zero(candidate_bigint) && compare_bigint(candidate_bigint, SECP256K1_N) < 0 {
+        lowkey !is_zero(candidate_bigint) && compare_bigint(candidate_bigint, SECP256K1_N) < 0 {
             damn candidate
         }
         
@@ -657,11 +657,11 @@ slay scalar_mult(scalar drip[value], point EllipticPoint) EllipticPoint {
     fr fr Scalar multiplication on secp256k1
     fr fr Uses double-and-add algorithm with Montgomery ladder
     
-    ready point.infinity {
+    lowkey point.infinity {
         damn point_at_infinity()
     }
     
-    ready is_zero(scalar) {
+    lowkey is_zero(scalar) {
         damn point_at_infinity()
     }
     
@@ -670,7 +670,7 @@ slay scalar_mult(scalar drip[value], point EllipticPoint) EllipticPoint {
     sus scalar_bigint drip[value] = bytes_to_bigint(scalar)
     
     bestie !is_zero(scalar_bigint) {
-        ready is_odd(scalar_bigint) {
+        lowkey is_odd(scalar_bigint) {
             result = point_add(result, addend)
         }
         
@@ -684,17 +684,17 @@ slay scalar_mult(scalar drip[value], point EllipticPoint) EllipticPoint {
 slay point_add(p EllipticPoint, q EllipticPoint) EllipticPoint {
     fr fr Point addition on secp256k1
     
-    ready p.infinity {
+    lowkey p.infinity {
         damn q
     }
-    ready q.infinity {
+    lowkey q.infinity {
         damn p
     }
     
-    ready bytes_equal(bigint_to_bytes_32(p.x), bigint_to_bytes_32(q.x)) {
-        ready bytes_equal(bigint_to_bytes_32(p.y), bigint_to_bytes_32(q.y)) {
+    lowkey bytes_equal(bigint_to_bytes_32(p.x), bigint_to_bytes_32(q.x)) {
+        lowkey bytes_equal(bigint_to_bytes_32(p.y), bigint_to_bytes_32(q.y)) {
             damn point_double(p)
-        } otherwise {
+        } highkey {
             damn point_at_infinity()
         }
     }
@@ -725,11 +725,11 @@ slay point_add(p EllipticPoint, q EllipticPoint) EllipticPoint {
 slay point_double(p EllipticPoint) EllipticPoint {
     fr fr Point doubling on secp256k1
     
-    ready p.infinity {
+    lowkey p.infinity {
         damn p
     }
     
-    ready is_zero(p.y) {
+    lowkey is_zero(p.y) {
         damn point_at_infinity()
     }
     
@@ -795,9 +795,9 @@ slay checksum_address(address tea) tea {
         sus char tea = stringz.char_at(address_lower, i)
         sus hash_nibble drip = (hash[i / 2] >> (4 * (1 - (i % 2)))) & 0xF
         
-        ready hash_nibble >= 8 && char >= "a" && char <= "f" {
+        lowkey hash_nibble >= 8 && char >= "a" && char <= "f" {
             result = result + stringz.to_upper(char)
-        } otherwise {
+        } highkey {
             result = result + char
         }
     }

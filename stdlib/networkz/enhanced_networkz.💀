@@ -193,15 +193,15 @@ slay should_retry(error NetworkError, max_retries drip) lit {
 // ==== REAL SOCKET OPERATIONS ====
 
 slay socket_create(family drip, socket_type drip) yikes<Socket> {
-    ready (socket_count >= 1000) {
+    lowkey (socket_count >= 1000) {
         yikes create_network_error_advanced("socket_limit", "Maximum socket limit reached", 507, "")
     }
 
-    ready (family != 4 && family != 6) {
+    lowkey (family != 4 && family != 6) {
         yikes create_network_error_advanced("invalid_family", "Invalid address family", 400, "")
     }
 
-    ready (socket_type != 1 && socket_type != 2) {
+    lowkey (socket_type != 1 && socket_type != 2) {
         yikes create_network_error_advanced("invalid_socket_type", "Invalid socket type", 400, "")
     }
 
@@ -229,9 +229,9 @@ slay socket_create(family drip, socket_type drip) yikes<Socket> {
     global_socket_pool[socket_count] = socket
     socket_count = socket_count + 1
 
-    ready (socket_type == 1) {
+    lowkey (socket_type == 1) {
         network_stats.total_tcp_connections = network_stats.total_tcp_connections + 1
-    } otherwise {
+    } highkey {
         network_stats.total_udp_connections = network_stats.total_udp_connections + 1
     }
 
@@ -241,7 +241,7 @@ slay socket_create(family drip, socket_type drip) yikes<Socket> {
 slay socket_find_by_handle(handle drip) yikes<Socket> {
     sus i drip = 0
     bestie (i < socket_count) {
-        ready (global_socket_pool[i].handle == handle) {
+        lowkey (global_socket_pool[i].handle == handle) {
             damn global_socket_pool[i]
         }
         i = i + 1
@@ -251,22 +251,22 @@ slay socket_find_by_handle(handle drip) yikes<Socket> {
 }
 
 slay socket_bind(socket Socket, address tea, port drip) yikes<lit> {
-    ready (socket.state != 0) {
+    lowkey (socket.state != 0) {
         yikes create_network_error_advanced("socket_bind", "Socket already bound or connected", 400, "")
     }
 
-    ready (port <= 0 || port > 65535) {
+    lowkey (port <= 0 || port > 65535) {
         yikes create_network_error_advanced("socket_bind", "Invalid port number", 400, "")
     }
 
     // Validate address format
-    ready (!is_valid_ip_address(address) && !stringz.equals(address, "0.0.0.0") && 
+    lowkey (!is_valid_ip_address(address) && !stringz.equals(address, "0.0.0.0") && 
            !stringz.equals(address, "localhost")) {
         yikes create_network_error_advanced("socket_bind", "Invalid IP address", 400, "")
     }
 
     // Check if port is already in use (simplified check)
-    ready (is_port_in_use(address, port)) {
+    lowkey (is_port_in_use(address, port)) {
         yikes create_network_error_advanced("socket_bind", "Address already in use", 409, "")
     }
 
@@ -279,15 +279,15 @@ slay socket_bind(socket Socket, address tea, port drip) yikes<lit> {
 }
 
 slay socket_listen(socket Socket, backlog drip) yikes<lit> {
-    ready (socket.state != 3) {
+    lowkey (socket.state != 3) {
         yikes create_network_error_advanced("socket_listen", "Socket must be bound before listening", 400, "")
     }
 
-    ready (socket.socket_type != 1) {
+    lowkey (socket.socket_type != 1) {
         yikes create_network_error_advanced("socket_listen", "Only TCP sockets can listen", 400, "")
     }
 
-    ready (backlog <= 0 || backlog > 128) {
+    lowkey (backlog <= 0 || backlog > 128) {
         yikes create_network_error_advanced("socket_listen", "Invalid backlog value", 400, "")
     }
 
@@ -296,15 +296,15 @@ slay socket_listen(socket Socket, backlog drip) yikes<lit> {
 }
 
 slay socket_connect_with_timeout(socket Socket, address tea, port drip, timeout_seconds drip) yikes<lit> {
-    ready (socket.state != 0) {
+    lowkey (socket.state != 0) {
         yikes create_network_error_advanced("socket_connect", "Socket already connected or bound", 400, "")
     }
 
-    ready (port <= 0 || port > 65535) {
+    lowkey (port <= 0 || port > 65535) {
         yikes create_network_error_advanced("socket_connect", "Invalid port number", 400, "")
     }
 
-    ready (timeout_seconds <= 0) {
+    lowkey (timeout_seconds <= 0) {
         yikes create_network_error_advanced("socket_connect", "Invalid timeout", 400, "")
     }
 
@@ -319,7 +319,7 @@ slay socket_connect_with_timeout(socket Socket, address tea, port drip, timeout_
     // Simulate connection based on address patterns
     sus connection_successful lit = simulate_connection_attempt(resolved_ip, port, timeout_seconds)
     
-    ready (!connection_successful) {
+    lowkey (!connection_successful) {
         network_stats.failed_connections = network_stats.failed_connections + 1
         yikes create_network_error_advanced("socket_connect", "Connection failed", 503, "")
     }
@@ -335,21 +335,21 @@ slay socket_connect_with_timeout(socket Socket, address tea, port drip, timeout_
 }
 
 slay socket_send_data(socket Socket, data tea) yikes<drip> {
-    ready (socket.state != 1) {
+    lowkey (socket.state != 1) {
         yikes create_network_error_advanced("socket_send", "Socket not connected", 400, "")
     }
 
-    ready (stringz.len(data) == 0) {
+    lowkey (stringz.len(data) == 0) {
         damn 0
     }
 
-    ready (stringz.len(data) > socket.send_buffer_size) {
+    lowkey (stringz.len(data) > socket.send_buffer_size) {
         yikes create_network_error_advanced("socket_send", "Data exceeds buffer size", 413, "")
     }
 
     // Simulate sending data
     sus bytes_sent drip = simulate_data_send(socket, data)
-    ready (bytes_sent == -1) {
+    lowkey (bytes_sent == -1) {
         yikes create_network_error_advanced("socket_send", "Send failed", 500, "")
     }
 
@@ -360,15 +360,15 @@ slay socket_send_data(socket Socket, data tea) yikes<drip> {
 }
 
 slay socket_receive_data(socket Socket, max_bytes drip) yikes<tea> {
-    ready (socket.state != 1) {
+    lowkey (socket.state != 1) {
         yikes create_network_error_advanced("socket_recv", "Socket not connected", 400, "")
     }
 
-    ready (max_bytes <= 0) {
+    lowkey (max_bytes <= 0) {
         yikes create_network_error_advanced("socket_recv", "Invalid buffer size", 400, "")
     }
 
-    ready (max_bytes > socket.recv_buffer_size) {
+    lowkey (max_bytes > socket.recv_buffer_size) {
         max_bytes = socket.recv_buffer_size
     }
 
@@ -383,7 +383,7 @@ slay socket_receive_data(socket Socket, max_bytes drip) yikes<tea> {
 }
 
 slay socket_close(socket Socket) yikes<lit> {
-    ready (socket.state == 0) {
+    lowkey (socket.state == 0) {
         yikes create_network_error_advanced("socket_close", "Socket already closed", 400, "")
     }
 
@@ -400,15 +400,15 @@ slay socket_close(socket Socket) yikes<lit> {
 // ==== CONNECTION POOL IMPLEMENTATION ====
 
 slay connection_pool_create(host tea, port drip, protocol tea, max_connections drip) yikes<ConnectionPool> {
-    ready (pool_count >= 100) {
+    lowkey (pool_count >= 100) {
         yikes create_network_error_advanced("pool_limit", "Maximum pool limit reached", 507, "")
     }
 
-    ready (max_connections <= 0 || max_connections > 100) {
+    lowkey (max_connections <= 0 || max_connections > 100) {
         yikes create_network_error_advanced("invalid_pool_size", "Invalid pool size", 400, "")
     }
 
-    ready (!stringz.equals(protocol, "tcp") && !stringz.equals(protocol, "udp")) {
+    lowkey (!stringz.equals(protocol, "tcp") && !stringz.equals(protocol, "udp")) {
         yikes create_network_error_advanced("invalid_protocol", "Invalid protocol", 400, "")
     }
 
@@ -447,15 +447,15 @@ slay connection_pool_get_connection(pool ConnectionPool) yikes<Socket> {
     sus i drip = 0
     bestie (i < arrayz.len(pool.connections)) {
         sus conn Socket = pool.connections[i]
-        ready (conn.state == 1 && is_connection_healthy(conn)) {
+        lowkey (conn.state == 1 && is_connection_healthy(conn)) {
             damn conn
         }
         i = i + 1
     }
 
     // Create new connection if under limit
-    ready (pool.active_connections < pool.max_connections) {
-        sus socket_type drip = ready stringz.equals(pool.protocol, "tcp") { 1 } otherwise { 2 }
+    lowkey (pool.active_connections < pool.max_connections) {
+        sus socket_type drip = lowkey stringz.equals(pool.protocol, "tcp") { 1 } highkey { 2 }
         sus new_socket Socket = socket_create(4, socket_type) fam {
             when err -> {
                 pool.stats.failed_connection_attempts = pool.stats.failed_connection_attempts + 1
@@ -476,7 +476,7 @@ slay connection_pool_get_connection(pool ConnectionPool) yikes<Socket> {
         pool.stats.total_connections_created = pool.stats.total_connections_created + 1
         pool.stats.successful_connection_attempts = pool.stats.successful_connection_attempts + 1
         
-        ready (pool.active_connections > pool.stats.peak_connections) {
+        lowkey (pool.active_connections > pool.stats.peak_connections) {
             pool.stats.peak_connections = pool.active_connections
         }
 
@@ -487,7 +487,7 @@ slay connection_pool_get_connection(pool ConnectionPool) yikes<Socket> {
 }
 
 slay connection_pool_return_connection(pool ConnectionPool, connection Socket) yikes<lit> {
-    ready (connection.state != 1) {
+    lowkey (connection.state != 1) {
         // Connection is dead, remove from pool
         pool.connections = arrayz.remove_by_handle(pool.connections, connection.handle)
         pool.active_connections = pool.active_connections - 1
@@ -504,9 +504,9 @@ slay connection_pool_health_check(pool ConnectionPool) yikes<lit> {
     
     bestie (i < arrayz.len(pool.connections)) {
         sus conn Socket = pool.connections[i]
-        ready (is_connection_healthy(conn)) {
+        lowkey (is_connection_healthy(conn)) {
             healthy_connections = healthy_connections + 1
-        } otherwise {
+        } highkey {
             // Remove unhealthy connection
             socket_close(conn) fam { when _ -> {} }
             pool.connections = arrayz.remove_by_index(pool.connections, i)
@@ -524,7 +524,7 @@ slay connection_pool_health_check(pool ConnectionPool) yikes<lit> {
 // ==== DNS RESOLUTION SYSTEM ====
 
 slay dns_resolver_init() yikes<lit> {
-    ready (dns_initialized) {
+    lowkey (dns_initialized) {
         damn based  // Already initialized
     }
 
@@ -542,18 +542,18 @@ slay dns_resolver_init() yikes<lit> {
 }
 
 slay dns_resolve_hostname(hostname tea) yikes<tea> {
-    ready (!dns_initialized) {
+    lowkey (!dns_initialized) {
         dns_resolver_init() fam { when _ -> {} }
     }
 
-    ready (is_valid_ip_address(hostname)) {
+    lowkey (is_valid_ip_address(hostname)) {
         damn hostname  // Already an IP address
     }
 
     // Check cache first
-    ready (global_dns_resolver.cache_enabled) {
+    lowkey (global_dns_resolver.cache_enabled) {
         sus cached_result tea = dns_cache_lookup(hostname)
-        ready (stringz.len(cached_result) > 0) {
+        lowkey (stringz.len(cached_result) > 0) {
             network_stats.dns_cache_hits = network_stats.dns_cache_hits + 1
             damn cached_result
         }
@@ -566,7 +566,7 @@ slay dns_resolve_hostname(hostname tea) yikes<tea> {
     }
 
     // Cache the result
-    ready (global_dns_resolver.cache_enabled && stringz.len(resolved_ip) > 0) {
+    lowkey (global_dns_resolver.cache_enabled && stringz.len(resolved_ip) > 0) {
         dns_cache_store(hostname, resolved_ip)
     }
 
@@ -575,7 +575,7 @@ slay dns_resolve_hostname(hostname tea) yikes<tea> {
 }
 
 slay dns_resolve_hostname_all_types(hostname tea, record_type drip) yikes<DNSRecord[value]> {
-    ready (!dns_initialized) {
+    lowkey (!dns_initialized) {
         dns_resolver_init() fam { when _ -> {} }
     }
 
@@ -602,7 +602,7 @@ slay dns_resolve_hostname_all_types(hostname tea, record_type drip) yikes<DNSRec
         when 16 -> {  // TXT record
             records = dns_simulate_txt_records(hostname)
         }
-        otherwise -> {
+        highkey -> {
             yikes create_network_error_advanced("dns_unsupported", "Unsupported DNS record type", 400, "")
         }
     }
@@ -614,9 +614,9 @@ slay dns_cache_lookup(hostname tea) tea {
     sus i drip = 0
     bestie (i < arrayz.len(global_dns_resolver.cache)) {
         sus entry DNSCacheEntry = global_dns_resolver.cache[i]
-        ready (stringz.equals(entry.domain, hostname)) {
-            ready (timez.now() < entry.expires_at) {
-                ready (arrayz.len(entry.records) > 0) {
+        lowkey (stringz.equals(entry.domain, hostname)) {
+            lowkey (timez.now() < entry.expires_at) {
+                lowkey (arrayz.len(entry.records) > 0) {
                     damn entry.records[0].value  // Return first A record
                 }
             }
@@ -696,13 +696,13 @@ slay build_advanced_http_request(request HttpRequestAdvanced) yikes<tea> {
     }
 
     sus request_line tea = stringz.concat([request.method, " ", url_parts.path])
-    ready (stringz.len(url_parts.query) > 0) {
+    lowkey (stringz.len(url_parts.query) > 0) {
         request_line = stringz.concat([request_line, "?", url_parts.query])
     }
     request_line = stringz.concat([request_line, " HTTP/1.1\r\n"])
 
     sus host_header tea = stringz.concat(["Host: ", url_parts.host])
-    ready (url_parts.port != 80 && url_parts.port != 443) {
+    lowkey (url_parts.port != 80 && url_parts.port != 443) {
         host_header = stringz.concat([host_header, ":", stringz.from_int(url_parts.port)])
     }
     host_header = stringz.concat([host_header, "\r\n"])
@@ -710,16 +710,16 @@ slay build_advanced_http_request(request HttpRequestAdvanced) yikes<tea> {
     sus request_data tea = stringz.concat([request_line, host_header])
 
     // Add User-Agent
-    sus user_agent tea = ready stringz.len(request.user_agent) > 0 { request.user_agent } otherwise { "CURSED-NetworkZ-Enhanced/2.0" }
+    sus user_agent tea = lowkey stringz.len(request.user_agent) > 0 { request.user_agent } highkey { "CURSED-NetworkZ-Enhanced/2.0" }
     request_data = stringz.concat([request_data, "User-Agent: ", user_agent, "\r\n"])
 
     // Add Authorization
-    ready (stringz.len(request.authorization) > 0) {
+    lowkey (stringz.len(request.authorization) > 0) {
         request_data = stringz.concat([request_data, "Authorization: ", request.authorization, "\r\n"])
     }
 
     // Add Content-Type
-    ready (stringz.len(request.content_type) > 0) {
+    lowkey (stringz.len(request.content_type) > 0) {
         request_data = stringz.concat([request_data, "Content-Type: ", request.content_type, "\r\n"])
     }
 
@@ -731,22 +731,22 @@ slay build_advanced_http_request(request HttpRequestAdvanced) yikes<tea> {
     }
 
     // Add Content-Length for requests with body
-    ready (stringz.len(request.body) > 0) {
+    lowkey (stringz.len(request.body) > 0) {
         sus content_length tea = stringz.concat(["Content-Length: ", stringz.from_int(stringz.len(request.body)), "\r\n"])
         request_data = stringz.concat([request_data, content_length])
     }
 
     // Add compression support
-    ready (stringz.len(request.compression) > 0) {
+    lowkey (stringz.len(request.compression) > 0) {
         request_data = stringz.concat([request_data, "Accept-Encoding: ", request.compression, "\r\n"])
     }
 
     // Add cookies
-    ready (arrayz.len(request.cookies) > 0) {
+    lowkey (arrayz.len(request.cookies) > 0) {
         sus cookie_header tea = "Cookie: "
         sus j drip = 0
         bestie (j < arrayz.len(request.cookies)) {
-            ready (j > 0) {
+            lowkey (j > 0) {
                 cookie_header = stringz.concat([cookie_header, "; "])
             }
             cookie_header = stringz.concat([cookie_header, request.cookies[j]])
@@ -762,7 +762,7 @@ slay build_advanced_http_request(request HttpRequestAdvanced) yikes<tea> {
     request_data = stringz.concat([request_data, "\r\n"])
 
     // Add body
-    ready (stringz.len(request.body) > 0) {
+    lowkey (stringz.len(request.body) > 0) {
         request_data = stringz.concat([request_data, request.body])
     }
 
@@ -770,19 +770,19 @@ slay build_advanced_http_request(request HttpRequestAdvanced) yikes<tea> {
 }
 
 slay parse_advanced_http_response(raw_response tea) yikes<HttpResponseAdvanced> {
-    ready (stringz.len(raw_response) == 0) {
+    lowkey (stringz.len(raw_response) == 0) {
         yikes create_network_error_advanced("http_parse", "Empty response", 400, "")
     }
 
     sus lines tea[value] = stringz.split(raw_response, "\r\n")
-    ready (arrayz.len(lines) == 0) {
+    lowkey (arrayz.len(lines) == 0) {
         yikes create_network_error_advanced("http_parse", "Invalid response format", 400, "")
     }
 
     // Parse status line
     sus status_line tea = lines[0]
     sus status_parts tea[value] = stringz.split(status_line, " ")
-    ready (arrayz.len(status_parts) < 3) {
+    lowkey (arrayz.len(status_parts) < 3) {
         yikes create_network_error_advanced("http_parse", "Invalid status line", 400, "")
     }
 
@@ -806,7 +806,7 @@ slay parse_advanced_http_response(raw_response tea) yikes<HttpResponseAdvanced> 
     sus cache_control tea = ""
 
     bestie (i < arrayz.len(lines)) {
-        ready (stringz.len(lines[i]) == 0) {
+        lowkey (stringz.len(lines[i]) == 0) {
             body_start = i + 1
             bestie based
         }
@@ -815,18 +815,18 @@ slay parse_advanced_http_response(raw_response tea) yikes<HttpResponseAdvanced> 
         headers = arrayz.push(headers, header)
 
         // Extract specific headers
-        ready (stringz.starts_with_ignore_case(header, "content-type:")) {
+        lowkey (stringz.starts_with_ignore_case(header, "content-type:")) {
             content_type = extract_header_value(header)
-        } otherwise ready (stringz.starts_with_ignore_case(header, "content-length:")) {
+        } highkey lowkey (stringz.starts_with_ignore_case(header, "content-length:")) {
             sus length_str tea = extract_header_value(header)
             content_length = mathz.parse_int(length_str) fam {
                 when _ -> content_length = 0
             }
-        } otherwise ready (stringz.starts_with_ignore_case(header, "content-encoding:")) {
+        } highkey lowkey (stringz.starts_with_ignore_case(header, "content-encoding:")) {
             compression = extract_header_value(header)
-        } otherwise ready (stringz.starts_with_ignore_case(header, "set-cookie:")) {
+        } highkey lowkey (stringz.starts_with_ignore_case(header, "set-cookie:")) {
             cookies = arrayz.push(cookies, extract_header_value(header))
-        } otherwise ready (stringz.starts_with_ignore_case(header, "cache-control:")) {
+        } highkey lowkey (stringz.starts_with_ignore_case(header, "cache-control:")) {
             cache_control = extract_header_value(header)
         }
 
@@ -835,7 +835,7 @@ slay parse_advanced_http_response(raw_response tea) yikes<HttpResponseAdvanced> 
 
     // Extract body
     sus body tea = ""
-    ready (body_start != -1 && body_start < arrayz.len(lines)) {
+    lowkey (body_start != -1 && body_start < arrayz.len(lines)) {
         sus body_lines tea[value] = []
         sus j drip = body_start
         bestie (j < arrayz.len(lines)) {
@@ -850,7 +850,7 @@ slay parse_advanced_http_response(raw_response tea) yikes<HttpResponseAdvanced> 
         status_message: status_message,
         headers: headers,
         body: body,
-        content_length: ready content_length > 0 { content_length } otherwise { stringz.len(body) },
+        content_length: lowkey content_length > 0 { content_length } highkey { stringz.len(body) },
         content_type: content_type,
         response_time_ms: 0,  // Set by caller
         redirect_count: 0,
@@ -867,17 +867,17 @@ slay parse_advanced_http_response(raw_response tea) yikes<HttpResponseAdvanced> 
 slay is_valid_ip_address(address tea) lit {
     // IPv4 validation
     sus parts tea[value] = stringz.split(address, ".")
-    ready (arrayz.len(parts) == 4) {
+    lowkey (arrayz.len(parts) == 4) {
         sus i drip = 0
         bestie (i < 4) {
             sus part tea = parts[i]
-            ready (stringz.len(part) == 0 || stringz.len(part) > 3) {
+            lowkey (stringz.len(part) == 0 || stringz.len(part) > 3) {
                 damn no_cap
             }
             sus num drip = mathz.parse_int(part) fam {
                 when _ -> damn no_cap
             }
-            ready (num < 0 || num > 255) {
+            lowkey (num < 0 || num > 255) {
                 damn no_cap
             }
             i = i + 1
@@ -886,7 +886,7 @@ slay is_valid_ip_address(address tea) lit {
     }
 
     // IPv6 validation (simplified)
-    ready (stringz.contains(address, ":") && stringz.len(address) >= 2) {
+    lowkey (stringz.contains(address, ":") && stringz.len(address) >= 2) {
         damn based  // Simplified IPv6 check
     }
 
@@ -895,11 +895,11 @@ slay is_valid_ip_address(address tea) lit {
 
 slay is_port_in_use(address tea, port drip) lit {
     // Simulate port usage check
-    ready (port < 1024) {
+    lowkey (port < 1024) {
         damn based  // System ports are typically in use
     }
 
-    ready (port == 8080 || port == 3000 || port == 9000) {
+    lowkey (port == 8080 || port == 3000 || port == 9000) {
         damn based  // Common development ports
     }
 
@@ -908,41 +908,41 @@ slay is_port_in_use(address tea, port drip) lit {
 
 slay simulate_connection_attempt(address tea, port drip, timeout_seconds drip) lit {
     // Simulate connection success based on various factors
-    ready (stringz.equals(address, "127.0.0.1") || stringz.equals(address, "localhost")) {
+    lowkey (stringz.equals(address, "127.0.0.1") || stringz.equals(address, "localhost")) {
         damn based  // Localhost always succeeds
     }
 
-    ready (stringz.starts_with(address, "192.168.") || stringz.starts_with(address, "10.")) {
+    lowkey (stringz.starts_with(address, "192.168.") || stringz.starts_with(address, "10.")) {
         damn based  // Private networks succeed
     }
 
-    ready (port == 80 || port == 443) {
+    lowkey (port == 80 || port == 443) {
         damn based  // Standard web ports succeed
     }
 
-    ready (stringz.contains(address, "unreachable") || stringz.contains(address, "timeout")) {
+    lowkey (stringz.contains(address, "unreachable") || stringz.contains(address, "timeout")) {
         damn no_cap  // Simulate unreachable hosts
     }
 
     // General success rate based on timeout (longer timeout = higher success rate)
-    sus success_rate drip = ready timeout_seconds >= 30 { 90 } otherwise { 70 }
+    sus success_rate drip = lowkey timeout_seconds >= 30 { 90 } highkey { 70 }
     sus random_value drip = mathz.random_range(1, 100)
     
     damn random_value <= success_rate
 }
 
 slay simulate_data_send(socket Socket, data tea) drip {
-    ready (socket.state != 1) {
+    lowkey (socket.state != 1) {
         damn -1
     }
 
-    ready (stringz.len(data) == 0) {
+    lowkey (stringz.len(data) == 0) {
         damn 0
     }
 
     // Simulate partial sends or failures
     sus data_len drip = stringz.len(data)
-    ready (data_len > 1024) {
+    lowkey (data_len > 1024) {
         // Large sends might be partial
         damn mathz.random_range(data_len / 2, data_len)
     }
@@ -951,16 +951,16 @@ slay simulate_data_send(socket Socket, data tea) drip {
 }
 
 slay simulate_data_receive(socket Socket, max_bytes drip) tea {
-    ready (socket.state != 1) {
+    lowkey (socket.state != 1) {
         damn ""
     }
 
     // Simulate responses based on what might have been sent
-    ready (stringz.contains(socket.remote_addr, "api.") || socket.remote_port == 443) {
+    lowkey (stringz.contains(socket.remote_addr, "api.") || socket.remote_port == 443) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 47\r\n\r\n{\"status\":\"success\",\"data\":\"API response data\"}"
     }
 
-    ready (socket.remote_port == 80) {
+    lowkey (socket.remote_port == 80) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 65\r\n\r\n<html><head><title>Test</title></head><body>Hello World</body></html>"
     }
 
@@ -968,11 +968,11 @@ slay simulate_data_receive(socket Socket, max_bytes drip) tea {
 }
 
 slay is_connection_healthy(connection Socket) lit {
-    ready (connection.state != 1) {
+    lowkey (connection.state != 1) {
         damn no_cap  // Not connected
     }
 
-    ready (timez.now() - connection.created_at > 3600) {
+    lowkey (timez.now() - connection.created_at > 3600) {
         damn no_cap  // Connection too old (1 hour)
     }
 
@@ -990,7 +990,7 @@ slay dns_query_servers(hostname tea) yikes<tea> {
         when "wikipedia.org" -> damn "208.80.154.224"
         when "cloudflare.com" -> damn "104.16.132.229"
         when "dns.google" -> damn "8.8.8.8"
-        otherwise -> {
+        highkey -> {
             // Generate a realistic IP based on hostname hash
             sus hash drip = stringz.hash(hostname)
             sus ip1 drip = (hash % 200) + 50     // 50-249
@@ -1019,7 +1019,7 @@ slay dns_simulate_mx_records(domain tea) DNSRecord[value]{
         when "outlook.com" -> {
             records = arrayz.push(records, DNSRecord{name: domain, record_type: 15, value: "outlook-com.mail.protection.outlook.com", ttl: 3600, priority: 0})
         }
-        otherwise -> {
+        highkey -> {
             records = arrayz.push(records, DNSRecord{name: domain, record_type: 15, value: stringz.concat(["mail.", domain]), ttl: 3600, priority: 10})
         }
     }
@@ -1037,7 +1037,7 @@ slay dns_simulate_txt_records(domain tea) DNSRecord[value]{
         when "github.com" -> {
             records = arrayz.push(records, DNSRecord{name: domain, record_type: 16, value: "v=spf1 ip4:192.30.252.0/22 include:_spf.github.com ~all", ttl: 3600, priority: 0})
         }
-        otherwise -> {
+        highkey -> {
             records = arrayz.push(records, DNSRecord{name: domain, record_type: 16, value: "v=spf1 ~all", ttl: 3600, priority: 0})
         }
     }
@@ -1047,7 +1047,7 @@ slay dns_simulate_txt_records(domain tea) DNSRecord[value]{
 
 slay extract_header_value(header tea) tea {
     sus colon_pos drip = stringz.find(header, ":")
-    ready (colon_pos == -1) {
+    lowkey (colon_pos == -1) {
         damn ""
     }
 

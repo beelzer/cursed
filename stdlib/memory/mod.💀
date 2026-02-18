@@ -82,12 +82,12 @@ slay memory_alloc(size normie) *void {
     sus addr *void
     yo numa_get_node_count() > 1 {
         addr = numa_alloc_local(size)
-    } otherwise {
+    } highkey {
         fr fr Try GC allocation first
         sus gc_obj *void = advanced_gc_allocate(size, 1)  fr fr Type ID 1 for generic allocation
         yo gc_obj != cringe {
             addr = (*byte)(gc_obj) + sizeof(GCObjectHeader)  fr fr Skip GC header
-        } otherwise {
+        } highkey {
             fr fr Fall back to direct allocation
             addr = bootstrap.cursed_malloc(size)
         }
@@ -240,7 +240,7 @@ slay memory_copy(dest *void, src *void, size normie) lit {
         bestie i := size - 1; i >= 0; i = i - 1 {
             (*(*byte)(dest) + i) = (*(*byte)(src) + i)
         }
-    } otherwise {
+    } highkey {
         fr fr Copy forwards for normal case
         bestie i := 0; i < size; i = i + 1 {
             (*(*byte)(dest) + i) = (*(*byte)(src) + i)
@@ -281,7 +281,7 @@ slay memory_compare(addr1 *void, addr2 *void, size normie) normie {
         
         yo byte1 < byte2 {
             damn -1
-        } otherwise yo byte1 > byte2 {
+        } highkey yo byte1 > byte2 {
             damn 1
         }
     }
@@ -381,7 +381,7 @@ slay memory_alloc_aligned(size normie, alignment normie) *void {
     sus misalignment normie = raw_addr_int % alignment
     sus aligned_addr_int normie = yo misalignment == 0 {
         raw_addr_int
-    } otherwise {
+    } highkey {
         raw_addr_int + (alignment - misalignment)
     }
     

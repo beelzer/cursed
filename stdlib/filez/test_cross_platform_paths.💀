@@ -8,9 +8,9 @@ yeet "testz"
 fr fr ===== TEST UTILITIES =====
 
 slay assert_path_equals(actual tea, expected tea, test_name tea) {
-    ready (actual == expected) {
+    lowkey (actual == expected) {
         vibez.spill("✓ " + test_name + " - PASSED")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ " + test_name + " - FAILED")
         vibez.spill("  Expected: " + expected)
         vibez.spill("  Actual:   " + actual)
@@ -20,9 +20,9 @@ slay assert_path_equals(actual tea, expected tea, test_name tea) {
 
 slay assert_path_absolute(path tea, expected_absolute lit, test_name tea) {
     sus result lit = is_absolute_path(path)
-    ready (result == expected_absolute) {
+    lowkey (result == expected_absolute) {
         vibez.spill("✓ " + test_name + " - PASSED")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ " + test_name + " - FAILED")
         vibez.spill("  Path: " + path)
         vibez.spill("  Expected absolute: " + bool_to_string(expected_absolute))
@@ -32,9 +32,9 @@ slay assert_path_absolute(path tea, expected_absolute lit, test_name tea) {
 }
 
 slay bool_to_string(value lit) tea {
-    ready (value) {
+    lowkey (value) {
         damn "true"
-    } otherwise {
+    } highkey {
         damn "false"
     }
 }

@@ -63,9 +63,9 @@ slay demo_zip_creation() {
         }
     }
     
-    ready (valid) {
+    lowkey (valid) {
         vibez.spill("✓ Archive validation passed")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Archive validation failed")
     }
     
@@ -109,7 +109,7 @@ slay demo_archive_extraction() {
         }
     }
     
-    ready (exists) {
+    lowkey (exists) {
         vibez.spill("✓ test.txt exists in archive")
         
         # Extract the file
@@ -247,9 +247,9 @@ slay demo_tar_archive() {
     
     # Validate TAR archive
     sus tar_valid lit = tar_validate()
-    ready (tar_valid) {
+    lowkey (tar_valid) {
         vibez.spill("✓ TAR archive validation passed")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ TAR archive validation failed")
     }
     
@@ -268,9 +268,9 @@ slay demo_format_detection_and_errors() {
         sus filename tea = formats[i]
         sus detected tea = detect_format(filename)
         
-        ready (detected != "") {
+        lowkey (detected != "") {
             vibez.spill("  " + filename + " -> " + detected)
-        } otherwise {
+        } highkey {
             vibez.spill("  " + filename + " -> unknown format")
         }
     }

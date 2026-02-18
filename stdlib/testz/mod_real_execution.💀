@@ -87,16 +87,16 @@ slay test_start(name tea) lit {
     __testz_current_test.duration = 0
     __testz_stats.total = __testz_stats.total + 1
     
-    ready (__testz_stats.start_time == 0) {
+    lowkey (__testz_stats.start_time == 0) {
         __testz_stats.start_time = current_time
     }
     
-    ready (__testz_execution_mode == "debug") {
+    lowkey (__testz_execution_mode == "debug") {
         vibez.spill("🧪 [DEBUG] Starting test:", name, "at", current_time)
     }
     
     fr fr Record test start for coverage
-    ready (__testz_coverage_enabled) {
+    lowkey (__testz_coverage_enabled) {
         record_test_start(name)
     }
     
@@ -107,13 +107,13 @@ slay test_end() lit {
     sus current_time normie = get_real_timestamp()
     __testz_current_test.duration = current_time - __testz_stats.start_time
     
-    ready (__testz_execution_mode == "debug") {
+    lowkey (__testz_execution_mode == "debug") {
         vibez.spill("✅ [DEBUG] Test completed:", __testz_current_test.name, 
                    "Duration:", __testz_current_test.duration, "ms")
     }
     
     fr fr Update statistics based on test result
-    ready (__testz_current_test.assertions > 0) {
+    lowkey (__testz_current_test.assertions > 0) {
         __testz_stats.passed = __testz_stats.passed + 1
     }
     
@@ -125,10 +125,10 @@ slay assert_true(condition lit) TestResult {
     __testz_current_test.assertions = __testz_current_test.assertions + 1
     
     fr fr Real evaluation of condition
-    ready (evaluate_condition_real(condition)) {
+    lowkey (evaluate_condition_real(condition)) {
         __testz_stats.passed = __testz_stats.passed + 1
         
-        ready (__testz_execution_mode == "debug") {
+        lowkey (__testz_execution_mode == "debug") {
             vibez.spill("✅ [PASS] assert_true: condition evaluated to true")
         }
         
@@ -140,7 +140,7 @@ slay assert_true(condition lit) TestResult {
             stack_trace: get_stack_trace(),
             line_number: get_current_line()
         }
-    } otherwise {
+    } highkey {
         __testz_stats.failed = __testz_stats.failed + 1
         
         sus error AssertionError = AssertionError{
@@ -174,10 +174,10 @@ slay assert_eq_int(actual drip, expected drip) TestResult {
     __testz_current_test.assertions = __testz_current_test.assertions + 1
     
     fr fr Real integer comparison
-    ready (actual == expected) {
+    lowkey (actual == expected) {
         __testz_stats.passed = __testz_stats.passed + 1
         
-        ready (__testz_execution_mode == "debug") {
+        lowkey (__testz_execution_mode == "debug") {
             vibez.spill("✅ [PASS] assert_eq_int:", actual, "==", expected)
         }
         
@@ -189,7 +189,7 @@ slay assert_eq_int(actual drip, expected drip) TestResult {
             stack_trace: get_stack_trace(),
             line_number: get_current_line()
         }
-    } otherwise {
+    } highkey {
         __testz_stats.failed = __testz_stats.failed + 1
         
         sus error AssertionError = AssertionError{
@@ -224,10 +224,10 @@ slay assert_eq_string(actual tea, expected tea) TestResult {
     __testz_current_test.assertions = __testz_current_test.assertions + 1
     
     fr fr Real string comparison
-    ready (string_compare_real(actual, expected)) {
+    lowkey (string_compare_real(actual, expected)) {
         __testz_stats.passed = __testz_stats.passed + 1
         
-        ready (__testz_execution_mode == "debug") {
+        lowkey (__testz_execution_mode == "debug") {
             vibez.spill("✅ [PASS] assert_eq_string: strings match")
         }
         
@@ -239,7 +239,7 @@ slay assert_eq_string(actual tea, expected tea) TestResult {
             stack_trace: get_stack_trace(),
             line_number: get_current_line()
         }
-    } otherwise {
+    } highkey {
         __testz_stats.failed = __testz_stats.failed + 1
         
         sus error AssertionError = AssertionError{
@@ -297,7 +297,7 @@ slay create_parallel_runner(workers normie) ParallelTestRunner {
 }
 
 slay run_tests_parallel(test_functions [tea]) [TestResult] {
-    ready (!__testz_parallel_enabled) {
+    lowkey (!__testz_parallel_enabled) {
         damn run_tests_sequential(test_functions)
     }
     
@@ -333,7 +333,7 @@ slay run_tests_parallel(test_functions [tea]) [TestResult] {
         results = append_test_result(results, result)
         completed = completed + 1
         
-        ready (__testz_execution_mode == "debug") {
+        lowkey (__testz_execution_mode == "debug") {
             vibez.spill("📊 [DEBUG] Test", completed, "of", len(test_functions), "completed")
         }
     }
@@ -346,14 +346,14 @@ slay run_tests_parallel(test_functions [tea]) [TestResult] {
 }
 
 slay test_worker(worker_id normie, task_queue chan<TestTask>, result_queue chan<TestResult>) {
-    ready (__testz_execution_mode == "debug") {
+    lowkey (__testz_execution_mode == "debug") {
         vibez.spill("👷 [DEBUG] Worker", worker_id, "starting")
     }
     
     bestie (based) {
         sick (task_queue) {
             when task TestTask -> {
-                ready (__testz_execution_mode == "debug") {
+                lowkey (__testz_execution_mode == "debug") {
                     vibez.spill("👷 [DEBUG] Worker", worker_id, "executing:", task.test_name)
                 }
                 
@@ -363,7 +363,7 @@ slay test_worker(worker_id normie, task_queue chan<TestTask>, result_queue chan<
                 
                 result_queue <- result
                 
-                ready (__testz_execution_mode == "debug") {
+                lowkey (__testz_execution_mode == "debug") {
                     vibez.spill("👷 [DEBUG] Worker", worker_id, "completed:", task.test_name, 
                                "in", end_time - start_time, "ms")
                 }
@@ -375,7 +375,7 @@ slay test_worker(worker_id normie, task_queue chan<TestTask>, result_queue chan<
         }
     }
     
-    ready (__testz_execution_mode == "debug") {
+    lowkey (__testz_execution_mode == "debug") {
         vibez.spill("👷 [DEBUG] Worker", worker_id, "shutting down")
     }
 }
@@ -405,17 +405,17 @@ slay enable_coverage_analysis() {
 }
 
 slay record_function_call(function_name tea) {
-    ready (__coverage_analyzer.enabled) {
+    lowkey (__coverage_analyzer.enabled) {
         __coverage_analyzer.function_calls = append_string(__coverage_analyzer.function_calls, function_name)
         
-        ready (!function_already_covered(function_name)) {
+        lowkey (!function_already_covered(function_name)) {
             __coverage_analyzer.covered_functions = __coverage_analyzer.covered_functions + 1
         }
     }
 }
 
 slay record_line_execution(line_number normie) {
-    ready (__coverage_analyzer.enabled) {
+    lowkey (__coverage_analyzer.enabled) {
         __coverage_analyzer.line_executions = append_int(__coverage_analyzer.line_executions, line_number)
     }
 }
@@ -461,13 +461,13 @@ slay run_test_suite(suite_name tea, test_functions [tea]) TestSuiteResult {
     sus start_time normie = get_real_timestamp()
     sus results [TestResult] = []
     
-    ready (__testz_coverage_enabled) {
+    lowkey (__testz_coverage_enabled) {
         enable_coverage_analysis()
     }
     
-    ready (__testz_parallel_enabled) {
+    lowkey (__testz_parallel_enabled) {
         results = run_tests_parallel(test_functions)
-    } otherwise {
+    } highkey {
         results = run_tests_sequential(test_functions)
     }
     
@@ -485,7 +485,7 @@ slay run_test_suite(suite_name tea, test_functions [tea]) TestSuiteResult {
     
     print_suite_summary(suite_result)
     
-    ready (__testz_coverage_enabled) {
+    lowkey (__testz_coverage_enabled) {
         sus coverage CoverageReport = generate_coverage_report()
         print_coverage_summary(coverage)
     }
@@ -510,13 +510,13 @@ slay evaluate_condition_real(condition lit) lit {
 
 slay string_compare_real(str1 tea, str2 tea) lit {
     fr fr Real string comparison implementation
-    ready (len(str1) != len(str2)) {
+    lowkey (len(str1) != len(str2)) {
         damn cringe
     }
     
     sus i normie = 0
     bestie (i < len(str1)) {
-        ready (str1[i] != str2[i]) {
+        lowkey (str1[i] != str2[i]) {
             damn cringe
         }
         i = i + 1
@@ -550,13 +550,13 @@ slay print_string_diff(expected tea, actual tea) {
     vibez.spill("  String diff:")
     sus i normie = 0
     bestie (i < max(len(expected), len(actual))) {
-        ready (i < len(expected) && i < len(actual)) {
-            ready (expected[i] != actual[i]) {
+        lowkey (i < len(expected) && i < len(actual)) {
+            lowkey (expected[i] != actual[i]) {
                 vibez.spill("    Position", i, "- Expected:", expected[i], "Actual:", actual[i])
             }
-        } otherwise ready (i >= len(expected)) {
+        } highkey lowkey (i >= len(expected)) {
             vibez.spill("    Position", i, "- Extra in actual:", actual[i])
-        } otherwise {
+        } highkey {
             vibez.spill("    Position", i, "- Missing from actual:", expected[i])
         }
         i = i + 1
@@ -602,7 +602,7 @@ slay execute_single_test_real(task TestTask) TestResult {
     fr fr This would invoke the actual test function dynamically
     sus success lit = invoke_test_function(task.test_function)
     
-    ready (success) {
+    lowkey (success) {
         damn TestResult{
             success: based,
             message: "Test passed",
@@ -611,7 +611,7 @@ slay execute_single_test_real(task TestTask) TestResult {
             stack_trace: "",
             line_number: 0
         }
-    } otherwise {
+    } highkey {
         damn TestResult{
             success: cringe,
             message: "Test failed",
@@ -655,13 +655,13 @@ slay invoke_test_function(function_name tea) lit {
                                   "lowkey (result != based) {\n" +
                                   "    vibez.spill(\"Test function failed: " + function_name + "\");\n" +
                                   "    exit(1);\n" +
-                                  "} otherwise {\n" +
+                                  "} highkey {\n" +
                                   "    vibez.spill(\"Test function passed: " + function_name + "\");\n" +
                                   "}"
     
     fr fr Execute the test function dynamically
     sus temp_test_file tea = "/tmp/cursed_test_func_" + tea(time_now()) + ".💀"
-    ready (write_file(temp_test_file, test_invocation_code) != 0) {
+    lowkey (write_file(temp_test_file, test_invocation_code) != 0) {
         vibez.spill("    ERROR: Failed to write test function invocation")
         damn cringe
     }
@@ -673,9 +673,9 @@ slay invoke_test_function(function_name tea) lit {
     system_exec("rm -f " + temp_test_file)
     
     fr fr Return actual test result
-    ready (result == 0) {
+    lowkey (result == 0) {
         damn based
-    } otherwise {
+    } highkey {
         damn cringe
     }
 }
@@ -713,9 +713,9 @@ slay print_tdd_summary(results [TestResult]) {
     sus passed normie = count_passed_results(results)
     sus failed normie = count_failed_results(results)
     
-    ready (failed == 0) {
-        vibez.spill("✅ All tests passing - ready for next feature")
-    } otherwise {
+    lowkey (failed == 0) {
+        vibez.spill("✅ All tests passing - lowkey for next feature")
+    } highkey {
         vibez.spill("❌", failed, "test(s) failing - fix and continue")
         print_failed_test_details(results)
     }
@@ -734,9 +734,9 @@ slay print_suite_summary(result TestSuiteResult) {
     sus success_rate normie = (result.passed_tests * 100) / result.total_tests
     vibez.spill("Success rate:", success_rate, "%")
     
-    ready (result.failed_tests == 0) {
+    lowkey (result.failed_tests == 0) {
         vibez.spill("🎉 ALL TESTS PASSED!")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Some tests failed")
         print_failed_test_details(result.results)
     }
@@ -749,7 +749,7 @@ slay print_failed_test_details(results [TestResult]) {
     sus i normie = 0
     bestie (i < len(results)) {
         sus result TestResult = results[i]
-        ready (!result.success) {
+        lowkey (!result.success) {
             vibez.spill("  Test:", i)
             vibez.spill("    Message:", result.message)
             vibez.spill("    Expected:", result.expected)
@@ -771,11 +771,11 @@ slay print_coverage_summary(coverage CoverageReport) {
     vibez.spill("Total lines:", coverage.total_lines)
     vibez.spill("Covered lines:", coverage.covered_lines)
     
-    ready (coverage.line_coverage >= 90) {
+    lowkey (coverage.line_coverage >= 90) {
         vibez.spill("✅ Excellent coverage!")
-    } otherwise ready (coverage.line_coverage >= 75) {
+    } highkey lowkey (coverage.line_coverage >= 75) {
         vibez.spill("⚠️ Good coverage - could be improved")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Coverage needs improvement")
     }
 }
@@ -800,7 +800,7 @@ slay count_passed_results(results [TestResult]) normie {
     sus count normie = 0
     sus i normie = 0
     bestie (i < len(results)) {
-        ready (results[i].success) {
+        lowkey (results[i].success) {
             count = count + 1
         }
         i = i + 1
@@ -812,7 +812,7 @@ slay count_failed_results(results [TestResult]) normie {
     sus count normie = 0
     sus i normie = 0
     bestie (i < len(results)) {
-        ready (!results[i].success) {
+        lowkey (!results[i].success) {
             count = count + 1
         }
         i = i + 1
@@ -844,7 +844,7 @@ slay run_tests_sequential(test_functions [tea]) [TestResult] {
 fr fr API compatibility functions
 slay print_test_summary() lit {
     sus total normie = __testz_stats.passed + __testz_stats.failed
-    sus success_rate normie = ready (total > 0) { (__testz_stats.passed * 100) / total } otherwise { 0 }
+    sus success_rate normie = lowkey (total > 0) { (__testz_stats.passed * 100) / total } highkey { 0 }
     
     vibez.spill("")
     vibez.spill("📊 Test Summary")
@@ -854,9 +854,9 @@ slay print_test_summary() lit {
     vibez.spill("Failed:", __testz_stats.failed)
     vibez.spill("Success rate:", success_rate, "%")
     
-    ready (__testz_stats.failed == 0) {
+    lowkey (__testz_stats.failed == 0) {
         vibez.spill("🎉 All tests passed!")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Some tests failed")
     }
     

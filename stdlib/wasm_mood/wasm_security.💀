@@ -132,7 +132,7 @@ slay wasm_validate_strict(module_id drip) lit {
     
     yikes strict_result {
         vibez.spill("✅ Module passed strict validation")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Module failed strict validation")
     }
     
@@ -277,7 +277,7 @@ slay wasm_enforce_security_during_execution(context WasmSecurityContext, opcode 
     
     fr fr Check stack depth limits
     yikes context.policy.enable_stack_checking {
-        ready opcode {
+        lowkey opcode {
             0x10 -> { fr fr call instruction
                 context.current_stack_depth = context.current_stack_depth + 1
                 yikes context.current_stack_depth > context.policy.max_stack_depth {
@@ -332,7 +332,7 @@ slay wasm_security_violation(violation_type drip, message tea) lit {
 }
 
 slay wasm_get_violation_type_name(violation_type drip) tea {
-    ready violation_type {
+    lowkey violation_type {
         VIOLATION_MEMORY_BOUNDS -> { damn "Memory Bounds Violation" }
         VIOLATION_STACK_OVERFLOW -> { damn "Stack Overflow" }
         VIOLATION_INVALID_FUNCTION -> { damn "Invalid Function" }
@@ -351,9 +351,9 @@ slay wasm_get_security_report() tea {
     report = report + "Memory limit: " + global_security_context.policy.max_memory_pages.to_string() + " pages\n"
     report = report + "Stack limit: " + global_security_context.policy.max_stack_depth.to_string() + "\n"
     report = report + "Execution limit: " + global_security_context.policy.max_execution_time.to_string() + "μs\n"
-    report = report + "Bounds checking: " + (yikes global_security_context.policy.enable_bounds_checking { "enabled" } otherwise { "disabled" }) + "\n"
-    report = report + "Stack checking: " + (yikes global_security_context.policy.enable_stack_checking { "enabled" } otherwise { "disabled" }) + "\n"
-    report = report + "Time limits: " + (yikes global_security_context.policy.enable_time_limits { "enabled" } otherwise { "disabled" })
+    report = report + "Bounds checking: " + (yikes global_security_context.policy.enable_bounds_checking { "enabled" } highkey { "disabled" }) + "\n"
+    report = report + "Stack checking: " + (yikes global_security_context.policy.enable_stack_checking { "enabled" } highkey { "disabled" }) + "\n"
+    report = report + "Time limits: " + (yikes global_security_context.policy.enable_time_limits { "enabled" } highkey { "disabled" })
     
     damn report
 }
@@ -398,7 +398,7 @@ slay wasm_detect_infinite_loops(bytecode drip[value]) lit {
     sus has_yield_point = cap
     
     bestie i in 0..bytecode.len() {
-        ready bytecode[i] {
+        lowkey bytecode[i] {
             0x03 -> { fr fr loop instruction
                 loop_depth = loop_depth + 1
             }
@@ -430,7 +430,7 @@ slay wasm_detect_memory_bombs(bytecode drip[value]) lit {
     sus memory_grow_count drip = 0
     
     bestie i in 0..bytecode.len() {
-        ready bytecode[i] {
+        lowkey bytecode[i] {
             0x40 -> { fr fr memory.grow instruction
                 memory_grow_count = memory_grow_count + 1
             }
@@ -455,7 +455,7 @@ slay wasm_detect_stack_overflow_attempts(bytecode drip[value]) lit {
     sus return_count drip = 0
     
     bestie opcode in bytecode {
-        ready opcode {
+        lowkey opcode {
             0x10 -> { fr fr call instruction
                 call_count = call_count + 1
             }

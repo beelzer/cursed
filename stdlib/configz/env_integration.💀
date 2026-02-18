@@ -65,17 +65,17 @@ slay collect_filtered_env_vars(processor EnvProcessor) tea[value]{
         sus env_var tea = all_vars[i]
         sus key_value tea[value] = split_env_var(env_var)
         
-        ready (array_length(key_value) == 2) {
+        lowkey (array_length(key_value) == 2) {
             sus env_key tea = key_value[0]
             sus should_include lit = based
             
             fr fr Apply prefix filters if any
-            ready (filter_count > 0) {
+            lowkey (filter_count > 0) {
                 should_include = cringe
                 sus j drip = 0
                 bestie (j < filter_count) {
                     sus prefix tea = processor.prefix_filters[j]
-                    ready (env_key_starts_with(env_key, prefix, processor.case_sensitivity)) {
+                    lowkey (env_key_starts_with(env_key, prefix, processor.case_sensitivity)) {
                         should_include = based
                         break
                     }
@@ -83,7 +83,7 @@ slay collect_filtered_env_vars(processor EnvProcessor) tea[value]{
                 }
             }
             
-            ready (should_include) {
+            lowkey (should_include) {
                 filtered_vars[result_count] = env_var
                 result_count = result_count + 1
             }
@@ -100,7 +100,7 @@ slay env_key_starts_with(key tea, prefix tea, case_sensitive lit) lit {
     sus key_to_check tea = key
     sus prefix_to_check tea = prefix
     
-    ready (!case_sensitive) {
+    lowkey (!case_sensitive) {
         key_to_check = string_to_upper(key)
         prefix_to_check = string_to_upper(prefix)
     }
@@ -119,9 +119,9 @@ slay convert_env_value_with_hints(processor EnvProcessor, key tea, value tea) Co
     
     fr fr Check for explicit type hints
     sus type_hint tea = get_env_type_hint(processor, key)
-    ready (type_hint != "") {
+    lowkey (type_hint != "") {
         config_value = apply_type_hint(config_value, type_hint)
-    } otherwise {
+    } highkey {
         fr fr Use automatic type detection
         config_value = auto_detect_type(config_value)
     }
@@ -135,7 +135,7 @@ slay convert_env_value_with_hints(processor EnvProcessor, key tea, value tea) Co
 slay get_env_type_hint(processor EnvProcessor, key tea) tea {
     fr fr Get type hint for environment variable key
     fr fr Check exact matches first
-    ready (env_map_has_string(processor.type_hints, key)) {
+    lowkey (env_map_has_string(processor.type_hints, key)) {
         damn env_map_get_string(processor.type_hints, key)
     }
     
@@ -146,7 +146,7 @@ slay get_env_type_hint(processor EnvProcessor, key tea) tea {
     sus i drip = 0
     bestie (i < key_count) {
         sus pattern tea = hint_keys[i]
-        ready (key_matches_env_pattern(key, pattern)) {
+        lowkey (key_matches_env_pattern(key, pattern)) {
             damn env_map_get_string(processor.type_hints, pattern)
         }
         i = i + 1
@@ -159,22 +159,22 @@ slay apply_type_hint(config_value ConfigValue, type_hint tea) ConfigValue {
     fr fr Apply explicit type hint to configuration value
     sus value_str tea = config_value.string_value
     
-    ready (type_hint == "boolean") {
+    lowkey (type_hint == "boolean") {
         config_value.type = "boolean"
         config_value.boolean_value = convert_to_boolean(value_str)
-    } otherwise ready (type_hint == "number") {
-        ready (is_numeric_string(value_str)) {
+    } highkey lowkey (type_hint == "number") {
+        lowkey (is_numeric_string(value_str)) {
             config_value.type = "number"
             config_value.number_value = string_to_float(value_str)
         }
-    } otherwise ready (type_hint == "integer") {
-        ready (is_integer_string(value_str)) {
+    } highkey lowkey (type_hint == "integer") {
+        lowkey (is_integer_string(value_str)) {
             config_value.type = "number"
             config_value.number_value = string_to_float(value_str)
         }
-    } otherwise ready (type_hint == "array") {
+    } highkey lowkey (type_hint == "array") {
         config_value = convert_to_array(config_value)
-    } otherwise ready (type_hint == "json") {
+    } highkey lowkey (type_hint == "json") {
         config_value = convert_from_json_string(config_value)
     }
     
@@ -186,14 +186,14 @@ slay convert_to_boolean(value tea) lit {
     sus lower_value tea = string_to_lower(value)
     
     fr fr True values
-    ready (lower_value == "true" || lower_value == "yes" || lower_value == "on" || 
+    lowkey (lower_value == "true" || lower_value == "yes" || lower_value == "on" || 
            lower_value == "1" || lower_value == "enabled" || lower_value == "enable" ||
            lower_value == "active" || lower_value == "activate") {
         damn based
     }
     
     fr fr False values
-    ready (lower_value == "false" || lower_value == "no" || lower_value == "off" || 
+    lowkey (lower_value == "false" || lower_value == "no" || lower_value == "off" || 
            lower_value == "0" || lower_value == "disabled" || lower_value == "disable" ||
            lower_value == "inactive" || lower_value == "deactivate") {
         damn cringe
@@ -205,7 +205,7 @@ slay convert_to_boolean(value tea) lit {
 
 slay is_integer_string(str tea) lit {
     fr fr Check if string represents an integer (no decimal point)
-    ready (!is_numeric_string(str)) {
+    lowkey (!is_numeric_string(str)) {
         damn cringe
     }
     
@@ -243,14 +243,14 @@ slay convert_from_json_string(config_value ConfigValue) ConfigValue {
     sus json_str tea = config_value.string_value
     
     fr fr Simple JSON object detection and parsing
-    ready (starts_with(json_str, "{") && ends_with(json_str, "}")) {
+    lowkey (starts_with(json_str, "{") && ends_with(json_str, "}")) {
         fr fr This would use actual JSON parsing in real implementation
         config_value.type = "object"
         config_value.object_keys = []
         config_value.object_values = []
         
         fr fr Simplified JSON parsing for demo
-        ready (contains_json_key(json_str, "host")) {
+        lowkey (contains_json_key(json_str, "host")) {
             config_value.object_keys[0] = "host"
             sus host_value ConfigValue = ConfigValue{}
             host_value.type = "string"
@@ -269,24 +269,24 @@ slay process_special_env_patterns(config_value ConfigValue) ConfigValue {
     sus value_str tea = config_value.string_value
     
     fr fr File path expansion
-    ready (starts_with(value_str, "~/")) {
+    lowkey (starts_with(value_str, "~/")) {
         sus home_dir tea = get_home_directory()
         config_value.string_value = home_dir + substring(value_str, 1, string_length(value_str) - 1)
     }
     
     fr fr Environment variable substitution
-    ready (contains_string(value_str, "${")) {
+    lowkey (contains_string(value_str, "${")) {
         config_value.string_value = expand_env_variables(value_str)
     }
     
     fr fr Base64 decoding for secrets
-    ready (starts_with(value_str, "base64:")) {
+    lowkey (starts_with(value_str, "base64:")) {
         sus encoded tea = substring(value_str, 7, string_length(value_str) - 7)
         config_value.string_value = decode_base64(encoded)
     }
     
     fr fr File content loading
-    ready (starts_with(value_str, "file:")) {
+    lowkey (starts_with(value_str, "file:")) {
         sus file_path tea = substring(value_str, 5, string_length(value_str) - 5)
         config_value.string_value = read_file_safe(file_path)
     }
@@ -299,17 +299,17 @@ slay expand_env_variables(input tea) tea {
     sus result tea = input
     
     fr fr Simple variable expansion (would be more sophisticated in real implementation)
-    ready (contains_string(result, "${HOME}")) {
+    lowkey (contains_string(result, "${HOME}")) {
         sus home_dir tea = get_home_directory()
         result = string_replace_all(result, "${HOME}", home_dir)
     }
     
-    ready (contains_string(result, "${USER}")) {
+    lowkey (contains_string(result, "${USER}")) {
         sus user_name tea = get_current_user()
         result = string_replace_all(result, "${USER}", user_name)
     }
     
-    ready (contains_string(result, "${PWD}")) {
+    lowkey (contains_string(result, "${PWD}")) {
         sus current_dir tea = get_current_directory()
         result = string_replace_all(result, "${PWD}", current_dir)
     }
@@ -320,10 +320,10 @@ slay expand_env_variables(input tea) tea {
 slay decode_base64(encoded tea) tea {
     fr fr Simple base64 decoding (simplified for demo)
     fr fr In real implementation, this would do actual base64 decoding
-    ready (encoded == "aGVsbG8gd29ybGQ=") {
+    lowkey (encoded == "aGVsbG8gd29ybGQ=") {
         damn "hello world"
     }
-    ready (encoded == "c2VjcmV0LWtleQ==") {
+    lowkey (encoded == "c2VjcmV0LWtleQ==") {
         damn "secret-key"
     }
     damn encoded  fr fr Return as-is if not recognized
@@ -349,7 +349,7 @@ slay validate_env_configuration(processor EnvProcessor, config ConfigManager) li
         sus req_var tea = required_vars[i]
         sus config_key tea = env_key_to_config_key(req_var)
         
-        ready (!config_has_key(config, config_key)) {
+        lowkey (!config_has_key(config, config_key)) {
             vibez.spill("ERROR: Required environment variable missing: " + req_var)
             validation_passed = cringe
         }
@@ -358,19 +358,19 @@ slay validate_env_configuration(processor EnvProcessor, config ConfigManager) li
     
     fr fr Validate environment-specific constraints
     sus db_host tea = config_get_string(config, "database.host", "")
-    ready (db_host == "localhost" || db_host == "127.0.0.1") {
+    lowkey (db_host == "localhost" || db_host == "127.0.0.1") {
         vibez.spill("WARNING: Using localhost database in production environment")
     }
     
     sus jwt_secret tea = config_get_string(config, "security.jwt_secret", "")
-    ready (string_length(jwt_secret) < 32) {
+    lowkey (string_length(jwt_secret) < 32) {
         vibez.spill("ERROR: JWT secret must be at least 32 characters")
         validation_passed = cringe
     }
     
-    ready (validation_passed) {
+    lowkey (validation_passed) {
         vibez.spill("✓ Environment configuration validation passed")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Environment configuration validation failed")
     }
     
@@ -382,33 +382,33 @@ fr fr ===== ENVIRONMENT PROFILES =====
 slay detect_environment_profile() tea {
     fr fr Detect current environment profile from environment variables
     sus env_var tea = get_env_var_value("NODE_ENV")
-    ready (env_var != "") {
+    lowkey (env_var != "") {
         damn string_to_lower(env_var)
     }
     
     sus rails_env tea = get_env_var_value("RAILS_ENV")
-    ready (rails_env != "") {
+    lowkey (rails_env != "") {
         damn string_to_lower(rails_env)
     }
     
     sus cursed_env tea = get_env_var_value("CURSED_ENV")
-    ready (cursed_env != "") {
+    lowkey (cursed_env != "") {
         damn string_to_lower(cursed_env)
     }
     
     sus stage tea = get_env_var_value("STAGE")
-    ready (stage != "") {
+    lowkey (stage != "") {
         damn string_to_lower(stage)
     }
     
     fr fr Check for containerized environments
     sus kubernetes tea = get_env_var_value("KUBERNETES_SERVICE_HOST")
-    ready (kubernetes != "") {
+    lowkey (kubernetes != "") {
         damn "kubernetes"
     }
     
     sus docker tea = get_env_var_value("DOCKER_CONTAINER")
-    ready (docker != "") {
+    lowkey (docker != "") {
         damn "docker"
     }
     
@@ -420,17 +420,17 @@ slay load_environment_profile_config(config ConfigManager, profile tea) ConfigMa
     fr fr Load environment-specific configuration
     vibez.spill("Loading configuration for environment: " + profile)
     
-    ready (profile == "production") {
+    lowkey (profile == "production") {
         config = load_production_env_config(config)
-    } otherwise ready (profile == "staging") {
+    } highkey lowkey (profile == "staging") {
         config = load_staging_env_config(config)
-    } otherwise ready (profile == "testing" || profile == "test") {
+    } highkey lowkey (profile == "testing" || profile == "test") {
         config = load_testing_env_config(config)
-    } otherwise ready (profile == "kubernetes") {
+    } highkey lowkey (profile == "kubernetes") {
         config = load_kubernetes_env_config(config)
-    } otherwise ready (profile == "docker") {
+    } highkey lowkey (profile == "docker") {
         config = load_docker_env_config(config)
-    } otherwise {
+    } highkey {
         config = load_development_env_config(config)
     }
     
@@ -573,17 +573,17 @@ fr fr ===== UTILITY FUNCTIONS FOR ENVIRONMENT INTEGRATION =====
 
 slay key_matches_env_pattern(key tea, pattern tea) lit {
     fr fr Match environment variable keys against patterns
-    ready (pattern == "*") {
+    lowkey (pattern == "*") {
         damn based
-    } otherwise ready (pattern == key) {
+    } highkey lowkey (pattern == key) {
         damn based
-    } otherwise ready (starts_with(pattern, "*") && ends_with(pattern, "*")) {
+    } highkey lowkey (starts_with(pattern, "*") && ends_with(pattern, "*")) {
         sus middle tea = substring(pattern, 1, string_length(pattern) - 2)
         damn contains_string(key, middle)
-    } otherwise ready (starts_with(pattern, "*")) {
+    } highkey lowkey (starts_with(pattern, "*")) {
         sus suffix tea = substring(pattern, 1, string_length(pattern) - 1)
         damn ends_with(key, suffix)
-    } otherwise ready (ends_with(pattern, "*")) {
+    } highkey lowkey (ends_with(pattern, "*")) {
         sus prefix tea = substring(pattern, 0, string_length(pattern) - 1)
         damn starts_with(key, prefix)
     }
@@ -592,15 +592,15 @@ slay key_matches_env_pattern(key tea, pattern tea) lit {
 
 slay get_env_var_value(var_name tea) tea {
     fr fr Get environment variable value (simplified implementation)
-    ready (var_name == "NODE_ENV") { damn "development" }
-    ready (var_name == "RAILS_ENV") { damn "" }
-    ready (var_name == "CURSED_ENV") { damn "" }
-    ready (var_name == "STAGE") { damn "" }
-    ready (var_name == "KUBERNETES_SERVICE_HOST") { damn "" }
-    ready (var_name == "DOCKER_CONTAINER") { damn "" }
-    ready (var_name == "HOME") { damn "/home/user" }
-    ready (var_name == "USER") { damn "user" }
-    ready (var_name == "PWD") { damn "/app" }
+    lowkey (var_name == "NODE_ENV") { damn "development" }
+    lowkey (var_name == "RAILS_ENV") { damn "" }
+    lowkey (var_name == "CURSED_ENV") { damn "" }
+    lowkey (var_name == "STAGE") { damn "" }
+    lowkey (var_name == "KUBERNETES_SERVICE_HOST") { damn "" }
+    lowkey (var_name == "DOCKER_CONTAINER") { damn "" }
+    lowkey (var_name == "HOME") { damn "/home/user" }
+    lowkey (var_name == "USER") { damn "user" }
+    lowkey (var_name == "PWD") { damn "/app" }
     damn ""
 }
 
@@ -626,9 +626,9 @@ slay string_to_upper(str tea) tea {
         sus char tea = substring(str, i, 1)
         sus code drip = char_to_number(char)
         
-        ready (code >= 97 && code <= 122) {  fr fr 'a' to 'z'
+        lowkey (code >= 97 && code <= 122) {  fr fr 'a' to 'z'
             result = result + string_from_number(code - 32)
-        } otherwise {
+        } highkey {
             result = result + char
         }
         
@@ -646,10 +646,10 @@ slay contains_json_key(json_str tea, key tea) lit {
 
 slay extract_json_value(json_str tea, key tea) tea {
     fr fr Simple JSON value extraction (for demo purposes)
-    ready (key == "host" && contains_string(json_str, "localhost")) {
+    lowkey (key == "host" && contains_string(json_str, "localhost")) {
         damn "localhost"
     }
-    ready (key == "port" && contains_string(json_str, "5432")) {
+    lowkey (key == "port" && contains_string(json_str, "5432")) {
         damn "5432"
     }
     damn ""

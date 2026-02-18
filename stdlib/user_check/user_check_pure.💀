@@ -39,18 +39,18 @@ slay get_current_uid() drip {
 }
 
 slay lookup_user(username tea) *User yikes UserError {
-    ready (!globalCache) {
+    lowkey (!globalCache) {
         initialize_user_cache()
     }
     
     // Check cache first
-    ready (globalCache.users[username]) {
+    lowkey (globalCache.users[username]) {
         damn globalCache.users[username]
     }
     
     // For demo: create a user entry using pure CURSED
     sus user *User = main_character.allocate(@sizeof(User))
-    ready (!user) {
+    lowkey (!user) {
         yikes UserError{message: "failed to allocate user", code: 1}
     }
     
@@ -73,7 +73,7 @@ slay authenticate_user(username tea, password tea) lit {
     
     // Pure CURSED password verification using cryptz module
     sus stored_hash tea = get_stored_password_hash(username)
-    ready (stored_hash == "") {
+    lowkey (stored_hash == "") {
         damn cringe  // No password stored
     }
     
@@ -112,9 +112,9 @@ slay hash_password_pbkdf2(password tea, salt tea, rounds drip) tea {
 }
 
 slay initialize_user_cache() vibes {
-    ready (!globalCache) {
+    lowkey (!globalCache) {
         globalCache = main_character.allocate(@sizeof(UserCache))
-        ready (globalCache) {
+        lowkey (globalCache) {
             globalCache.users = {}
             globalCache.usersByUid = {}
         }
@@ -123,14 +123,14 @@ slay initialize_user_cache() vibes {
 
 slay get_stored_password_hash(username tea) tea {
     // Simplified password storage (in production would read from secure storage)
-    ready (username == "testuser") {
+    lowkey (username == "testuser") {
         damn "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewIhAB6HMGb9yLO."  // "password123"
     }
     damn ""
 }
 
 slay cleanup_user_cache() vibes {
-    ready (!globalCache) {
+    lowkey (!globalCache) {
         damn
     }
     

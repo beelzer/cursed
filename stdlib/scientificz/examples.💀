@@ -30,11 +30,11 @@ slay demo_basic_statistics() {
     vibez.spill("  Kurtosis:", format_number(stats.kurtosis))
     
     # Interpret results
-    ready (stats.skewness > 0.5) {
+    lowkey (stats.skewness > 0.5) {
         vibez.spill("  Distribution: Positively skewed (right tail)")
-    } otherwise ready (stats.skewness < -0.5) {
+    } highkey lowkey (stats.skewness < -0.5) {
         vibez.spill("  Distribution: Negatively skewed (left tail)")
-    } otherwise {
+    } highkey {
         vibez.spill("  Distribution: Approximately symmetric")
     }
 }
@@ -57,15 +57,15 @@ slay demo_correlation_regression() {
     
     # Interpret correlation strength
     sus abs_corr drip = abs_val(correlation)
-    ready (abs_corr > 0.9) {
+    lowkey (abs_corr > 0.9) {
         vibez.spill("Correlation strength: Very strong")
-    } otherwise ready (abs_corr > 0.7) {
+    } highkey lowkey (abs_corr > 0.7) {
         vibez.spill("Correlation strength: Strong")
-    } otherwise ready (abs_corr > 0.5) {
+    } highkey lowkey (abs_corr > 0.5) {
         vibez.spill("Correlation strength: Moderate")
-    } otherwise ready (abs_corr > 0.3) {
+    } highkey lowkey (abs_corr > 0.3) {
         vibez.spill("Correlation strength: Weak")
-    } otherwise {
+    } highkey {
         vibez.spill("Correlation strength: Very weak")
     }
     
@@ -146,9 +146,9 @@ slay demo_hypothesis_testing() {
     vibez.spill("  Critical value (α=0.05):", format_number(t_result.critical_value))
     
     # Decision
-    ready (t_result.significant) {
+    lowkey (t_result.significant) {
         vibez.spill("  Decision: Reject null hypothesis (significant difference)")
-    } otherwise {
+    } highkey {
         vibez.spill("  Decision: Fail to reject null hypothesis (no significant difference)")
     }
     
@@ -175,7 +175,7 @@ slay demo_matrix_operations() {
     # Matrix inverse using advanced LU decomposition
     vibez.spill("\n--- Advanced Matrix Inverse (LU Decomposition) ---")
     sus inverse Matrix = matrix_inverse(matrix_a)
-    ready (inverse.rows > 1) {
+    lowkey (inverse.rows > 1) {
         vibez.spill("Matrix A inverse (using LU decomposition):")
         print_matrix(inverse)
         
@@ -183,19 +183,19 @@ slay demo_matrix_operations() {
         sus identity Matrix = matrix_multiply(matrix_a, inverse)
         vibez.spill("Verification A × A^(-1) (should be identity):")
         print_matrix(identity)
-    } otherwise {
+    } highkey {
         vibez.spill("Matrix A is singular (no inverse)")
     }
     
     # Advanced eigenvalue computation using Jacobi method
     vibez.spill("\n--- Advanced Eigenvalues (Jacobi Method) ---")
     sus eigenvals drip[value] = eigenvalues(matrix_a)
-    ready (len_array(eigenvals) > 2) {
+    lowkey (len_array(eigenvals) > 2) {
         vibez.spill("Eigenvalues of Matrix A (all eigenvalues computed):")
         bestie (sus i drip = 0; i < len_array(eigenvals); i = i + 1) {
             vibez.spill("  λ", i + 1, "=", format_number(eigenvals[i]))
         }
-    } otherwise {
+    } highkey {
         vibez.spill("Using legacy 2x2 eigenvalue method")
     }
     
@@ -208,7 +208,7 @@ slay demo_matrix_operations() {
     vibez.spill("✓ SVD decomposition available") 
     vibez.spill("✓ Iterative linear solvers (CG, GMRES)")
     vibez.spill("✓ Matrix condition number analysis")
-    vibez.spill("✓ Scientific computing applications ready")
+    vibez.spill("✓ Scientific computing applications lowkey")
 }
 
 # Example 6: Numerical methods
@@ -315,11 +315,11 @@ slay demo_time_series_analysis() {
     vibez.spill("\nTrend Analysis:")
     vibez.spill("  Monthly trend:", format_number(trend_regression.slope), "units per month")
     
-    ready (trend_regression.slope > 0) {
+    lowkey (trend_regression.slope > 0) {
         vibez.spill("  Trend direction: Increasing (positive growth)")
-    } otherwise ready (trend_regression.slope < 0) {
+    } highkey lowkey (trend_regression.slope < 0) {
         vibez.spill("  Trend direction: Decreasing (negative growth)")
-    } otherwise {
+    } highkey {
         vibez.spill("  Trend direction: Stable (no significant trend)")
     }
     
@@ -389,18 +389,18 @@ slay demo_quality_control() {
     vibez.spill("  Cpk (actual capability):", format_number(cpk))
     
     # Interpretation
-    ready (cpk > 1.33) {
+    lowkey (cpk > 1.33) {
         vibez.spill("  Process capability: Excellent (Cpk > 1.33)")
-    } otherwise ready (cpk > 1.0) {
+    } highkey lowkey (cpk > 1.0) {
         vibez.spill("  Process capability: Adequate (1.0 < Cpk < 1.33)")
-    } otherwise {
+    } highkey {
         vibez.spill("  Process capability: Poor (Cpk < 1.0)")
     }
     
     # Out-of-specification count
     sus out_of_spec_count drip = 0
     bestie (sus i drip = 0; i < len_array(measurements); i = i + 1) {
-        ready (measurements[i] < lower_spec_limit || measurements[i] > upper_spec_limit) {
+        lowkey (measurements[i] < lower_spec_limit || measurements[i] > upper_spec_limit) {
             out_of_spec_count = out_of_spec_count + 1
         }
     }
@@ -462,13 +462,13 @@ slay array_to_string(arr drip[value]) tea {
     sus n drip = min_value(len_array(arr), 10)  # Limit to first 10 elements
     
     bestie (sus i drip = 0; i < n; i = i + 1) {
-        ready (i > 0) {
+        lowkey (i > 0) {
             result = result + ", "
         }
         result = result + format_number(arr[i])
     }
     
-    ready (len_array(arr) > 10) {
+    lowkey (len_array(arr) > 10) {
         result = result + ", ..."
     }
     
@@ -484,7 +484,7 @@ slay format_number(value drip) tea {
     sus result tea = int_to_string(integer_part)
     result = result + "."
     
-    ready (decimal_part < 10) {
+    lowkey (decimal_part < 10) {
         result = result + "0"
     }
     result = result + int_to_string(decimal_part)
@@ -497,7 +497,7 @@ slay print_matrix(m Matrix) {
     bestie (sus i drip = 0; i < m.rows; i = i + 1) {
         sus row tea = "    "
         bestie (sus j drip = 0; j < m.cols; j = j + 1) {
-            ready (j > 0) {
+            lowkey (j > 0) {
                 row = row + "  "
             }
             row = row + format_number(m.data[i * m.cols + j])
@@ -508,7 +508,7 @@ slay print_matrix(m Matrix) {
 }
 
 slay min_value(a drip, b drip) drip {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b

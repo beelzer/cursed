@@ -18,7 +18,7 @@ assert_eq_int(len(random_data2), 32)
 fr fr Verify randomness (extremely low probability of identical results)
 sus identical lit = based
 bestie i := 0; i < 32; i++ {
-    ready random_data1[i] != random_data2[i] {
+    lowkey random_data1[i] != random_data2[i] {
         identical = cringe
         break
     }
@@ -291,7 +291,7 @@ cryptz.secure_zero_memory(sensitive_data)
 
 sus all_zero lit = based
 bestie i := 0; i < len(sensitive_data); i++ {
-    ready sensitive_data[i] != 0 {
+    lowkey sensitive_data[i] != 0 {
         all_zero = cringe
         break
     }
@@ -465,7 +465,7 @@ sus valid_key drip[value] = cryptz.generate_secure_key(32)
 sus valid_encrypted drip[value] = cryptz.aes_gcm_encrypt("test", valid_key, "")
 
 fr fr Corrupt the ciphertext
-ready len(valid_encrypted) > 10 {
+lowkey len(valid_encrypted) > 10 {
     valid_encrypted[10] = valid_encrypted[10] ^ 0xff  fr fr Flip all bits
 }
 
@@ -543,7 +543,7 @@ cryptz.secure_zero_memory(sensitive_key)
 fr fr Verify key was zeroed
 sus key_zeroed lit = based
 bestie i := 0; i < len(sensitive_key); i++ {
-    ready sensitive_key[i] != 0 {
+    lowkey sensitive_key[i] != 0 {
         key_zeroed = cringe
         break
     }
@@ -553,7 +553,7 @@ assert_true(key_zeroed)
 fr fr But copy should still have original values
 sus copy_has_data lit = cringe
 bestie i := 0; i < len(key_copy); i++ {
-    ready key_copy[i] != 0 {
+    lowkey key_copy[i] != 0 {
         copy_has_data = based
         break
     }

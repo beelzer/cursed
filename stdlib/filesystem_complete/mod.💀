@@ -225,10 +225,10 @@ slay normalize_path(path tea) tea { fr fr Normalize path with proper separator h
             lowkey array_length(result_components) > 0 && 
                   last_element(result_components) != ".." {
                 result_components = remove_last_element(result_components)
-            } otherwise lowkey !is_absolute {
+            } highkey lowkey !is_absolute {
                 result_components = append_array(result_components, component)
             }
-        } otherwise {
+        } highkey {
             result_components = append_array(result_components, component)
         }
     }
@@ -655,7 +655,7 @@ slay remove_directory_recursive(path tea) lit { fr fr Remove directory tree
             lowkey !remove_directory_recursive(full_path) {
                 damn false
             }
-        } otherwise {
+        } highkey {
             lowkey !delete_file(full_path) {
                 damn false
             }
@@ -729,7 +729,7 @@ slay copy_directory_recursive(source tea, dest tea) lit { fr fr Copy directory t
             lowkey !copy_directory_recursive(source_path, dest_path) {
                 damn false
             }
-        } otherwise {
+        } highkey {
             lowkey !copy_file(source_path, dest_path) {
                 damn false
             }
@@ -913,9 +913,9 @@ slay open_file(path tea, mode normie) FileHandle { fr fr Open file with mode
     fr fr Convert mode flags to system flags
     lowkey (mode & MODE_READ) != 0 && (mode & MODE_WRITE) != 0 {
         flags |= 2 fr fr O_RDWR
-    } otherwise lowkey (mode & MODE_WRITE) != 0 {
+    } highkey lowkey (mode & MODE_WRITE) != 0 {
         flags |= 1 fr fr O_WRONLY
-    } otherwise {
+    } highkey {
         flags |= 0 fr fr O_RDONLY
     }
     
@@ -947,7 +947,7 @@ slay open_file(path tea, mode normie) FileHandle { fr fr Open file with mode
         lowkey (mode & MODE_READ) != 0 {
             handle.buffer = make_byte_array(handle.buffer_size)
         }
-    } otherwise {
+    } highkey {
         handle.error_code = handle.fd fr fr Negative fd is error code
     }
     
@@ -1018,14 +1018,14 @@ slay lock_file(path tea, lock_type normie) FileLock { fr fr Lock file
     sus operation normie = 0
     lowkey lock_type == 1 { fr fr Shared lock
         operation = 1 fr fr LOCK_SH
-    } otherwise { fr fr Exclusive lock
+    } highkey { fr fr Exclusive lock
         operation = 2 fr fr LOCK_EX
     }
     
     lowkey sys_flock(handle.fd, operation) == 0 {
         lock.fd = handle.fd
         lock.is_locked = true
-    } otherwise {
+    } highkey {
         close_file(handle)
     }
     
@@ -1219,7 +1219,7 @@ slay watch_file(path tea, events normie, callback tea) WatchHandle { fr fr Watch
     lowkey watch_fd >= 0 {
         handle.handle = inotify_fd
         handle.is_active = true
-    } otherwise {
+    } highkey {
         sys_close(inotify_fd)
     }
     

@@ -85,18 +85,18 @@ slay add_sni_certificate(
 ) yikes<SNIConfig> {
     fr fr Add certificate for specific hostname
     
-    ready (stringz.length(hostname) == 0) {
+    lowkey (stringz.length(hostname) == 0) {
         yikes "INVALID_HOSTNAME: Hostname cannot be empty"
     }
     
     fr fr Validate certificate matches hostname
-    ready (!validate_certificate_for_hostname(certificate, hostname)) {
+    lowkey (!validate_certificate_for_hostname(certificate, hostname)) {
         yikes "CERTIFICATE_HOSTNAME_MISMATCH: Certificate does not match hostname " + hostname
     }
     
     fr fr Normalize hostname (lowercase unless case sensitive)
     sus normalized_hostname tea = hostname
-    ready (!config.case_sensitive) {
+    lowkey (!config.case_sensitive) {
         normalized_hostname = stringz.to_lower(hostname)
     }
     
@@ -112,7 +112,7 @@ slay add_sni_certificate(
     }
     
     fr fr Add to appropriate collection
-    ready (entry.is_wildcard) {
+    lowkey (entry.is_wildcard) {
         sus wildcard_entry SNIWildcardEntry = SNIWildcardEntry{
             pattern: normalized_hostname,
             certificate: certificate,
@@ -121,7 +121,7 @@ slay add_sni_certificate(
             priority: calculate_wildcard_priority(normalized_hostname)
         }
         config.wildcard_certificates = arrayz.append(config.wildcard_certificates, wildcard_entry)
-    } otherwise {
+    } highkey {
         config.certificate_map = mapz.set(config.certificate_map, normalized_hostname, entry)
     }
     
@@ -132,7 +132,7 @@ slay remove_sni_certificate(config SNIConfig, hostname tea) SNIConfig {
     fr fr Remove certificate for specific hostname
     
     sus normalized_hostname tea = hostname
-    ready (!config.case_sensitive) {
+    lowkey (!config.case_sensitive) {
         normalized_hostname = stringz.to_lower(hostname)
     }
     
@@ -144,7 +144,7 @@ slay remove_sni_certificate(config SNIConfig, hostname tea) SNIConfig {
     sus i drip = 0
     bestie (i < arrayz.length(config.wildcard_certificates)) {
         sus entry SNIWildcardEntry = config.wildcard_certificates[i]
-        ready (entry.pattern != normalized_hostname) {
+        lowkey (entry.pattern != normalized_hostname) {
             filtered_wildcards = arrayz.append(filtered_wildcards, entry)
         }
         i = i + 1
@@ -184,9 +184,9 @@ slay process_sni_handshake(
     }
     
     fr fr Handle empty SNI (no SNI extension provided)
-    ready (stringz.length(sni_hostname) == 0) {
-        ready (config.strict_sni_matching) {
-            ready (config.fallback_behavior == "reject") {
+    lowkey (stringz.length(sni_hostname) == 0) {
+        lowkey (config.strict_sni_matching) {
+            lowkey (config.fallback_behavior == "reject") {
                 yikes "SNI_REQUIRED: SNI extension required but not provided"
             }
         }
@@ -197,12 +197,12 @@ slay process_sni_handshake(
     
     fr fr Normalize hostname for matching
     sus normalized_hostname tea = sni_hostname
-    ready (!config.case_sensitive) {
+    lowkey (!config.case_sensitive) {
         normalized_hostname = stringz.to_lower(sni_hostname)
     }
     
     fr fr Phase 1: Try exact hostname match
-    ready (mapz.has_key(config.certificate_map, normalized_hostname)) {
+    lowkey (mapz.has_key(config.certificate_map, normalized_hostname)) {
         sus entry SNICertificateEntry = mapz.get(config.certificate_map, normalized_hostname)
         
         result.certificate_selected = entry.certificate
@@ -226,7 +226,7 @@ slay process_sni_handshake(
         }
     }
     
-    ready (wildcard_match.pattern != "") {
+    lowkey (wildcard_match.pattern != "") {
         result.certificate_selected = wildcard_match.certificate
         result.certificate_chain = wildcard_match.cert_chain
         result.private_key = wildcard_match.private_key
@@ -236,13 +236,13 @@ slay process_sni_handshake(
     }
     
     fr fr Phase 3: Apply fallback behavior
-    ready (config.strict_sni_matching) {
-        ready (config.fallback_behavior == "reject") {
+    lowkey (config.strict_sni_matching) {
+        lowkey (config.fallback_behavior == "reject") {
             yikes "SNI_NO_MATCH: No certificate found for hostname " + sni_hostname
         }
     }
     
-    ready (config.fallback_behavior == "first_available") {
+    lowkey (config.fallback_behavior == "first_available") {
         sus first_cert SNICertificateEntry = get_first_available_certificate(config) fam {
             when _ -> {
                 fr fr Use default certificate
@@ -256,7 +256,7 @@ slay process_sni_handshake(
         result.private_key = first_cert.private_key
         result.match_type = "first_available"
         result.warnings = arrayz.append(result.warnings, "Using first available certificate")
-    } otherwise {
+    } highkey {
         result.warnings = arrayz.append(result.warnings, "No matching certificate found for " + sni_hostname + ", using default")
     }
     
@@ -274,8 +274,8 @@ slay find_best_wildcard_match(hostname tea, wildcard_certs SNIWildcardEntry[valu
     bestie (i < arrayz.length(wildcard_certs)) {
         sus wildcard_entry SNIWildcardEntry = wildcard_certs[i]
         
-        ready (matches_wildcard_pattern(hostname, wildcard_entry.pattern)) {
-            ready (wildcard_entry.priority > highest_priority) {
+        lowkey (matches_wildcard_pattern(hostname, wildcard_entry.pattern)) {
+            lowkey (wildcard_entry.priority > highest_priority) {
                 best_match = wildcard_entry
                 highest_priority = wildcard_entry.priority
                 found_match = based
@@ -285,7 +285,7 @@ slay find_best_wildcard_match(hostname tea, wildcard_certs SNIWildcardEntry[valu
         i = i + 1
     }
     
-    ready (!found_match) {
+    lowkey (!found_match) {
         yikes "NO_WILDCARD_MATCH"
     }
     
@@ -295,7 +295,7 @@ slay find_best_wildcard_match(hostname tea, wildcard_certs SNIWildcardEntry[valu
 slay matches_wildcard_pattern(hostname tea, pattern tea) lit {
     fr fr Check if hostname matches wildcard pattern
     
-    ready (!stringz.starts_with(pattern, "*.")) {
+    lowkey (!stringz.starts_with(pattern, "*.")) {
         damn hostname == pattern  fr fr Exact match
     }
     
@@ -303,14 +303,14 @@ slay matches_wildcard_pattern(hostname tea, pattern tea) lit {
     sus domain tea = stringz.substring(pattern, 2, stringz.length(pattern))
     
     fr fr Check if hostname ends with the domain
-    ready (!stringz.ends_with(hostname, domain)) {
+    lowkey (!stringz.ends_with(hostname, domain)) {
         damn cringe
     }
     
     fr fr Ensure hostname has at least one subdomain level
     fr fr e.g., "sub.example.com" matches "*.example.com", but "example.com" does not
     sus hostname_prefix tea = stringz.substring(hostname, 0, stringz.length(hostname) - stringz.length(domain))
-    ready (stringz.length(hostname_prefix) == 0 || !stringz.ends_with(hostname_prefix, ".")) {
+    lowkey (stringz.length(hostname_prefix) == 0 || !stringz.ends_with(hostname_prefix, ".")) {
         damn cringe
     }
     
@@ -325,7 +325,7 @@ slay validate_certificate_for_hostname(cert X509Certificate, hostname tea) lit {
     fr fr Validate that certificate is valid for the given hostname
     
     fr fr Check Subject CN
-    ready (certificate_subject_matches_hostname(cert.subject, hostname)) {
+    lowkey (certificate_subject_matches_hostname(cert.subject, hostname)) {
         damn based
     }
     
@@ -335,7 +335,7 @@ slay validate_certificate_for_hostname(cert X509Certificate, hostname tea) lit {
         sus san tea = cert.subject_alt_names[i]
         
         fr fr Support both exact matches and wildcard matches
-        ready (san == hostname || matches_wildcard_pattern(hostname, san)) {
+        lowkey (san == hostname || matches_wildcard_pattern(hostname, san)) {
             damn based
         }
         
@@ -352,7 +352,7 @@ slay certificate_subject_matches_hostname(subject tea, hostname tea) lit {
     sus i drip = 0
     bestie (i < arrayz.length(subject_parts)) {
         sus part tea = stringz.trim(subject_parts[i])
-        ready (stringz.starts_with(part, "CN=")) {
+        lowkey (stringz.starts_with(part, "CN=")) {
             sus cn tea = stringz.substring(part, 3, stringz.length(part))
             damn cn == hostname || matches_wildcard_pattern(hostname, cn)
         }
@@ -379,7 +379,7 @@ slay get_first_available_certificate(config SNIConfig) yikes<SNICertificateEntry
     fr fr Get first available certificate from the map
     
     sus keys tea[value] = mapz.keys(config.certificate_map)
-    ready (arrayz.length(keys) == 0) {
+    lowkey (arrayz.length(keys) == 0) {
         yikes "NO_CERTIFICATES_AVAILABLE"
     }
     
@@ -441,22 +441,22 @@ slay update_sni_statistics(stats SNIStatistics, result SNIHandshakeResult) SNISt
     
     stats.total_connections = stats.total_connections + 1
     
-    ready (stringz.length(result.hostname) > 0) {
+    lowkey (stringz.length(result.hostname) > 0) {
         stats.sni_enabled_connections = stats.sni_enabled_connections + 1
     }
     
-    ready (result.match_type == "exact") {
+    lowkey (result.match_type == "exact") {
         stats.exact_matches = stats.exact_matches + 1
-    } otherwise ready (result.match_type == "wildcard") {
+    } highkey lowkey (result.match_type == "wildcard") {
         stats.wildcard_matches = stats.wildcard_matches + 1
-    } otherwise ready (result.match_type == "default") {
+    } highkey lowkey (result.match_type == "default") {
         stats.default_fallbacks = stats.default_fallbacks + 1
     }
     
     fr fr Update certificate usage statistics
     sus cert_key tea = result.certificate_selected.serial_number
     sus current_count drip = 0
-    ready (mapz.has_key(stats.certificate_usage_stats, cert_key)) {
+    lowkey (mapz.has_key(stats.certificate_usage_stats, cert_key)) {
         current_count = mapz.get_int(stats.certificate_usage_stats, cert_key)
     }
     stats.certificate_usage_stats = mapz.set_int(stats.certificate_usage_stats, cert_key, current_count + 1)
@@ -475,7 +475,7 @@ slay get_sni_statistics_report(stats SNIStatistics) tea {
     report = report + "Default Fallbacks: " + stringz.from_int(stats.default_fallbacks) + "\n"
     report = report + "Failed Matches: " + stringz.from_int(stats.failed_matches) + "\n"
     
-    ready (stringz.length(stats.most_requested_hostname) > 0) {
+    lowkey (stringz.length(stats.most_requested_hostname) > 0) {
         report = report + "Most Requested Hostname: " + stats.most_requested_hostname + "\n"
     }
     

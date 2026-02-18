@@ -126,7 +126,7 @@ squad OAuthClient {
         }
         
         // Generate PKCE parameters if enabled
-        ready (config.pkce_enabled) {
+        lowkey (config.pkce_enabled) {
             client.pkce_params = client.generate_pkce_params()
         }
         
@@ -146,7 +146,7 @@ squad OAuthClient {
         }
         
         // Add PKCE parameters if enabled
-        ready (self.config.pkce_enabled) {
+        lowkey (self.config.pkce_enabled) {
             auth_request.code_challenge = self.pkce_params.code_challenge
             auth_request.code_challenge_method = self.pkce_params.code_challenge_method
         }
@@ -164,7 +164,7 @@ squad OAuthClient {
         }
         
         // Add PKCE code verifier if enabled
-        ready (self.config.pkce_enabled) {
+        lowkey (self.config.pkce_enabled) {
             token_request.code_verifier = self.pkce_params.code_verifier
         }
         
@@ -183,7 +183,7 @@ squad OAuthClient {
     }
     
     slay get_user_info(access_token tea) yikes<UserInfo> {
-        ready (len(self.config.userinfo_endpoint) == 0) {
+        lowkey (len(self.config.userinfo_endpoint) == 0) {
             yikes "userinfo endpoint not configured"
         }
         
@@ -196,7 +196,7 @@ squad OAuthClient {
             when err -> yikes "failed to get user info: " + err
         }
         
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             sus error_msg tea = self.parse_error_response(response.body)
             yikes "userinfo request failed: " + error_msg
         }
@@ -209,7 +209,7 @@ squad OAuthClient {
     slay validate_id_token(id_token tea, nonce tea) yikes<JWTClaims> {
         // Parse JWT without verification first to get header
         sus parts tea[value] = stringz.split(id_token, ".")
-        ready (len(parts) != 3) {
+        lowkey (len(parts) != 3) {
             yikes "invalid JWT format"
         }
         
@@ -226,7 +226,7 @@ squad OAuthClient {
             when err -> yikes "JWT signature verification failed: " + err
         }
         
-        ready (!is_valid) {
+        lowkey (!is_valid) {
             yikes "invalid JWT signature"
         }
         
@@ -257,7 +257,7 @@ squad OAuthClient {
             "client_secret": self.config.client_secret,
         }
         
-        ready (len(token_type_hint) > 0) {
+        lowkey (len(token_type_hint) > 0) {
             form_data["token_type_hint"] = token_type_hint  // access_token, refresh_token
         }
         
@@ -270,7 +270,7 @@ squad OAuthClient {
             when err -> yikes "token revocation failed: " + err
         }
         
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             sus error_msg tea = self.parse_error_response(response.body)
             yikes "token revocation failed: " + error_msg
         }
@@ -297,11 +297,11 @@ squad OAuthClient {
             "state": auth_request.state,
         }
         
-        ready (len(auth_request.nonce) > 0) {
+        lowkey (len(auth_request.nonce) > 0) {
             params["nonce"] = auth_request.nonce
         }
         
-        ready (len(auth_request.code_challenge) > 0) {
+        lowkey (len(auth_request.code_challenge) > 0) {
             params["code_challenge"] = auth_request.code_challenge
             params["code_challenge_method"] = auth_request.code_challenge_method
         }
@@ -326,7 +326,7 @@ squad OAuthClient {
             "authorization_code" -> {
                 form_data["code"] = token_request.code
                 form_data["redirect_uri"] = token_request.redirect_uri
-                ready (len(token_request.code_verifier) > 0) {
+                lowkey (len(token_request.code_verifier) > 0) {
                     form_data["code_verifier"] = token_request.code_verifier
                 }
             }
@@ -336,12 +336,12 @@ squad OAuthClient {
             "password" -> {
                 form_data["username"] = token_request.username
                 form_data["password"] = token_request.password
-                ready (len(token_request.scope) > 0) {
+                lowkey (len(token_request.scope) > 0) {
                     form_data["scope"] = token_request.scope
                 }
             }
             "client_credentials" -> {
-                ready (len(token_request.scope) > 0) {
+                lowkey (len(token_request.scope) > 0) {
                     form_data["scope"] = token_request.scope
                 }
             }
@@ -352,7 +352,7 @@ squad OAuthClient {
             "content-type": "application/x-www-form-urlencoded",
         }
         
-        ready (len(token_request.client_secret) > 0) {
+        lowkey (len(token_request.client_secret) > 0) {
             // Use client secret in form (could also use Basic auth)
             form_data["client_secret"] = token_request.client_secret
         }
@@ -363,7 +363,7 @@ squad OAuthClient {
             when err -> yikes "token request failed: " + err
         }
         
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             sus error_msg tea = self.parse_error_response(response.body)
             yikes "token request failed: " + error_msg
         }
@@ -390,7 +390,7 @@ squad OAuthClient {
             }
             "HS256" -> {
                 fr fr HMAC with SHA-256 - Production implementation
-                ready self.client_secret == "" {
+                lowkey self.client_secret == "" {
                     yikes "HMAC signature verification requires client secret"
                 }
                 damn self.verify_hmac_sha256_signature(jwt, self.client_secret)
@@ -414,7 +414,7 @@ squad OAuthClient {
     
     slay verify_rsa_signature(jwt tea, header JWTHeader) yikes<lit> {
         sus parts tea[value] = stringz.split(jwt, ".")
-        ready len(parts) != 3 {
+        lowkey len(parts) != 3 {
             yikes "Invalid JWT format"
         }
         
@@ -441,7 +441,7 @@ squad OAuthClient {
             when err -> yikes "RSA verification failed: " + err
         }
         
-        ready !verified {
+        lowkey !verified {
             yikes "Invalid RSA signature"
         }
         
@@ -467,33 +467,33 @@ squad OAuthClient {
         sus now drip = timez.now()
         
         // Check expiration
-        ready (claims.exp > 0 && now > claims.exp) {
+        lowkey (claims.exp > 0 && now > claims.exp) {
             yikes "JWT has expired"
         }
         
         // Check not before
-        ready (claims.nbf > 0 && now < claims.nbf) {
+        lowkey (claims.nbf > 0 && now < claims.nbf) {
             yikes "JWT not yet valid"
         }
         
         // Check issuer (would be configured)
-        // ready (claims.iss != expected_issuer) {
+        // lowkey (claims.iss != expected_issuer) {
         //     yikes "invalid issuer"
         // }
         
         // Check audience
-        ready (claims.aud != self.config.client_id) {
+        lowkey (claims.aud != self.config.client_id) {
             yikes "invalid audience"
         }
         
         // Check nonce
-        ready (len(expected_nonce) > 0 && claims.nonce != expected_nonce) {
+        lowkey (len(expected_nonce) > 0 && claims.nonce != expected_nonce) {
             yikes "invalid nonce"
         }
         
         // Check issued at (allow some clock skew)
         sus max_age drip = 3600  // 1 hour
-        ready (claims.iat > 0 && (now - claims.iat) > max_age) {
+        lowkey (claims.iat > 0 && (now - claims.iat) > max_age) {
             yikes "JWT too old"
         }
     }
@@ -540,12 +540,12 @@ squad AuthorizationServer {
         }
         
         // Validate redirect URI
-        ready (!self.is_valid_redirect_uri(client, request.redirect_uri)) {
+        lowkey (!self.is_valid_redirect_uri(client, request.redirect_uri)) {
             yikes "invalid redirect URI"
         }
         
         // Validate PKCE if required
-        ready (client.require_pkce && len(request.code_challenge) == 0) {
+        lowkey (client.require_pkce && len(request.code_challenge) == 0) {
             yikes "PKCE required but not provided"
         }
         
@@ -605,23 +605,23 @@ squad AuthorizationServer {
         }
         
         // Check expiration
-        ready (timez.now() > code_info.expires_at) {
+        lowkey (timez.now() > code_info.expires_at) {
             self.token_store.revoke_authorization_code(request.code)
             yikes "authorization code expired"
         }
         
         // Validate client
-        ready (code_info.client_id != request.client_id) {
+        lowkey (code_info.client_id != request.client_id) {
             yikes "client mismatch"
         }
         
         // Validate redirect URI
-        ready (code_info.redirect_uri != request.redirect_uri) {
+        lowkey (code_info.redirect_uri != request.redirect_uri) {
             yikes "redirect URI mismatch"
         }
         
         // Validate PKCE if present
-        ready (len(code_info.code_challenge) > 0) {
+        lowkey (len(code_info.code_challenge) > 0) {
             self.validate_pkce(code_info, request.code_verifier) fam {
                 when err -> yikes err
             }
@@ -633,7 +633,7 @@ squad AuthorizationServer {
         sus id_token tea = ""
         
         // Generate ID token if OpenID Connect
-        ready (stringz.contains(code_info.scope, "openid")) {
+        lowkey (stringz.contains(code_info.scope, "openid")) {
             id_token = self.generate_id_token(code_info.client_id, code_info.user_id, code_info.nonce) fam {
                 when err -> yikes "failed to generate ID token: " + err
             }
@@ -654,7 +654,7 @@ squad AuthorizationServer {
     }
     
     slay validate_pkce(code_info AuthorizationCode, code_verifier tea) yikes<tea> {
-        ready (len(code_verifier) == 0) {
+        lowkey (len(code_verifier) == 0) {
             yikes "code verifier required"
         }
         
@@ -671,7 +671,7 @@ squad AuthorizationServer {
             }
         }
         
-        ready (expected_challenge != code_info.code_challenge) {
+        lowkey (expected_challenge != code_info.code_challenge) {
             yikes "invalid code verifier"
         }
     }
@@ -870,7 +870,7 @@ slay base64_url_decode(encoded tea) yikes<lit[value]> {
     
     // Add padding if needed
     sus mod drip = len(padded) % 4
-    ready (mod != 0) {
+    lowkey (mod != 0) {
         bestie (i := 0; i < (4 - mod); i += 1) {
             padded += "="
         }
@@ -940,7 +940,7 @@ slay example_oauth_client_usage() yikes<tea> {
     vibez.spill("User:", user_info.name, "Email:", user_info.email)
     
     // Step 4: Validate ID token (if OpenID Connect)
-    ready (len(token_response.id_token) > 0) {
+    lowkey (len(token_response.id_token) > 0) {
         sus claims JWTClaims = oauth_client.validate_id_token(token_response.id_token, nonce) fam {
             when err -> yikes err
         }
@@ -979,13 +979,13 @@ sus jwks_cache map<tea, RSAPublicKey> = {}
 sus jwks_cache_expiry map<tea, drip> = {}
 
 slay fetch_jwks_public_key(kid tea) yikes<lit[value]> {
-    ready kid == "" {
+    lowkey kid == "" {
         yikes "Missing key ID in JWT header"
     }
     
     // Check cache first
     sus now drip = timez.now()
-    ready (cache_expiry, exists := jwks_cache_expiry[kid]; exists && now < cache_expiry) {
+    lowkey (cache_expiry, exists := jwks_cache_expiry[kid]; exists && now < cache_expiry) {
         sus cached_key RSAPublicKey = jwks_cache[kid]
         damn encode_der_public_key(cached_key)
     }
@@ -1002,7 +1002,7 @@ slay fetch_jwks_public_key(kid tea) yikes<lit[value]> {
         when err -> yikes "Failed to fetch JWKS: " + err
     }
     
-    ready (response.status_code != 200) {
+    lowkey (response.status_code != 200) {
         yikes "JWKS endpoint returned status: " + to_string(response.status_code)
     }
     
@@ -1013,13 +1013,13 @@ slay fetch_jwks_public_key(kid tea) yikes<lit[value]> {
     
     // Find key by ID
     bestie (key := range jwks.keys) {
-        ready (key.kid == kid) {
+        lowkey (key.kid == kid) {
             // Validate key properties
-            ready (key.kty != "RSA") {
+            lowkey (key.kty != "RSA") {
                 yikes "Unsupported key type: " + key.kty
             }
             
-            ready (key.use != "sig" && key.use != "") {
+            lowkey (key.use != "sig" && key.use != "") {
                 yikes "Key not suitable for signature verification: " + key.use
             }
             
@@ -1040,7 +1040,7 @@ slay fetch_jwks_public_key(kid tea) yikes<lit[value]> {
             }
             
             // Validate key size (minimum 2048 bits for security)
-            ready (public_key.key_size < 2048) {
+            lowkey (public_key.key_size < 2048) {
                 yikes "RSA key size too small: " + to_string(public_key.key_size) + " bits"
             }
             
@@ -1058,7 +1058,7 @@ slay fetch_jwks_public_key(kid tea) yikes<lit[value]> {
 slay parse_rsa_public_key(data lit[value]) yikes<RSAPublicKey> {
     // Simple DER parser for RSA public key
     // In production, would use proper ASN.1/DER parsing
-    ready (len(data) < 32) {
+    lowkey (len(data) < 32) {
         yikes "Invalid RSA public key data"
     }
     

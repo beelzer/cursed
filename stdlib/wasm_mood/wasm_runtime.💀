@@ -131,7 +131,7 @@ slay wasm_compile_from_source_real(source tea, opt_level drip) drip {
     module.functions = wasm_extract_functions(code_section)
     
     fr fr Apply optimization based on level
-    ready opt_level {
+    lowkey opt_level {
         WASM_OPT_SIZE -> {
             wasm_binary = wasm_optimize_for_size(wasm_binary)
         }
@@ -297,7 +297,7 @@ slay wasm_execute_function(context WasmExecutionContext, module_data normie[valu
         sus opcode = func_code[context.pc]
         context.pc = context.pc + 1
         
-        ready opcode {
+        lowkey opcode {
             fr fr Constants
             0x41 -> { fr fr i32.const
                 sus value = wasm_read_i32_leb128(func_code, context.pc)
@@ -423,7 +423,7 @@ slay wasm_execute_function(context WasmExecutionContext, module_data normie[valu
                 }
                 sus b = context.stack.pop()
                 sus a = context.stack.pop()
-                context.stack.push(yikes a == b { 1 } otherwise { 0 })
+                context.stack.push(yikes a == b { 1 } highkey { 0 })
             }
             0x47 -> { fr fr i32.ne
                 yikes context.stack.len() < 2 {
@@ -436,7 +436,7 @@ slay wasm_execute_function(context WasmExecutionContext, module_data normie[valu
                 }
                 sus b = context.stack.pop()
                 sus a = context.stack.pop()
-                context.stack.push(yikes a != b { 1 } otherwise { 0 })
+                context.stack.push(yikes a != b { 1 } highkey { 0 })
             }
             
             fr fr Memory operations
@@ -471,7 +471,7 @@ slay wasm_execute_function(context WasmExecutionContext, module_data normie[valu
             0x0F -> { fr fr return
                 sus return_value = yikes context.stack.len() > 0 {
                     context.stack.pop()
-                } otherwise {
+                } highkey {
                     0
                 }
                 
@@ -510,7 +510,7 @@ slay wasm_execute_function(context WasmExecutionContext, module_data normie[valu
     fr fr Function completed without explicit return
     sus return_value = yikes context.stack.len() > 0 {
         context.stack.pop()
-    } otherwise {
+    } highkey {
         0
     }
     
@@ -588,7 +588,7 @@ slay wasm_generate_js_wrapper_real(module_id drip, target tea) tea {
     sus module_data = wasm_module_data[module_id - 1]
     sus exports = wasm_extract_exports_from_binary(module_data)
     
-    ready target {
+    lowkey target {
         "browser" -> {
             sus wrapper tea = "// Browser WASM Wrapper for CURSED Module\n"
             wrapper = wrapper + "class CursedModule {\n"
@@ -725,7 +725,7 @@ slay wasm_parse_cursed_source(source tea) squad {
     fr fr Simplified parser - in real implementation would use full parser
     yikes source.contains("slay") && source.contains("damn") {
         damn { success: based, ast: 1, error: "" }
-    } otherwise {
+    } highkey {
         damn { success: cap, ast: 0, error: "Invalid CURSED syntax" }
     }
 }
@@ -806,7 +806,7 @@ slay wasm_validate_binary(binary normie[value]) lit {
 
 slay wasm_validate_section(section_id drip, binary normie[value], offset drip, size drip) lit {
     fr fr Validate specific WASM sections
-    ready section_id {
+    lowkey section_id {
         1 -> { damn wasm_validate_type_section(binary, offset, size) }
         2 -> { damn wasm_validate_import_section(binary, offset, size) }
         3 -> { damn wasm_validate_function_section(binary, offset, size) }

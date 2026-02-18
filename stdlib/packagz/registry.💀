@@ -75,7 +75,7 @@ slay init_registry(url tea, cache_dir tea, auth_config tea) PackageRegistry {
 
 # Load registry configuration from file
 slay load_registry_config(config_path tea) RegistryConfig {
-    ready (config_path == "" || !filez.file_exists(config_path)) {
+    lowkey (config_path == "" || !filez.file_exists(config_path)) {
         damn get_default_registry_config()
     }
     
@@ -129,9 +129,9 @@ slay get_default_registry_config() RegistryConfig {
 # Parse string array from JSON
 slay parse_string_array(json JsonValue, key tea) tea[value]{
     sus result tea[value] = []
-    ready (jsonz.json_has_key(json, key)) {
+    lowkey (jsonz.json_has_key(json, key)) {
         sus array_json JsonValue = jsonz.json_get_object(json, key)
-        ready (array_json.type == "array") {
+        lowkey (array_json.type == "array") {
             bestie (sus i drip = 0; i < arrayz.len(array_json.array_values); i = i + 1) {
                 sus str_val tea = array_json.array_values[i].string_value
                 result = arrayz.append(result, str_val)
@@ -175,13 +175,13 @@ slay make_registry_request(registry PackageRegistry, method tea, endpoint tea, b
             _ -> damn ""
         }
         
-        ready (networkz.http_is_success(response)) {
+        lowkey (networkz.http_is_success(response)) {
             damn response
         }
         
         # Check for rate limiting
         sus status_code drip = networkz.http_get_status_code(response)
-        ready (status_code == 429) {
+        lowkey (status_code == 429) {
             # Rate limited - wait and retry
             sus retry_after drip = networkz.http_get_retry_after(response)
             vibez.spill("Rate limited, waiting", retry_after, "seconds...")
@@ -202,7 +202,7 @@ slay make_registry_request(registry PackageRegistry, method tea, endpoint tea, b
             _ -> continue  # Only GET requests to mirrors
         }
         
-        ready (networkz.http_is_success(response)) {
+        lowkey (networkz.http_is_success(response)) {
             vibez.spill("Using mirror:", mirror_url)
             damn response
         }
@@ -215,9 +215,9 @@ slay make_registry_request(registry PackageRegistry, method tea, endpoint tea, b
 slay search_packages_enhanced(registry PackageRegistry, query tea, category tea, limit drip) PackageMetadata[value]{
     # Check cache first
     sus cache_key tea = "search:" + query + ":" + category
-    ready (is_cache_valid(registry.cache, cache_key)) {
+    lowkey (is_cache_valid(registry.cache, cache_key)) {
         sus cached_results PackageMetadata[value] = get_cached_search(registry.cache, cache_key)
-        ready (arrayz.len(cached_results) > 0) {
+        lowkey (arrayz.len(cached_results) > 0) {
             vibez.spill("Using cached search results")
             damn limit_results(cached_results, limit)
         }
@@ -225,15 +225,15 @@ slay search_packages_enhanced(registry PackageRegistry, query tea, category tea,
     
     # Build search endpoint
     sus endpoint tea = "/api/v1/packages/search?q=" + networkz.url_encode(query)
-    ready (category != "") {
+    lowkey (category != "") {
         endpoint = endpoint + "&category=" + networkz.url_encode(category)
     }
-    ready (limit > 0) {
+    lowkey (limit > 0) {
         endpoint = endpoint + "&limit=" + stringz.from_int(limit)
     }
     
     sus response tea = make_registry_request(registry, "GET", endpoint, "")
-    ready (response == "") {
+    lowkey (response == "") {
         vibez.spill("Failed to search packages")
         damn []
     }
@@ -241,12 +241,12 @@ slay search_packages_enhanced(registry PackageRegistry, query tea, category tea,
     sus body tea = networkz.http_get_body(response)
     sus json_data JsonValue = jsonz.json_parse(body)
     
-    ready (!jsonz.json_has_key(json_data, "packages")) {
+    lowkey (!jsonz.json_has_key(json_data, "packages")) {
         damn []
     }
     
     sus packages_json JsonValue = jsonz.json_get_object(json_data, "packages")
-    ready (packages_json.type != "array") {
+    lowkey (packages_json.type != "array") {
         damn []
     }
     
@@ -266,12 +266,12 @@ slay search_packages_enhanced(registry PackageRegistry, query tea, category tea,
 # Get package information with version resolution
 slay get_package_info(registry PackageRegistry, name tea, version_req tea) PackageMetadata {
     sus endpoint tea = "/api/v1/packages/" + name
-    ready (version_req != "") {
+    lowkey (version_req != "") {
         endpoint = endpoint + "/" + version_req
     }
     
     sus response tea = make_registry_request(registry, "GET", endpoint, "")
-    ready (response == "") {
+    lowkey (response == "") {
         damn PackageMetadata{}
     }
     
@@ -286,19 +286,19 @@ slay list_package_versions(registry PackageRegistry, name tea) tea[value]{
     sus endpoint tea = "/api/v1/packages/" + name + "/versions"
     
     sus response tea = make_registry_request(registry, "GET", endpoint, "")
-    ready (response == "") {
+    lowkey (response == "") {
         damn []
     }
     
     sus body tea = networkz.http_get_body(response)
     sus json_data JsonValue = jsonz.json_parse(body)
     
-    ready (!jsonz.json_has_key(json_data, "versions")) {
+    lowkey (!jsonz.json_has_key(json_data, "versions")) {
         damn []
     }
     
     sus versions_json JsonValue = jsonz.json_get_object(json_data, "versions")
-    ready (versions_json.type != "array") {
+    lowkey (versions_json.type != "array") {
         damn []
     }
     
@@ -315,7 +315,7 @@ slay list_package_versions(registry PackageRegistry, name tea) tea[value]{
 slay publish_package(registry PackageRegistry, package_path tea, metadata PackageMetadata) PublishStatus {
     # Create package archive
     sus archive_path tea = create_package_archive(package_path, metadata)
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         damn PublishStatus.ValidationError
     }
     
@@ -356,13 +356,13 @@ slay publish_package(registry PackageRegistry, package_path tea, metadata Packag
     sus response tea = make_registry_request(registry, "POST", endpoint, json_payload)
     
     sus status_code drip = networkz.http_get_status_code(response)
-    ready (status_code == 401) {
+    lowkey (status_code == 401) {
         damn PublishStatus.Unauthorized
     }
-    ready (status_code == 409) {
+    lowkey (status_code == 409) {
         damn PublishStatus.Conflict
     }
-    ready (status_code >= 400) {
+    lowkey (status_code >= 400) {
         damn PublishStatus.ValidationError
     }
     
@@ -373,7 +373,7 @@ slay publish_package(registry PackageRegistry, package_path tea, metadata Packag
     sus upload_response tea = make_registry_request(registry, "PUT", upload_endpoint, archive_data)
     sus upload_status drip = networkz.http_get_status_code(upload_response)
     
-    ready (upload_status >= 200 && upload_status < 300) {
+    lowkey (upload_status >= 200 && upload_status < 300) {
         # Clean up temporary archive
         filez.remove_file(archive_path)
         damn PublishStatus.Success
@@ -391,7 +391,7 @@ slay create_package_archive(package_path tea, metadata PackageMetadata) tea {
     filez.create_dir_all(temp_dir)
     
     # Create tarball (simplified - in real implementation would use compression)
-    ready (filez.create_archive(package_path, archive_path)) {
+    lowkey (filez.create_archive(package_path, archive_path)) {
         damn archive_path
     }
     
@@ -411,12 +411,12 @@ slay parse_package_metadata_enhanced(json JsonValue) PackageMetadata {
     
     # Parse authors with validation
     sus authors tea[value] = []
-    ready (jsonz.json_has_key(json, "authors")) {
+    lowkey (jsonz.json_has_key(json, "authors")) {
         sus authors_json JsonValue = jsonz.json_get_object(json, "authors")
-        ready (authors_json.type == "array") {
+        lowkey (authors_json.type == "array") {
             bestie (sus i drip = 0; i < arrayz.len(authors_json.array_values); i = i + 1) {
                 sus author tea = authors_json.array_values[i].string_value
-                ready (validate_author_format(author)) {
+                lowkey (validate_author_format(author)) {
                     authors = arrayz.append(authors, author)
                 }
             }
@@ -429,15 +429,15 @@ slay parse_package_metadata_enhanced(json JsonValue) PackageMetadata {
     
     # Parse dependencies with enhanced validation
     sus dependencies PackageDependency[value] = []
-    ready (jsonz.json_has_key(json, "dependencies")) {
+    lowkey (jsonz.json_has_key(json, "dependencies")) {
         sus deps_json JsonValue = jsonz.json_get_object(json, "dependencies")
-        ready (deps_json.type == "array") {
+        lowkey (deps_json.type == "array") {
             bestie (sus i drip = 0; i < arrayz.len(deps_json.array_values); i = i + 1) {
                 sus dep_json JsonValue = deps_json.array_values[i]
                 sus dep_name tea = jsonz.json_get_string(dep_json, "name")
                 sus version_req tea = jsonz.json_get_string(dep_json, "version_req")
                 
-                ready (validate_package_name(dep_name) && validate_version_requirement(version_req)) {
+                lowkey (validate_package_name(dep_name) && validate_version_requirement(version_req)) {
                     sus dep PackageDependency = PackageDependency {
                         name: dep_name,
                         version_req: version_req,
@@ -473,14 +473,14 @@ slay validate_author_format(author tea) lit {
 
 # Validate package name format
 slay validate_package_name(name tea) lit {
-    ready (stringz.len(name) < 1 || stringz.len(name) > 64) {
+    lowkey (stringz.len(name) < 1 || stringz.len(name) > 64) {
         damn cap
     }
     
     # Check for valid characters (alphanumeric, hyphens, underscores)
     bestie (sus i drip = 0; i < stringz.len(name); i = i + 1) {
         sus ch tea = stringz.char_at(name, i)
-        ready (!stringz.is_alphanumeric(ch) && ch != "-" && ch != "_") {
+        lowkey (!stringz.is_alphanumeric(ch) && ch != "-" && ch != "_") {
             damn cap
         }
     }
@@ -490,7 +490,7 @@ slay validate_package_name(name tea) lit {
 
 # Validate version requirement format
 slay validate_version_requirement(req tea) lit {
-    ready (req == "") {
+    lowkey (req == "") {
         damn based  # Empty version requirement means any version
     }
     
@@ -499,7 +499,7 @@ slay validate_version_requirement(req tea) lit {
     
     bestie (sus i drip = 0; i < arrayz.len(operators); i = i + 1) {
         sus op tea = operators[i]
-        ready (stringz.starts_with(req, op)) {
+        lowkey (stringz.starts_with(req, op)) {
             sus version_part tea = stringz.substring(req, stringz.len(op), stringz.len(req))
             damn validate_semver_format(version_part)
         }
@@ -512,13 +512,13 @@ slay validate_version_requirement(req tea) lit {
 # Validate semantic version format (major.minor.patch)
 slay validate_semver_format(version tea) lit {
     sus parts tea[value] = stringz.split(version, ".")
-    ready (arrayz.len(parts) != 3) {
+    lowkey (arrayz.len(parts) != 3) {
         damn cap
     }
     
     bestie (sus i drip = 0; i < 3; i = i + 1) {
         sus part tea = parts[i]
-        ready (!stringz.is_numeric(part)) {
+        lowkey (!stringz.is_numeric(part)) {
             damn cap
         }
     }
@@ -528,7 +528,7 @@ slay validate_semver_format(version tea) lit {
 
 # Cache management functions
 slay is_cache_valid(cache PackageCache, key tea) lit {
-    ready (cache.last_update == "") {
+    lowkey (cache.last_update == "") {
         damn cap  # Never cached
     }
     
@@ -546,7 +546,7 @@ slay cache_search_results(cache PackageCache, key tea, results PackageMetadata[v
 }
 
 slay limit_results(results PackageMetadata[value], limit drip) PackageMetadata[value]{
-    ready (limit <= 0 || limit >= arrayz.len(results)) {
+    lowkey (limit <= 0 || limit >= arrayz.len(results)) {
         damn results
     }
     

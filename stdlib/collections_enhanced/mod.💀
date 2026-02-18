@@ -15,7 +15,7 @@ slay array_is_empty(arr drip[value]) lit {
 
 slay array_get_safe(arr drip[value], index drip) drip {
     sus length drip = array_length(arr)
-    ready (index < 0 || index >= length) {
+    lowkey (index < 0 || index >= length) {
         damn -1  fr fr Error value
     }
     damn arr[index]
@@ -25,7 +25,7 @@ slay array_contains(arr drip[value], value drip) lit {
     sus length drip = array_length(arr)
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] == value) {
+        lowkey (arr[i] == value) {
             damn based
         }
         i = i + 1
@@ -37,7 +37,7 @@ slay array_find_index(arr drip[value], value drip) drip {
     sus length drip = array_length(arr)
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] == value) {
+        lowkey (arr[i] == value) {
             damn i
         }
         i = i + 1
@@ -50,7 +50,7 @@ slay array_count_occurrences(arr drip[value], value drip) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] == value) {
+        lowkey (arr[i] == value) {
             count = count + 1
         }
         i = i + 1
@@ -73,7 +73,7 @@ slay array_sum(arr drip[value]) drip {
 
 slay array_product(arr drip[value]) drip {
     sus length drip = array_length(arr)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
     
@@ -88,14 +88,14 @@ slay array_product(arr drip[value]) drip {
 
 slay array_min(arr drip[value]) drip {
     sus length drip = array_length(arr)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
     
     sus min_val drip = arr[0]
     sus i drip = 1
     bestie (i < length) {
-        ready (arr[i] < min_val) {
+        lowkey (arr[i] < min_val) {
             min_val = arr[i]
         }
         i = i + 1
@@ -105,14 +105,14 @@ slay array_min(arr drip[value]) drip {
 
 slay array_max(arr drip[value]) drip {
     sus length drip = array_length(arr)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
     
     sus max_val drip = arr[0]
     sus i drip = 1
     bestie (i < length) {
-        ready (arr[i] > max_val) {
+        lowkey (arr[i] > max_val) {
             max_val = arr[i]
         }
         i = i + 1
@@ -122,7 +122,7 @@ slay array_max(arr drip[value]) drip {
 
 slay array_average(arr drip[value]) drip {
     sus length drip = array_length(arr)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
     
@@ -139,13 +139,13 @@ slay bubble_sort_modify(arr drip[value]) lit {
 
 slay quicksort_modify(arr drip[value]) lit {
     sus length drip = array_length(arr)
-    ready (length <= 1) { damn based }
+    lowkey (length <= 1) { damn based }
     quicksort_modify_range(arr, 0, length - 1)
     damn based
 }
 
 slay quicksort_modify_range(arr drip[value], low drip, high drip) lit {
-    ready (low < high) {
+    lowkey (low < high) {
         sus pivot_idx drip = partition_modify(arr, low, high)
         quicksort_modify_range(arr, low, pivot_idx - 1)
         quicksort_modify_range(arr, pivot_idx + 1, high)
@@ -158,7 +158,7 @@ slay partition_modify(arr drip[value], low drip, high drip) drip {
     sus i drip = low - 1
     
     bestie (sus j drip = low; j < high; j = j + 1) {
-        ready (arr[j] <= pivot) {
+        lowkey (arr[j] <= pivot) {
             i = i + 1
             swap_modify(arr, i, j)
         }
@@ -179,7 +179,7 @@ slay selection_sort_modify(arr drip[value]) lit {
     fr fr DEPRECATED: Use quicksort_modify for O(n log n) performance
     damn quicksort_modify(arr)
 }
-        ready (min_idx != i) {
+        lowkey (min_idx != i) {
             sus temp drip = arr[i]
             arr[i] = arr[min_idx]
             arr[min_idx] = temp
@@ -227,7 +227,7 @@ slay array_reverse_modify(arr drip[value]) lit {
 
 slay array_rotate_left_modify(arr drip[value], positions drip) lit {
     sus length drip = array_length(arr)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn based
     }
     
@@ -249,7 +249,7 @@ slay array_rotate_left_modify(arr drip[value], positions drip) lit {
 
 slay array_rotate_right_modify(arr drip[value], positions drip) lit {
     sus length drip = array_length(arr)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn based
     }
     
@@ -283,14 +283,14 @@ slay array_remove_duplicates_modify(arr drip[value]) drip {
         fr fr Check if current element already exists before write_index
         sus check_index drip = 0
         bestie (check_index < write_index) {
-            ready (arr[check_index] == current) {
+            lowkey (arr[check_index] == current) {
                 is_duplicate = based
                 check_index = write_index  fr fr Break loop
             }
             check_index = check_index + 1
         }
         
-        ready (is_duplicate == cringe) {
+        lowkey (is_duplicate == cringe) {
             arr[write_index] = current
             write_index = write_index + 1
         }
@@ -312,13 +312,13 @@ slay array_intersection_count(arr1 drip[value], arr2 drip[value]) drip {
         sus found lit = cringe
         
         bestie (j < len2 && found == cringe) {
-            ready (arr2[j] == element) {
+            lowkey (arr2[j] == element) {
                 found = based
             }
             j = j + 1
         }
         
-        ready (found == based) {
+        lowkey (found == based) {
             count = count + 1
         }
         i = i + 1
@@ -364,7 +364,7 @@ slay hash_table_put(keys drip[value], values drip[value], table_size drip, key d
     fr fr Linear probing for collision resolution
     bestie (keys[hash_index] != -1 && keys[hash_index] != key) {
         hash_index = (hash_index + 1) % table_size
-        ready (hash_index == start_index) {
+        lowkey (hash_index == start_index) {
             damn cringe  fr fr Table is full
         }
     }
@@ -379,11 +379,11 @@ slay hash_table_get(keys drip[value], values drip[value], table_size drip, key d
     sus start_index drip = hash_index
     
     bestie (keys[hash_index] != -1) {
-        ready (keys[hash_index] == key) {
+        lowkey (keys[hash_index] == key) {
             damn values[hash_index]
         }
         hash_index = (hash_index + 1) % table_size
-        ready (hash_index == start_index) {
+        lowkey (hash_index == start_index) {
             damn -1  fr fr Not found
         }
     }
@@ -403,7 +403,7 @@ slay linear_search(arr drip[value], target drip) drip {
     sus length drip = array_length(arr)
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] == target) {
+        lowkey (arr[i] == target) {
             damn i
         }
         i = i + 1
@@ -414,7 +414,7 @@ slay linear_search(arr drip[value], target drip) drip {
 slay binary_search_enhanced(arr drip[value], target drip) drip {
     fr fr Optimized binary search with bounds checking
     sus length drip = array_length(arr)
-    ready (length == 0) { damn -1 }
+    lowkey (length == 0) { damn -1 }
     
     sus left drip = 0
     sus right drip = length - 1
@@ -422,11 +422,11 @@ slay binary_search_enhanced(arr drip[value], target drip) drip {
     bestie (left <= right) {
         sus mid drip = left + (right - left) / 2
         
-        ready (arr[mid] == target) {
+        lowkey (arr[mid] == target) {
             damn mid
-        } otherwise ready (arr[mid] < target) {
+        } highkey lowkey (arr[mid] < target) {
             left = mid + 1
-        } otherwise {
+        } highkey {
             right = mid - 1
         }
     }
@@ -441,12 +441,12 @@ slay binary_search(arr drip[value], target drip) drip {
     
     bestie (left <= right) {
         sus mid drip = left + (right - left) / 2
-        ready (arr[mid] == target) {
+        lowkey (arr[mid] == target) {
             damn mid
         }
-        ready (arr[mid] < target) {
+        lowkey (arr[mid] < target) {
             left = mid + 1
-        } otherwise {
+        } highkey {
             right = mid - 1
         }
     }
@@ -460,7 +460,7 @@ slay array_count_positive(arr drip[value]) drip {
     sus length drip = array_length(arr)
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] > 0) {
+        lowkey (arr[i] > 0) {
             count = count + 1
         }
         i = i + 1
@@ -473,7 +473,7 @@ slay array_count_negative(arr drip[value]) drip {
     sus length drip = array_length(arr)
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] < 0) {
+        lowkey (arr[i] < 0) {
             count = count + 1
         }
         i = i + 1
@@ -486,7 +486,7 @@ slay array_count_even(arr drip[value]) drip {
     sus length drip = array_length(arr)
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] % 2 == 0) {
+        lowkey (arr[i] % 2 == 0) {
             count = count + 1
         }
         i = i + 1
@@ -499,7 +499,7 @@ slay array_count_odd(arr drip[value]) drip {
     sus length drip = array_length(arr)
     sus i drip = 0
     bestie (i < length) {
-        ready (arr[i] % 2 == 1) {
+        lowkey (arr[i] % 2 == 1) {
             count = count + 1
         }
         i = i + 1
@@ -532,12 +532,12 @@ fr fr ===== STATISTICAL OPERATIONS =====
 slay array_median(arr drip[value]) drip {
     fr fr Note: This assumes array is sorted
     sus length drip = array_length(arr)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
-    ready (length % 2 == 1) {
+    lowkey (length % 2 == 1) {
         damn arr[length / 2]
-    } otherwise {
+    } highkey {
         sus mid1 drip = arr[length / 2 - 1]
         sus mid2 drip = arr[length / 2]
         damn (mid1 + mid2) / 2
@@ -546,7 +546,7 @@ slay array_median(arr drip[value]) drip {
 
 slay array_range(arr drip[value]) drip {
     sus length drip = array_length(arr)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
     sus min_val drip = array_min(arr)
@@ -556,7 +556,7 @@ slay array_range(arr drip[value]) drip {
 
 slay array_variance(arr drip[value]) drip {
     sus length drip = array_length(arr)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
     

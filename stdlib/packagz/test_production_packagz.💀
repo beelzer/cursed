@@ -50,76 +50,76 @@ slay run_all_tests() lit {
     
     # Test 1: Enhanced SAT solver dependency resolution
     vibez.spill("Test 1: Advanced Dependency Resolution with SAT Solver")
-    ready (test_advanced_dependency_resolution(config)) {
+    lowkey (test_advanced_dependency_resolution(config)) {
         tests_passed = tests_passed + 1
         vibez.spill("✓ PASS: Advanced dependency resolution")
-    } otherwise {
+    } highkey {
         tests_failed = tests_failed + 1
         vibez.spill("✗ FAIL: Advanced dependency resolution")
     }
     
     # Test 2: Production TOML parsing
     vibez.spill("\nTest 2: Full TOML Specification Parser")
-    ready (test_production_toml_parser(config)) {
+    lowkey (test_production_toml_parser(config)) {
         tests_passed = tests_passed + 1
         vibez.spill("✓ PASS: Production TOML parser")
-    } otherwise {
+    } highkey {
         tests_failed = tests_failed + 1
         vibez.spill("✗ FAIL: Production TOML parser")
     }
     
     # Test 3: Real archive operations (TAR/ZIP)
     vibez.spill("\nTest 3: Production Archive Operations")
-    ready (test_production_archive_operations(config)) {
+    lowkey (test_production_archive_operations(config)) {
         tests_passed = tests_passed + 1
         vibez.spill("✓ PASS: Production archive operations")
-    } otherwise {
+    } highkey {
         tests_failed = tests_failed + 1
         vibez.spill("✗ FAIL: Production archive operations")
     }
     
     # Test 4: Complete HTTP REST client
     vibez.spill("\nTest 4: Complete HTTP REST Client")
-    ready (test_complete_http_client(config)) {
+    lowkey (test_complete_http_client(config)) {
         tests_passed = tests_passed + 1
         vibez.spill("✓ PASS: Complete HTTP client")
-    } otherwise {
+    } highkey {
         tests_failed = tests_failed + 1
         vibez.spill("✗ FAIL: Complete HTTP client")
     }
     
     # Test 5: Comprehensive checksum algorithms
     vibez.spill("\nTest 5: Production Checksum Algorithms")
-    ready (test_production_checksum_algorithms(config)) {
+    lowkey (test_production_checksum_algorithms(config)) {
         tests_passed = tests_passed + 1
         vibez.spill("✓ PASS: Production checksum algorithms")
-    } otherwise {
+    } highkey {
         tests_failed = tests_failed + 1
         vibez.spill("✗ FAIL: Production checksum algorithms")
     }
     
     # Test 6: Enhanced security verification
     vibez.spill("\nTest 6: Enhanced Security Verification")
-    ready (test_enhanced_security_verification(config)) {
+    lowkey (test_enhanced_security_verification(config)) {
         tests_passed = tests_passed + 1
         vibez.spill("✓ PASS: Enhanced security verification")
-    } otherwise {
+    } highkey {
         tests_failed = tests_failed + 1
         vibez.spill("✗ FAIL: Enhanced security verification")
     }
     
     # Test 7: Complete package operations
     vibez.spill("\nTest 7: End-to-End Package Operations")
-    ready (test_complete_package_operations(config)) {
+    lowkey (test_complete_package_operations(config)) {
         tests_passed = tests_passed + 1
         vibez.spill("✓ PASS: Complete package operations")
-    } otherwise {
+    } highkey {
         tests_failed = tests_failed + 1
         vibez.spill("✗ FAIL: Complete package operations")
     }
     
     # Clean up if requested
-    ready (config.cleanup_after_test) {
+    lowkey (config.cleanup_after_test) {
         filez.remove_dir_all(config.test_cache_dir)
         filez.remove_dir_all(config.test_temp_dir)
     }
@@ -156,19 +156,19 @@ slay test_advanced_dependency_resolution(config TestConfig) lit {
     sus result ResolutionResult = resolve_dependencies_advanced(resolver, root_packages)
     
     # Verify resolution succeeded
-    ready (!result.success) {
+    lowkey (!result.success) {
         vibez.spill("Error: Dependency resolution failed -", stringz.join(arrayz.map(result.conflicts, slay(c ResolutionConflict) tea { damn c.package_name }), ", "))
         damn cap
     }
     
     # Check that packages were analyzed
-    ready (result.packages_analyzed == 0) {
+    lowkey (result.packages_analyzed == 0) {
         vibez.spill("Error: No packages were analyzed")
         damn cap
     }
     
     # Check resolution time is reasonable
-    ready (result.resolution_time > 10000) {  # 10 seconds
+    lowkey (result.resolution_time > 10000) {  # 10 seconds
         vibez.spill("Warning: Resolution took", result.resolution_time, "ms - may be too slow")
     }
     
@@ -232,30 +232,30 @@ allowed-versions = [1, 2, 3]
     sus parsed_toml map<tea, TOMLValue> = parse_toml(toml_content)
     
     # Verify parsed correctly
-    ready (arrayz.len(map_keys(parsed_toml)) == 0) {
+    lowkey (arrayz.len(map_keys(parsed_toml)) == 0) {
         vibez.spill("Error: TOML parsing returned empty result")
         damn cap
     }
     
     # Check specific values
-    ready (!has_toml_key(parsed_toml, "title")) {
+    lowkey (!has_toml_key(parsed_toml, "title")) {
         vibez.spill("Error: Missing title field")
         damn cap
     }
     
-    ready (!has_toml_key(parsed_toml, "package")) {
+    lowkey (!has_toml_key(parsed_toml, "package")) {
         vibez.spill("Error: Missing package section")
         damn cap
     }
     
     # Test array of tables
-    ready (!has_toml_key(parsed_toml, "test-matrix")) {
+    lowkey (!has_toml_key(parsed_toml, "test-matrix")) {
         vibez.spill("Error: Missing test-matrix array of tables")
         damn cap
     }
     
     # Test datetime parsing
-    ready (!has_toml_key(parsed_toml, "metadata")) {
+    lowkey (!has_toml_key(parsed_toml, "metadata")) {
         vibez.spill("Error: Missing metadata section with datetime")
         damn cap
     }
@@ -291,19 +291,19 @@ slay test_production_archive_operations(config TestConfig) lit {
         preserve_permissions: based
     }
     
-    ready (!create_package_archive(test_source_dir, tar_gz_path, archive_options)) {
+    lowkey (!create_package_archive(test_source_dir, tar_gz_path, archive_options)) {
         vibez.spill("Error: Failed to create TAR.GZ archive")
         damn cap
     }
     
     # Verify archive was created
-    ready (!filez.file_exists(tar_gz_path)) {
+    lowkey (!filez.file_exists(tar_gz_path)) {
         vibez.spill("Error: TAR.GZ archive file not created")
         damn cap
     }
     
     sus archive_size drip = filez.file_size(tar_gz_path)
-    ready (archive_size == 0) {
+    lowkey (archive_size == 0) {
         vibez.spill("Error: TAR.GZ archive is empty")
         damn cap
     }
@@ -318,23 +318,23 @@ slay test_production_archive_operations(config TestConfig) lit {
         max_extract_size: 10 * 1024 * 1024  # 10MB
     }
     
-    ready (!extract_package_archive(tar_gz_path, extraction_options)) {
+    lowkey (!extract_package_archive(tar_gz_path, extraction_options)) {
         vibez.spill("Error: Failed to extract TAR.GZ archive")
         damn cap
     }
     
     # Verify extraction
-    ready (!filez.file_exists(extract_dir + "/README.md")) {
+    lowkey (!filez.file_exists(extract_dir + "/README.md")) {
         vibez.spill("Error: README.md not extracted from TAR.GZ")
         damn cap
     }
     
-    ready (!filez.file_exists(extract_dir + "/lib.💀")) {
+    lowkey (!filez.file_exists(extract_dir + "/lib.💀")) {
         vibez.spill("Error: lib.💀 not extracted from TAR.GZ")
         damn cap
     }
     
-    ready (!filez.file_exists(extract_dir + "/subdir/config.json")) {
+    lowkey (!filez.file_exists(extract_dir + "/subdir/config.json")) {
         vibez.spill("Error: Subdirectory file not extracted from TAR.GZ")
         damn cap
     }
@@ -343,7 +343,7 @@ slay test_production_archive_operations(config TestConfig) lit {
     sus zip_path tea = config.test_temp_dir + "/test-package.zip"
     archive_options.format = ArchiveFormat.Zip
     
-    ready (!create_package_archive(test_source_dir, zip_path, archive_options)) {
+    lowkey (!create_package_archive(test_source_dir, zip_path, archive_options)) {
         vibez.spill("Error: Failed to create ZIP archive")
         damn cap
     }
@@ -352,13 +352,13 @@ slay test_production_archive_operations(config TestConfig) lit {
     sus zip_extract_dir tea = config.test_temp_dir + "/zip_extract"
     extraction_options.destination_dir = zip_extract_dir
     
-    ready (!extract_package_archive(zip_path, extraction_options)) {
+    lowkey (!extract_package_archive(zip_path, extraction_options)) {
         vibez.spill("Error: Failed to extract ZIP archive")
         damn cap
     }
     
     # Verify ZIP extraction
-    ready (!filez.file_exists(zip_extract_dir + "/README.md")) {
+    lowkey (!filez.file_exists(zip_extract_dir + "/README.md")) {
         vibez.spill("Error: README.md not extracted from ZIP")
         damn cap
     }
@@ -384,18 +384,18 @@ slay test_complete_http_client(config TestConfig) lit {
     sus get_response HttpResponse = execute_http_request(get_request)
     
     # Verify response
-    ready (!is_http_success(get_response)) {
+    lowkey (!is_http_success(get_response)) {
         vibez.spill("Error: HTTP GET failed with status", get_response.status_code)
         damn cap
     }
     
-    ready (get_response.body == "") {
+    lowkey (get_response.body == "") {
         vibez.spill("Error: HTTP GET response body is empty")
         damn cap
     }
     
     # Test JSON response parsing
-    ready (!stringz.contains(get_response.body, "\"url\"")) {
+    lowkey (!stringz.contains(get_response.body, "\"url\"")) {
         vibez.spill("Error: HTTP GET response doesn't contain expected JSON")
         damn cap
     }
@@ -410,7 +410,7 @@ slay test_complete_http_client(config TestConfig) lit {
     
     sus post_response HttpResponse = execute_http_request(post_request)
     
-    ready (!is_http_success(post_response)) {
+    lowkey (!is_http_success(post_response)) {
         vibez.spill("Error: HTTP POST failed with status", post_response.status_code)
         damn cap
     }
@@ -422,7 +422,7 @@ slay test_complete_http_client(config TestConfig) lit {
     params["limit"] = "10"
     
     sus query_string tea = build_query_string(params)
-    ready (query_string == "") {
+    lowkey (query_string == "") {
         vibez.spill("Error: Query string building failed")
         damn cap
     }
@@ -431,7 +431,7 @@ slay test_complete_http_client(config TestConfig) lit {
     sus invalid_request HttpRequest = create_http_request("GET", "https://invalid-domain-that-does-not-exist.example")
     sus error_response HttpResponse = execute_http_request(invalid_request)
     
-    ready (is_http_success(error_response)) {
+    lowkey (is_http_success(error_response)) {
         vibez.spill("Error: Invalid request should have failed")
         damn cap
     }
@@ -450,7 +450,7 @@ slay test_production_checksum_algorithms(config TestConfig) lit {
     vibez.spill("Testing comprehensive checksum algorithms...")
     
     # Initialize checksum system
-    ready (!init_checksum_system()) {
+    lowkey (!init_checksum_system()) {
         vibez.spill("Error: Failed to initialize checksum system")
         damn cap
     }
@@ -477,14 +477,14 @@ slay test_production_checksum_algorithms(config TestConfig) lit {
         sus result ChecksumResult = compute_checksum(test_data, algorithm)
         
         # Verify result is valid
-        ready (result.hex_digest == "") {
+        lowkey (result.hex_digest == "") {
             vibez.spill("Error: Checksum computation failed for", get_algorithm_name(algorithm))
             damn cap
         }
         
         # Verify expected digest length
         sus expected_length drip = get_expected_digest_length(algorithm)
-        ready (stringz.len(result.hex_digest) != expected_length) {
+        lowkey (stringz.len(result.hex_digest) != expected_length) {
             vibez.spill("Error: Incorrect digest length for", get_algorithm_name(algorithm))
             vibez.spill("Expected:", expected_length, "Got:", stringz.len(result.hex_digest))
             damn cap
@@ -498,7 +498,7 @@ slay test_production_checksum_algorithms(config TestConfig) lit {
     
     # Test checksum verification
     sus sha256_result ChecksumResult = results[5]  # SHA-256 is at index 5
-    ready (!verify_checksum(test_data, sha256_result.hex_digest, ChecksumAlgorithm.SHA256)) {
+    lowkey (!verify_checksum(test_data, sha256_result.hex_digest, ChecksumAlgorithm.SHA256)) {
         vibez.spill("Error: Checksum verification failed for SHA-256")
         damn cap
     }
@@ -514,7 +514,7 @@ slay test_production_checksum_algorithms(config TestConfig) lit {
     
     bestie (sus i drip = 0; i < arrayz.len(test_checksums); i = i + 1) {
         sus normalized tea = normalize_checksum(test_checksums[i])
-        ready (normalized != "abcdef1234567890") {
+        lowkey (normalized != "abcdef1234567890") {
             vibez.spill("Error: Checksum normalization failed for:", test_checksums[i])
             vibez.spill("Expected: abcdef1234567890, Got:", normalized)
             damn cap
@@ -523,7 +523,7 @@ slay test_production_checksum_algorithms(config TestConfig) lit {
     
     # Test algorithm detection
     sus detected_md5 ChecksumAlgorithm = get_algorithm_by_name("md5")
-    ready (detected_md5 != ChecksumAlgorithm.MD5) {
+    lowkey (detected_md5 != ChecksumAlgorithm.MD5) {
         vibez.spill("Error: Algorithm detection failed for MD5")
         damn cap
     }
@@ -566,13 +566,13 @@ slay test_enhanced_security_verification(config TestConfig) lit {
     sus default_policy SecurityPolicy = create_default_security_policy()
     sus result VerificationResult = verify_package_integrity(test_package_path, test_metadata, default_policy)
     
-    ready (!result.is_valid) {
+    lowkey (!result.is_valid) {
         vibez.spill("Error: Security verification failed with default policy")
         vibez.spill("Error message:", result.error_message)
         damn cap
     }
     
-    ready (result.trust_level == TrustLevel.Untrusted) {
+    lowkey (result.trust_level == TrustLevel.Untrusted) {
         vibez.spill("Error: Trust level should not be untrusted for valid package")
         damn cap
     }
@@ -582,7 +582,7 @@ slay test_enhanced_security_verification(config TestConfig) lit {
     sus strict_result VerificationResult = verify_package_integrity(test_package_path, test_metadata, strict_policy)
     
     # Should fail with strict policy due to no signature
-    ready (strict_result.is_valid && strict_policy.require_signature) {
+    lowkey (strict_result.is_valid && strict_policy.require_signature) {
         vibez.spill("Warning: Strict security policy should fail without signature")
     }
     
@@ -591,19 +591,19 @@ slay test_enhanced_security_verification(config TestConfig) lit {
     bad_metadata.checksum = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"  # Wrong checksum
     
     sus bad_result VerificationResult = verify_package_integrity(test_package_path, bad_metadata, default_policy)
-    ready (bad_result.is_valid) {
+    lowkey (bad_result.is_valid) {
         vibez.spill("Error: Security verification should fail with wrong checksum")
         damn cap
     }
     
     # Test security report generation
     sus security_report tea = generate_security_report(result)
-    ready (security_report == "") {
+    lowkey (security_report == "") {
         vibez.spill("Error: Security report generation failed")
         damn cap
     }
     
-    ready (!stringz.contains(security_report, "Security Verification Report")) {
+    lowkey (!stringz.contains(security_report, "Security Verification Report")) {
         vibez.spill("Error: Security report doesn't contain expected header")
         damn cap
     }
@@ -629,9 +629,9 @@ slay test_complete_package_operations(config TestConfig) lit {
     sus search_results PackageMetadata[value] = search_packages(pkg_manager, "test")
     
     # Note: This will likely fail in isolated test but demonstrates the API
-    ready (arrayz.len(search_results) == 0) {
+    lowkey (arrayz.len(search_results) == 0) {
         vibez.spill("  - Package search returned no results (expected in test environment)")
-    } otherwise {
+    } highkey {
         vibez.spill("  - Found", arrayz.len(search_results), "packages matching 'test'")
     }
     
@@ -641,17 +641,17 @@ slay test_complete_package_operations(config TestConfig) lit {
     sus version2 PackageVersion = parse_version("1.2.4")
     sus version3 PackageVersion = parse_version("2.0.0")
     
-    ready (compare_versions(version1, version2) != -1) {
+    lowkey (compare_versions(version1, version2) != -1) {
         vibez.spill("Error: Version comparison failed - 1.2.3 should be less than 1.2.4")
         damn cap
     }
     
-    ready (compare_versions(version3, version1) != 1) {
+    lowkey (compare_versions(version3, version1) != 1) {
         vibez.spill("Error: Version comparison failed - 2.0.0 should be greater than 1.2.3")
         damn cap
     }
     
-    ready (compare_versions(version1, version1) != 0) {
+    lowkey (compare_versions(version1, version1) != 0) {
         vibez.spill("Error: Version comparison failed - 1.2.3 should equal 1.2.3")
         damn cap
     }
@@ -662,19 +662,19 @@ slay test_complete_package_operations(config TestConfig) lit {
     sus json_data JsonValue = jsonz.json_parse(test_json)
     sus parsed_metadata PackageMetadata = parse_package_metadata(json_data)
     
-    ready (parsed_metadata.name != "test-pkg") {
+    lowkey (parsed_metadata.name != "test-pkg") {
         vibez.spill("Error: Package metadata parsing failed")
         damn cap
     }
     
     # Test installed packages management
     vibez.spill("  Testing package database...")
-    ready (!save_installed_packages(pkg_manager)) {
+    lowkey (!save_installed_packages(pkg_manager)) {
         vibez.spill("Error: Failed to save installed packages database")
         damn cap
     }
     
-    ready (!load_installed_packages(pkg_manager)) {
+    lowkey (!load_installed_packages(pkg_manager)) {
         vibez.spill("Error: Failed to load installed packages database")
         damn cap
     }
@@ -696,12 +696,12 @@ slay test_complete_package_operations(config TestConfig) lit {
     ]
     
     sus dep_names tea[value] = get_dependency_names(test_deps)
-    ready (arrayz.len(dep_names) != 2) {
+    lowkey (arrayz.len(dep_names) != 2) {
         vibez.spill("Error: Dependency name extraction failed")
         damn cap
     }
     
-    ready (dep_names[0] != "dep1" || dep_names[1] != "dep2") {
+    lowkey (dep_names[0] != "dep1" || dep_names[1] != "dep2") {
         vibez.spill("Error: Dependency names incorrect")
         damn cap
     }
@@ -738,7 +738,7 @@ slay has_toml_key(toml map<tea, TOMLValue>, key tea) lit {
 
 # Run tests when this module is executed
 slay main_character() {
-    ready (run_all_tests()) {
+    lowkey (run_all_tests()) {
         vibez.spill("\n🎉 All production package management tests passed!")
         vibez.spill("Enhanced functionality is working correctly:")
         vibez.spill("  ✓ SAT solver dependency resolution")
@@ -748,7 +748,7 @@ slay main_character() {
         vibez.spill("  ✓ Comprehensive checksum algorithms")
         vibez.spill("  ✓ Enhanced security verification")
         vibez.spill("  ✓ End-to-end package operations")
-    } otherwise {
+    } highkey {
         vibez.spill("\n❌ Some production package management tests failed!")
         vibez.spill("Please review the test output above for details.")
     }

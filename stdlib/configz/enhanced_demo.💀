@@ -71,7 +71,7 @@ region = "us-west-1"
     sus document TomlDocument = parse_toml_string(toml_content)
     
     fr fr Check for parsing errors
-    ready (toml_document_has_errors(document)) {
+    lowkey (toml_document_has_errors(document)) {
         vibez.spill("❌ TOML parsing errors detected:")
         sus errors tea[value] = toml_document_get_errors(document)
         sus error_count drip = len(errors)

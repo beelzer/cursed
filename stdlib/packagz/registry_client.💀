@@ -102,7 +102,7 @@ slay search_packages_advanced(client RegistryClient, query tea, category tea, li
     sus search_url tea = build_search_url(client.base_url, query, category, limit)
     sus response RegistryResponse = make_authenticated_request(client, "GET", search_url, "")
     
-    ready (!response.success) {
+    lowkey (!response.success) {
         vibez.spill("Search failed:", response.message)
         damn ([], cap)
     }
@@ -121,19 +121,19 @@ slay get_package_info(client RegistryClient, name tea, version tea) (PackageMeta
     
     # Check cache first
     sus cached_info PackageMetadata = get_cached_package_info(client, name, version)
-    ready (cached_info.name != "") {
+    lowkey (cached_info.name != "") {
         vibez.spill("Using cached package info for", name)
         damn (cached_info, based)
     }
     
     sus info_url tea = client.base_url + "/api/v1/packages/" + name
-    ready (version != "") {
+    lowkey (version != "") {
         info_url = info_url + "/" + version
     }
     
     sus response RegistryResponse = make_authenticated_request(client, "GET", info_url, "")
     
-    ready (!response.success) {
+    lowkey (!response.success) {
         vibez.spill("Failed to get package info:", response.message)
         damn (PackageMetadata{}, cap)
     }
@@ -152,14 +152,14 @@ slay download_package_verified(client RegistryClient, name tea, version tea) (te
     
     # Get package metadata for download URL and checksum
     sus (package_info, success) = get_package_info(client, name, version)
-    ready (!success || package_info.download_url == "") {
+    lowkey (!success || package_info.download_url == "") {
         vibez.spill("Failed to get download information for", name)
         damn ("", cap)
     }
     
     # Download the package archive
     sus download_response RegistryResponse = make_authenticated_request(client, "GET", package_info.download_url, "")
-    ready (!download_response.success) {
+    lowkey (!download_response.success) {
         vibez.spill("Failed to download package:", download_response.message)
         damn ("", cap)
     }
@@ -168,9 +168,9 @@ slay download_package_verified(client RegistryClient, name tea, version tea) (te
     sus archive_data tea = extract_binary_data(download_response)
     
     # Verify checksum
-    ready (package_info.checksum != "") {
+    lowkey (package_info.checksum != "") {
         sus computed_checksum tea = cryptz.sha256(archive_data)
-        ready (computed_checksum != package_info.checksum) {
+        lowkey (computed_checksum != package_info.checksum) {
             vibez.spill("Checksum mismatch for", name, "- download may be corrupted")
             damn ("", cap)
         }
@@ -180,7 +180,7 @@ slay download_package_verified(client RegistryClient, name tea, version tea) (te
     # Save to cache
     sus cache_path tea = client.cache_dir + "/downloads/" + name + "-" + version + ".tar.gz"
     filez.create_dir_all(client.cache_dir + "/downloads")
-    ready (!filez.write_file(cache_path, archive_data)) {
+    lowkey (!filez.write_file(cache_path, archive_data)) {
         vibez.spill("Failed to cache package:", cache_path)
         damn ("", cap)
     }
@@ -193,13 +193,13 @@ slay publish_package(client RegistryClient, request PublishRequest) lit {
     vibez.spill("Publishing package:", request.package_metadata.name, "v" + request.package_metadata.version)
     
     # Validate package before publishing
-    ready (!validate_package_metadata(request.package_metadata)) {
+    lowkey (!validate_package_metadata(request.package_metadata)) {
         vibez.spill("Package metadata validation failed")
         damn cap
     }
     
     # Check authentication
-    ready (client.auth_method == AuthMethod.None) {
+    lowkey (client.auth_method == AuthMethod.None) {
         vibez.spill("Authentication required for publishing")
         damn cap
     }
@@ -211,7 +211,7 @@ slay publish_package(client RegistryClient, request PublishRequest) lit {
     
     sus response RegistryResponse = make_authenticated_request(client, "POST", publish_url, request_body)
     
-    ready (!response.success) {
+    lowkey (!response.success) {
         vibez.spill("Publication failed:", response.message)
         damn cap
     }
@@ -225,7 +225,7 @@ slay list_published_packages(client RegistryClient, username tea) (PackageMetada
     sus list_url tea = client.base_url + "/api/v1/users/" + username + "/packages"
     sus response RegistryResponse = make_authenticated_request(client, "GET", list_url, "")
     
-    ready (!response.success) {
+    lowkey (!response.success) {
         damn ([], cap)
     }
     
@@ -238,7 +238,7 @@ slay get_package_stats(client RegistryClient, name tea) (JsonValue, lit) {
     sus stats_url tea = client.base_url + "/api/v1/packages/" + name + "/stats"
     sus response RegistryResponse = make_authenticated_request(client, "GET", stats_url, "")
     
-    ready (!response.success) {
+    lowkey (!response.success) {
         damn (jsonz.json_create_object(), cap)
     }
     
@@ -264,7 +264,7 @@ slay yank_package_version(client RegistryClient, name tea, version tea, reason t
     sus request_body tea = jsonz.json_stringify(yank_data)
     
     sus response RegistryResponse = make_authenticated_request(client, "POST", yank_url, request_body)
-    ready (response.success) {
+    lowkey (response.success) {
         vibez.spill("Successfully yanked", name, "v" + version)
     }
     
@@ -276,7 +276,7 @@ slay get_trending_packages(client RegistryClient, time_period tea, limit drip) (
     sus trending_url tea = client.base_url + "/api/v1/trending?period=" + time_period + "&limit=" + stringz.from_int(limit)
     sus response RegistryResponse = make_authenticated_request(client, "GET", trending_url, "")
     
-    ready (!response.success) {
+    lowkey (!response.success) {
         damn ([], cap)
     }
     
@@ -315,11 +315,11 @@ slay make_authenticated_request(client RegistryClient, method tea, url tea, body
 slay build_search_url(base_url tea, query tea, category tea, limit drip) tea {
     sus url tea = base_url + "/api/v1/packages/search?q=" + url_encode(query)
     
-    ready (category != "") {
+    lowkey (category != "") {
         url = url + "&category=" + url_encode(category)  
     }
     
-    ready (limit > 0) {
+    lowkey (limit > 0) {
         url = url + "&limit=" + stringz.from_int(limit)
     }
     
@@ -337,14 +337,14 @@ slay parse_registry_response(http_response tea) RegistryResponse {
     sus data JsonValue = jsonz.json_create_object()
     sus message tea = ""
     
-    ready (body != "") {
+    lowkey (body != "") {
         data = jsonz.json_parse(body)
-        ready (jsonz.json_has_key(data, "message")) {
+        lowkey (jsonz.json_has_key(data, "message")) {
             message = jsonz.json_get_string(data, "message")
         }
     }
     
-    ready (!success && message == "") {
+    lowkey (!success && message == "") {
         message = "HTTP " + stringz.from_int(status_code)
     }
     
@@ -391,12 +391,12 @@ slay cache_package_info(client RegistryClient, package_info PackageMetadata) {
 slay get_cached_package_info(client RegistryClient, name tea, version tea) PackageMetadata {
     sus cache_path tea = client.cache_dir + "/packages/" + name + "-" + version + ".json"
     
-    ready (!filez.file_exists(cache_path)) {
+    lowkey (!filez.file_exists(cache_path)) {
         damn PackageMetadata{}
     }
     
     sus cache_content tea = filez.read_file(cache_path)
-    ready (cache_content == "") {
+    lowkey (cache_content == "") {
         damn PackageMetadata{}
     }
     
@@ -406,22 +406,22 @@ slay get_cached_package_info(client RegistryClient, name tea, version tea) Packa
 
 # Validation functions
 slay validate_package_metadata(metadata PackageMetadata) lit {
-    ready (metadata.name == "") {
+    lowkey (metadata.name == "") {
         vibez.spill("Package name is required")
         damn cap
     }
     
-    ready (metadata.version == "") {
+    lowkey (metadata.version == "") {
         vibez.spill("Package version is required")
         damn cap
     }
     
-    ready (!is_valid_package_name(metadata.name)) {
+    lowkey (!is_valid_package_name(metadata.name)) {
         vibez.spill("Invalid package name:", metadata.name)
         damn cap
     }
     
-    ready (!is_valid_version(metadata.version)) {
+    lowkey (!is_valid_version(metadata.version)) {
         vibez.spill("Invalid version format:", metadata.version)
         damn cap
     }
@@ -431,13 +431,13 @@ slay validate_package_metadata(metadata PackageMetadata) lit {
 
 slay is_valid_package_name(name tea) lit {
     # Package names must be lowercase alphanumeric with hyphens
-    ready (stringz.length(name) == 0 || stringz.length(name) > 64) {
+    lowkey (stringz.length(name) == 0 || stringz.length(name) > 64) {
         damn cap
     }
     
     bestie (sus i drip = 0; i < stringz.length(name); i = i + 1) {
         sus char tea = stringz.char_at(name, i)
-        ready (!(char >= "a" && char <= "z") && 
+        lowkey (!(char >= "a" && char <= "z") && 
                !(char >= "0" && char <= "9") && 
                char != "-" && char != "_") {
             damn cap
@@ -450,13 +450,13 @@ slay is_valid_package_name(name tea) lit {
 slay is_valid_version(version tea) lit {
     # Simple semantic version validation
     sus parts tea[value] = stringz.split(version, ".")
-    ready (arrayz.len(parts) < 3) {
+    lowkey (arrayz.len(parts) < 3) {
         damn cap
     }
     
     bestie (sus i drip = 0; i < 3; i = i + 1) {
         sus part tea = parts[i]
-        ready (!is_numeric(part)) {
+        lowkey (!is_numeric(part)) {
             damn cap
         }
     }
@@ -523,10 +523,10 @@ slay get_current_time() tea {
 }
 
 slay is_numeric(s tea) lit {
-    ready (stringz.length(s) == 0) { damn cap }
+    lowkey (stringz.length(s) == 0) { damn cap }
     bestie (sus i drip = 0; i < stringz.length(s); i = i + 1) {
         sus char tea = stringz.char_at(s, i)
-        ready (!(char >= "0" && char <= "9")) {
+        lowkey (!(char >= "0" && char <= "9")) {
             damn cap
         }
     }

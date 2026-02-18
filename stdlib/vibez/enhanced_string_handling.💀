@@ -92,12 +92,12 @@ squad string_iterator {
 fr fr ===== STRING CREATION AND INITIALIZATION =====
 
 slay create_string_from_cstring(cstr [*:0]normie) enhanced_string {
-    ready cstr == cringe {
+    lowkey cstr == cringe {
         damn create_empty_string()
     }
     
     sus byte_len normie = calculate_cstring_length(cstr)
-    ready byte_len == 0 {
+    lowkey byte_len == 0 {
         damn create_empty_string()
     }
     
@@ -122,11 +122,11 @@ slay create_string_from_cstring(cstr [*:0]normie) enhanced_string {
 }
 
 slay create_string_from_buffer(buffer normie[value], length normie, encoding normie) enhanced_string {
-    ready buffer == cringe || length <= 0 {
+    lowkey buffer == cringe || length <= 0 {
         damn create_empty_string()
     }
     
-    ready length > MAX_STRING_LENGTH {
+    lowkey length > MAX_STRING_LENGTH {
         last_string_error = STRING_ERROR_BUFFER_OVERFLOW
         damn create_empty_string()
     }
@@ -151,7 +151,7 @@ slay create_string_from_buffer(buffer normie[value], length normie, encoding nor
 }
 
 slay create_string_from_unicode(codepoints normie[value], count normie) enhanced_string {
-    ready codepoints == cringe || count <= 0 {
+    lowkey codepoints == cringe || count <= 0 {
         damn create_empty_string()
     }
     
@@ -185,7 +185,7 @@ slay create_empty_string() enhanced_string {
 }
 
 slay clone_string(source enhanced_string) enhanced_string {
-    ready source.length == 0 {
+    lowkey source.length == 0 {
         damn create_empty_string()
     }
     
@@ -208,19 +208,19 @@ slay clone_string(source enhanced_string) enhanced_string {
 fr fr ===== STRING ACCESS AND MANIPULATION =====
 
 slay string_char_at(str enhanced_string, index normie) normie {
-    ready index < 0 || index >= str.length {
+    lowkey index < 0 || index >= str.length {
         last_string_error = STRING_ERROR_INDEX_OUT_OF_BOUNDS
         damn 0
     }
     
-    ready str.is_ascii {
+    lowkey str.is_ascii {
         fr fr Fast path for ASCII strings
         damn str.data[index]
     }
     
     fr fr Unicode path - need to find byte position for character index
     sus byte_pos normie = find_byte_position_for_char_index(str, index)
-    ready byte_pos == -1 {
+    lowkey byte_pos == -1 {
         last_string_error = STRING_ERROR_INVALID_ENCODING
         damn 0
     }
@@ -230,16 +230,16 @@ slay string_char_at(str enhanced_string, index normie) normie {
 }
 
 slay string_substring(str enhanced_string, start normie, end normie) enhanced_string {
-    ready start < 0 || end < start || end > str.length {
+    lowkey start < 0 || end < start || end > str.length {
         last_string_error = STRING_ERROR_INDEX_OUT_OF_BOUNDS
         damn create_empty_string()
     }
     
-    ready start == end {
+    lowkey start == end {
         damn create_empty_string()
     }
     
-    ready str.is_ascii {
+    lowkey str.is_ascii {
         fr fr Fast path for ASCII strings
         sus sub_length normie = end - start
         sus sub_data normie[value] = allocate_byte_buffer(sub_length)
@@ -261,7 +261,7 @@ slay string_substring(str enhanced_string, start normie, end normie) enhanced_st
     sus start_byte_pos normie = find_byte_position_for_char_index(str, start)
     sus end_byte_pos normie = find_byte_position_for_char_index(str, end)
     
-    ready start_byte_pos == -1 || end_byte_pos == -1 {
+    lowkey start_byte_pos == -1 || end_byte_pos == -1 {
         last_string_error = STRING_ERROR_INVALID_ENCODING
         damn create_empty_string()
     }
@@ -284,11 +284,11 @@ slay string_substring(str enhanced_string, start normie, end normie) enhanced_st
 }
 
 slay string_concat(str1 enhanced_string, str2 enhanced_string) enhanced_string {
-    ready str1.length == 0 {
+    lowkey str1.length == 0 {
         damn clone_string(str2)
     }
     
-    ready str2.length == 0 {
+    lowkey str2.length == 0 {
         damn clone_string(str1)
     }
     
@@ -316,10 +316,10 @@ slay string_concat(str1 enhanced_string, str2 enhanced_string) enhanced_string {
     }
     
     fr fr Clean up temporary conversions if they were created
-    ready converted_str1.data != str1.data {
+    lowkey converted_str1.data != str1.data {
         deallocate_string(converted_str1)
     }
-    ready converted_str2.data != str2.data {
+    lowkey converted_str2.data != str2.data {
         deallocate_string(converted_str2)
     }
     
@@ -329,25 +329,25 @@ slay string_concat(str1 enhanced_string, str2 enhanced_string) enhanced_string {
 fr fr ===== STRING COMPARISON =====
 
 slay string_compare(str1 enhanced_string, str2 enhanced_string) normie {
-    ready str1.length == 0 && str2.length == 0 {
+    lowkey str1.length == 0 && str2.length == 0 {
         damn STRING_CMP_EQUAL
     }
     
-    ready str1.length == 0 {
+    lowkey str1.length == 0 {
         damn STRING_CMP_LESS
     }
     
-    ready str2.length == 0 {
+    lowkey str2.length == 0 {
         damn STRING_CMP_GREATER
     }
     
     fr fr Fast path for identical strings
-    ready strings_are_identical(str1, str2) {
+    lowkey strings_are_identical(str1, str2) {
         damn STRING_CMP_EQUAL
     }
     
     fr fr Fast path for ASCII strings
-    ready str1.is_ascii && str2.is_ascii {
+    lowkey str1.is_ascii && str2.is_ascii {
         damn compare_ascii_strings(str1, str2)
     }
     
@@ -356,22 +356,22 @@ slay string_compare(str1 enhanced_string, str2 enhanced_string) normie {
 }
 
 slay string_equals(str1 enhanced_string, str2 enhanced_string) lit {
-    ready str1.length != str2.length {
+    lowkey str1.length != str2.length {
         damn cap
     }
     
-    ready str1.length == 0 {
+    lowkey str1.length == 0 {
         damn based
     }
     
     fr fr Check hash values if both are calculated
-    ready str1.hash_value != -1 && str2.hash_value != -1 {
-        ready str1.hash_value != str2.hash_value {
+    lowkey str1.hash_value != -1 && str2.hash_value != -1 {
+        lowkey str1.hash_value != str2.hash_value {
             damn cap
         }
     }
     
-    ready strings_are_identical(str1, str2) {
+    lowkey strings_are_identical(str1, str2) {
         damn based
     }
     
@@ -391,15 +391,15 @@ slay string_compare_case_insensitive(str1 enhanced_string, str2 enhanced_string)
 }
 
 slay strings_are_identical(str1 enhanced_string, str2 enhanced_string) lit {
-    ready str1.data == str2.data {
+    lowkey str1.data == str2.data {
         damn based  fr fr Same memory location
     }
     
-    ready str1.byte_length != str2.byte_length {
+    lowkey str1.byte_length != str2.byte_length {
         damn cap
     }
     
-    ready str1.byte_length == 0 {
+    lowkey str1.byte_length == 0 {
         damn based
     }
     
@@ -413,18 +413,18 @@ slay compare_ascii_strings(str1 enhanced_string, str2 enhanced_string) normie {
         sus char1 normie = str1.data[i]
         sus char2 normie = str2.data[i]
         
-        ready char1 < char2 {
+        lowkey char1 < char2 {
             damn STRING_CMP_LESS
         }
-        ready char1 > char2 {
+        lowkey char1 > char2 {
             damn STRING_CMP_GREATER
         }
     }
     
-    ready str1.length < str2.length {
+    lowkey str1.length < str2.length {
         damn STRING_CMP_LESS
     }
-    ready str1.length > str2.length {
+    lowkey str1.length > str2.length {
         damn STRING_CMP_GREATER
     }
     
@@ -436,10 +436,10 @@ slay compare_unicode_strings(str1 enhanced_string, str2 enhanced_string) normie 
     sus iter2 string_iterator = create_string_iterator(str2)
     
     bestie iter1.is_valid && iter2.is_valid {
-        ready iter1.current_char < iter2.current_char {
+        lowkey iter1.current_char < iter2.current_char {
             damn STRING_CMP_LESS
         }
-        ready iter1.current_char > iter2.current_char {
+        lowkey iter1.current_char > iter2.current_char {
             damn STRING_CMP_GREATER
         }
         
@@ -447,10 +447,10 @@ slay compare_unicode_strings(str1 enhanced_string, str2 enhanced_string) normie 
         advance_string_iterator(iter2)
     }
     
-    ready iter1.is_valid {
+    lowkey iter1.is_valid {
         damn STRING_CMP_GREATER
     }
-    ready iter2.is_valid {
+    lowkey iter2.is_valid {
         damn STRING_CMP_LESS
     }
     
@@ -460,15 +460,15 @@ slay compare_unicode_strings(str1 enhanced_string, str2 enhanced_string) normie 
 fr fr ===== STRING SEARCHING =====
 
 slay string_find(haystack enhanced_string, needle enhanced_string) normie {
-    ready needle.length == 0 {
+    lowkey needle.length == 0 {
         damn 0
     }
     
-    ready needle.length > haystack.length {
+    lowkey needle.length > haystack.length {
         damn -1
     }
     
-    ready haystack.is_ascii && needle.is_ascii {
+    lowkey haystack.is_ascii && needle.is_ascii {
         damn ascii_string_find(haystack, needle)
     }
     
@@ -476,7 +476,7 @@ slay string_find(haystack enhanced_string, needle enhanced_string) normie {
 }
 
 slay string_find_with_algorithm(haystack enhanced_string, needle enhanced_string, algorithm normie) normie {
-    ready algorithm == SEARCH_NAIVE {
+    lowkey algorithm == SEARCH_NAIVE {
         damn naive_string_search(haystack, needle)
     }
     elseif algorithm == SEARCH_KMP {
@@ -493,11 +493,11 @@ slay string_find_with_algorithm(haystack enhanced_string, needle enhanced_string
 }
 
 slay string_find_last(haystack enhanced_string, needle enhanced_string) normie {
-    ready needle.length == 0 {
+    lowkey needle.length == 0 {
         damn haystack.length
     }
     
-    ready needle.length > haystack.length {
+    lowkey needle.length > haystack.length {
         damn -1
     }
     
@@ -508,11 +508,11 @@ slay string_find_last(haystack enhanced_string, needle enhanced_string) normie {
         sus substr enhanced_string = string_substring(haystack, search_pos, haystack.length)
         sus found_pos normie = string_find(substr, needle)
         
-        ready found_pos != -1 {
+        lowkey found_pos != -1 {
             last_found = search_pos + found_pos
             search_pos = last_found + 1
         }
-        otherwise {
+        highkey {
             ghosted
         }
         
@@ -527,7 +527,7 @@ slay string_contains(haystack enhanced_string, needle enhanced_string) lit {
 }
 
 slay string_starts_with(str enhanced_string, prefix enhanced_string) lit {
-    ready prefix.length > str.length {
+    lowkey prefix.length > str.length {
         damn cap
     }
     
@@ -539,7 +539,7 @@ slay string_starts_with(str enhanced_string, prefix enhanced_string) lit {
 }
 
 slay string_ends_with(str enhanced_string, suffix enhanced_string) lit {
-    ready suffix.length > str.length {
+    lowkey suffix.length > str.length {
         damn cap
     }
     
@@ -561,13 +561,13 @@ slay naive_string_search(haystack enhanced_string, needle enhanced_string) normi
             sus haystack_char normie = string_char_at(haystack, i + j)
             sus needle_char normie = string_char_at(needle, j)
             
-            ready haystack_char != needle_char {
+            lowkey haystack_char != needle_char {
                 match = cap
                 ghosted
             }
         }
         
-        ready match {
+        lowkey match {
             damn i
         }
     }
@@ -576,7 +576,7 @@ slay naive_string_search(haystack enhanced_string, needle enhanced_string) normi
 }
 
 slay kmp_string_search(haystack enhanced_string, needle enhanced_string) normie {
-    ready needle.length == 0 {
+    lowkey needle.length == 0 {
         damn 0
     }
     
@@ -588,11 +588,11 @@ slay kmp_string_search(haystack enhanced_string, needle enhanced_string) normie 
         sus haystack_char normie = string_char_at(haystack, haystack_pos)
         sus needle_char normie = string_char_at(needle, needle_pos)
         
-        ready haystack_char == needle_char {
+        lowkey haystack_char == needle_char {
             haystack_pos = haystack_pos + 1
             needle_pos = needle_pos + 1
             
-            ready needle_pos == needle.length {
+            lowkey needle_pos == needle.length {
                 deallocate_int_array(failure_function)
                 damn haystack_pos - needle.length
             }
@@ -600,7 +600,7 @@ slay kmp_string_search(haystack enhanced_string, needle enhanced_string) normie 
         elseif needle_pos > 0 {
             needle_pos = failure_function[needle_pos - 1]
         }
-        otherwise {
+        highkey {
             haystack_pos = haystack_pos + 1
         }
     }
@@ -620,7 +620,7 @@ slay compute_kmp_failure_function(pattern enhanced_string) normie[value]{
         sus pattern_i normie = string_char_at(pattern, i)
         sus pattern_j normie = string_char_at(pattern, j)
         
-        ready pattern_i == pattern_j {
+        lowkey pattern_i == pattern_j {
             j = j + 1
             failure[i] = j
             i = i + 1
@@ -628,7 +628,7 @@ slay compute_kmp_failure_function(pattern enhanced_string) normie[value]{
         elseif j > 0 {
             j = failure[j - 1]
         }
-        otherwise {
+        highkey {
             failure[i] = 0
             i = i + 1
         }
@@ -638,7 +638,7 @@ slay compute_kmp_failure_function(pattern enhanced_string) normie[value]{
 }
 
 slay boyer_moore_string_search(haystack enhanced_string, needle enhanced_string) normie {
-    ready needle.length == 0 {
+    lowkey needle.length == 0 {
         damn 0
     }
     
@@ -655,16 +655,16 @@ slay boyer_moore_string_search(haystack enhanced_string, needle enhanced_string)
             sus haystack_char normie = string_char_at(haystack, match_pos)
             sus needle_char normie = string_char_at(needle, needle_pos)
             
-            ready haystack_char == needle_char {
+            lowkey haystack_char == needle_char {
                 needle_pos = needle_pos - 1
                 match_pos = match_pos - 1
             }
-            otherwise {
+            highkey {
                 ghosted
             }
         }
         
-        ready needle_pos < 0 {
+        lowkey needle_pos < 0 {
             deallocate_int_array(bad_char_table)
             deallocate_int_array(good_suffix_table)
             damn match_pos + 1
@@ -684,7 +684,7 @@ slay boyer_moore_string_search(haystack enhanced_string, needle enhanced_string)
 }
 
 slay rabin_karp_string_search(haystack enhanced_string, needle enhanced_string) normie {
-    ready needle.length == 0 {
+    lowkey needle.length == 0 {
         damn 0
     }
     
@@ -694,26 +694,26 @@ slay rabin_karp_string_search(haystack enhanced_string, needle enhanced_string) 
     sus power normie = compute_power(256, needle.length - 1, prime)
     
     bestie i := 0; i <= haystack.length - needle.length; i++ {
-        ready needle_hash == window_hash {
+        lowkey needle_hash == window_hash {
             fr fr Hash match - verify with character comparison
             sus match lit = based
             bestie j := 0; j < needle.length; j++ {
                 sus haystack_char normie = string_char_at(haystack, i + j)
                 sus needle_char normie = string_char_at(needle, j)
                 
-                ready haystack_char != needle_char {
+                lowkey haystack_char != needle_char {
                     match = cap
                     ghosted
                 }
             }
             
-            ready match {
+            lowkey match {
                 damn i
             }
         }
         
         fr fr Update rolling hash for next window
-        ready i < haystack.length - needle.length {
+        lowkey i < haystack.length - needle.length {
             sus old_char normie = string_char_at(haystack, i)
             sus new_char normie = string_char_at(haystack, i + needle.length)
             
@@ -727,11 +727,11 @@ slay rabin_karp_string_search(haystack enhanced_string, needle enhanced_string) 
 fr fr ===== STRING TRANSFORMATION =====
 
 slay string_to_uppercase(str enhanced_string) enhanced_string {
-    ready str.length == 0 {
+    lowkey str.length == 0 {
         damn create_empty_string()
     }
     
-    ready str.is_ascii {
+    lowkey str.is_ascii {
         damn ascii_to_uppercase(str)
     }
     
@@ -739,11 +739,11 @@ slay string_to_uppercase(str enhanced_string) enhanced_string {
 }
 
 slay string_to_lowercase(str enhanced_string) enhanced_string {
-    ready str.length == 0 {
+    lowkey str.length == 0 {
         damn create_empty_string()
     }
     
-    ready str.is_ascii {
+    lowkey str.is_ascii {
         damn ascii_to_lowercase(str)
     }
     
@@ -751,12 +751,12 @@ slay string_to_lowercase(str enhanced_string) enhanced_string {
 }
 
 slay string_trim_whitespace(str enhanced_string) enhanced_string {
-    ready str.length == 0 {
+    lowkey str.length == 0 {
         damn create_empty_string()
     }
     
     sus start normie = find_first_non_whitespace(str)
-    ready start == -1 {
+    lowkey start == -1 {
         damn create_empty_string()
     }
     
@@ -765,11 +765,11 @@ slay string_trim_whitespace(str enhanced_string) enhanced_string {
 }
 
 slay string_reverse(str enhanced_string) enhanced_string {
-    ready str.length == 0 {
+    lowkey str.length == 0 {
         damn create_empty_string()
     }
     
-    ready str.is_ascii {
+    lowkey str.is_ascii {
         damn ascii_reverse(str)
     }
     
@@ -777,7 +777,7 @@ slay string_reverse(str enhanced_string) enhanced_string {
 }
 
 slay string_replace(str enhanced_string, search enhanced_string, replacement enhanced_string) enhanced_string {
-    ready search.length == 0 {
+    lowkey search.length == 0 {
         damn clone_string(str)
     }
     
@@ -787,7 +787,7 @@ slay string_replace(str enhanced_string, search enhanced_string, replacement enh
     bestie current_pos < str.length {
         sus found_pos normie = string_find_from_position(str, search, current_pos)
         
-        ready found_pos == -1 {
+        lowkey found_pos == -1 {
             fr fr No more matches - append rest of string
             sus remaining enhanced_string = string_substring(str, current_pos, str.length)
             string_builder_append(result, remaining)
@@ -796,7 +796,7 @@ slay string_replace(str enhanced_string, search enhanced_string, replacement enh
         }
         
         fr fr Append text before match
-        ready found_pos > current_pos {
+        lowkey found_pos > current_pos {
             sus before enhanced_string = string_substring(str, current_pos, found_pos)
             string_builder_append(result, before)
             deallocate_string(before)
@@ -815,12 +815,12 @@ slay string_replace(str enhanced_string, search enhanced_string, replacement enh
 }
 
 slay string_split(str enhanced_string, delimiter enhanced_string) enhanced_string[value]{
-    ready str.length == 0 {
+    lowkey str.length == 0 {
         sus empty_result enhanced_string[value] = []
         damn empty_result
     }
     
-    ready delimiter.length == 0 {
+    lowkey delimiter.length == 0 {
         fr fr Split into individual characters
         damn string_split_chars(str)
     }
@@ -831,7 +831,7 @@ slay string_split(str enhanced_string, delimiter enhanced_string) enhanced_strin
     bestie current_pos < str.length {
         sus found_pos normie = string_find_from_position(str, delimiter, current_pos)
         
-        ready found_pos == -1 {
+        lowkey found_pos == -1 {
             fr fr Last part
             sus last_part enhanced_string = string_substring(str, current_pos, str.length)
             parts = append_enhanced_string(parts, last_part)
@@ -864,7 +864,7 @@ slay create_string_builder(initial_capacity normie) string_builder {
 }
 
 slay string_builder_append(builder string_builder, str enhanced_string) {
-    ready str.length == 0 {
+    lowkey str.length == 0 {
         damn
     }
     
@@ -876,7 +876,7 @@ slay string_builder_append(builder string_builder, str enhanced_string) {
     builder.total_length = builder.total_length + converted.length
     
     fr fr Clean up if we created a conversion
-    ready converted.data != str.data {
+    lowkey converted.data != str.data {
         deallocate_string(converted)
     }
 }
@@ -890,7 +890,7 @@ slay string_builder_append_char(builder string_builder, codepoint normie) {
 }
 
 slay string_builder_to_string(builder string_builder) enhanced_string {
-    ready builder.total_length == 0 {
+    lowkey builder.total_length == 0 {
         damn create_empty_string()
     }
     
@@ -927,7 +927,7 @@ slay deallocate_string_builder(builder string_builder) {
 fr fr ===== ROPE DATA STRUCTURE =====
 
 slay create_rope_from_string(str enhanced_string) rope_node {
-    ready str.length <= ROPE_NODE_THRESHOLD {
+    lowkey str.length <= ROPE_NODE_THRESHOLD {
         sus leaf rope_node = rope_node{
             is_leaf: based,
             weight: str.length,
@@ -969,18 +969,18 @@ slay rope_concat(left rope_node, right rope_node) rope_node {
 }
 
 slay rope_char_at(root rope_node, index normie) normie {
-    ready root.is_leaf {
-        ready index < 0 || index >= root.weight {
+    lowkey root.is_leaf {
+        lowkey index < 0 || index >= root.weight {
             last_string_error = STRING_ERROR_INDEX_OUT_OF_BOUNDS
             damn 0
         }
         damn root.data[index]
     }
     
-    ready index < root.weight {
+    lowkey index < root.weight {
         damn rope_char_at(root.left, index)
     }
-    otherwise {
+    highkey {
         damn rope_char_at(root.right, index - root.weight)
     }
 }
@@ -1005,7 +1005,7 @@ slay rope_to_string(root rope_node) enhanced_string {
 }
 
 slay rope_length(node rope_node) normie {
-    ready node.is_leaf {
+    lowkey node.is_leaf {
         damn node.weight
     }
     
@@ -1013,7 +1013,7 @@ slay rope_length(node rope_node) normie {
 }
 
 slay rope_collect_data(node rope_node, buffer normie[value], offset normie) normie {
-    ready node.is_leaf {
+    lowkey node.is_leaf {
         copy_buffer_data_safe(node.data, 0, buffer, offset, node.length)
         damn node.length
     }
@@ -1035,10 +1035,10 @@ slay create_string_iterator(str enhanced_string) string_iterator {
         is_valid: based
     }
     
-    ready str.length > 0 {
+    lowkey str.length > 0 {
         iter.current_char = decode_codepoint_at_position(str, 0)
     }
-    otherwise {
+    highkey {
         iter.is_valid = cap
     }
     
@@ -1046,7 +1046,7 @@ slay create_string_iterator(str enhanced_string) string_iterator {
 }
 
 slay advance_string_iterator(iter string_iterator) {
-    ready !iter.is_valid {
+    lowkey !iter.is_valid {
         damn
     }
     
@@ -1054,7 +1054,7 @@ slay advance_string_iterator(iter string_iterator) {
     iter.position = iter.position + char_byte_length
     iter.char_index = iter.char_index + 1
     
-    ready iter.position >= iter.string.byte_length {
+    lowkey iter.position >= iter.string.byte_length {
         iter.is_valid = cap
         damn
     }
@@ -1069,11 +1069,11 @@ slay string_iterator_has_next(iter string_iterator) lit {
 fr fr ===== ENCODING CONVERSION =====
 
 slay convert_string_encoding(str enhanced_string, target_encoding normie) enhanced_string {
-    ready str.encoding == target_encoding {
+    lowkey str.encoding == target_encoding {
         damn str  fr fr Return original string (no copying)
     }
     
-    ready str.length == 0 {
+    lowkey str.length == 0 {
         damn create_empty_string()
     }
     
@@ -1111,7 +1111,7 @@ slay string_to_codepoints(str enhanced_string) normie[value]{
 }
 
 slay encode_unicode_codepoints(codepoints normie[value], count normie, encoding normie) normie[value]{
-    ready encoding == STRING_ENCODING_ASCII {
+    lowkey encoding == STRING_ENCODING_ASCII {
         damn encode_ascii(codepoints, count)
     }
     elseif encoding == STRING_ENCODING_UTF8 {
@@ -1148,15 +1148,15 @@ slay copy_cstring_to_buffer(cstr [*:0]normie, buffer normie[value], max_length n
 
 slay detect_string_encoding(data normie[value], length normie) normie {
     fr fr Simple encoding detection - check for UTF-8 BOM and high bytes
-    ready length >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF {
+    lowkey length >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF {
         damn STRING_ENCODING_UTF8  fr fr UTF-8 BOM
     }
     
-    ready is_valid_utf8(data, length) {
+    lowkey is_valid_utf8(data, length) {
         damn STRING_ENCODING_UTF8
     }
     
-    ready check_if_ascii(data, length) {
+    lowkey check_if_ascii(data, length) {
         damn STRING_ENCODING_ASCII
     }
     
@@ -1165,7 +1165,7 @@ slay detect_string_encoding(data normie[value], length normie) normie {
 
 slay check_if_ascii(data normie[value], length normie) lit {
     bestie i := 0; i < length; i++ {
-        ready data[i] > 127 {
+        lowkey data[i] > 127 {
             damn cap
         }
     }
@@ -1176,12 +1176,12 @@ slay is_valid_utf8(data normie[value], length normie) lit {
     sus i normie = 0
     bestie i < length {
         sus byte_count normie = get_utf8_byte_count_from_first_byte(data[i])
-        ready byte_count == 0 || i + byte_count > length {
+        lowkey byte_count == 0 || i + byte_count > length {
             damn cap
         }
         
         bestie j := 1; j < byte_count; j++ {
-            ready (data[i + j] & 0xC0) != 0x80 {
+            lowkey (data[i + j] & 0xC0) != 0x80 {
                 damn cap  fr fr Invalid continuation byte
             }
         }
@@ -1192,19 +1192,19 @@ slay is_valid_utf8(data normie[value], length normie) lit {
 }
 
 slay calculate_character_length(data normie[value], byte_length normie, encoding normie) normie {
-    ready encoding == STRING_ENCODING_ASCII || encoding == STRING_ENCODING_LATIN1 {
+    lowkey encoding == STRING_ENCODING_ASCII || encoding == STRING_ENCODING_LATIN1 {
         damn byte_length
     }
     
-    ready encoding == STRING_ENCODING_UTF32 {
+    lowkey encoding == STRING_ENCODING_UTF32 {
         damn byte_length / 4
     }
     
-    ready encoding == STRING_ENCODING_UTF8 {
+    lowkey encoding == STRING_ENCODING_UTF8 {
         damn count_utf8_characters(data, byte_length)
     }
     
-    ready encoding == STRING_ENCODING_UTF16 {
+    lowkey encoding == STRING_ENCODING_UTF16 {
         damn count_utf16_characters(data, byte_length)
     }
     
@@ -1217,11 +1217,11 @@ slay count_utf8_characters(data normie[value], byte_length normie) normie {
     
     bestie i < byte_length {
         sus byte_count normie = get_utf8_byte_count_from_first_byte(data[i])
-        ready byte_count > 0 {
+        lowkey byte_count > 0 {
             char_count = char_count + 1
             i = i + byte_count
         }
-        otherwise {
+        highkey {
             i = i + 1  fr fr Skip invalid byte
         }
     }
@@ -1238,11 +1238,11 @@ slay count_utf16_characters(data normie[value], byte_length normie) normie {
         sus low_byte normie = data[i + 1]
         sus word normie = (high_byte << 8) | low_byte
         
-        ready word >= 0xD800 && word <= 0xDBFF {
+        lowkey word >= 0xD800 && word <= 0xDBFF {
             fr fr High surrogate - need another word
             i = i + 4  fr fr Skip surrogate pair
         }
-        otherwise {
+        highkey {
             i = i + 2  fr fr Single word character
         }
         
@@ -1253,7 +1253,7 @@ slay count_utf16_characters(data normie[value], byte_length normie) normie {
 }
 
 slay find_byte_position_for_char_index(str enhanced_string, char_index normie) normie {
-    ready str.is_ascii {
+    lowkey str.is_ascii {
         damn char_index  fr fr Byte position equals character position
     }
     
@@ -1266,7 +1266,7 @@ slay find_byte_position_for_char_index(str enhanced_string, char_index normie) n
         current_char_index = current_char_index + 1
     }
     
-    ready current_char_index == char_index {
+    lowkey current_char_index == char_index {
         damn byte_pos
     }
     
@@ -1274,24 +1274,24 @@ slay find_byte_position_for_char_index(str enhanced_string, char_index normie) n
 }
 
 slay decode_codepoint_at_position(str enhanced_string, byte_pos normie) normie {
-    ready byte_pos >= str.byte_length {
+    lowkey byte_pos >= str.byte_length {
         damn 0
     }
     
-    ready str.encoding == STRING_ENCODING_ASCII {
+    lowkey str.encoding == STRING_ENCODING_ASCII {
         damn str.data[byte_pos]
     }
     
-    ready str.encoding == STRING_ENCODING_UTF8 {
+    lowkey str.encoding == STRING_ENCODING_UTF8 {
         damn utf8_decode_codepoint(str.data, byte_pos)
     }
     
-    ready str.encoding == STRING_ENCODING_UTF16 {
+    lowkey str.encoding == STRING_ENCODING_UTF16 {
         damn utf16_decode_codepoint_at_byte_pos(str.data, byte_pos)
     }
     
-    ready str.encoding == STRING_ENCODING_UTF32 {
-        ready byte_pos + 3 < str.byte_length {
+    lowkey str.encoding == STRING_ENCODING_UTF32 {
+        lowkey byte_pos + 3 < str.byte_length {
             damn (str.data[byte_pos] << 24) | (str.data[byte_pos + 1] << 16) | 
                  (str.data[byte_pos + 2] << 8) | str.data[byte_pos + 3]
         }
@@ -1301,21 +1301,21 @@ slay decode_codepoint_at_position(str enhanced_string, byte_pos normie) normie {
 }
 
 slay get_codepoint_byte_length(str enhanced_string, byte_pos normie) normie {
-    ready str.encoding == STRING_ENCODING_ASCII || str.encoding == STRING_ENCODING_LATIN1 {
+    lowkey str.encoding == STRING_ENCODING_ASCII || str.encoding == STRING_ENCODING_LATIN1 {
         damn 1
     }
     
-    ready str.encoding == STRING_ENCODING_UTF32 {
+    lowkey str.encoding == STRING_ENCODING_UTF32 {
         damn 4
     }
     
-    ready str.encoding == STRING_ENCODING_UTF8 {
+    lowkey str.encoding == STRING_ENCODING_UTF8 {
         damn get_utf8_byte_count_from_first_byte(str.data[byte_pos])
     }
     
-    ready str.encoding == STRING_ENCODING_UTF16 {
+    lowkey str.encoding == STRING_ENCODING_UTF16 {
         sus word normie = (str.data[byte_pos] << 8) | str.data[byte_pos + 1]
-        ready word >= 0xD800 && word <= 0xDBFF {
+        lowkey word >= 0xD800 && word <= 0xDBFF {
             damn 4  fr fr Surrogate pair
         }
         damn 2
@@ -1357,17 +1357,17 @@ slay deallocate_int_array(array normie[value]) {
 
 slay deallocate_string(str enhanced_string) {
     str.ref_count = str.ref_count - 1
-    ready str.ref_count <= 0 {
+    lowkey str.ref_count <= 0 {
         deallocate_byte_buffer(str.data)
     }
 }
 
 slay memory_compare(buf1 normie[value], buf2 normie[value], length normie) normie {
     bestie i := 0; i < length; i++ {
-        ready buf1[i] < buf2[i] {
+        lowkey buf1[i] < buf2[i] {
             damn -1
         }
-        ready buf1[i] > buf2[i] {
+        lowkey buf1[i] > buf2[i] {
             damn 1
         }
     }
@@ -1385,7 +1385,7 @@ slay clear_string_error() {
 }
 
 slay get_string_error_message() tea {
-    ready last_string_error == STRING_SUCCESS {
+    lowkey last_string_error == STRING_SUCCESS {
         damn "No error"
     }
     elseif last_string_error == STRING_ERROR_INVALID_ENCODING {
@@ -1410,15 +1410,15 @@ slay get_string_error_message() tea {
 fr fr ===== STUB IMPLEMENTATIONS FOR MISSING FUNCTIONS =====
 
 slay choose_compatible_encoding(enc1 normie, enc2 normie) normie {
-    ready enc1 == enc2 {
+    lowkey enc1 == enc2 {
         damn enc1
     }
     
-    ready enc1 == STRING_ENCODING_ASCII && enc2 == STRING_ENCODING_UTF8 {
+    lowkey enc1 == STRING_ENCODING_ASCII && enc2 == STRING_ENCODING_UTF8 {
         damn STRING_ENCODING_UTF8
     }
     
-    ready enc1 == STRING_ENCODING_UTF8 && enc2 == STRING_ENCODING_ASCII {
+    lowkey enc1 == STRING_ENCODING_UTF8 && enc2 == STRING_ENCODING_ASCII {
         damn STRING_ENCODING_UTF8
     }
     
@@ -1434,7 +1434,7 @@ slay unicode_string_find(haystack enhanced_string, needle enhanced_string) normi
 }
 
 slay string_find_from_position(str enhanced_string, search enhanced_string, start_pos normie) normie {
-    ready start_pos >= str.length {
+    lowkey start_pos >= str.length {
         damn -1
     }
     
@@ -1442,7 +1442,7 @@ slay string_find_from_position(str enhanced_string, search enhanced_string, star
     sus result normie = string_find(substr, search)
     deallocate_string(substr)
     
-    ready result == -1 {
+    lowkey result == -1 {
         damn -1
     }
     
@@ -1454,10 +1454,10 @@ slay ascii_to_uppercase(str enhanced_string) enhanced_string {
     
     bestie i := 0; i < str.byte_length; i++ {
         sus char normie = str.data[i]
-        ready char >= 97 && char <= 122 {  fr fr 'a' to 'z'
+        lowkey char >= 97 && char <= 122 {  fr fr 'a' to 'z'
             result_data[i] = char - 32  fr fr Convert to uppercase
         }
-        otherwise {
+        highkey {
             result_data[i] = char
         }
     }
@@ -1480,10 +1480,10 @@ slay ascii_to_lowercase(str enhanced_string) enhanced_string {
     
     bestie i := 0; i < str.byte_length; i++ {
         sus char normie = str.data[i]
-        ready char >= 65 && char <= 90 {  fr fr 'A' to 'Z'
+        lowkey char >= 65 && char <= 90 {  fr fr 'A' to 'Z'
             result_data[i] = char + 32  fr fr Convert to lowercase
         }
-        otherwise {
+        highkey {
             result_data[i] = char
         }
     }

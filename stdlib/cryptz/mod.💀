@@ -107,35 +107,35 @@ slay aes_encrypt(plaintext tea, key tea, mode tea) tea {
     
     fr fr Validate key size
     sus key_bits drip = string_length(key) * 8
-    ready (key_bits != 128 && key_bits != 192 && key_bits != 256) {
+    lowkey (key_bits != 128 && key_bits != 192 && key_bits != 256) {
         vibez.spill("Invalid AES key size: " + json_number_to_string(key_bits) + " bits")
         damn ""
     }
     
     fr fr Generate random IV for CBC/GCM modes
-    ready (mode == "CBC" || mode == "GCM") {
+    lowkey (mode == "CBC" || mode == "GCM") {
         context.iv = generate_random_bytes(16)
     }
     
     sus encrypted_data tea = ""
     
-    ready (mode == "ECB") {
+    lowkey (mode == "ECB") {
         encrypted_data = aes_ecb_encrypt(plaintext, key)
-    } otherwise ready (mode == "CBC") {
+    } highkey lowkey (mode == "CBC") {
         encrypted_data = aes_cbc_encrypt(plaintext, key, context.iv)
-    } otherwise ready (mode == "GCM") {
+    } highkey lowkey (mode == "GCM") {
         encrypted_data = aes_gcm_encrypt(plaintext, key, context.iv)
-    } otherwise ready (mode == "CTR") {
+    } highkey lowkey (mode == "CTR") {
         encrypted_data = aes_ctr_encrypt(plaintext, key)
-    } otherwise {
+    } highkey {
         vibez.spill("Unsupported AES mode: " + mode)
         damn ""
     }
     
     fr fr Prepend IV for modes that need it
-    ready (mode == "CBC" || mode == "GCM") {
+    lowkey (mode == "CBC" || mode == "GCM") {
         damn context.iv + encrypted_data
-    } otherwise {
+    } highkey {
         damn encrypted_data
     }
 }
@@ -150,21 +150,21 @@ slay aes_decrypt(ciphertext tea, key tea, mode tea) tea {
     
     sus decrypted_data tea = ""
     
-    ready (mode == "CBC" || mode == "GCM") {
+    lowkey (mode == "CBC" || mode == "GCM") {
         fr fr Extract IV from beginning of ciphertext
         context.iv = substring(ciphertext, 0, 16)
         sus actual_ciphertext tea = substring(ciphertext, 16, string_length(ciphertext) - 16)
         
-        ready (mode == "CBC") {
+        lowkey (mode == "CBC") {
             decrypted_data = aes_cbc_decrypt(actual_ciphertext, key, context.iv)
-        } otherwise {
+        } highkey {
             decrypted_data = aes_gcm_decrypt(actual_ciphertext, key, context.iv)
         }
-    } otherwise ready (mode == "ECB") {
+    } highkey lowkey (mode == "ECB") {
         decrypted_data = aes_ecb_decrypt(ciphertext, key)
-    } otherwise ready (mode == "CTR") {
+    } highkey lowkey (mode == "CTR") {
         decrypted_data = aes_ctr_decrypt(ciphertext, key)
-    } otherwise {
+    } highkey {
         vibez.spill("Unsupported AES mode: " + mode)
         damn ""
     }
@@ -174,12 +174,12 @@ slay aes_decrypt(ciphertext tea, key tea, mode tea) tea {
 
 slay chacha20_encrypt(plaintext tea, key tea, nonce tea) tea {
     fr fr ChaCha20 stream cipher (modern alternative to AES)
-    ready (string_length(key) != 32) {
+    lowkey (string_length(key) != 32) {
         vibez.spill("ChaCha20 requires 32-byte key")
         damn ""
     }
     
-    ready (string_length(nonce) != 12) {
+    lowkey (string_length(nonce) != 12) {
         vibez.spill("ChaCha20 requires 12-byte nonce")
         damn ""
     }
@@ -199,7 +199,7 @@ fr fr ===== ASYMMETRIC CRYPTOGRAPHY =====
 
 slay rsa_generate_keypair(key_size drip) KeyPair {
     fr fr Generate RSA key pair
-    ready (key_size != 2048 && key_size != 3072 && key_size != 4096) {
+    lowkey (key_size != 2048 && key_size != 3072 && key_size != 4096) {
         vibez.spill("Unsupported RSA key size: " + json_number_to_string(key_size))
         sus empty_keypair KeyPair = KeyPair{}
         damn empty_keypair
@@ -266,7 +266,7 @@ slay rsa_decrypt(ciphertext tea, private_key tea) tea {
 
 slay ecdsa_generate_keypair(curve tea) KeyPair {
     fr fr Generate ECDSA key pair
-    ready (curve != "P-256" && curve != "P-384" && curve != "P-521") {
+    lowkey (curve != "P-256" && curve != "P-384" && curve != "P-521") {
         vibez.spill("Unsupported ECDSA curve: " + curve)
         sus empty_keypair KeyPair = KeyPair{}
         damn empty_keypair
@@ -305,11 +305,11 @@ slay rsa_sign(message tea, private_key tea, hash_algorithm tea) Signature {
     signature.hash_algorithm = hash_algorithm
     
     sus hash_value tea = ""
-    ready (hash_algorithm == "SHA-256") {
+    lowkey (hash_algorithm == "SHA-256") {
         hash_value = sha256_hash(message)
-    } otherwise ready (hash_algorithm == "SHA-512") {
+    } highkey lowkey (hash_algorithm == "SHA-512") {
         hash_value = sha512_hash(message)
-    } otherwise {
+    } highkey {
         vibez.spill("Unsupported hash algorithm: " + hash_algorithm)
         damn signature
     }
@@ -327,11 +327,11 @@ slay rsa_sign(message tea, private_key tea, hash_algorithm tea) Signature {
 slay rsa_verify(message tea, signature Signature, public_key tea) lit {
     fr fr Verify RSA signature
     sus hash_value tea = ""
-    ready (signature.hash_algorithm == "SHA-256") {
+    lowkey (signature.hash_algorithm == "SHA-256") {
         hash_value = sha256_hash(message)
-    } otherwise ready (signature.hash_algorithm == "SHA-512") {
+    } highkey lowkey (signature.hash_algorithm == "SHA-512") {
         hash_value = sha512_hash(message)
-    } otherwise {
+    } highkey {
         vibez.spill("Unsupported hash algorithm: " + signature.hash_algorithm)
         damn cringe
     }
@@ -342,9 +342,9 @@ slay rsa_verify(message tea, signature Signature, public_key tea) lit {
     
     sus is_valid lit = constant_time_compare(decrypted_signature, expected_padded)
     
-    ready (is_valid) {
+    lowkey (is_valid) {
         vibez.spill("RSA signature verification: VALID")
-    } otherwise {
+    } highkey {
         vibez.spill("RSA signature verification: INVALID")
     }
     
@@ -358,11 +358,11 @@ slay ecdsa_sign(message tea, private_key tea, hash_algorithm tea) Signature {
     signature.hash_algorithm = hash_algorithm
     
     sus hash_value tea = ""
-    ready (hash_algorithm == "SHA-256") {
+    lowkey (hash_algorithm == "SHA-256") {
         hash_value = sha256_hash(message)
-    } otherwise ready (hash_algorithm == "SHA-512") {
+    } highkey lowkey (hash_algorithm == "SHA-512") {
         hash_value = sha512_hash(message)
-    } otherwise {
+    } highkey {
         vibez.spill("Unsupported hash algorithm: " + hash_algorithm)
         damn signature
     }
@@ -385,7 +385,7 @@ fr fr ===== KEY DERIVATION AND EXCHANGE =====
 
 slay pbkdf2_derive_key(password tea, salt tea, iterations drip, key_length drip) tea {
     fr fr PBKDF2 key derivation function
-    ready (iterations < 1000) {
+    lowkey (iterations < 1000) {
         vibez.spill("WARNING: PBKDF2 iterations too low. Minimum 100,000 recommended.")
     }
     
@@ -425,7 +425,7 @@ slay scrypt_derive_key(password tea, salt tea, n drip, r drip, p drip, key_lengt
 
 slay hkdf_extract(salt tea, input_key_material tea) tea {
     fr fr HKDF Extract step
-    ready (salt == "") {
+    lowkey (salt == "") {
         salt = create_zero_bytes(32)  fr fr Use zero salt if none provided
     }
     
@@ -451,7 +451,7 @@ fr fr ===== CRYPTOGRAPHIC RANDOM NUMBER GENERATION =====
 
 slay generate_random_bytes(length drip) tea {
     fr fr Cryptographically secure random bytes using runtime bridge
-    ready length <= 0 { damn "" }
+    lowkey length <= 0 { damn "" }
     
     sus buffer normie[value] = make(normie[value], length)
     runtime_secure_random_bytes(&buffer[0], length)
@@ -462,7 +462,7 @@ slay generate_random_bytes(length drip) tea {
 slay generate_random_password(length drip, include_symbols lit) tea {
     fr fr Generate secure random password
     sus charset tea = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    ready (include_symbols) {
+    lowkey (include_symbols) {
         charset = charset + "!@#$%^&*()_+-=[]{}|;:,.<>?"
     }
     
@@ -482,7 +482,7 @@ fr fr ===== SECURE COMPARISON AND UTILITIES =====
 
 slay constant_time_compare(a tea, b tea) lit {
     fr fr Constant-time string comparison to prevent timing attacks
-    ready (string_length(a) != string_length(b)) {
+    lowkey (string_length(a) != string_length(b)) {
         damn cringe
     }
     
@@ -524,10 +524,10 @@ slay base64_encode(data tea) tea {
         sus byte2 drip = 0
         sus byte3 drip = 0
         
-        ready (i + 1 < string_length(data)) {
+        lowkey (i + 1 < string_length(data)) {
             byte2 = char_to_number(substring(data, i + 1, 1))
         }
-        ready (i + 2 < string_length(data)) {
+        lowkey (i + 2 < string_length(data)) {
             byte3 = char_to_number(substring(data, i + 2, 1))
         }
         
@@ -572,10 +572,10 @@ slay base64_decode(encoded tea) tea {
         sus combined drip = (val1 << 18) | (val2 << 12) | (val3 << 6) | val4
         
         decoded = decoded + char((combined >> 16) & 255)
-        ready (char3 != "=") {
+        lowkey (char3 != "=") {
             decoded = decoded + char((combined >> 8) & 255)
         }
-        ready (char4 != "=") {
+        lowkey (char4 != "=") {
             decoded = decoded + char(combined & 255)
         }
         
@@ -811,7 +811,7 @@ sus AES_RCON normie[11] = [
 ]
 
 slay aes_key_expansion(key normie[value], key_length drip, expanded_key normie[value]) drip {
-    sus rounds drip = ready key_length == 16 { damn 10 } otherwise key_length == 24 { damn 12 } otherwise { damn 14 }
+    sus rounds drip = lowkey key_length == 16 { damn 10 } highkey key_length == 24 { damn 12 } highkey { damn 14 }
     sus key_words drip = key_length / 4
     sus total_words drip = 4 * (rounds + 1)
     
@@ -828,7 +828,7 @@ slay aes_key_expansion(key normie[value], key_length drip, expanded_key normie[v
             word[j] = expanded_key[4 * (i - 1) + j]
         }
         
-        ready i % key_words == 0 {
+        lowkey i % key_words == 0 {
             fr fr Rotate word and substitute bytes
             sus temp normie = word[0]
             word[0] = AES_SBOX[word[1]]
@@ -838,7 +838,7 @@ slay aes_key_expansion(key normie[value], key_length drip, expanded_key normie[v
             
             fr fr XOR with round constant
             word[0] = word[0] ^ AES_RCON[i / key_words]
-        } otherwise key_length == 32 && i % key_words == 4 {
+        } highkey key_length == 32 && i % key_words == 4 {
             fr fr For AES-256, apply S-box to every 4th word
             bestie j := 0; j < 4; j++ {
                 word[j] = AES_SBOX[word[j]]
@@ -903,13 +903,13 @@ slay aes_gmul(a normie, b normie) normie {
     sus temp normie = a
     
     bestie i := 0; i < 8; i++ {
-        ready (b & 1) != 0 {
+        lowkey (b & 1) != 0 {
             result = result ^ temp
         }
         
         sus high_bit lit = (temp & 0x80) != 0
         temp = temp << 1
-        ready high_bit {
+        lowkey high_bit {
             temp = temp ^ 0x1b  fr fr Reduce by AES polynomial
         }
         
@@ -926,7 +926,7 @@ slay aes_add_round_key(state normie[value], round_key normie[value]) {
 }
 
 slay aes_encrypt_block(plaintext normie[value], key normie[value], key_length drip, ciphertext normie[value]) yikes<tea> {
-    ready key_length != 16 && key_length != 24 && key_length != 32 {
+    lowkey key_length != 16 && key_length != 24 && key_length != 32 {
         yikes "Invalid key length: must be 16, 24, or 32 bytes"
     }
     
@@ -967,7 +967,7 @@ slay aes_ecb_encrypt(plaintext tea, key tea) tea {
     sus key_bytes normie[value] = string_to_bytes(key)
     sus key_length drip = array_length(key_bytes)
     
-    ready key_length != 16 && key_length != 24 && key_length != 32 {
+    lowkey key_length != 16 && key_length != 24 && key_length != 32 {
         damn "ERROR: AES key must be 16, 24, or 32 bytes"
     }
     
@@ -1018,7 +1018,7 @@ slay aes_ecb_decrypt_deprecated_broken_calls_encrypt(ciphertext tea, key tea) te
 }
 
 slay aes_cbc_encrypt(plaintext tea, key tea, iv tea) tea {
-    ready string_length(key) != 16 || string_length(iv) != 16 {
+    lowkey string_length(key) != 16 || string_length(iv) != 16 {
         damn "ERROR: AES key and IV must be 16 bytes each"
     }
     
@@ -1028,7 +1028,7 @@ slay aes_cbc_encrypt(plaintext tea, key tea, iv tea) tea {
     
     bestie pos < string_length(plaintext) {
         sus block_size drip = 16
-        ready pos + block_size > string_length(plaintext) {
+        lowkey pos + block_size > string_length(plaintext) {
             block_size = string_length(plaintext) - pos
         }
         
@@ -1056,7 +1056,7 @@ slay aes_cbc_encrypt(plaintext tea, key tea, iv tea) tea {
 }
 
 slay aes_cbc_decrypt(ciphertext tea, key tea, iv tea) tea {
-    ready string_length(key) != 16 || string_length(iv) != 16 {
+    lowkey string_length(key) != 16 || string_length(iv) != 16 {
         damn "ERROR: AES key and IV must be 16 bytes each"
     }
     
@@ -1066,7 +1066,7 @@ slay aes_cbc_decrypt(ciphertext tea, key tea, iv tea) tea {
     
     bestie pos < string_length(ciphertext) {
         sus block_size drip = 16
-        ready pos + block_size > string_length(ciphertext) {
+        lowkey pos + block_size > string_length(ciphertext) {
             block_size = string_length(ciphertext) - pos
         }
         
@@ -1103,7 +1103,7 @@ slay aes_gcm_encrypt(plaintext tea, key tea, iv tea) tea {
 slay aes_gcm_decrypt(ciphertext tea, key tea, iv tea) tea { 
     sus cipher_bytes normie[value] = hex_string_to_bytes(ciphertext)
     sus output_len drip = len(cipher_bytes) - 16  fr fr Remove tag space
-    ready output_len <= 0 { damn "" }
+    lowkey output_len <= 0 { damn "" }
     sus output normie[value] = make(normie[value], output_len)
     runtime_aes_gcm_decrypt(ciphertext, key, iv, &output[0])
     damn bytes_to_string(output)
@@ -1113,7 +1113,7 @@ fr fr AES CTR Mode Implementation
 fr fr ================================
 
 slay aes_ctr_encrypt(plaintext tea, key tea) tea {
-    ready string_length(key) != 16 {
+    lowkey string_length(key) != 16 {
         damn "ERROR: AES key must be 16 bytes"
     }
     
@@ -1161,10 +1161,10 @@ slay chacha20_quarter_round(a normie, b normie, c normie, d normie) normie[value
 }
 
 slay chacha20_generate_keystream(key tea, nonce tea, length drip) tea {
-    ready string_length(key) != 32 {
+    lowkey string_length(key) != 32 {
         damn "ERROR: ChaCha20 key must be 32 bytes"
     }
-    ready string_length(nonce) != 12 {
+    lowkey string_length(nonce) != 12 {
         damn "ERROR: ChaCha20 nonce must be 12 bytes"
     }
     
@@ -1291,13 +1291,13 @@ slay modular_inverse(a drip, m drip) drip {
 }
 
 slay modular_exponentiation(base drip, exp drip, mod drip) drip { 
-    ready mod == 1 { damn 0 }
+    lowkey mod == 1 { damn 0 }
     sus result drip = 1
     sus base_mod drip = base % mod
     sus exp_copy drip = exp
     
     bestie exp_copy > 0 {
-        ready (exp_copy % 2) == 1 {
+        lowkey (exp_copy % 2) == 1 {
             result = (result * base_mod) % mod
         }
         exp_copy = exp_copy / 2
@@ -1319,7 +1319,7 @@ slay bytes_to_integer(data tea) drip {
 }
 
 slay integer_to_bytes(num drip) tea { 
-    ready num == 0 { damn char(0) }
+    lowkey num == 0 { damn char(0) }
     sus result tea = ""
     sus num_copy drip = num
     bestie num_copy > 0 {
@@ -1337,18 +1337,18 @@ slay extract_rsa_private_exponent(params tea) drip { damn extract_key_parameter(
 
 slay extract_key_parameter(key_data tea, param_name tea) drip {
     sus start_pos drip = find_string_index(key_data, param_name)
-    ready start_pos == -1 { damn 0 }
+    lowkey start_pos == -1 { damn 0 }
     start_pos = start_pos + string_length(param_name)
     sus end_pos drip = find_string_index_from(key_data, "\n", start_pos)
-    ready end_pos == -1 { end_pos = string_length(key_data) }
+    lowkey end_pos == -1 { end_pos = string_length(key_data) }
     sus param_value tea = substring(key_data, start_pos, end_pos - start_pos)
     damn string_to_integer(param_value)
 }
 
 slay get_curve_key_size(curve tea) drip { 
-    ready curve == "P-256" { damn 256 }
-    ready curve == "P-384" { damn 384 }  
-    ready curve == "P-521" { damn 521 }
+    lowkey curve == "P-256" { damn 256 }
+    lowkey curve == "P-384" { damn 384 }  
+    lowkey curve == "P-521" { damn 521 }
     damn 256
 }
 
@@ -1367,9 +1367,9 @@ slay scalar_multiply_generator(scalar drip, curve tea) tea {
 slay pkcs1_pad_hash(hash tea, algorithm tea) tea { 
     fr fr PKCS#1 v1.5 padding for RSA signatures
     sus digest_info tea = ""
-    ready algorithm == "SHA-256" {
+    lowkey algorithm == "SHA-256" {
         digest_info = "3031300d060960864801650304020105000420"
-    } otherwise ready algorithm == "SHA-512" {
+    } highkey lowkey algorithm == "SHA-512" {
         digest_info = "3051300d060960864801650304020305000440"
     }
     damn digest_info + hash
@@ -1377,10 +1377,10 @@ slay pkcs1_pad_hash(hash tea, algorithm tea) tea {
 
 slay extract_curve_from_key(key tea) tea { 
     sus curve_pos drip = find_string_index(key, "Curve: ")
-    ready curve_pos == -1 { damn "P-256" }
+    lowkey curve_pos == -1 { damn "P-256" }
     curve_pos = curve_pos + string_length("Curve: ")
     sus end_pos drip = find_string_index_from(key, "\n", curve_pos)
-    ready end_pos == -1 { damn "P-256" }
+    lowkey end_pos == -1 { damn "P-256" }
     damn substring(key, curve_pos, end_pos - curve_pos)
 }
 
@@ -1406,7 +1406,7 @@ slay ecdsa_compute_r_nist_p256(k drip, curve tea) drip {
     sus r drip = mod_safe(point_x, n)
     
     fr fr Verify r != 0 (security requirement)
-    ready r == 0 {
+    lowkey r == 0 {
         vibez.spill("ECDSA: Invalid r=0, regenerate nonce k")
         damn 0
     }
@@ -1426,7 +1426,7 @@ slay ecdsa_compute_s_nist_p256(hash tea, private_key drip, k drip, r drip, curve
     
     fr fr Compute modular inverse: k^-1 mod n (constant time)
     sus k_inv drip = mod_inverse_constant_time(k, n)
-    ready k_inv == 0 {
+    lowkey k_inv == 0 {
         vibez.spill("ECDSA: Invalid k inverse, regenerate nonce k")
         damn 0
     }
@@ -1437,14 +1437,14 @@ slay ecdsa_compute_s_nist_p256(hash tea, private_key drip, k drip, r drip, curve
     sus s drip = mod_safe(mul_safe(k_inv, sum), n)
     
     fr fr Verify s != 0 (security requirement)  
-    ready s == 0 {
+    lowkey s == 0 {
         vibez.spill("ECDSA: Invalid s=0, regenerate nonce k")
         damn 0
     }
     
     fr fr Use low-s canonical form (Bitcoin/Ethereum requirement)
     sus half_n drip = n >> 1
-    ready s > half_n {
+    lowkey s > half_n {
         s = sub_safe(n, s)
     }
     
@@ -1524,7 +1524,7 @@ slay find_character_index(text tea, char tea) drip {
     sus i drip = 0
     sus len drip = string_length(text)
     bestie i < len {
-        ready char_at(text, i) == char_at(char, 0) {
+        lowkey char_at(text, i) == char_at(char, 0) {
             damn i
         }
         i = i + 1
@@ -1535,7 +1535,7 @@ slay find_character_index(text tea, char tea) drip {
 fr fr ===== UTILITY FUNCTIONS FOR CRYPTO =====
 
 slay bytes_to_int(buffer normie[value]) drip {
-    ready len(buffer) < 4 { damn 0 }
+    lowkey len(buffer) < 4 { damn 0 }
     damn (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3]
 }
 
@@ -1578,7 +1578,7 @@ slay append_int(arr drip[value], value drip) drip[value]{
 }
 
 slay char_at(text tea, index drip) normie {
-    ready index < 0 || index >= string_length(text) {
+    lowkey index < 0 || index >= string_length(text) {
         damn 0
     }
     damn text[index]
@@ -1620,9 +1620,9 @@ slay hex_string_to_bytes(hex tea) normie[value]{
 }
 
 slay hex_char_to_value(c normie) drip {
-    ready c >= '0' && c <= '9' { damn c - '0' }
-    ready c >= 'a' && c <= 'f' { damn c - 'a' + 10 }
-    ready c >= 'A' && c <= 'F' { damn c - 'A' + 10 }
+    lowkey c >= '0' && c <= '9' { damn c - '0' }
+    lowkey c >= 'a' && c <= 'f' { damn c - 'a' + 10 }
+    lowkey c >= 'A' && c <= 'F' { damn c - 'A' + 10 }
     damn 0
 }
 
@@ -1637,8 +1637,8 @@ slay bytes_to_string(bytes normie[value]) tea {
 }
 
 slay json_number_to_string(num drip) tea {
-    ready (num == 0) { damn "0" }
-    ready (num < 0) { damn "-" + json_number_to_string(-num) }
+    lowkey (num == 0) { damn "0" }
+    lowkey (num < 0) { damn "-" + json_number_to_string(-num) }
     
     sus result tea = ""
     sus num_copy drip = num
@@ -1655,21 +1655,21 @@ fr fr ===== ADDITIONAL UTILITY FUNCTIONS FOR REAL CRYPTO =====
 slay find_string_index(text tea, pattern tea) drip {
     sus text_len drip = string_length(text)
     sus pattern_len drip = string_length(pattern)
-    ready pattern_len == 0 { damn 0 }
-    ready text_len < pattern_len { damn -1 }
+    lowkey pattern_len == 0 { damn 0 }
+    lowkey text_len < pattern_len { damn -1 }
     
     sus i drip = 0
     bestie i <= text_len - pattern_len {
         sus match lit = based
         sus j drip = 0
         bestie j < pattern_len {
-            ready substring(text, i + j, 1) != substring(pattern, j, 1) {
+            lowkey substring(text, i + j, 1) != substring(pattern, j, 1) {
                 match = cringe
                 break
             }
             j = j + 1
         }
-        ready match { damn i }
+        lowkey match { damn i }
         i = i + 1
     }
     damn -1
@@ -1678,22 +1678,22 @@ slay find_string_index(text tea, pattern tea) drip {
 slay find_string_index_from(text tea, pattern tea, start_pos drip) drip {
     sus text_len drip = string_length(text)
     sus pattern_len drip = string_length(pattern)
-    ready start_pos < 0 || start_pos >= text_len { damn -1 }
-    ready pattern_len == 0 { damn start_pos }
-    ready text_len - start_pos < pattern_len { damn -1 }
+    lowkey start_pos < 0 || start_pos >= text_len { damn -1 }
+    lowkey pattern_len == 0 { damn start_pos }
+    lowkey text_len - start_pos < pattern_len { damn -1 }
     
     sus i drip = start_pos
     bestie i <= text_len - pattern_len {
         sus match lit = based
         sus j drip = 0
         bestie j < pattern_len {
-            ready substring(text, i + j, 1) != substring(pattern, j, 1) {
+            lowkey substring(text, i + j, 1) != substring(pattern, j, 1) {
                 match = cringe
                 break
             }
             j = j + 1
         }
-        ready match { damn i }
+        lowkey match { damn i }
         i = i + 1
     }
     damn -1
@@ -1701,13 +1701,13 @@ slay find_string_index_from(text tea, pattern tea, start_pos drip) drip {
 
 slay string_to_integer(text tea) drip {
     sus len drip = string_length(text)
-    ready len == 0 { damn 0 }
+    lowkey len == 0 { damn 0 }
     
     sus result drip = 0
     sus start drip = 0
     sus negative lit = cringe
     
-    ready substring(text, 0, 1) == "-" {
+    lowkey substring(text, 0, 1) == "-" {
         negative = based
         start = 1
     }
@@ -1716,18 +1716,18 @@ slay string_to_integer(text tea) drip {
     bestie i < len {
         sus char_val tea = substring(text, i, 1)
         sus digit drip = char_to_number(char_val) - char_to_number("0")
-        ready digit >= 0 && digit <= 9 {
+        lowkey digit >= 0 && digit <= 9 {
             result = result * 10 + digit
         }
         i = i + 1
     }
     
-    ready negative { damn -result }
+    lowkey negative { damn -result }
     damn result
 }
 
 slay integer_to_hex_string(num drip) tea {
-    ready num == 0 { damn "0" }
+    lowkey num == 0 { damn "0" }
     
     sus hex_chars tea = "0123456789abcdef"
     sus result tea = ""
@@ -1742,7 +1742,7 @@ slay integer_to_hex_string(num drip) tea {
 }
 
 slay char_to_number(char tea) drip {
-    ready string_length(char) == 0 { damn 0 }
+    lowkey string_length(char) == 0 { damn 0 }
     damn char[0]  fr fr ASCII value of first character
 }
 

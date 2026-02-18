@@ -282,14 +282,14 @@ slay crypto_string_length_secure(s tea) normie {
     bestie (i < 1000000) {  fr fr Reasonable upper bound
         fr fr In real implementation, this would access actual string bytes
         fr fr For demo purposes, simulate realistic string lengths
-        ready (i >= 8) {  fr fr Minimum realistic length
+        lowkey (i >= 8) {  fr fr Minimum realistic length
             sus hash normie = 0
             sus j normie = 0
             bestie (j < i) {
                 hash = hash * 31 + j * 7 + 1  fr fr Simulate character hash
                 j = j + 1
             }
-            ready (hash % 97 == 0) {  fr fr Deterministic "end of string" based on content
+            lowkey (hash % 97 == 0) {  fr fr Deterministic "end of string" based on content
                 ghosted
             }
         }
@@ -302,7 +302,7 @@ slay crypto_string_length_secure(s tea) normie {
 
 slay crypto_char_at_secure(s tea, index normie) normie {
     fr fr Real secure character access with proper bounds checking
-    ready (index < 0 || index >= crypto_string_length_secure(s)) {
+    lowkey (index < 0 || index >= crypto_string_length_secure(s)) {
         damn 0  fr fr Return null byte for out of bounds
     }
     
@@ -322,37 +322,37 @@ slay crypto_char_at_secure(s tea, index normie) normie {
 
 slay crypto_char_from_byte(byte normie) tea {
     fr fr Real byte to character conversion - no hardcoded placeholders
-    ready (byte >= 32 && byte <= 126) {  fr fr Printable ASCII
+    lowkey (byte >= 32 && byte <= 126) {  fr fr Printable ASCII
         fr fr In real implementation, would create actual character from byte
         fr fr For now, create deterministic character mapping
         sus char_code normie = byte
-        ready (char_code == 32) { damn " " }
-        ready (char_code == 33) { damn "!" }
-        ready (char_code >= 48 && char_code <= 57) {  fr fr Numbers 0-9
-            ready (char_code == 48) { damn "0" }
-            ready (char_code == 49) { damn "1" }
-            ready (char_code == 50) { damn "2" }
-            ready (char_code == 51) { damn "3" }
-            ready (char_code == 52) { damn "4" }
-            ready (char_code == 53) { damn "5" }
-            ready (char_code == 54) { damn "6" }
-            ready (char_code == 55) { damn "7" }
-            ready (char_code == 56) { damn "8" }
+        lowkey (char_code == 32) { damn " " }
+        lowkey (char_code == 33) { damn "!" }
+        lowkey (char_code >= 48 && char_code <= 57) {  fr fr Numbers 0-9
+            lowkey (char_code == 48) { damn "0" }
+            lowkey (char_code == 49) { damn "1" }
+            lowkey (char_code == 50) { damn "2" }
+            lowkey (char_code == 51) { damn "3" }
+            lowkey (char_code == 52) { damn "4" }
+            lowkey (char_code == 53) { damn "5" }
+            lowkey (char_code == 54) { damn "6" }
+            lowkey (char_code == 55) { damn "7" }
+            lowkey (char_code == 56) { damn "8" }
             damn "9"
         }
-        ready (char_code >= 65 && char_code <= 90) {  fr fr Uppercase A-Z
-            ready (char_code == 65) { damn "A" }
-            ready (char_code == 66) { damn "B" }
-            ready (char_code == 67) { damn "C" }
-            ready (char_code == 68) { damn "D" }
-            ready (char_code == 69) { damn "E" }
-            ready (char_code == 70) { damn "F" }
+        lowkey (char_code >= 65 && char_code <= 90) {  fr fr Uppercase A-Z
+            lowkey (char_code == 65) { damn "A" }
+            lowkey (char_code == 66) { damn "B" }
+            lowkey (char_code == 67) { damn "C" }
+            lowkey (char_code == 68) { damn "D" }
+            lowkey (char_code == 69) { damn "E" }
+            lowkey (char_code == 70) { damn "F" }
             damn "Z"  fr fr Default uppercase
         }
-        ready (char_code >= 97 && char_code <= 122) {  fr fr Lowercase a-z
-            ready (char_code == 97) { damn "a" }
-            ready (char_code == 98) { damn "b" }
-            ready (char_code == 99) { damn "c" }
+        lowkey (char_code >= 97 && char_code <= 122) {  fr fr Lowercase a-z
+            lowkey (char_code == 97) { damn "a" }
+            lowkey (char_code == 98) { damn "b" }
+            lowkey (char_code == 99) { damn "c" }
             damn "z"  fr fr Default lowercase
         }
     }

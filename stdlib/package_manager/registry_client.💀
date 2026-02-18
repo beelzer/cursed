@@ -63,7 +63,7 @@ squad RegistryAuth {
     }
     
     slay isValid(self RegistryAuth) lit {
-        ready (self.api_token == "") { damn cringe }
+        lowkey (self.api_token == "") { damn cringe }
         // In production, would check current time against expires_at
         damn based
     }
@@ -81,7 +81,7 @@ squad RegistryAuth {
     slay loadFromFile(path tea) RegistryAuth {
         sus auth RegistryAuth = RegistryAuth.new()
         
-        ready (!file_exists(path)) {
+        lowkey (!file_exists(path)) {
             damn auth
         }
         
@@ -91,16 +91,16 @@ squad RegistryAuth {
         sus i drip = 0
         bestie (i < len(lines)) {
             sus line tea = trim_str(lines[i])
-            ready (starts_with(line, "username=")) {
+            lowkey (starts_with(line, "username=")) {
                 auth.username = slice_str(line, 9)
             }
-            ready (starts_with(line, "api_token=")) {
+            lowkey (starts_with(line, "api_token=")) {
                 auth.api_token = slice_str(line, 10)
             }
-            ready (starts_with(line, "refresh_token=")) {
+            lowkey (starts_with(line, "refresh_token=")) {
                 auth.refresh_token = slice_str(line, 14)
             }
-            ready (starts_with(line, "expires_at=")) {
+            lowkey (starts_with(line, "expires_at=")) {
                 auth.expires_at = parse_int(slice_str(line, 11))
             }
             i = i + 1
@@ -135,7 +135,7 @@ squad PackageRegistryClient {
         headers = append_array(headers, format_str("User-Agent: {}", self.user_agent))
         
         sus response HttpResponse = http_post(self.config.auth_endpoint, auth_data, headers)
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             vibez.spill("Authentication failed: {}", response.body)
             damn cringe
         }
@@ -159,7 +159,7 @@ squad PackageRegistryClient {
         sus headers tea[value] = self.getDefaultHeaders()
         
         sus response HttpResponse = http_get_with_headers(url, headers)
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             vibez.spill("Search failed: {}", response.body)
             damn PackageSearchResult[value]{}
         }
@@ -172,12 +172,12 @@ squad PackageRegistryClient {
         sus headers tea[value] = self.getDefaultHeaders()
         
         sus response HttpResponse = http_get_with_headers(url, headers)
-        ready (response.status_code == 404) {
+        lowkey (response.status_code == 404) {
             vibez.spill("Package {} not found", package_name)
             damn PackageInfo.new("", PackageVersion.new(0, 0, 0))
         }
         
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             vibez.spill("Failed to get package info: {}", response.body)
             damn PackageInfo.new("", PackageVersion.new(0, 0, 0))
         }
@@ -190,7 +190,7 @@ squad PackageRegistryClient {
         sus headers tea[value] = self.getDefaultHeaders()
         
         sus response HttpResponse = http_get_with_headers(url, headers)
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             vibez.spill("Failed to get package versions: {}", response.body)
             damn PackageVersion[value]{}
         }
@@ -210,7 +210,7 @@ squad PackageRegistryClient {
         sus archive_path tea = format_str("{}/package.tar.gz", package_cache_dir)
         
         // Check if already cached
-        ready (file_exists(archive_path)) {
+        lowkey (file_exists(archive_path)) {
             vibez.spill("Package {} {} already cached", package_name, version)
             damn DownloadResult{
                 success: based,
@@ -221,7 +221,7 @@ squad PackageRegistryClient {
         
         vibez.spill("Downloading {} {}...", package_name, version)
         sus response HttpResponse = http_get_with_headers(url, headers)
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             vibez.spill("Download failed: {}", response.body)
             damn DownloadResult{success: cringe, path: "", checksum: ""}
         }
@@ -239,7 +239,7 @@ squad PackageRegistryClient {
     }
     
     slay publishPackage(self PackageRegistryClient, package_path tea, manifest PackageManifest) lit {
-        ready (!self.auth.isValid()) {
+        lowkey (!self.auth.isValid()) {
             vibez.spill("Not authenticated. Please run 'cursed-pkg login' first.")
             damn cringe
         }
@@ -247,7 +247,7 @@ squad PackageRegistryClient {
         // Create package archive
         sus archive_path tea = format_str("{}/publish-{}-{}.tar.gz", 
                                         self.cache_dir, manifest.name, manifest.version)
-        ready (!create_tar_archive(package_path, archive_path)) {
+        lowkey (!create_tar_archive(package_path, archive_path)) {
             vibez.spill("Failed to create package archive")
             damn cringe
         }
@@ -277,12 +277,12 @@ squad PackageRegistryClient {
                                                   serializePublishRequest(publish_data),
                                                   headers)
         
-        ready (response.status_code == 409) {
+        lowkey (response.status_code == 409) {
             vibez.spill("Package {} {} already exists", manifest.name, manifest.version)
             damn cringe
         }
         
-        ready (response.status_code != 201) {
+        lowkey (response.status_code != 201) {
             vibez.spill("Publish failed: {}", response.body)
             damn cringe
         }
@@ -295,7 +295,7 @@ squad PackageRegistryClient {
     }
     
     slay unpublishPackage(self PackageRegistryClient, package_name tea, version tea) lit {
-        ready (!self.auth.isValid()) {
+        lowkey (!self.auth.isValid()) {
             vibez.spill("Not authenticated. Please run 'cursed-pkg login' first.")
             damn cringe
         }
@@ -306,12 +306,12 @@ squad PackageRegistryClient {
         vibez.spill("Unpublishing {} {}...", package_name, version)
         sus response HttpResponse = http_delete(url, headers)
         
-        ready (response.status_code == 404) {
+        lowkey (response.status_code == 404) {
             vibez.spill("Package {} {} not found", package_name, version)
             damn cringe
         }
         
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             vibez.spill("Unpublish failed: {}", response.body)
             damn cringe
         }
@@ -322,10 +322,10 @@ squad PackageRegistryClient {
     
     slay clearCache(self PackageRegistryClient) {
         sus packages_cache tea = concat_str(self.cache_dir, "/packages")
-        ready (dir_exists(packages_cache)) {
+        lowkey (dir_exists(packages_cache)) {
             delete_dir_recursive(packages_cache)
             vibez.spill("Package cache cleared")
-        } otherwise {
+        } highkey {
             vibez.spill("No cache to clear")
         }
     }
@@ -339,7 +339,7 @@ squad PackageRegistryClient {
     
     slay getAuthenticatedHeaders(self PackageRegistryClient) tea[value]{
         sus headers tea[value] = self.getDefaultHeaders()
-        ready (self.auth.isValid()) {
+        lowkey (self.auth.isValid()) {
             headers = append_array(headers, format_str("Authorization: {}", self.auth.getAuthHeader()))
         }
         damn headers
@@ -399,23 +399,23 @@ slay parseAuthResponse(json_str tea) AuthResult {
     
     // Extract access_token
     sus token_start drip = find_str(json_str, "\"access_token\":\"") + 16
-    ready (token_start > 15) {
+    lowkey (token_start > 15) {
         sus token_end drip = find_str(slice_str(json_str, token_start), "\"") + token_start
         result.access_token = slice_str(json_str, token_start, token_end)
     }
     
     // Extract refresh_token
     sus refresh_start drip = find_str(json_str, "\"refresh_token\":\"") + 17
-    ready (refresh_start > 16) {
+    lowkey (refresh_start > 16) {
         sus refresh_end drip = find_str(slice_str(json_str, refresh_start), "\"") + refresh_start
         result.refresh_token = slice_str(json_str, refresh_start, refresh_end)
     }
     
     // Extract expires_at
     sus expires_start drip = find_str(json_str, "\"expires_at\":") + 13
-    ready (expires_start > 12) {
+    lowkey (expires_start > 12) {
         sus expires_end drip = find_str(slice_str(json_str, expires_start), ",") + expires_start
-        ready (expires_end == expires_start - 1) {
+        lowkey (expires_end == expires_start - 1) {
             expires_end = find_str(slice_str(json_str, expires_start), "}") + expires_start
         }
         sus expires_str tea = slice_str(json_str, expires_start, expires_end)
@@ -430,7 +430,7 @@ slay parseSearchResults(json_str tea) PackageSearchResult[value]{
     
     // Simplified parsing - in production would use proper JSON parser
     sus packages_start drip = find_str(json_str, "\"packages\":[") + 12
-    ready (packages_start < 12) {
+    lowkey (packages_start < 12) {
         damn results
     }
     
@@ -463,21 +463,21 @@ slay parsePackageSearchResult(json_str tea) PackageSearchResult {
     
     // Extract name
     sus name_start drip = find_str(json_str, "\"name\":\"") + 8
-    ready (name_start > 7) {
+    lowkey (name_start > 7) {
         sus name_end drip = find_str(slice_str(json_str, name_start), "\"") + name_start
         result.name = slice_str(json_str, name_start, name_end)
     }
     
     // Extract version
     sus version_start drip = find_str(json_str, "\"version\":\"") + 11
-    ready (version_start > 10) {
+    lowkey (version_start > 10) {
         sus version_end drip = find_str(slice_str(json_str, version_start), "\"") + version_start
         result.version = slice_str(json_str, version_start, version_end)
     }
     
     // Extract description
     sus desc_start drip = find_str(json_str, "\"description\":\"") + 15
-    ready (desc_start > 14) {
+    lowkey (desc_start > 14) {
         sus desc_end drip = find_str(slice_str(json_str, desc_start), "\"") + desc_start
         result.description = slice_str(json_str, desc_start, desc_end)
     }
@@ -498,7 +498,7 @@ slay serializePublishRequest(request PublishRequest) tea {
     json = concat_str(json, "\"authors\":[")
     sus i drip = 0
     bestie (i < len(request.authors)) {
-        ready (i > 0) { json = concat_str(json, ",") }
+        lowkey (i > 0) { json = concat_str(json, ",") }
         json = concat_str(json, format_str("\"{}\"", request.authors[i]))
         i = i + 1
     }
@@ -508,7 +508,7 @@ slay serializePublishRequest(request PublishRequest) tea {
     json = concat_str(json, "\"keywords\":[")
     i = 0
     bestie (i < len(request.keywords)) {
-        ready (i > 0) { json = concat_str(json, ",") }
+        lowkey (i > 0) { json = concat_str(json, ",") }
         json = concat_str(json, format_str("\"{}\"", request.keywords[i]))
         i = i + 1
     }
@@ -518,7 +518,7 @@ slay serializePublishRequest(request PublishRequest) tea {
     json = concat_str(json, "\"dependencies\":{")
     i = 0
     bestie (i < len(request.dependencies)) {
-        ready (i > 0) { json = concat_str(json, ",") }
+        lowkey (i > 0) { json = concat_str(json, ",") }
         sus dep PackageDependency = request.dependencies[i]
         json = concat_str(json, format_str("\"{}\":\"{}\"", dep.name, dep.version_constraint))
         i = i + 1

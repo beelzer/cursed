@@ -57,8 +57,8 @@ slay run_complete_testz_validation() lit {
     lowkey (all_tests_passed()) {
         vibez.spill("🎉 ALL ADVANCED TESTZ FEATURES VALIDATED SUCCESSFULLY!")
         vibez.spill("✅ No simple/placeholder implementations remaining")
-        vibez.spill("✅ Complete functionality is production-ready")
-    } otherwise {
+        vibez.spill("✅ Complete functionality is production-lowkey")
+    } highkey {
         vibez.spill("❌ Some advanced features need attention")
         vibez.spill("💡 Review failed tests above")
     }
@@ -89,7 +89,7 @@ slay test_advanced_array_comparison() lit {
     sus long_array tea = "[1, 2, 3]"
     fr fr This should fail - testing failure detection
     sus arrays_equal lit = cringe
-    ready {
+    lowkey {
         assert_array_equals(short_array, long_array)
         arrays_equal = based
     } catch {
@@ -102,7 +102,7 @@ slay test_advanced_array_comparison() lit {
     sus expected_elem tea = "[apple, banana, orange]"
     fr fr This should fail - different elements
     sus elements_equal lit = cringe
-    ready {
+    lowkey {
         assert_array_equals(actual_elem, expected_elem)
         elements_equal = based
     } catch {
@@ -390,7 +390,7 @@ lowkey (validation_success) {
     vibez.spill("")
     vibez.spill("🚀 All testz modules are production-ready!")
     vibez.spill("📚 No simple/placeholder implementations remain")
-} otherwise {
+} highkey {
     vibez.spill("")
     vibez.spill("❌ Some functionality validation failed")
     vibez.spill("💡 Check test output above for specific issues")

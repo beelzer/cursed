@@ -72,7 +72,7 @@ slay aes_key_expansion(key normie[value], expanded_key normie[value]) lit {
             temp[j] = expanded_key[(i - 1) * 4 + j]
         }
         
-        ready (i % nk == 0) {
+        lowkey (i % nk == 0) {
             fr fr RotWord and SubWord
             sus t normie = temp[0]
             temp[0] = AES_SBOX[temp[1]]
@@ -82,7 +82,7 @@ slay aes_key_expansion(key normie[value], expanded_key normie[value]) lit {
             
             fr fr XOR with round constant
             temp[0] = temp[0] ^ RCON[i / nk - 1]
-        } otherwise ready (nk > 6 && i % nk == 4) {
+        } highkey lowkey (nk > 6 && i % nk == 4) {
             fr fr SubWord for AES-256
             bestie j := 0; j < 4; j++ {
                 temp[j] = AES_SBOX[temp[j]]
@@ -101,12 +101,12 @@ fr fr Galois Field multiplication for MixColumns
 slay gf_mult(a normie, b normie) normie {
     sus result normie = 0
     bestie i := 0; i < 8; i++ {
-        ready (b & 1) {
+        lowkey (b & 1) {
             result = result ^ a
         }
         sus hi_bit lit = (a & 0x80) != 0
         a = (a << 1) & 0xFF
-        ready (hi_bit) {
+        lowkey (hi_bit) {
             a = a ^ 0x1B  fr fr AES irreducible polynomial
         }
         b = b >> 1
@@ -353,14 +353,14 @@ slay hmac_sha256(key tea, message tea) tea {
     sus key_len normie = string_length(key)
     
     fr fr Keys longer than block size are shortened
-    ready (key_len > 64) {
+    lowkey (key_len > 64) {
         sus hashed_key tea = sha256_hash(key)
         key_len = 32  fr fr SHA-256 produces 32 bytes
         array_new(key_bytes, 64, 0)
         bestie i := 0; i < key_len; i++ {
             key_bytes[i] = hex_to_byte(string_substring(hashed_key, i * 2, 2))
         }
-    } otherwise {
+    } highkey {
         array_new(key_bytes, 64, 0)
         bestie i := 0; i < key_len; i++ {
             key_bytes[i] = char_code(string_char_at(key, i))
@@ -409,11 +409,11 @@ slay secure_random_bytes(count normie) normie[value]{
     
     fr fr Read from /dev/urandom on Unix systems
     sus entropy_source tea = file_read("/dev/urandom")
-    ready (string_length(entropy_source) >= count) {
+    lowkey (string_length(entropy_source) >= count) {
         bestie i := 0; i < count; i++ {
             bytes[i] = char_code(string_char_at(entropy_source, i))
         }
-    } otherwise {
+    } highkey {
         fr fr Fallback: use system time and memory addresses
         sus time_seed normie = current_time_millis()
         sus addr_seed normie = memory_address_entropy()
@@ -452,11 +452,11 @@ slay hex_to_byte(hex_str tea) normie {
 
 slay hex_char_value(c tea) normie {
     sus code normie = char_code(c)
-    ready (code >= 48 && code <= 57) {  fr fr '0'-'9'
+    lowkey (code >= 48 && code <= 57) {  fr fr '0'-'9'
         damn code - 48
-    } otherwise ready (code >= 97 && code <= 102) {  fr fr 'a'-'f'
+    } highkey lowkey (code >= 97 && code <= 102) {  fr fr 'a'-'f'
         damn code - 87
-    } otherwise ready (code >= 65 && code <= 70) {  fr fr 'A'-'F'
+    } highkey lowkey (code >= 65 && code <= 70) {  fr fr 'A'-'F'
         damn code - 55
     }
     damn 0
@@ -468,10 +468,10 @@ fr fr ==================================================================
 
 fr fr AES-256-CBC Encryption with PKCS#7 padding
 slay aes_encrypt_cbc(plaintext tea, key tea, iv tea) tea {
-    ready (string_length(key) != 32) {
+    lowkey (string_length(key) != 32) {
         damn ""  fr fr Invalid key size
     }
-    ready (string_length(iv) != 16) {
+    lowkey (string_length(iv) != 16) {
         damn ""  fr fr Invalid IV size  
     }
     
@@ -534,7 +534,7 @@ slay oauth_verify_signature(message tea, signature tea, secret tea) lit {
     sus sig_len normie = string_length(signature)
     sus exp_len normie = string_length(expected)
     
-    ready (sig_len != exp_len) {
+    lowkey (sig_len != exp_len) {
         damn nah
     }
     

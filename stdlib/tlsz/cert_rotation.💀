@@ -126,12 +126,12 @@ slay install_certificate(
         when _ -> yikes "CERTIFICATE_VALIDATION_FAILED: Certificate validation failed"
     }
     
-    ready (!validation_result.is_valid) {
+    lowkey (!validation_result.is_valid) {
         yikes "INVALID_CERTIFICATE: " + arrayz.join(validation_result.validation_errors, ", ")
     }
     
     fr fr Backup existing certificate if present
-    ready (map_has_key(manager.active_certificates, hostname) && manager.backup_enabled) {
+    lowkey (map_has_key(manager.active_certificates, hostname) && manager.backup_enabled) {
         sus existing_cert ActiveCertificate = map_get_active_cert(manager.active_certificates, hostname)
         backup_certificate(existing_cert, manager.backup_directory) fam {
             when _ -> {
@@ -156,9 +156,9 @@ slay install_certificate(
     }
     
     fr fr Schedule automatic rotation if enabled
-    ready (manager.auto_rotation_enabled) {
+    lowkey (manager.auto_rotation_enabled) {
         sus days_until_expiry drip = calculate_days_until_expiry(certificate)
-        ready (days_until_expiry <= manager.rotation_threshold_days * 2) {
+        lowkey (days_until_expiry <= manager.rotation_threshold_days * 2) {
             active_cert.rotation_scheduled = based
             active_cert.rotation_time = certificate.not_after - (manager.rotation_threshold_days * 86400)
             
@@ -193,7 +193,7 @@ slay stage_certificate_for_rotation(
         when _ -> yikes "CERTIFICATE_VALIDATION_FAILED: New certificate validation failed"
     }
     
-    ready (!validation_result.is_valid) {
+    lowkey (!validation_result.is_valid) {
         yikes "INVALID_NEW_CERTIFICATE: " + arrayz.join(validation_result.validation_errors, ", ")
     }
     
@@ -226,13 +226,13 @@ slay execute_certificate_rotation(
     fr fr Execute hot certificate rotation for hostname
     
     fr fr Check if staged certificate exists
-    ready (!map_has_key_staged(manager.staged_certificates, hostname)) {
+    lowkey (!map_has_key_staged(manager.staged_certificates, hostname)) {
         yikes "NO_STAGED_CERTIFICATE: No staged certificate found for " + hostname
     }
     
     sus staged_cert StagedCertificate = map_get_staged_cert(manager.staged_certificates, hostname)
-    ready (!staged_cert.ready_for_rotation) {
-        yikes "CERTIFICATE_NOT_READY: Staged certificate is not ready for rotation"
+    lowkey (!staged_cert.ready_for_rotation) {
+        yikes "CERTIFICATE_NOT_READY: Staged certificate is not lowkey for rotation"
     }
     
     fr fr Begin rotation transaction
@@ -240,7 +240,7 @@ slay execute_certificate_rotation(
     rotation_task.status = "in_progress"
     
     fr fr Phase 1: Backup current certificate
-    ready (map_has_key(manager.active_certificates, hostname) && manager.backup_enabled) {
+    lowkey (map_has_key(manager.active_certificates, hostname) && manager.backup_enabled) {
         sus current_cert ActiveCertificate = map_get_active_cert(manager.active_certificates, hostname)
         backup_certificate(current_cert, manager.backup_directory) fam {
             when _ -> {
@@ -262,7 +262,7 @@ slay execute_certificate_rotation(
         }
     }
     
-    ready (!final_validation.is_valid) {
+    lowkey (!final_validation.is_valid) {
         rotation_task.error_message = "Final validation errors: " + arrayz.join(final_validation.validation_errors, ", ")
         rotation_task.status = "failed"
         yikes "FINAL_VALIDATION_FAILED: " + rotation_task.error_message
@@ -283,9 +283,9 @@ slay execute_certificate_rotation(
     }
     
     fr fr Phase 4: Schedule next rotation if auto-rotation enabled
-    ready (manager.auto_rotation_enabled) {
+    lowkey (manager.auto_rotation_enabled) {
         sus days_until_expiry drip = calculate_days_until_expiry(staged_cert.certificate)
-        ready (days_until_expiry > manager.rotation_threshold_days) {
+        lowkey (days_until_expiry > manager.rotation_threshold_days) {
             new_active_cert.rotation_scheduled = based
             new_active_cert.rotation_time = staged_cert.certificate.not_after - (manager.rotation_threshold_days * 86400)
         }
@@ -311,7 +311,7 @@ fr fr ===== AUTOMATED ROTATION SYSTEM =====
 slay process_automatic_rotations(manager CertificateRotationManager) yikes<CertificateRotationManager> {
     fr fr Process all pending automatic rotations
     
-    ready (!manager.auto_rotation_enabled) {
+    lowkey (!manager.auto_rotation_enabled) {
         damn manager
     }
     
@@ -326,9 +326,9 @@ slay process_automatic_rotations(manager CertificateRotationManager) yikes<Certi
         sus active_cert ActiveCertificate = map_get_active_cert(manager.active_certificates, hostname)
         
         fr fr Check if rotation is scheduled and due
-        ready (active_cert.rotation_scheduled && current_time >= active_cert.rotation_time) {
+        lowkey (active_cert.rotation_scheduled && current_time >= active_cert.rotation_time) {
             fr fr Check if staged certificate exists
-            ready (map_has_key_staged(manager.staged_certificates, hostname)) {
+            lowkey (map_has_key_staged(manager.staged_certificates, hostname)) {
                 manager = execute_certificate_rotation(manager, hostname) fam {
                     when _ -> {
                         notify_certificate_event(manager, "AUTO_ROTATION_FAILED", hostname, 
@@ -336,7 +336,7 @@ slay process_automatic_rotations(manager CertificateRotationManager) yikes<Certi
                     }
                 }
                 processed_rotations = arrayz.append(processed_rotations, hostname)
-            } otherwise {
+            } highkey {
                 fr fr Schedule new certificate acquisition
                 notify_certificate_event(manager, "ROTATION_NEEDED", hostname, 
                     "Certificate rotation needed but no staged certificate available")
@@ -352,8 +352,8 @@ slay process_automatic_rotations(manager CertificateRotationManager) yikes<Certi
     bestie (j < arrayz.length(manager.rotation_queue)) {
         sus task CertificateRotationTask = manager.rotation_queue[j]
         
-        ready (current_time >= task.scheduled_time && task.status == "pending") {
-            ready (map_has_key_staged(manager.staged_certificates, task.hostname)) {
+        lowkey (current_time >= task.scheduled_time && task.status == "pending") {
+            lowkey (map_has_key_staged(manager.staged_certificates, task.hostname)) {
                 task.status = "in_progress"
                 manager = execute_certificate_rotation(manager, task.hostname) fam {
                     when _ -> {
@@ -362,14 +362,14 @@ slay process_automatic_rotations(manager CertificateRotationManager) yikes<Certi
                         task.attempts = task.attempts + 1
                     }
                 }
-                ready (task.status != "failed") {
+                lowkey (task.status != "failed") {
                     task.status = "completed"
                 }
             }
         }
         
         fr fr Keep task if not completed and under max attempts
-        ready (task.status != "completed" && task.attempts < task.max_attempts) {
+        lowkey (task.status != "completed" && task.attempts < task.max_attempts) {
             updated_queue = arrayz.append(updated_queue, task)
         }
         
@@ -388,7 +388,7 @@ slay schedule_certificate_rotation(
 ) CertificateRotationManager {
     fr fr Schedule certificate rotation for specific time
     
-    ready (map_has_key(manager.active_certificates, hostname)) {
+    lowkey (map_has_key(manager.active_certificates, hostname)) {
         sus active_cert ActiveCertificate = map_get_active_cert(manager.active_certificates, hostname)
         active_cert.rotation_scheduled = based
         active_cert.rotation_time = rotation_time
@@ -436,16 +436,16 @@ slay check_certificate_health(manager CertificateRotationManager) yikes<Certific
         
         sus days_until_expiry drip = calculate_days_until_expiry(active_cert.certificate)
         
-        ready (days_until_expiry <= 0) {
+        lowkey (days_until_expiry <= 0) {
             report.expired_certificates = report.expired_certificates + 1
             report.critical_issues = arrayz.append(report.critical_issues, 
                 hostname + ": Certificate has EXPIRED")
-        } otherwise ready (days_until_expiry <= manager.rotation_threshold_days) {
+        } highkey lowkey (days_until_expiry <= manager.rotation_threshold_days) {
             report.expiring_soon = report.expiring_soon + 1
             report.certificates_needing_rotation = report.certificates_needing_rotation + 1
             report.warnings = arrayz.append(report.warnings, 
                 hostname + ": Certificate expires in " + stringz.from_int(days_until_expiry) + " days")
-        } otherwise {
+        } highkey {
             report.healthy_certificates = report.healthy_certificates + 1
         }
         
@@ -474,7 +474,7 @@ slay check_certificate_health(manager CertificateRotationManager) yikes<Certific
     sus j drip = 0
     bestie (j < arrayz.length(manager.rotation_queue)) {
         sus task CertificateRotationTask = manager.rotation_queue[j]
-        ready (task.status == "pending" || task.status == "in_progress") {
+        lowkey (task.status == "pending" || task.status == "in_progress") {
             report.pending_rotations = report.pending_rotations + 1
         }
         j = j + 1
@@ -514,7 +514,7 @@ fr fr ===== CERTIFICATE BACKUP AND RECOVERY =====
 slay backup_certificate(cert ActiveCertificate, backup_directory tea) yikes<tea> {
     fr fr Backup certificate and private key to secure storage
     
-    ready (!filez.directory_exists(backup_directory)) {
+    lowkey (!filez.directory_exists(backup_directory)) {
         filez.create_directory(backup_directory, 0o700) fam {
             when _ -> yikes "BACKUP_DIRECTORY_CREATE_FAILED: Cannot create backup directory"
         }
@@ -604,25 +604,25 @@ slay validate_certificate_for_installation(
     }
     
     fr fr Validation 1: Certificate and key match
-    ready (!verify_certificate_key_pair(certificate, private_key)) {
+    lowkey (!verify_certificate_key_pair(certificate, private_key)) {
         result.validation_errors = arrayz.append(result.validation_errors, "Certificate and private key do not match")
         result.is_valid = cringe
         result.security_score = result.security_score - 50
     }
     
     fr fr Validation 2: Certificate validity period
-    ready (tlsz_is_expired(certificate)) {
+    lowkey (tlsz_is_expired(certificate)) {
         result.validation_errors = arrayz.append(result.validation_errors, "Certificate has expired")
         result.is_valid = cringe
     }
     
-    ready (tlsz_is_not_yet_valid(certificate)) {
+    lowkey (tlsz_is_not_yet_valid(certificate)) {
         result.validation_errors = arrayz.append(result.validation_errors, "Certificate is not yet valid")
         result.is_valid = cringe
     }
     
     fr fr Validation 3: Hostname verification
-    ready (!validate_certificate_for_hostname(certificate, hostname)) {
+    lowkey (!validate_certificate_for_hostname(certificate, hostname)) {
         result.validation_errors = arrayz.append(result.validation_errors, "Certificate does not match hostname " + hostname)
         result.is_valid = cringe
         result.trust_score = result.trust_score - 30
@@ -630,15 +630,15 @@ slay validate_certificate_for_installation(
     
     fr fr Validation 4: Key size and algorithm strength
     sus key_strength_score drip = evaluate_key_strength(certificate)
-    ready (key_strength_score < 50) {
+    lowkey (key_strength_score < 50) {
         result.validation_warnings = arrayz.append(result.validation_warnings, "Weak key size or algorithm detected")
         result.security_score = result.security_score - (50 - key_strength_score)
     }
     
     fr fr Validation 5: Certificate chain validation
-    ready (arrayz.length(cert_chain) > 1) {
+    lowkey (arrayz.length(cert_chain) > 1) {
         sus chain_valid lit = validate_certificate_chain_internal(cert_chain)
-        ready (!chain_valid) {
+        lowkey (!chain_valid) {
             result.validation_errors = arrayz.append(result.validation_errors, "Certificate chain validation failed")
             result.is_valid = cringe
             result.trust_score = result.trust_score - 20
@@ -646,7 +646,7 @@ slay validate_certificate_for_installation(
     }
     
     fr fr Validation 6: Certificate extensions
-    ready (!has_server_auth_key_usage(certificate)) {
+    lowkey (!has_server_auth_key_usage(certificate)) {
         result.validation_warnings = arrayz.append(result.validation_warnings, "Certificate lacks server authentication key usage extension")
         result.compatibility_score = result.compatibility_score - 10
     }
@@ -667,11 +667,11 @@ slay calculate_rotation_priority(certificate X509Certificate, validation_result 
     sus days_until_expiry drip = calculate_days_until_expiry(certificate)
     
     fr fr Higher priority for certificates expiring soon
-    ready (days_until_expiry <= 7) {
+    lowkey (days_until_expiry <= 7) {
         base_priority = base_priority + 50
-    } otherwise ready (days_until_expiry <= 30) {
+    } highkey lowkey (days_until_expiry <= 30) {
         base_priority = base_priority + 30
-    } otherwise ready (days_until_expiry <= 90) {
+    } highkey lowkey (days_until_expiry <= 90) {
         base_priority = base_priority + 10
     }
     
@@ -679,7 +679,7 @@ slay calculate_rotation_priority(certificate X509Certificate, validation_result 
     base_priority = base_priority + (100 - validation_result.trust_score) / 2
     
     fr fr Higher priority for security issues
-    ready (validation_result.security_score < 80) {
+    lowkey (validation_result.security_score < 80) {
         base_priority = base_priority + 20
     }
     
@@ -727,7 +727,7 @@ slay notify_certificate_event(
     
     fr fr In production, would integrate with external notification systems
     fr fr (email, Slack, PagerDuty, etc.)
-    ready (manager.monitoring_enabled) {
+    lowkey (manager.monitoring_enabled) {
         log_certificate_event(event_type, hostname, message)
     }
 }
@@ -761,9 +761,9 @@ slay generate_backup_password() tea {
 
 slay evaluate_key_strength(cert X509Certificate) drip {
     fr fr Mock key strength evaluation
-    ready (stringz.contains(cert.public_key, "4096")) {
+    lowkey (stringz.contains(cert.public_key, "4096")) {
         damn 100
-    } otherwise ready (stringz.contains(cert.public_key, "2048")) {
+    } highkey lowkey (stringz.contains(cert.public_key, "2048")) {
         damn 80
     }
     damn 50  fr fr Weak key
@@ -777,7 +777,7 @@ slay has_server_auth_key_usage(cert X509Certificate) lit {
     fr fr Check if certificate has server authentication key usage
     sus i drip = 0
     bestie (i < arrayz.length(cert.extended_key_usage)) {
-        ready (cert.extended_key_usage[i] == "1.3.6.1.5.5.7.3.1") {  fr fr Server Authentication
+        lowkey (cert.extended_key_usage[i] == "1.3.6.1.5.5.7.3.1") {  fr fr Server Authentication
             damn based
         }
         i = i + 1

@@ -1489,7 +1489,7 @@ slay hmac_sha256_complete(message tea, key tea) tea {
     
     fr fr Key preprocessing
     sus processed_key normie[64]
-    ready key_len > block_size {
+    lowkey key_len > block_size {
         fr fr Hash key if longer than block size
         sus hashed_key tea = cryptz.sha256(key)
         sus hashed_bytes normie[value] = string_to_bytes(hashed_key)
@@ -1499,7 +1499,7 @@ slay hmac_sha256_complete(message tea, key tea) tea {
         bestie i := 32; i < block_size; i++ {
             processed_key[i] = 0x00
         }
-    } otherwise key_len < block_size {
+    } highkey key_len < block_size {
         fr fr Pad key with zeros
         bestie i := 0; i < key_len; i++ {
             processed_key[i] = key_bytes[i]
@@ -1507,7 +1507,7 @@ slay hmac_sha256_complete(message tea, key tea) tea {
         bestie i := key_len; i < block_size; i++ {
             processed_key[i] = 0x00
         }
-    } otherwise {
+    } highkey {
         fr fr Key is exactly block size
         bestie i := 0; i < block_size; i++ {
             processed_key[i] = key_bytes[i]

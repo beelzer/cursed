@@ -62,7 +62,7 @@ slay init_toml_parser(input tea) TOMLParser {
         current_table_path: []
     }
     
-    ready (stringz.len(input) > 0) {
+    lowkey (stringz.len(input) > 0) {
         parser.current_char = stringz.char_at(input, 0)
     }
     
@@ -74,7 +74,7 @@ slay parse_toml(input tea) map<tea, TOMLValue> {
     sus parser TOMLParser = init_toml_parser(input)
     
     # Parse the document
-    ready (!parse_toml_document(parser)) {
+    lowkey (!parse_toml_document(parser)) {
         vibez.spill("Failed to parse TOML document")
         damn {}
     }
@@ -87,20 +87,20 @@ slay parse_toml_document(parser TOMLParser) lit {
     bestie (!is_at_end(parser)) {
         skip_whitespace_and_comments(parser)
         
-        ready (is_at_end(parser)) {
+        lowkey (is_at_end(parser)) {
             break
         }
         
         # Check for table header
-        ready (parser.current_char == "[") {
-            ready (!parse_table_header(parser)) {
+        lowkey (parser.current_char == "[") {
+            lowkey (!parse_table_header(parser)) {
                 damn cap
             }
             continue
         }
         
         # Parse key-value pair
-        ready (!parse_key_value_pair(parser)) {
+        lowkey (!parse_key_value_pair(parser)) {
             damn cap
         }
         
@@ -118,27 +118,27 @@ slay parse_table_header(parser TOMLParser) lit {
     advance(parser)
     
     # Check for array of tables [[...]]
-    ready (parser.current_char == "[") {
+    lowkey (parser.current_char == "[") {
         is_array_of_tables = based
         advance(parser)
     }
     
     # Parse table name
     sus table_path tea[value] = parse_table_path(parser)
-    ready (arrayz.len(table_path) == 0) {
+    lowkey (arrayz.len(table_path) == 0) {
         report_error(parser, "Empty table name")
         damn cap
     }
     
     # Consume closing bracket(s)
-    ready (parser.current_char != "]") {
+    lowkey (parser.current_char != "]") {
         report_error(parser, "Expected ']' after table name")
         damn cap
     }
     advance(parser)
     
-    ready (is_array_of_tables) {
-        ready (parser.current_char != "]") {
+    lowkey (is_array_of_tables) {
+        lowkey (parser.current_char != "]") {
             report_error(parser, "Expected second ']' for array of tables")
             damn cap
         }
@@ -149,7 +149,7 @@ slay parse_table_header(parser TOMLParser) lit {
     parser.current_table_path = table_path
     
     # Create table structure if needed
-    ready (!ensure_table_path_exists(parser, table_path, is_array_of_tables)) {
+    lowkey (!ensure_table_path_exists(parser, table_path, is_array_of_tables)) {
         damn cap
     }
     
@@ -164,7 +164,7 @@ slay parse_table_path(parser TOMLParser) tea[value]{
         skip_whitespace(parser)
         
         sus key tea = parse_key_name(parser)
-        ready (key == "") {
+        lowkey (key == "") {
             break
         }
         
@@ -172,7 +172,7 @@ slay parse_table_path(parser TOMLParser) tea[value]{
         
         skip_whitespace(parser)
         
-        ready (parser.current_char != ".") {
+        lowkey (parser.current_char != ".") {
             break
         }
         
@@ -185,14 +185,14 @@ slay parse_table_path(parser TOMLParser) tea[value]{
 # Parse key-value pair: key = value
 slay parse_key_value_pair(parser TOMLParser) lit {
     sus key tea = parse_key_name(parser)
-    ready (key == "") {
+    lowkey (key == "") {
         report_error(parser, "Expected key name")
         damn cap
     }
     
     skip_whitespace(parser)
     
-    ready (parser.current_char != "=") {
+    lowkey (parser.current_char != "=") {
         report_error(parser, "Expected '=' after key")
         damn cap
     }
@@ -201,15 +201,15 @@ slay parse_key_value_pair(parser TOMLParser) lit {
     skip_whitespace(parser)
     
     sus value TOMLValue = parse_value(parser)
-    ready (value.type == TOMLValueType.String && value.string_value == "") {
+    lowkey (value.type == TOMLValueType.String && value.string_value == "") {
         # Check if parsing failed
-        ready (parser.current_char != "") {  # Not at end, so parsing failed
+        lowkey (parser.current_char != "") {  # Not at end, so parsing failed
             damn cap
         }
     }
     
     # Store value in current table
-    ready (!set_table_value(parser, key, value)) {
+    lowkey (!set_table_value(parser, key, value)) {
         damn cap
     }
     
@@ -218,13 +218,13 @@ slay parse_key_value_pair(parser TOMLParser) lit {
 
 # Parse key name (bare key, quoted key, or dotted key)
 slay parse_key_name(parser TOMLParser) tea {
-    ready (parser.current_char == "\"") {
+    lowkey (parser.current_char == "\"") {
         # Quoted key
         damn parse_basic_string(parser)
-    } ready (parser.current_char == "'") {
+    } lowkey (parser.current_char == "'") {
         # Single-quoted key
         damn parse_literal_string(parser)
-    } otherwise {
+    } highkey {
         # Bare key
         damn parse_bare_key(parser)
     }
@@ -247,7 +247,7 @@ slay parse_value(parser TOMLParser) TOMLValue {
     # Skip leading whitespace
     skip_whitespace(parser)
     
-    ready (is_at_end(parser)) {
+    lowkey (is_at_end(parser)) {
         damn create_error_value("Unexpected end of input")
     }
     
@@ -261,10 +261,10 @@ slay parse_value(parser TOMLParser) TOMLValue {
         "t", "f" -> damn parse_boolean_value(parser)
         _ -> {
             # Number, datetime, or multiline string
-            ready (stringz.is_digit(first_char) || first_char == "+" || first_char == "-") {
+            lowkey (stringz.is_digit(first_char) || first_char == "+" || first_char == "-") {
                 damn parse_number_or_datetime(parser)
             }
-            ready (first_char == "\n" || first_char == "\r") {
+            lowkey (first_char == "\n" || first_char == "\r") {
                 damn create_error_value("Unexpected newline in value")
             }
             damn create_error_value("Invalid value: " + first_char)
@@ -294,23 +294,23 @@ slay parse_basic_string(parser TOMLParser) tea {
     sus result tea = ""
     
     bestie (!is_at_end(parser) && parser.current_char != "\"") {
-        ready (parser.current_char == "\\") {
+        lowkey (parser.current_char == "\\") {
             # Handle escape sequence
             advance(parser)
-            ready (is_at_end(parser)) {
+            lowkey (is_at_end(parser)) {
                 report_error(parser, "Unterminated escape sequence")
                 break
             }
             
             sus escaped_char tea = parse_escape_sequence(parser)
-            ready (escaped_char == "") {
+            lowkey (escaped_char == "") {
                 report_error(parser, "Invalid escape sequence")
                 break
             }
             
             result = result + escaped_char
-        } otherwise {
-            ready (is_control_character(parser.current_char)) {
+        } highkey {
+            lowkey (is_control_character(parser.current_char)) {
                 report_error(parser, "Control characters must be escaped in basic strings")
                 break
             }
@@ -321,7 +321,7 @@ slay parse_basic_string(parser TOMLParser) tea {
         advance(parser)
     }
     
-    ready (parser.current_char != "\"") {
+    lowkey (parser.current_char != "\"") {
         report_error(parser, "Unterminated basic string")
         damn ""
     }
@@ -346,7 +346,7 @@ slay parse_escape_sequence(parser TOMLParser) tea {
             # Unicode escape \uXXXX
             advance(parser)
             sus unicode_hex tea = parse_hex_digits(parser, 4)
-            ready (stringz.len(unicode_hex) != 4) {
+            lowkey (stringz.len(unicode_hex) != 4) {
                 report_error(parser, "Unicode escape must have exactly 4 hex digits")
                 damn ""
             }
@@ -356,7 +356,7 @@ slay parse_escape_sequence(parser TOMLParser) tea {
             # Unicode escape \UXXXXXXXX  
             advance(parser)
             sus unicode_hex tea = parse_hex_digits(parser, 8)
-            ready (stringz.len(unicode_hex) != 8) {
+            lowkey (stringz.len(unicode_hex) != 8) {
                 report_error(parser, "Unicode escape must have exactly 8 hex digits")
                 damn ""
             }
@@ -395,7 +395,7 @@ slay parse_literal_string(parser TOMLParser) tea {
         advance(parser)
     }
     
-    ready (parser.current_char != "'") {
+    lowkey (parser.current_char != "'") {
         report_error(parser, "Unterminated literal string")
         damn ""
     }
@@ -406,7 +406,7 @@ slay parse_literal_string(parser TOMLParser) tea {
 
 # Parse boolean value (true/false)
 slay parse_boolean_value(parser TOMLParser) TOMLValue {
-    ready (match_keyword(parser, "true")) {
+    lowkey (match_keyword(parser, "true")) {
         damn TOMLValue {
             type: TOMLValueType.Boolean,
             string_value: "",
@@ -419,7 +419,7 @@ slay parse_boolean_value(parser TOMLParser) TOMLValue {
         }
     }
     
-    ready (match_keyword(parser, "false")) {
+    lowkey (match_keyword(parser, "false")) {
         damn TOMLValue {
             type: TOMLValueType.Boolean,
             string_value: "",
@@ -445,29 +445,29 @@ slay parse_number_or_datetime(parser TOMLParser) TOMLValue {
     sus is_binary lit = cap
     
     # Handle sign
-    ready (parser.current_char == "+" || parser.current_char == "-") {
+    lowkey (parser.current_char == "+" || parser.current_char == "-") {
         number_str = number_str + parser.current_char
         advance(parser)
     }
     
     # Check for hex (0x), octal (0o), or binary (0b) prefix
-    ready (parser.current_char == "0" && !is_at_end(parser)) {
+    lowkey (parser.current_char == "0" && !is_at_end(parser)) {
         sus next_pos drip = parser.position + 1
-        ready (next_pos < stringz.len(parser.input)) {
+        lowkey (next_pos < stringz.len(parser.input)) {
             sus next_char tea = stringz.char_at(parser.input, next_pos)
-            ready (next_char == "x" || next_char == "X") {
+            lowkey (next_char == "x" || next_char == "X") {
                 is_hex = based
                 number_str = number_str + parser.current_char
                 advance(parser)
                 number_str = number_str + parser.current_char
                 advance(parser)
-            } ready (next_char == "o" || next_char == "O") {
+            } lowkey (next_char == "o" || next_char == "O") {
                 is_octal = based
                 number_str = number_str + parser.current_char
                 advance(parser)
                 number_str = number_str + parser.current_char
                 advance(parser)
-            } ready (next_char == "b" || next_char == "B") {
+            } lowkey (next_char == "b" || next_char == "B") {
                 is_binary = based
                 number_str = number_str + parser.current_char
                 advance(parser)
@@ -481,37 +481,37 @@ slay parse_number_or_datetime(parser TOMLParser) TOMLValue {
     bestie (!is_at_end(parser)) {
         sus ch tea = parser.current_char
         
-        ready (stringz.is_digit(ch) || 
+        lowkey (stringz.is_digit(ch) || 
                (is_hex && is_hex_digit(ch)) ||
                (ch == "_")) {  # Underscores allowed in numbers
-            ready (ch != "_") {  # Don't include underscores in final number
+            lowkey (ch != "_") {  # Don't include underscores in final number
                 number_str = number_str + ch
             }
             advance(parser)
-        } ready (ch == "." && !has_decimal && !is_hex && !is_octal && !is_binary) {
+        } lowkey (ch == "." && !has_decimal && !is_hex && !is_octal && !is_binary) {
             has_decimal = based
             number_str = number_str + ch
             advance(parser)
-        } ready ((ch == "e" || ch == "E") && !has_exponent && !is_hex && !is_octal && !is_binary) {
+        } lowkey ((ch == "e" || ch == "E") && !has_exponent && !is_hex && !is_octal && !is_binary) {
             has_exponent = based
             number_str = number_str + ch
             advance(parser)
             
             # Handle optional sign after exponent
-            ready (!is_at_end(parser) && (parser.current_char == "+" || parser.current_char == "-")) {
+            lowkey (!is_at_end(parser) && (parser.current_char == "+" || parser.current_char == "-")) {
                 number_str = number_str + parser.current_char
                 advance(parser)
             }
-        } ready (ch == "-" || ch == ":" || ch == "T" || ch == "Z") {
+        } lowkey (ch == "-" || ch == ":" || ch == "T" || ch == "Z") {
             # Possible datetime format
             damn parse_datetime_value(parser, number_str)
-        } otherwise {
+        } highkey {
             break
         }
     }
     
     # Convert to appropriate numeric type
-    ready (is_hex || is_octal || is_binary) {
+    lowkey (is_hex || is_octal || is_binary) {
         sus int_value drip = convert_special_base_integer(number_str)
         damn TOMLValue {
             type: TOMLValueType.Integer,
@@ -525,7 +525,7 @@ slay parse_number_or_datetime(parser TOMLParser) TOMLValue {
         }
     }
     
-    ready (has_decimal || has_exponent) {
+    lowkey (has_decimal || has_exponent) {
         damn TOMLValue {
             type: TOMLValueType.Float,
             string_value: "",
@@ -536,7 +536,7 @@ slay parse_number_or_datetime(parser TOMLParser) TOMLValue {
             array_values: [],
             table_values: {}
         }
-    } otherwise {
+    } highkey {
         sus int_value drip = stringz.parse_int(number_str)
         damn TOMLValue {
             type: TOMLValueType.Integer,
@@ -559,7 +559,7 @@ slay parse_array_value(parser TOMLParser) TOMLValue {
     sus values TOMLValue[value] = []
     
     # Empty array
-    ready (parser.current_char == "]") {
+    lowkey (parser.current_char == "]") {
         advance(parser)
         damn TOMLValue {
             type: TOMLValueType.Array,
@@ -576,7 +576,7 @@ slay parse_array_value(parser TOMLParser) TOMLValue {
     bestie (based) {
         # Parse array element
         sus value TOMLValue = parse_value(parser)
-        ready (value.type == TOMLValueType.String && value.string_value == "" && !is_at_end(parser)) {
+        lowkey (value.type == TOMLValueType.String && value.string_value == "" && !is_at_end(parser)) {
             damn create_error_value("Invalid array element")
         }
         
@@ -584,12 +584,12 @@ slay parse_array_value(parser TOMLParser) TOMLValue {
         
         skip_whitespace_and_comments(parser)
         
-        ready (parser.current_char == "]") {
+        lowkey (parser.current_char == "]") {
             advance(parser)
             break
         }
         
-        ready (parser.current_char != ",") {
+        lowkey (parser.current_char != ",") {
             damn create_error_value("Expected ',' or ']' in array")
         }
         
@@ -597,7 +597,7 @@ slay parse_array_value(parser TOMLParser) TOMLValue {
         skip_whitespace_and_comments(parser)
         
         # Allow trailing comma
-        ready (parser.current_char == "]") {
+        lowkey (parser.current_char == "]") {
             advance(parser)
             break
         }
@@ -623,7 +623,7 @@ slay parse_inline_table_value(parser TOMLParser) TOMLValue {
     sus table_values map<tea, TOMLValue> = {}
     
     # Empty inline table
-    ready (parser.current_char == "}") {
+    lowkey (parser.current_char == "}") {
         advance(parser)
         damn TOMLValue {
             type: TOMLValueType.InlineTable,
@@ -640,13 +640,13 @@ slay parse_inline_table_value(parser TOMLParser) TOMLValue {
     bestie (based) {
         # Parse key-value pair
         sus key tea = parse_key_name(parser)
-        ready (key == "") {
+        lowkey (key == "") {
             damn create_error_value("Expected key in inline table")
         }
         
         skip_whitespace(parser)
         
-        ready (parser.current_char != "=") {
+        lowkey (parser.current_char != "=") {
             damn create_error_value("Expected '=' after key in inline table")
         }
         advance(parser)
@@ -654,12 +654,12 @@ slay parse_inline_table_value(parser TOMLParser) TOMLValue {
         skip_whitespace(parser)
         
         sus value TOMLValue = parse_value(parser)
-        ready (value.type == TOMLValueType.String && value.string_value == "" && !is_at_end(parser)) {
+        lowkey (value.type == TOMLValueType.String && value.string_value == "" && !is_at_end(parser)) {
             damn create_error_value("Invalid value in inline table")
         }
         
         # Check for duplicate key
-        ready (has_table_key(table_values, key)) {
+        lowkey (has_table_key(table_values, key)) {
             damn create_error_value("Duplicate key in inline table: " + key)
         }
         
@@ -667,12 +667,12 @@ slay parse_inline_table_value(parser TOMLParser) TOMLValue {
         
         skip_whitespace(parser)
         
-        ready (parser.current_char == "}") {
+        lowkey (parser.current_char == "}") {
             advance(parser)
             break
         }
         
-        ready (parser.current_char != ",") {
+        lowkey (parser.current_char != ",") {
             damn create_error_value("Expected ',' or '}' in inline table")
         }
         
@@ -699,17 +699,17 @@ slay parse_datetime_value(parser TOMLParser, prefix tea) TOMLValue {
     
     bestie (!is_at_end(parser)) {
         sus ch tea = parser.current_char
-        ready (stringz.is_digit(ch) || ch == "-" || ch == ":" || ch == "T" || 
+        lowkey (stringz.is_digit(ch) || ch == "-" || ch == ":" || ch == "T" || 
                ch == "Z" || ch == "+" || ch == ".") {
             datetime_str = datetime_str + ch
             advance(parser)
-        } otherwise {
+        } highkey {
             break
         }
     }
     
     # Validate datetime format
-    ready (!is_valid_datetime_format(datetime_str)) {
+    lowkey (!is_valid_datetime_format(datetime_str)) {
         damn create_error_value("Invalid datetime format: " + datetime_str)
     }
     
@@ -728,19 +728,19 @@ slay parse_datetime_value(parser TOMLParser, prefix tea) TOMLValue {
 # Helper functions for parsing
 
 slay advance(parser TOMLParser) {
-    ready (parser.position < stringz.len(parser.input)) {
-        ready (parser.current_char == "\n") {
+    lowkey (parser.position < stringz.len(parser.input)) {
+        lowkey (parser.current_char == "\n") {
             parser.line_number = parser.line_number + 1
             parser.column_number = 1
-        } otherwise {
+        } highkey {
             parser.column_number = parser.column_number + 1
         }
         
         parser.position = parser.position + 1
         
-        ready (parser.position < stringz.len(parser.input)) {
+        lowkey (parser.position < stringz.len(parser.input)) {
             parser.current_char = stringz.char_at(parser.input, parser.position)
-        } otherwise {
+        } highkey {
             parser.current_char = ""
         }
     }
@@ -758,19 +758,19 @@ slay skip_whitespace(parser TOMLParser) {
 
 slay skip_whitespace_and_comments(parser TOMLParser) {
     bestie (!is_at_end(parser)) {
-        ready (parser.current_char == " " || parser.current_char == "\t") {
+        lowkey (parser.current_char == " " || parser.current_char == "\t") {
             advance(parser)
-        } ready (parser.current_char == "#") {
+        } lowkey (parser.current_char == "#") {
             # Skip comment to end of line
             bestie (!is_at_end(parser) && parser.current_char != "\n") {
                 advance(parser)
             }
-        } ready (parser.current_char == "\n" || parser.current_char == "\r") {
+        } lowkey (parser.current_char == "\n" || parser.current_char == "\r") {
             advance(parser)
-            ready (parser.current_char == "\n") {  # Handle \r\n
+            lowkey (parser.current_char == "\n") {  # Handle \r\n
                 advance(parser)
             }
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -781,17 +781,17 @@ slay match_keyword(parser TOMLParser, keyword tea) lit {
     sus matched lit = based
     
     bestie (sus i drip = 0; i < stringz.len(keyword); i = i + 1) {
-        ready (is_at_end(parser) || parser.current_char != stringz.char_at(keyword, i)) {
+        lowkey (is_at_end(parser) || parser.current_char != stringz.char_at(keyword, i)) {
             matched = cap
             break
         }
         advance(parser)
     }
     
-    ready (!matched) {
+    lowkey (!matched) {
         # Reset position
         parser.position = start_pos
-        ready (start_pos < stringz.len(parser.input)) {
+        lowkey (start_pos < stringz.len(parser.input)) {
             parser.current_char = stringz.char_at(parser.input, start_pos)
         }
     }
@@ -832,15 +832,15 @@ slay unicode_from_hex(hex_str tea) tea {
 }
 
 slay convert_special_base_integer(number_str tea) drip {
-    ready (stringz.starts_with(number_str, "0x") || stringz.starts_with(number_str, "0X")) {
+    lowkey (stringz.starts_with(number_str, "0x") || stringz.starts_with(number_str, "0X")) {
         sus hex_part tea = stringz.substring(number_str, 2, stringz.len(number_str))
         damn stringz.parse_hex(hex_part)
     }
-    ready (stringz.starts_with(number_str, "0o") || stringz.starts_with(number_str, "0O")) {
+    lowkey (stringz.starts_with(number_str, "0o") || stringz.starts_with(number_str, "0O")) {
         sus octal_part tea = stringz.substring(number_str, 2, stringz.len(number_str))
         damn stringz.parse_octal(octal_part)
     }
-    ready (stringz.starts_with(number_str, "0b") || stringz.starts_with(number_str, "0B")) {
+    lowkey (stringz.starts_with(number_str, "0b") || stringz.starts_with(number_str, "0B")) {
         sus binary_part tea = stringz.substring(number_str, 2, stringz.len(number_str))
         damn stringz.parse_binary(binary_part)
     }
@@ -849,12 +849,12 @@ slay convert_special_base_integer(number_str tea) drip {
 
 slay is_valid_datetime_format(datetime_str tea) lit {
     # Simplified datetime validation - real implementation would be more thorough
-    ready (stringz.len(datetime_str) < 10) {
+    lowkey (stringz.len(datetime_str) < 10) {
         damn cap  # Too short for date
     }
     
     # Check for basic date pattern YYYY-MM-DD
-    ready (!stringz.matches_pattern(datetime_str, "\\d{4}-\\d{2}-\\d{2}")) {
+    lowkey (!stringz.matches_pattern(datetime_str, "\\d{4}-\\d{2}-\\d{2}")) {
         damn cap
     }
     
@@ -868,7 +868,7 @@ slay ensure_table_path_exists(parser TOMLParser, path tea[value], is_array_of_ta
     bestie (sus i drip = 0; i < arrayz.len(path); i = i + 1) {
         sus key tea = path[i]
         
-        ready (!has_table_key(current_table, key)) {
+        lowkey (!has_table_key(current_table, key)) {
             # Create new table
             sus new_table map<tea, TOMLValue> = {}
             current_table[key] = TOMLValue {
@@ -882,9 +882,9 @@ slay ensure_table_path_exists(parser TOMLParser, path tea[value], is_array_of_ta
                 table_values: new_table
             }
             current_table = new_table
-        } otherwise {
+        } highkey {
             sus existing_value TOMLValue = current_table[key]
-            ready (existing_value.type != TOMLValueType.Table) {
+            lowkey (existing_value.type != TOMLValueType.Table) {
                 report_error(parser, "Key redefinition: " + key)
                 damn cap
             }
@@ -900,7 +900,7 @@ slay set_table_value(parser TOMLParser, key tea, value TOMLValue) lit {
     sus target_table map<tea, TOMLValue> = get_current_table(parser)
     
     # Check for duplicate key
-    ready (has_table_key(target_table, key)) {
+    lowkey (has_table_key(target_table, key)) {
         report_error(parser, "Duplicate key: " + key)
         damn cap
     }
@@ -910,7 +910,7 @@ slay set_table_value(parser TOMLParser, key tea, value TOMLValue) lit {
 }
 
 slay get_current_table(parser TOMLParser) map<tea, TOMLValue> {
-    ready (arrayz.len(parser.current_table_path) == 0) {
+    lowkey (arrayz.len(parser.current_table_path) == 0) {
         damn parser.root_table
     }
     
@@ -955,9 +955,9 @@ slay toml_value_to_string(value TOMLValue) tea {
         TOMLValueType.Integer -> damn stringz.from_int(value.int_value)
         TOMLValueType.Float -> damn value.float_value
         TOMLValueType.Boolean -> {
-            ready (value.bool_value) {
+            lowkey (value.bool_value) {
                 damn "true"
-            } otherwise {
+            } highkey {
                 damn "false"
             }
         }
@@ -990,13 +990,13 @@ slay escape_toml_string(input tea) tea {
             "\r" -> result = result + "\\r"
             "\t" -> result = result + "\\t"
             _ -> {
-                ready (is_control_character(ch)) {
+                lowkey (is_control_character(ch)) {
                     # Escape control characters as unicode
                     sus code drip = stringz.char_code(ch)
                     sus hex_str tea = stringz.to_hex_upper(code)
                     sus padded_hex tea = stringz.pad_left(hex_str, 4, "0")
                     result = result + "\\u" + padded_hex
-                } otherwise {
+                } highkey {
                     result = result + ch
                 }
             }

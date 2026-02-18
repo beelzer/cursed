@@ -68,7 +68,7 @@ test_case("Tokenize String Literal") {
 }
 
 test_case("Tokenize Keywords") {
-    sus keywords tea[value] = ["sus", "slay", "ready", "otherwise", "bestie", "vibes", "damn"]
+    sus keywords tea[value] = ["sus", "slay", "lowkey", "highkey", "bestie", "vibes", "damn"]
     
     bestie (sus i normie = 0; i < keywords.len(); i++) {
         sus tokens Token[value] = tokenize(keywords[i])
@@ -190,7 +190,7 @@ test_case("Parse Nested Expressions") {
 }
 
 test_case("Parse Control Flow") {
-    sus source tea = "ready x > 0 { spill(\"positive\") } otherwise { spill(\"non-positive\") }"
+    sus source tea = "lowkey x > 0 { spill(\"positive\") } highkey { spill(\"non-positive\") }"
     sus tokens Token[value] = tokenize(source)
     sus ast ASTNode = parse(tokens)
     

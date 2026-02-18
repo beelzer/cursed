@@ -296,13 +296,13 @@ slay main_character() {
     testz.test_group("Final Comprehensive Validation")
     
     fr fr Run enhanced I/O functionality test if available
-    ready vibez.test_enhanced_io_functionality {
+    lowkey vibez.test_enhanced_io_functionality {
         sus enhanced_test_result lit = vibez.test_enhanced_io_functionality()
         testz.assert_true(enhanced_test_result, "Enhanced I/O functionality should pass")
     }
     
     fr fr Print final statistics
-    ready vibez.get_enhanced_io_statistics {
+    lowkey vibez.get_enhanced_io_statistics {
         sus stats_str tea = vibez.get_enhanced_io_statistics()
         testz.assert_ne_string(stats_str, "", "Enhanced I/O statistics should be available")
         vibez.print_info("VIBEZ I/O Statistics Retrieved")

@@ -73,7 +73,7 @@ squad FileWatcher {
 slay init_file_watcher() WatchError yikes FileWatcher {
     sus platform Platform = get_current_platform()
     
-    ready platform == Platform.Unsupported {
+    lowkey platform == Platform.Unsupported {
         yikes WatchError.PlatformNotSupported
     }
     
@@ -92,14 +92,14 @@ slay init_file_watcher() WatchError yikes FileWatcher {
     sick platform {
         when Platform.Linux -> {
             sus fd normie = linux_inotify_init()
-            ready fd < 0 {
+            lowkey fd < 0 {
                 yikes WatchError.InitializationFailed
             }
             watcher.linux_fd = fd
         }
         when Platform.MacOS -> {
             sus fd normie = macos_kqueue_init()
-            ready fd < 0 {
+            lowkey fd < 0 {
                 yikes WatchError.InitializationFailed
             }
             watcher.macos_fd = fd
@@ -108,7 +108,7 @@ slay init_file_watcher() WatchError yikes FileWatcher {
             // Windows initialization handled in start_watching
             watcher.windows_handle = 0
         }
-        otherwise -> {
+        highkey -> {
             yikes WatchError.PlatformNotSupported
         }
     }
@@ -118,7 +118,7 @@ slay init_file_watcher() WatchError yikes FileWatcher {
 
 // Start watching a path with optional recursion
 slay start_watching(watcher FileWatcher, path tea, recursive lit, callback slay(WatchEvent) vibes) WatchError yikes vibes {
-    ready watcher.running {
+    lowkey watcher.running {
         damn // Already running
     }
     
@@ -135,7 +135,7 @@ slay start_watching(watcher FileWatcher, path tea, recursive lit, callback slay(
         when Platform.Windows -> {
             start_windows_watching(watcher, path, recursive) yikes shook
         }
-        otherwise -> {
+        highkey -> {
             yikes WatchError.PlatformNotSupported
         }
     }
@@ -152,24 +152,24 @@ slay stop_watching(watcher FileWatcher) vibes {
     
     sick watcher.platform {
         when Platform.Linux -> {
-            ready watcher.linux_fd >= 0 {
+            lowkey watcher.linux_fd >= 0 {
                 close_fd(watcher.linux_fd)
                 watcher.linux_fd = -1
             }
         }
         when Platform.MacOS -> {
-            ready watcher.macos_fd >= 0 {
+            lowkey watcher.macos_fd >= 0 {
                 close_fd(watcher.macos_fd)
                 watcher.macos_fd = -1
             }
         }
         when Platform.Windows -> {
-            ready watcher.windows_handle > 0 {
+            lowkey watcher.windows_handle > 0 {
                 windows_close_handle(watcher.windows_handle)
                 watcher.windows_handle = -1
             }
         }
-        otherwise -> {}
+        highkey -> {}
     }
 }
 
@@ -178,7 +178,7 @@ slay start_linux_watching(watcher FileWatcher, path tea, recursive lit) WatchErr
     sus mask normie = IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_ATTRIB
     
     sus wd normie = linux_add_watch(watcher.linux_fd, path, mask)
-    ready wd < 0 {
+    lowkey wd < 0 {
         yikes WatchError.WatchCreationFailed
     }
     
@@ -187,7 +187,7 @@ slay start_linux_watching(watcher FileWatcher, path tea, recursive lit) WatchErr
     watcher.watched_paths.append(path)
     
     // Add recursive watches if requested
-    ready recursive {
+    lowkey recursive {
         add_recursive_watches_linux(watcher, path) fam {
             when _ -> {} // Continue even if some subdirs fail
         }
@@ -203,11 +203,11 @@ slay add_recursive_watches_linux(watcher FileWatcher, base_path tea) WatchError 
     bestie entry tea in entries {
         sus full_path tea = string_concat(base_path, "/", entry)
         
-        ready is_directory(full_path) {
+        lowkey is_directory(full_path) {
             sus mask normie = IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_ATTRIB
             sus wd normie = linux_add_watch(watcher.linux_fd, full_path, mask)
             
-            ready wd >= 0 {
+            lowkey wd >= 0 {
                 watcher.watch_descriptors.append(wd)
                 watcher.watched_paths.append(full_path)
                 
@@ -223,13 +223,13 @@ slay add_recursive_watches_linux(watcher FileWatcher, base_path tea) WatchError 
 // macOS kqueue implementation  
 slay start_macos_watching(watcher FileWatcher, path tea, recursive lit) WatchError yikes vibes {
     sus fd normie = open_file_for_monitoring(path)
-    ready fd < 0 {
+    lowkey fd < 0 {
         yikes WatchError.InvalidPath
     }
     
     sus kevent_flags normie = get_macos_watch_flags()
     sus result normie = macos_add_kevent(watcher.macos_fd, fd, kevent_flags)
-    ready result < 0 {
+    lowkey result < 0 {
         close_fd(fd)
         yikes WatchError.WatchCreationFailed
     }
@@ -238,7 +238,7 @@ slay start_macos_watching(watcher FileWatcher, path tea, recursive lit) WatchErr
     watcher.watched_paths.append(path)
     
     // Add recursive watches if requested
-    ready recursive {
+    lowkey recursive {
         add_recursive_watches_macos(watcher, path) fam {
             when _ -> {} // Continue even if some subdirs fail
         }
@@ -254,13 +254,13 @@ slay add_recursive_watches_macos(watcher FileWatcher, base_path tea) WatchError 
     bestie entry tea in entries {
         sus full_path tea = string_concat(base_path, "/", entry)
         
-        ready is_directory(full_path) {
+        lowkey is_directory(full_path) {
             sus fd normie = open_file_for_monitoring(full_path)
-            ready fd >= 0 {
+            lowkey fd >= 0 {
                 sus kevent_flags normie = get_macos_watch_flags()
                 sus result normie = macos_add_kevent(watcher.macos_fd, fd, kevent_flags)
                 
-                ready result >= 0 {
+                lowkey result >= 0 {
                     watcher.watch_descriptors.append(fd)
                     watcher.watched_paths.append(full_path)
                     
@@ -277,7 +277,7 @@ slay add_recursive_watches_macos(watcher FileWatcher, base_path tea) WatchError 
 // Windows implementation
 slay start_windows_watching(watcher FileWatcher, path tea, recursive lit) WatchError yikes vibes {
     sus handle drip = windows_open_directory(path)
-    ready handle <= 0 {
+    lowkey handle <= 0 {
         yikes WatchError.InvalidPath
     }
     
@@ -300,7 +300,7 @@ slay event_loop(watcher FileWatcher) vibes {
             when Platform.Windows -> {
                 process_windows_events(watcher, buffer)
             }
-            otherwise -> {
+            highkey -> {
                 break
             }
         }
@@ -314,7 +314,7 @@ slay event_loop(watcher FileWatcher) vibes {
 slay process_linux_events(watcher FileWatcher, buffer smol[4096]) vibes {
     sus bytes_read normie = read_from_fd(watcher.linux_fd, buffer, 4096)
     
-    ready bytes_read <= 0 {
+    lowkey bytes_read <= 0 {
         damn
     }
     
@@ -338,7 +338,7 @@ slay process_linux_events(watcher FileWatcher, buffer smol[4096]) vibes {
         }
         
         // Deliver event to callback
-        ready watcher.callback_func != null {
+        lowkey watcher.callback_func != null {
             watcher.callback_func?(watch_event)
         }
         
@@ -353,7 +353,7 @@ slay process_linux_events(watcher FileWatcher, buffer smol[4096]) vibes {
 slay process_macos_events(watcher FileWatcher, buffer smol[4096]) vibes {
     sus num_events normie = macos_kevent_wait(watcher.macos_fd, buffer, 1000) // 1 second timeout
     
-    ready num_events <= 0 {
+    lowkey num_events <= 0 {
         damn
     }
     
@@ -369,7 +369,7 @@ slay process_macos_events(watcher FileWatcher, buffer smol[4096]) vibes {
     }
     
     // Deliver event to callback
-    ready watcher.callback_func != null {
+    lowkey watcher.callback_func != null {
         watcher.callback_func?(watch_event)
     }
 }
@@ -378,7 +378,7 @@ slay process_macos_events(watcher FileWatcher, buffer smol[4096]) vibes {
 slay process_windows_events(watcher FileWatcher, buffer smol[4096]) vibes {
     sus bytes_returned normie = windows_read_directory_changes(watcher.windows_handle, buffer, 4096)
     
-    ready bytes_returned <= 0 {
+    lowkey bytes_returned <= 0 {
         damn
     }
     
@@ -402,12 +402,12 @@ slay process_windows_events(watcher FileWatcher, buffer smol[4096]) vibes {
         }
         
         // Deliver event to callback
-        ready watcher.callback_func != null {
+        lowkey watcher.callback_func != null {
             watcher.callback_func?(watch_event)
         }
         
         // Move to next event
-        ready next_entry_offset == 0 {
+        lowkey next_entry_offset == 0 {
             break
         }
         offset = offset + next_entry_offset
@@ -416,19 +416,19 @@ slay process_windows_events(watcher FileWatcher, buffer smol[4096]) vibes {
 
 // Event type conversion functions
 slay convert_linux_event_type(mask normie) WatchEventType {
-    ready (mask & IN_CREATE) != 0 {
+    lowkey (mask & IN_CREATE) != 0 {
         damn WatchEventType.created
     }
-    ready (mask & IN_DELETE) != 0 {
+    lowkey (mask & IN_DELETE) != 0 {
         damn WatchEventType.deleted
     }
-    ready (mask & IN_MODIFY) != 0 {
+    lowkey (mask & IN_MODIFY) != 0 {
         damn WatchEventType.modified
     }
-    ready (mask & (IN_MOVED_FROM | IN_MOVED_TO)) != 0 {
+    lowkey (mask & (IN_MOVED_FROM | IN_MOVED_TO)) != 0 {
         damn WatchEventType.moved
     }
-    ready (mask & IN_ATTRIB) != 0 {
+    lowkey (mask & IN_ATTRIB) != 0 {
         damn WatchEventType.attributes
     }
     damn WatchEventType.modified // Default
@@ -441,16 +441,16 @@ slay convert_macos_event_type(flags normie) WatchEventType {
     sus NOTE_EXTEND normie = 4
     sus NOTE_ATTRIB normie = 8
     
-    ready (flags & NOTE_DELETE) != 0 {
+    lowkey (flags & NOTE_DELETE) != 0 {
         damn WatchEventType.deleted
     }
-    ready (flags & NOTE_WRITE) != 0 {
+    lowkey (flags & NOTE_WRITE) != 0 {
         damn WatchEventType.modified
     }
-    ready (flags & NOTE_EXTEND) != 0 {
+    lowkey (flags & NOTE_EXTEND) != 0 {
         damn WatchEventType.modified
     }
-    ready (flags & NOTE_ATTRIB) != 0 {
+    lowkey (flags & NOTE_ATTRIB) != 0 {
         damn WatchEventType.attributes
     }
     damn WatchEventType.modified // Default
@@ -470,7 +470,7 @@ slay convert_windows_event_type(action normie) WatchEventType {
         when FILE_ACTION_MODIFIED -> damn WatchEventType.modified
         when FILE_ACTION_RENAMED_OLD_NAME -> damn WatchEventType.moved
         when FILE_ACTION_RENAMED_NEW_NAME -> damn WatchEventType.moved
-        otherwise -> damn WatchEventType.modified
+        highkey -> damn WatchEventType.modified
     }
 }
 
@@ -479,13 +479,13 @@ slay get_current_platform() Platform {
     // This would be determined at compile time or via system calls
     sus platform_name tea = get_platform_name()
     
-    ready string_contains(platform_name, "linux") {
+    lowkey string_contains(platform_name, "linux") {
         damn Platform.Linux
     }
-    ready string_contains(platform_name, "darwin") || string_contains(platform_name, "macos") {
+    lowkey string_contains(platform_name, "darwin") || string_contains(platform_name, "macos") {
         damn Platform.MacOS  
     }
-    ready string_contains(platform_name, "windows") {
+    lowkey string_contains(platform_name, "windows") {
         damn Platform.Windows
     }
     damn Platform.Unsupported
@@ -630,7 +630,7 @@ slay read_string_from_buffer(buffer smol[4096], offset normie, length normie) te
     // Extract null-terminated string from buffer
     sus result tea = ""
     bestie i normie in 0..length {
-        ready buffer[offset + i] == 0 {
+        lowkey buffer[offset + i] == 0 {
             break
         }
         result = result + char_to_string(buffer[offset + i])
@@ -644,11 +644,11 @@ slay read_wide_string_from_buffer(buffer smol[4096], offset normie, length normi
     sus i normie = 0
     bestie i < length / 2 {
         sus char_code normie = buffer[offset + i * 2] | (buffer[offset + i * 2 + 1] << 8)
-        ready char_code == 0 {
+        lowkey char_code == 0 {
             break
         }
         // Simplified UTF-16 to UTF-8 conversion (handles ASCII range)
-        ready char_code < 128 {
+        lowkey char_code < 128 {
             result = result + char_to_string(char_code)
         }
         i = i + 1
@@ -685,7 +685,7 @@ slay test_file_watcher() vibes {
             vibez.spill("Failed to initialize file watcher")
             damn
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("Unknown error initializing file watcher")
             damn
         }
@@ -701,7 +701,7 @@ slay test_file_watcher() vibes {
             vibez.spill("Failed to create file watch")
             damn
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("Unknown error starting file watch")
             damn
         }

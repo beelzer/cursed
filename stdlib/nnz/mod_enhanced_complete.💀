@@ -94,18 +94,18 @@ slay ACTIVATION_MISH() drip { damn 10 }
 
 fr fr Mathematical implementations of activation functions
 slay relu_activation(x meal) meal {
-    ready (x > 0.0) { damn x }
+    lowkey (x > 0.0) { damn x }
     damn 0.0
 }
 
 slay relu_derivative(x meal) meal {
-    ready (x > 0.0) { damn 1.0 }
+    lowkey (x > 0.0) { damn 1.0 }
     damn 0.0
 }
 
 slay sigmoid_activation(x meal) meal {
-    ready (x > 50.0) { damn 1.0 }
-    ready (x < -50.0) { damn 0.0 }
+    lowkey (x > 50.0) { damn 1.0 }
+    lowkey (x < -50.0) { damn 0.0 }
     damn 1.0 / (1.0 + exp_meal(-x))
 }
 
@@ -115,8 +115,8 @@ slay sigmoid_derivative(x meal) meal {
 }
 
 slay tanh_activation(x meal) meal {
-    ready (x > 50.0) { damn 1.0 }
-    ready (x < -50.0) { damn -1.0 }
+    lowkey (x > 50.0) { damn 1.0 }
+    lowkey (x < -50.0) { damn -1.0 }
     sus exp_2x meal = exp_meal(2.0 * x)
     damn (exp_2x - 1.0) / (exp_2x + 1.0)
 }
@@ -127,12 +127,12 @@ slay tanh_derivative(x meal) meal {
 }
 
 slay leaky_relu_activation(x meal, alpha meal) meal {
-    ready (x > 0.0) { damn x }
+    lowkey (x > 0.0) { damn x }
     damn alpha * x
 }
 
 slay leaky_relu_derivative(x meal, alpha meal) meal {
-    ready (x > 0.0) { damn 1.0 }
+    lowkey (x > 0.0) { damn 1.0 }
     damn alpha
 }
 
@@ -165,19 +165,19 @@ slay gelu_derivative(x meal) meal {
 }
 
 slay elu_activation(x meal, alpha meal) meal {
-    ready (x >= 0.0) { damn x }
+    lowkey (x >= 0.0) { damn x }
     damn alpha * (exp_meal(x) - 1.0)
 }
 
 slay elu_derivative(x meal, alpha meal) meal {
-    ready (x >= 0.0) { damn 1.0 }
+    lowkey (x >= 0.0) { damn 1.0 }
     damn alpha * exp_meal(x)
 }
 
 slay selu_activation(x meal) meal {
     sus alpha meal = 1.6732632423543772
     sus scale meal = 1.0507009873554805
-    ready (x >= 0.0) { damn scale * x }
+    lowkey (x >= 0.0) { damn scale * x }
     damn scale * alpha * (exp_meal(x) - 1.0)
 }
 
@@ -212,27 +212,27 @@ slay softmax_activation(values meal[value]) meal[value]{
 }
 
 slay apply_activation(x meal, activation_type drip) meal {
-    ready (activation_type == ACTIVATION_RELU()) { damn relu_activation(x) }
-    ready (activation_type == ACTIVATION_SIGMOID()) { damn sigmoid_activation(x) }
-    ready (activation_type == ACTIVATION_TANH()) { damn tanh_activation(x) }
-    ready (activation_type == ACTIVATION_LEAKY_RELU()) { damn leaky_relu_activation(x, 0.01) }
-    ready (activation_type == ACTIVATION_SWISH()) { damn swish_activation(x) }
-    ready (activation_type == ACTIVATION_GELU()) { damn gelu_activation(x) }
-    ready (activation_type == ACTIVATION_ELU()) { damn elu_activation(x, 1.0) }
-    ready (activation_type == ACTIVATION_SELU()) { damn selu_activation(x) }
-    ready (activation_type == ACTIVATION_MISH()) { damn mish_activation(x) }
+    lowkey (activation_type == ACTIVATION_RELU()) { damn relu_activation(x) }
+    lowkey (activation_type == ACTIVATION_SIGMOID()) { damn sigmoid_activation(x) }
+    lowkey (activation_type == ACTIVATION_TANH()) { damn tanh_activation(x) }
+    lowkey (activation_type == ACTIVATION_LEAKY_RELU()) { damn leaky_relu_activation(x, 0.01) }
+    lowkey (activation_type == ACTIVATION_SWISH()) { damn swish_activation(x) }
+    lowkey (activation_type == ACTIVATION_GELU()) { damn gelu_activation(x) }
+    lowkey (activation_type == ACTIVATION_ELU()) { damn elu_activation(x, 1.0) }
+    lowkey (activation_type == ACTIVATION_SELU()) { damn selu_activation(x) }
+    lowkey (activation_type == ACTIVATION_MISH()) { damn mish_activation(x) }
     damn x  fr fr Linear activation
 }
 
 slay apply_activation_derivative(x meal, activation_type drip) meal {
-    ready (activation_type == ACTIVATION_RELU()) { damn relu_derivative(x) }
-    ready (activation_type == ACTIVATION_SIGMOID()) { damn sigmoid_derivative(x) }
-    ready (activation_type == ACTIVATION_TANH()) { damn tanh_derivative(x) }
-    ready (activation_type == ACTIVATION_LEAKY_RELU()) { damn leaky_relu_derivative(x, 0.01) }
-    ready (activation_type == ACTIVATION_SWISH()) { damn swish_derivative(x) }
-    ready (activation_type == ACTIVATION_GELU()) { damn gelu_derivative(x) }
-    ready (activation_type == ACTIVATION_ELU()) { damn elu_derivative(x, 1.0) }
-    ready (activation_type == ACTIVATION_SELU()) { damn 1.0507009873554805 }  fr fr SELU scale
+    lowkey (activation_type == ACTIVATION_RELU()) { damn relu_derivative(x) }
+    lowkey (activation_type == ACTIVATION_SIGMOID()) { damn sigmoid_derivative(x) }
+    lowkey (activation_type == ACTIVATION_TANH()) { damn tanh_derivative(x) }
+    lowkey (activation_type == ACTIVATION_LEAKY_RELU()) { damn leaky_relu_derivative(x, 0.01) }
+    lowkey (activation_type == ACTIVATION_SWISH()) { damn swish_derivative(x) }
+    lowkey (activation_type == ACTIVATION_GELU()) { damn gelu_derivative(x) }
+    lowkey (activation_type == ACTIVATION_ELU()) { damn elu_derivative(x, 1.0) }
+    lowkey (activation_type == ACTIVATION_SELU()) { damn 1.0507009873554805 }  fr fr SELU scale
     damn 1.0  fr fr Linear activation derivative
 }
 
@@ -326,11 +326,11 @@ slay he_normal_init(input_size drip, output_size drip) meal[value]{
 slay layer_create_dense_advanced(input_size drip, output_size drip, activation_type drip, weight_init tea) Layer {
     sus weights meal[value]
     
-    ready (weight_init == "xavier") {
+    lowkey (weight_init == "xavier") {
         weights = xavier_normal_init(input_size, output_size)
-    } otherwise ready (weight_init == "he") {
+    } highkey lowkey (weight_init == "he") {
         weights = he_normal_init(input_size, output_size)
-    } otherwise {
+    } highkey {
         weights = xavier_normal_init(input_size, output_size)
     }
     
@@ -464,7 +464,7 @@ slay conv2d_forward_complete(input meal[value], weights meal[value], biases meal
                             sus ih drip = oh * stride - padding + kh
                             sus iw drip = ow * stride - padding + kw
                             
-                            ready (ih >= 0 && ih < input_height && iw >= 0 && iw < input_width) {
+                            lowkey (ih >= 0 && ih < input_height && iw >= 0 && iw < input_width) {
                                 sus input_idx drip = (ih * input_width + iw) * input_channels + ic
                                 sus weight_idx drip = ((oc * input_channels + ic) * kernel_size + kh) * kernel_size + kw
                                 sum = sum + input[input_idx] * weights[weight_idx]
@@ -516,7 +516,7 @@ slay maxpool2d_forward_complete(input meal[value], input_height drip, input_widt
                         sus iw drip = ow * stride + pw
                         sus input_idx drip = (ih * input_width + iw) * input_channels + c
                         
-                        ready (input[input_idx] > max_val) {
+                        lowkey (input[input_idx] > max_val) {
                             max_val = input[input_idx]
                         }
                         
@@ -628,7 +628,7 @@ slay batch_norm_forward_complete(layer Layer, input meal[value], batch_size drip
     sus feature_size drip = layer.input_size
     sus output meal[value] = tensor_zeros_1d(len(input))
     
-    ready (layer.training) {
+    lowkey (layer.training) {
         fr fr Training mode: compute batch statistics
         sus batch_mean meal[value] = tensor_zeros_1d(feature_size)
         sus batch_var meal[value] = tensor_zeros_1d(feature_size)
@@ -682,7 +682,7 @@ slay batch_norm_forward_complete(layer Layer, input meal[value], batch_size drip
             }
             b = b + 1
         }
-    } otherwise {
+    } highkey {
         fr fr Inference mode: use running statistics
         sus b drip = 0
         bestie (b < batch_size) {
@@ -1087,7 +1087,7 @@ slay compute_conv2d_gradients_complete(layer Layer, input meal[value], output_gr
                             sus ih drip = oh * stride - padding + kh
                             sus iw drip = ow * stride - padding + kw
                             
-                            ready (ih >= 0 && ih < input_height && iw >= 0 && iw < input_width) {
+                            lowkey (ih >= 0 && ih < input_height && iw >= 0 && iw < input_width) {
                                 sus input_idx drip = (ih * input_width + iw) * input_channels + ic
                                 sus grad_idx drip = (oh * output_width + ow) * output_channels + oc
                                 weight_gradient = weight_gradient + input[input_idx] * output_gradient[grad_idx]
@@ -1128,7 +1128,7 @@ slay compute_conv2d_gradients_complete(layer Layer, input meal[value], output_gr
                             sus oh drip = (ih + padding - kh) / stride
                             sus ow drip = (iw + padding - kw) / stride
                             
-                            ready (oh >= 0 && oh < output_height && ow >= 0 && ow < output_width &&
+                            lowkey (oh >= 0 && oh < output_height && ow >= 0 && ow < output_width &&
                                   (ih + padding - kh) % stride == 0 && (iw + padding - kw) % stride == 0) {
                                 sus weight_idx drip = ((oc * input_channels + ic) * kernel_size + kh) * kernel_size + kw
                                 sus grad_idx drip = (oh * output_width + ow) * output_channels + oc
@@ -1206,7 +1206,7 @@ slay rmsprop_optimizer_update_complete(weights meal[value], gradients meal[value
 fr fr === PROPER LOSS FUNCTIONS ===
 
 slay categorical_crossentropy_loss_complete(predictions meal[value], targets meal[value]) meal {
-    ready (len(predictions) != len(targets)) {
+    lowkey (len(predictions) != len(targets)) {
         damn 1000000.0  fr fr Large loss for dimension mismatch
     }
     
@@ -1281,7 +1281,7 @@ sus global_gpu_context GPUContext = GPUContext{
 }
 
 slay gpu_initialize_complete() lit {
-    ready (global_gpu_context.is_initialized) {
+    lowkey (global_gpu_context.is_initialized) {
         damn based
     }
     
@@ -1290,7 +1290,7 @@ slay gpu_initialize_complete() lit {
     global_gpu_context.opencl_available = gpu_check_opencl_available()
     global_gpu_context.metal_available = gpu_check_metal_available()
     
-    ready (global_gpu_context.cuda_available || global_gpu_context.opencl_available || global_gpu_context.metal_available) {
+    lowkey (global_gpu_context.cuda_available || global_gpu_context.opencl_available || global_gpu_context.metal_available) {
         global_gpu_context.is_initialized = based
         global_gpu_context.device_count = gpu_get_device_count()
         
@@ -1311,7 +1311,7 @@ slay gpu_initialize_complete() lit {
 }
 
 slay gpu_conv2d_optimized_complete(input meal[value], weights meal[value], biases meal[value], output meal[value], input_height drip, input_width drip, input_channels drip, output_channels drip, kernel_size drip, stride drip, padding drip) lit {
-    ready (!global_gpu_context.is_initialized) {
+    lowkey (!global_gpu_context.is_initialized) {
         fr fr Fallback to CPU implementation
         sus cpu_result meal[value] = conv2d_forward_complete(input, weights, biases, input_height, input_width, input_channels, output_channels, kernel_size, stride, padding)
         sus i drip = 0
@@ -1333,7 +1333,7 @@ slay gpu_conv2d_optimized_complete(input meal[value], weights meal[value], biase
     sus gpu_biases GPUBuffer = gpu_allocate_managed(bias_size)
     sus gpu_output GPUBuffer = gpu_allocate_managed(output_size)
     
-    ready (!gpu_input.is_allocated || !gpu_weights.is_allocated || !gpu_biases.is_allocated || !gpu_output.is_allocated) {
+    lowkey (!gpu_input.is_allocated || !gpu_weights.is_allocated || !gpu_biases.is_allocated || !gpu_output.is_allocated) {
         gpu_free_managed(gpu_input)
         gpu_free_managed(gpu_weights)
         gpu_free_managed(gpu_biases)
@@ -1363,16 +1363,16 @@ slay gpu_conv2d_optimized_complete(input meal[value], weights meal[value], biase
     sus block_y drip = 16
     sus block_z drip = 1
     
-    ready (global_gpu_context.cuda_available) {
+    lowkey (global_gpu_context.cuda_available) {
         gpu_launch_cuda_conv2d_optimized(gpu_input, gpu_weights, gpu_biases, gpu_output,
                                         input_height, input_width, input_channels, output_channels,
                                         kernel_size, stride, padding,
                                         grid_x, grid_y, grid_z, block_x, block_y, block_z)
-    } otherwise ready (global_gpu_context.opencl_available) {
+    } highkey lowkey (global_gpu_context.opencl_available) {
         gpu_launch_opencl_conv2d_optimized(gpu_input, gpu_weights, gpu_biases, gpu_output,
                                           input_height, input_width, input_channels, output_channels,
                                           kernel_size, stride, padding)
-    } otherwise {
+    } highkey {
         gpu_launch_metal_conv2d_optimized(gpu_input, gpu_weights, gpu_biases, gpu_output,
                                          input_height, input_width, input_channels, output_channels,
                                          kernel_size, stride, padding)
@@ -1391,7 +1391,7 @@ slay gpu_conv2d_optimized_complete(input meal[value], weights meal[value], biase
 }
 
 slay gpu_matrix_multiply_optimized_complete(a meal[value], b meal[value], c meal[value], m drip, n drip, k drip) lit {
-    ready (!global_gpu_context.is_initialized) {
+    lowkey (!global_gpu_context.is_initialized) {
         sus cpu_result meal[value] = tensor_matrix_multiply_flat(a, b, m, n, k)
         sus i drip = 0
         bestie (i < len(cpu_result) && i < len(c)) {
@@ -1410,7 +1410,7 @@ slay gpu_matrix_multiply_optimized_complete(a meal[value], b meal[value], c meal
     sus gpu_b GPUBuffer = gpu_allocate_managed(size_b)
     sus gpu_c GPUBuffer = gpu_allocate_managed(size_c)
     
-    ready (!gpu_a.is_allocated || !gpu_b.is_allocated || !gpu_c.is_allocated) {
+    lowkey (!gpu_a.is_allocated || !gpu_b.is_allocated || !gpu_c.is_allocated) {
         gpu_free_managed(gpu_a)
         gpu_free_managed(gpu_b)
         gpu_free_managed(gpu_c)
@@ -1427,13 +1427,13 @@ slay gpu_matrix_multiply_optimized_complete(a meal[value], b meal[value], c meal
     gpu_memcpy_host_to_device(a, gpu_a)
     gpu_memcpy_host_to_device(b, gpu_b)
     
-    ready (global_gpu_context.cuda_available) {
+    lowkey (global_gpu_context.cuda_available) {
         fr fr Use cuBLAS for maximum performance
         gpu_cublas_dgemm(gpu_a, gpu_b, gpu_c, m, n, k)
-    } otherwise ready (global_gpu_context.opencl_available) {
+    } highkey lowkey (global_gpu_context.opencl_available) {
         fr fr Use optimized OpenCL GEMM
         gpu_opencl_dgemm(gpu_a, gpu_b, gpu_c, m, n, k)
-    } otherwise {
+    } highkey {
         fr fr Use Metal Performance Shaders
         gpu_metal_dgemm(gpu_a, gpu_b, gpu_c, m, n, k)
     }
@@ -1479,18 +1479,18 @@ slay tensor_deserialize_complete(serialized tea) (meal[value], drip[value]) {
     bestie (i < len(lines)) {
         sus line tea = lines[i]
         
-        ready (string_starts_with(line, "SHAPE:")) {
+        lowkey (string_starts_with(line, "SHAPE:")) {
             sus shape_str tea = string_substring(line, 6, len(line))
             shape = parse_drip_array(shape_str)
         }
-        ready (string_equals(line, "DATA:")) {
+        lowkey (string_equals(line, "DATA:")) {
             parsing_data = based
         }
-        ready (parsing_data && len(line) > 0) {
+        lowkey (parsing_data && len(line) > 0) {
             sus hex_values tea[value] = string_split(line, " ")
             sus j drip = 0
             bestie (j < len(hex_values)) {
-                ready (len(hex_values[j]) > 0) {
+                lowkey (len(hex_values[j]) > 0) {
                     sus value meal = hex_string_to_float(hex_values[j])
                     data = append(data, value)
                 }
@@ -1584,18 +1584,18 @@ slay neural_network_train_advanced(network NeuralNetwork, train_data meal[value]
                    " - Val Acc: ", val_accuracy * 100.0, "%")
         
         fr fr Early stopping and learning rate scheduling
-        ready (val_loss < best_val_loss) {
+        lowkey (val_loss < best_val_loss) {
             best_val_loss = val_loss
             patience_counter = 0
-        } otherwise {
+        } highkey {
             patience_counter = patience_counter + 1
-            ready (patience_counter >= patience) {
+            lowkey (patience_counter >= patience) {
                 vibez.spill("Early stopping triggered after ", epoch + 1, " epochs")
                 damn network
             }
             
             fr fr Learning rate decay
-            ready (patience_counter % 5 == 0) {
+            lowkey (patience_counter % 5 == 0) {
                 learning_rate = learning_rate * 0.5
                 network.learning_rate = learning_rate
                 vibez.spill("Learning rate reduced to ", learning_rate)
@@ -1624,9 +1624,9 @@ slay extract_sample(data meal[value], sample_idx drip, sample_size drip) meal[va
     sus i drip = 0
     bestie (i < sample_size) {
         sus data_idx drip = sample_idx * sample_size + i
-        ready (data_idx < len(data)) {
+        lowkey (data_idx < len(data)) {
             sample = append(sample, data[data_idx])
-        } otherwise {
+        } highkey {
             sample = append(sample, 0.0)
         }
         i = i + 1
@@ -1641,25 +1641,25 @@ slay neural_network_forward_complete(network NeuralNetwork, input meal[value]) m
     bestie (layer_idx < len(network.layers)) {
         sus layer Layer = network.layers[layer_idx]
         
-        ready (layer.layer_type == LAYER_TYPE_DENSE()) {
+        lowkey (layer.layer_type == LAYER_TYPE_DENSE()) {
             current_input = dense_forward_complete(layer, current_input)
         }
-        ready (layer.layer_type == LAYER_TYPE_CONV2D()) {
+        lowkey (layer.layer_type == LAYER_TYPE_CONV2D()) {
             current_input = conv2d_layer_forward_complete(layer, current_input)
         }
-        ready (layer.layer_type == LAYER_TYPE_MAXPOOL2D()) {
+        lowkey (layer.layer_type == LAYER_TYPE_MAXPOOL2D()) {
             current_input = maxpool2d_layer_forward_complete(layer, current_input)
         }
-        ready (layer.layer_type == LAYER_TYPE_DROPOUT()) {
+        lowkey (layer.layer_type == LAYER_TYPE_DROPOUT()) {
             current_input = dropout_forward_complete(layer, current_input)
         }
-        ready (layer.layer_type == LAYER_TYPE_BATCHNORM()) {
+        lowkey (layer.layer_type == LAYER_TYPE_BATCHNORM()) {
             current_input = batch_norm_forward_complete(layer, current_input, 1)
         }
-        ready (layer.layer_type == LAYER_TYPE_LSTM()) {
+        lowkey (layer.layer_type == LAYER_TYPE_LSTM()) {
             current_input = lstm_forward_complete(layer, current_input)
         }
-        ready (layer.layer_type == LAYER_TYPE_ATTENTION()) {
+        lowkey (layer.layer_type == LAYER_TYPE_ATTENTION()) {
             current_input = attention_forward_complete(layer, current_input, 1)
         }
         
@@ -1681,9 +1681,9 @@ slay dense_forward_complete(layer Layer, input meal[value]) meal[value]{
     }
     
     fr fr Apply activation function
-    ready (layer.activation_type == ACTIVATION_SOFTMAX()) {
+    lowkey (layer.activation_type == ACTIVATION_SOFTMAX()) {
         output = softmax_activation(output)
-    } otherwise {
+    } highkey {
         i = 0
         bestie (i < len(output)) {
             output[i] = apply_activation(output[i], layer.activation_type)
@@ -1727,7 +1727,7 @@ slay maxpool2d_layer_forward_complete(layer Layer, input meal[value]) meal[value
 }
 
 slay dropout_forward_complete(layer Layer, input meal[value]) meal[value]{
-    ready (!layer.training) {
+    lowkey (!layer.training) {
         damn input
     }
     
@@ -1738,10 +1738,10 @@ slay dropout_forward_complete(layer Layer, input meal[value]) meal[value]{
     sus i drip = 0
     bestie (i < len(input)) {
         sus random_val meal = random_uniform()
-        ready (random_val > layer.dropout_rate) {
+        lowkey (random_val > layer.dropout_rate) {
             output = append(output, input[i] * scale)
             layer.dropout_mask = append(layer.dropout_mask, 1.0)
-        } otherwise {
+        } highkey {
             output = append(output, 0.0)
             layer.dropout_mask = append(layer.dropout_mask, 0.0)
         }
@@ -1775,7 +1775,7 @@ slay neural_network_backward_complete(network NeuralNetwork, batch_inputs meal[v
         bestie (layer_idx >= 0) {
             sus layer Layer = network.layers[layer_idx]
             
-            ready (layer.layer_type == LAYER_TYPE_DENSE()) {
+            lowkey (layer.layer_type == LAYER_TYPE_DENSE()) {
                 sus weight_grad meal[value]
                 sus bias_grad meal[value]
                 sus input_grad meal[value]
@@ -1806,7 +1806,7 @@ slay neural_network_backward_complete(network NeuralNetwork, batch_inputs meal[v
     fr fr Average gradients over batch
     layer_idx = 0
     bestie (layer_idx < len(network.layers)) {
-        ready (network.layers[layer_idx].layer_type == LAYER_TYPE_DENSE()) {
+        lowkey (network.layers[layer_idx].layer_type == LAYER_TYPE_DENSE()) {
             sus i drip = 0
             bestie (i < len(network.layers[layer_idx].weight_gradients)) {
                 network.layers[layer_idx].weight_gradients[i] = network.layers[layer_idx].weight_gradients[i] / batch_size
@@ -1825,8 +1825,8 @@ slay neural_network_backward_complete(network NeuralNetwork, batch_inputs meal[v
     network.timestep = network.timestep + 1
     layer_idx = 0
     bestie (layer_idx < len(network.layers)) {
-        ready (network.layers[layer_idx].layer_type == LAYER_TYPE_DENSE()) {
-            ready (network.optimizer_type == OPTIMIZER_ADAM()) {
+        lowkey (network.layers[layer_idx].layer_type == LAYER_TYPE_DENSE()) {
+            lowkey (network.optimizer_type == OPTIMIZER_ADAM()) {
                 network.layers[layer_idx].weights = adam_optimizer_update_complete(
                     network.layers[layer_idx].weights,
                     network.layers[layer_idx].weight_gradients,
@@ -1885,7 +1885,7 @@ slay neural_network_evaluate_accuracy(network NeuralNetwork, data meal[value], l
         sus predicted_class drip = tensor_argmax_1d(prediction)
         sus target_class drip = tensor_argmax_1d(target)
         
-        ready (predicted_class == target_class) {
+        lowkey (predicted_class == target_class) {
             correct_predictions = correct_predictions + 1
         }
         i = i + 1
@@ -1918,7 +1918,7 @@ slay neural_network_create_complete(learning_rate meal, optimizer_type drip) Neu
 slay neural_network_add_layer_complete(network NeuralNetwork, layer Layer) NeuralNetwork {
     network.layers = append(network.layers, layer)
     
-    ready (layer.layer_type == LAYER_TYPE_DENSE() && network.optimizer_type == OPTIMIZER_ADAM()) {
+    lowkey (layer.layer_type == LAYER_TYPE_DENSE() && network.optimizer_type == OPTIMIZER_ADAM()) {
         network.weight_m = append(network.weight_m, tensor_zeros_1d(len(layer.weights)))
         network.weight_v = append(network.weight_v, tensor_zeros_1d(len(layer.weights)))
         network.bias_m = append(network.bias_m, tensor_zeros_1d(len(layer.biases)))
@@ -1935,9 +1935,9 @@ slay demo_complete_neural_network() cringe {
     
     fr fr Initialize GPU if available
     sus gpu_enabled lit = gpu_initialize_complete()
-    ready (gpu_enabled) {
+    lowkey (gpu_enabled) {
         vibez.spill("GPU acceleration enabled!")
-    } otherwise {
+    } highkey {
         vibez.spill("Using CPU computation")
     }
     
@@ -1984,7 +1984,7 @@ slay demo_complete_neural_network() cringe {
     vibez.spill("Tensor serialization demo:")
     vibez.spill(serialized)
     
-    ready (gpu_enabled) {
+    lowkey (gpu_enabled) {
         vibez.spill("Cleaning up GPU resources...")
         gpu_cleanup_complete()
     }
@@ -2011,9 +2011,9 @@ slay generate_synthetic_labels(num_samples drip, num_classes drip) meal[value]{
         sus class_idx drip = i % num_classes
         sus j drip = 0
         bestie (j < num_classes) {
-            ready (j == class_idx) {
+            lowkey (j == class_idx) {
                 labels = append(labels, 1.0)
-            } otherwise {
+            } highkey {
                 labels = append(labels, 0.0)
             }
             j = j + 1

@@ -20,25 +20,25 @@ facts TIFF_BE_SIGNATURE drip[value] = [77, 77, 0, 42]
 
 # Complete format detection with magic byte analysis
 slay detect_format_from_data(data drip[value]) tea {
-    ready (len(data) < 12) {
+    lowkey (len(data) < 12) {
         damn "UNKNOWN"
     }
     
     # PNG detection
-    ready (check_signature(data, PNG_SIGNATURE, 0)) {
+    lowkey (check_signature(data, PNG_SIGNATURE, 0)) {
         damn "PNG"
     }
     
     # JPEG detection (multiple variants)
-    ready (check_signature(data, JPEG_SIGNATURE, 0)) {
+    lowkey (check_signature(data, JPEG_SIGNATURE, 0)) {
         # Additional JPEG validation
-        ready (len(data) > 10) {
+        lowkey (len(data) > 10) {
             # Check for JFIF marker
-            ready (data[6] == 74 && data[7] == 70 && data[8] == 73 && data[9] == 70) {
+            lowkey (data[6] == 74 && data[7] == 70 && data[8] == 73 && data[9] == 70) {
                 damn "JPEG"
             }
             # Check for Exif marker
-            ready (data[6] == 69 && data[7] == 120 && data[8] == 105 && data[9] == 102) {
+            lowkey (data[6] == 69 && data[7] == 120 && data[8] == 105 && data[9] == 102) {
                 damn "JPEG"
             }
         }
@@ -46,22 +46,22 @@ slay detect_format_from_data(data drip[value]) tea {
     }
     
     # GIF detection
-    ready (check_signature(data, GIF87A_SIGNATURE, 0) || check_signature(data, GIF89A_SIGNATURE, 0)) {
+    lowkey (check_signature(data, GIF87A_SIGNATURE, 0) || check_signature(data, GIF89A_SIGNATURE, 0)) {
         damn "GIF"
     }
     
     # BMP detection
-    ready (check_signature(data, BMP_SIGNATURE, 0)) {
+    lowkey (check_signature(data, BMP_SIGNATURE, 0)) {
         damn "BMP"
     }
     
     # WebP detection
-    ready (check_signature(data, WEBP_SIGNATURE, 0) && check_signature(data, WEBP_FORMAT, 8)) {
+    lowkey (check_signature(data, WEBP_SIGNATURE, 0) && check_signature(data, WEBP_FORMAT, 8)) {
         damn "WEBP"
     }
     
     # TIFF detection
-    ready (check_signature(data, TIFF_LE_SIGNATURE, 0) || check_signature(data, TIFF_BE_SIGNATURE, 0)) {
+    lowkey (check_signature(data, TIFF_LE_SIGNATURE, 0) || check_signature(data, TIFF_BE_SIGNATURE, 0)) {
         damn "TIFF"
     }
     
@@ -69,12 +69,12 @@ slay detect_format_from_data(data drip[value]) tea {
 }
 
 slay check_signature(data drip[value], signature drip[value], offset drip) lit {
-    ready (offset + len(signature) > len(data)) {
+    lowkey (offset + len(signature) > len(data)) {
         damn false
     }
     
     bestie (i drip = 0; i < len(signature); i = i + 1) {
-        ready (data[offset + i] != signature[i]) {
+        lowkey (data[offset + i] != signature[i]) {
             damn false
         }
     }
@@ -84,7 +84,7 @@ slay check_signature(data drip[value], signature drip[value], offset drip) lit {
 
 # Production PNG decoder
 slay decode_png_production(data drip[value]) yikes<Image> {
-    ready (!check_signature(data, PNG_SIGNATURE, 0)) {
+    lowkey (!check_signature(data, PNG_SIGNATURE, 0)) {
         yikes "invalid PNG signature"
     }
     
@@ -106,11 +106,11 @@ slay decode_png_production(data drip[value]) yikes<Image> {
         sus crc drip = read_uint32_be(data, offset + 8 + chunk_length)
         
         # Validate CRC
-        ready (!validate_png_crc(chunk_type, chunk_data, crc)) {
+        lowkey (!validate_png_crc(chunk_type, chunk_data, crc)) {
             yikes "PNG chunk CRC validation failed"
         }
         
-        ready (chunk_type == "IHDR") {
+        lowkey (chunk_type == "IHDR") {
             width = read_uint32_be(chunk_data, 0)
             height = read_uint32_be(chunk_data, 4)
             bit_depth = chunk_data[8]
@@ -120,34 +120,34 @@ slay decode_png_production(data drip[value]) yikes<Image> {
             interlace = chunk_data[12]
             
             # Validate header fields
-            ready (width <= 0 || height <= 0) {
+            lowkey (width <= 0 || height <= 0) {
                 yikes "invalid PNG dimensions"
             }
-            ready (![1, 2, 4, 8, 16]contains bit_depth) {
+            lowkey (![1, 2, 4, 8, 16]contains bit_depth) {
                 yikes "unsupported PNG bit depth"
             }
-            ready (![0, 2, 3, 4, 6]contains color_type) {
+            lowkey (![0, 2, 3, 4, 6]contains color_type) {
                 yikes "unsupported PNG color type"
             }
             
-        } otherwise (chunk_type == "IDAT") {
+        } highkey (chunk_type == "IDAT") {
             # Accumulate compressed image data
             bestie (i drip = 0; i < len(chunk_data); i = i + 1) {
                 image_data = append(image_data, chunk_data[i])
             }
             
-        } otherwise (chunk_type == "IEND") {
+        } highkey (chunk_type == "IEND") {
             shook  # End of PNG
         }
         
         offset += 12 + chunk_length
     }
     
-    ready (width == 0 || height == 0) {
+    lowkey (width == 0 || height == 0) {
         yikes "missing PNG header"
     }
     
-    ready (len(image_data) == 0) {
+    lowkey (len(image_data) == 0) {
         yikes "missing PNG image data"
     }
     
@@ -169,7 +169,7 @@ slay decode_png_production(data drip[value]) yikes<Image> {
         channels: channels,
         data: rgb_data,
         format: "PNG",
-        color_space: ready (channels == 4) { damn "RGBA" } otherwise { damn "RGB" }
+        color_space: lowkey (channels == 4) { damn "RGBA" } highkey { damn "RGB" }
     }
 }
 
@@ -188,13 +188,13 @@ slay encode_png_production(img Image, compression_level drip) yikes<drip[value]>
     }
     
     # Create IHDR chunk
-    sus color_type drip = ready (img.channels == 1) { 
+    sus color_type drip = lowkey (img.channels == 1) { 
         damn 0  # Grayscale
-    } otherwise (img.channels == 3) { 
+    } highkey (img.channels == 3) { 
         damn 2  # RGB
-    } otherwise (img.channels == 4) { 
+    } highkey (img.channels == 4) { 
         damn 6  # RGBA
-    } otherwise { 
+    } highkey { 
         yikes "unsupported channel count for PNG encoding"
     }
     
@@ -228,7 +228,7 @@ slay encode_png_production(img Image, compression_level drip) yikes<drip[value]>
 
 # Production JPEG decoder
 slay decode_jpeg_production(data drip[value]) yikes<Image> {
-    ready (!check_signature(data, JPEG_SIGNATURE, 0)) {
+    lowkey (!check_signature(data, JPEG_SIGNATURE, 0)) {
         yikes "invalid JPEG signature"
     }
     
@@ -244,21 +244,21 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
     
     # Parse JPEG segments
     bestie (offset < len(data) - 2) {
-        ready (data[offset] != 255) {
+        lowkey (data[offset] != 255) {
             yikes "invalid JPEG marker"
         }
         
         sus marker drip = data[offset + 1]
         offset += 2
         
-        ready (marker == 0xC0) {  # SOF0 (Start of Frame - Baseline DCT)
+        lowkey (marker == 0xC0) {  # SOF0 (Start of Frame - Baseline DCT)
             sus length drip = read_uint16_be(data, offset)
             sus precision drip = data[offset + 2]
             height = read_uint16_be(data, offset + 3)
             width = read_uint16_be(data, offset + 5)
             components = data[offset + 7]
             
-            ready (precision != 8) {
+            lowkey (precision != 8) {
                 yikes "unsupported JPEG precision"
             }
             
@@ -273,7 +273,7 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
             
             offset += length
             
-        } otherwise (marker == 0xDB) {  # DQT (Define Quantization Table)
+        } highkey (marker == 0xDB) {  # DQT (Define Quantization Table)
             sus length drip = read_uint16_be(data, offset)
             sus table_offset drip = offset + 2
             
@@ -282,7 +282,7 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
                 sus table_precision drip = (table_info >> 4) & 0x0F
                 sus table_id drip = table_info & 0x0F
                 
-                ready (table_precision != 0 || table_id >= 4) {
+                lowkey (table_precision != 0 || table_id >= 4) {
                     yikes "invalid quantization table"
                 }
                 
@@ -296,7 +296,7 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
             
             offset += length
             
-        } otherwise (marker == 0xC4) {  # DHT (Define Huffman Table)
+        } highkey (marker == 0xC4) {  # DHT (Define Huffman Table)
             sus length drip = read_uint16_be(data, offset)
             sus table_offset drip = offset + 2
             
@@ -305,9 +305,9 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
                 sus table_class drip = (table_info >> 4) & 0x01  # 0=DC, 1=AC
                 sus table_id drip = table_info & 0x0F
                 
-                ready (table_class == 0) {
+                lowkey (table_class == 0) {
                     huffman_dc_tables[table_id] = parse_huffman_table(data, table_offset + 1)
-                } otherwise {
+                } highkey {
                     huffman_ac_tables[table_id] = parse_huffman_table(data, table_offset + 1)
                 }
                 
@@ -316,7 +316,7 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
             
             offset += length
             
-        } otherwise (marker == 0xDA) {  # SOS (Start of Scan)
+        } highkey (marker == 0xDA) {  # SOS (Start of Scan)
             sus length drip = read_uint16_be(data, offset)
             
             # Parse scan header
@@ -336,13 +336,13 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
                                       quantization_tables, huffman_dc_tables, huffman_ac_tables)
             shook  # End of scan processing
             
-        } otherwise (marker == 0xD9) {  # EOI (End of Image)
+        } highkey (marker == 0xD9) {  # EOI (End of Image)
             shook  # End of JPEG
-        } otherwise {
+        } highkey {
             # Skip unknown markers
-            ready (marker >= 0xD0 && marker <= 0xD7) {
+            lowkey (marker >= 0xD0 && marker <= 0xD7) {
                 # RST markers have no length field
-            } otherwise {
+            } highkey {
                 sus length drip = read_uint16_be(data, offset)
                 offset += length
             }
@@ -355,10 +355,10 @@ slay decode_jpeg_production(data drip[value]) yikes<Image> {
     damn Image{
         width: width,
         height: height,
-        channels: ready (components == 1) { damn 1 } otherwise { damn 3 },
+        channels: lowkey (components == 1) { damn 1 } highkey { damn 3 },
         data: rgb_data,
         format: "JPEG",
-        color_space: ready (components == 1) { damn "GRAYSCALE" } otherwise { damn "RGB" }
+        color_space: lowkey (components == 1) { damn "GRAYSCALE" } highkey { damn "RGB" }
     }
 }
 
@@ -398,11 +398,11 @@ slay validate_png_crc(chunk_type tea, chunk_data drip[value], expected_crc drip)
 }
 
 slay calculate_png_channels(color_type drip) drip {
-    ready (color_type == 0) { damn 1 }      # Grayscale
-    ready (color_type == 2) { damn 3 }      # RGB
-    ready (color_type == 3) { damn 3 }      # Palette (converted to RGB)
-    ready (color_type == 4) { damn 2 }      # Grayscale + Alpha
-    ready (color_type == 6) { damn 4 }      # RGBA
+    lowkey (color_type == 0) { damn 1 }      # Grayscale
+    lowkey (color_type == 2) { damn 3 }      # RGB
+    lowkey (color_type == 3) { damn 3 }      # Palette (converted to RGB)
+    lowkey (color_type == 4) { damn 2 }      # Grayscale + Alpha
+    lowkey (color_type == 6) { damn 4 }      # RGBA
     damn 3  # Default RGB
 }
 

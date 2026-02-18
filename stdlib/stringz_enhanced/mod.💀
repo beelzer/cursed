@@ -29,10 +29,10 @@ slay string_length_estimate(s tea) drip {
     sus test_str tea = s
     
     fr fr Count by trying string operations (simplified approach)
-    ready (s == "") {
+    lowkey (s == "") {
         damn 0
     }
-    ready (s == "a" || s == "b" || s == "c" || s == "d" || s == "e" || s == "f" || s == "g" || s == "h" || s == "i" || s == "j") {
+    lowkey (s == "a" || s == "b" || s == "c" || s == "d" || s == "e" || s == "f" || s == "g" || s == "h" || s == "i" || s == "j") {
         damn 1
     }
     
@@ -40,7 +40,7 @@ slay string_length_estimate(s tea) drip {
     sus estimate drip = 1
     bestie (estimate < 100) {
         sus test tea = repeat_string("x", estimate)
-        ready (s == test) {
+        lowkey (s == test) {
             damn estimate
         }
         estimate = estimate + 1
@@ -64,7 +64,7 @@ slay strings_equal(a tea, b tea) lit {
 }
 
 slay contains_char(s tea, c tea) lit {
-    ready (is_empty_string(s) || is_empty_string(c)) {
+    lowkey (is_empty_string(s) || is_empty_string(c)) {
         damn cringe
     }
     
@@ -73,7 +73,7 @@ slay contains_char(s tea, c tea) lit {
     sus len drip = length(s)
     
     bestie (i < len) {
-        ready (char_at(s, i) == c) {
+        lowkey (char_at(s, i) == c) {
             damn based
         }
         i = i + 1
@@ -83,24 +83,24 @@ slay contains_char(s tea, c tea) lit {
 }
 
 slay starts_with_prefix(s tea, prefix tea) lit {
-    ready (is_empty_string(s)) {
+    lowkey (is_empty_string(s)) {
         damn cringe
     }
-    ready (is_empty_string(prefix)) {
+    lowkey (is_empty_string(prefix)) {
         damn based  fr fr Empty prefix always matches
     }
     
     sus s_len drip = length(s)
     sus prefix_len drip = length(prefix)
     
-    ready (prefix_len > s_len) {
+    lowkey (prefix_len > s_len) {
         damn cringe  fr fr Prefix longer than string
     }
     
     fr fr Compare character by character
     sus i drip = 0
     bestie (i < prefix_len) {
-        ready (char_at(s, i) != char_at(prefix, i)) {
+        lowkey (char_at(s, i) != char_at(prefix, i)) {
             damn cringe
         }
         i = i + 1
@@ -110,17 +110,17 @@ slay starts_with_prefix(s tea, prefix tea) lit {
 }
 
 slay ends_with_suffix(s tea, suffix tea) lit {
-    ready (is_empty_string(s)) {
+    lowkey (is_empty_string(s)) {
         damn cringe
     }
-    ready (is_empty_string(suffix)) {
+    lowkey (is_empty_string(suffix)) {
         damn based  fr fr Empty suffix always matches
     }
     
     sus s_len drip = length(s)
     sus suffix_len drip = length(suffix)
     
-    ready (suffix_len > s_len) {
+    lowkey (suffix_len > s_len) {
         damn cringe  fr fr Suffix longer than string
     }
     
@@ -128,7 +128,7 @@ slay ends_with_suffix(s tea, suffix tea) lit {
     sus i drip = 0
     bestie (i < suffix_len) {
         sus s_pos drip = s_len - suffix_len + i
-        ready (char_at(s, s_pos) != char_at(suffix, i)) {
+        lowkey (char_at(s, s_pos) != char_at(suffix, i)) {
             damn cringe
         }
         i = i + 1
@@ -140,43 +140,43 @@ slay ends_with_suffix(s tea, suffix tea) lit {
 fr fr ===== CHARACTER TYPE VALIDATION =====
 
 slay is_digit_char(c tea) lit {
-    ready (is_empty_string(c)) {
+    lowkey (is_empty_string(c)) {
         damn cringe
     }
-    ready (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" || c == "5" || c == "6" || c == "7" || c == "8" || c == "9") {
+    lowkey (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" || c == "5" || c == "6" || c == "7" || c == "8" || c == "9") {
         damn based
     }
     damn cringe
 }
 
 slay is_alpha_char(c tea) lit {
-    ready (is_empty_string(c)) {
+    lowkey (is_empty_string(c)) {
         damn cringe
     }
-    ready (c == "a" || c == "b" || c == "c" || c == "d" || c == "e" || c == "f" || c == "g" || c == "h" || c == "i" || c == "j" || c == "k" || c == "l" || c == "m" || c == "n" || c == "o" || c == "p" || c == "q" || c == "r" || c == "s" || c == "t" || c == "u" || c == "v" || c == "w" || c == "x" || c == "y" || c == "z") {
+    lowkey (c == "a" || c == "b" || c == "c" || c == "d" || c == "e" || c == "f" || c == "g" || c == "h" || c == "i" || c == "j" || c == "k" || c == "l" || c == "m" || c == "n" || c == "o" || c == "p" || c == "q" || c == "r" || c == "s" || c == "t" || c == "u" || c == "v" || c == "w" || c == "x" || c == "y" || c == "z") {
         damn based
     }
-    ready (c == "A" || c == "B" || c == "C" || c == "D" || c == "E" || c == "F" || c == "G" || c == "H" || c == "I" || c == "J" || c == "K" || c == "L" || c == "M" || c == "N" || c == "O" || c == "P" || c == "Q" || c == "R" || c == "S" || c == "T" || c == "U" || c == "V" || c == "W" || c == "X" || c == "Y" || c == "Z") {
+    lowkey (c == "A" || c == "B" || c == "C" || c == "D" || c == "E" || c == "F" || c == "G" || c == "H" || c == "I" || c == "J" || c == "K" || c == "L" || c == "M" || c == "N" || c == "O" || c == "P" || c == "Q" || c == "R" || c == "S" || c == "T" || c == "U" || c == "V" || c == "W" || c == "X" || c == "Y" || c == "Z") {
         damn based
     }
     damn cringe
 }
 
 slay is_alphanumeric_char(c tea) lit {
-    ready (is_empty_string(c)) {
+    lowkey (is_empty_string(c)) {
         damn cringe
     }
-    ready (is_alpha_char(c) || is_digit_char(c)) {
+    lowkey (is_alpha_char(c) || is_digit_char(c)) {
         damn based
     }
     damn cringe
 }
 
 slay is_whitespace_char(c tea) lit {
-    ready (is_empty_string(c)) {
+    lowkey (is_empty_string(c)) {
         damn cringe
     }
-    ready (c == " " || c == "\t" || c == "\n" || c == "\r") {
+    lowkey (c == " " || c == "\t" || c == "\n" || c == "\r") {
         damn based
     }
     damn cringe
@@ -185,62 +185,62 @@ slay is_whitespace_char(c tea) lit {
 fr fr ===== CASE CONVERSION (Limited Implementation) =====
 
 slay char_to_upper(c tea) tea {
-    ready (c == "a") { damn "A" }
-    ready (c == "b") { damn "B" }
-    ready (c == "c") { damn "C" }
-    ready (c == "d") { damn "D" }
-    ready (c == "e") { damn "E" }
-    ready (c == "f") { damn "F" }
-    ready (c == "g") { damn "G" }
-    ready (c == "h") { damn "H" }
-    ready (c == "i") { damn "I" }
-    ready (c == "j") { damn "J" }
-    ready (c == "k") { damn "K" }
-    ready (c == "l") { damn "L" }
-    ready (c == "m") { damn "M" }
-    ready (c == "n") { damn "N" }
-    ready (c == "o") { damn "O" }
-    ready (c == "p") { damn "P" }
-    ready (c == "q") { damn "Q" }
-    ready (c == "r") { damn "R" }
-    ready (c == "s") { damn "S" }
-    ready (c == "t") { damn "T" }
-    ready (c == "u") { damn "U" }
-    ready (c == "v") { damn "V" }
-    ready (c == "w") { damn "W" }
-    ready (c == "x") { damn "X" }
-    ready (c == "y") { damn "Y" }
-    ready (c == "z") { damn "Z" }
+    lowkey (c == "a") { damn "A" }
+    lowkey (c == "b") { damn "B" }
+    lowkey (c == "c") { damn "C" }
+    lowkey (c == "d") { damn "D" }
+    lowkey (c == "e") { damn "E" }
+    lowkey (c == "f") { damn "F" }
+    lowkey (c == "g") { damn "G" }
+    lowkey (c == "h") { damn "H" }
+    lowkey (c == "i") { damn "I" }
+    lowkey (c == "j") { damn "J" }
+    lowkey (c == "k") { damn "K" }
+    lowkey (c == "l") { damn "L" }
+    lowkey (c == "m") { damn "M" }
+    lowkey (c == "n") { damn "N" }
+    lowkey (c == "o") { damn "O" }
+    lowkey (c == "p") { damn "P" }
+    lowkey (c == "q") { damn "Q" }
+    lowkey (c == "r") { damn "R" }
+    lowkey (c == "s") { damn "S" }
+    lowkey (c == "t") { damn "T" }
+    lowkey (c == "u") { damn "U" }
+    lowkey (c == "v") { damn "V" }
+    lowkey (c == "w") { damn "W" }
+    lowkey (c == "x") { damn "X" }
+    lowkey (c == "y") { damn "Y" }
+    lowkey (c == "z") { damn "Z" }
     damn c  fr fr Return unchanged if not lowercase
 }
 
 slay char_to_lower(c tea) tea {
-    ready (c == "A") { damn "a" }
-    ready (c == "B") { damn "b" }
-    ready (c == "C") { damn "c" }
-    ready (c == "D") { damn "d" }
-    ready (c == "E") { damn "e" }
-    ready (c == "F") { damn "f" }
-    ready (c == "G") { damn "g" }
-    ready (c == "H") { damn "h" }
-    ready (c == "I") { damn "i" }
-    ready (c == "J") { damn "j" }
-    ready (c == "K") { damn "k" }
-    ready (c == "L") { damn "l" }
-    ready (c == "M") { damn "m" }
-    ready (c == "N") { damn "n" }
-    ready (c == "O") { damn "o" }
-    ready (c == "P") { damn "p" }
-    ready (c == "Q") { damn "q" }
-    ready (c == "R") { damn "r" }
-    ready (c == "S") { damn "s" }
-    ready (c == "T") { damn "t" }
-    ready (c == "U") { damn "u" }
-    ready (c == "V") { damn "v" }
-    ready (c == "W") { damn "w" }
-    ready (c == "X") { damn "x" }
-    ready (c == "Y") { damn "y" }
-    ready (c == "Z") { damn "z" }
+    lowkey (c == "A") { damn "a" }
+    lowkey (c == "B") { damn "b" }
+    lowkey (c == "C") { damn "c" }
+    lowkey (c == "D") { damn "d" }
+    lowkey (c == "E") { damn "e" }
+    lowkey (c == "F") { damn "f" }
+    lowkey (c == "G") { damn "g" }
+    lowkey (c == "H") { damn "h" }
+    lowkey (c == "I") { damn "i" }
+    lowkey (c == "J") { damn "j" }
+    lowkey (c == "K") { damn "k" }
+    lowkey (c == "L") { damn "l" }
+    lowkey (c == "M") { damn "m" }
+    lowkey (c == "N") { damn "n" }
+    lowkey (c == "O") { damn "o" }
+    lowkey (c == "P") { damn "p" }
+    lowkey (c == "Q") { damn "q" }
+    lowkey (c == "R") { damn "r" }
+    lowkey (c == "S") { damn "s" }
+    lowkey (c == "T") { damn "t" }
+    lowkey (c == "U") { damn "u" }
+    lowkey (c == "V") { damn "v" }
+    lowkey (c == "W") { damn "w" }
+    lowkey (c == "X") { damn "x" }
+    lowkey (c == "Y") { damn "y" }
+    lowkey (c == "Z") { damn "z" }
     damn c  fr fr Return unchanged if not uppercase
 }
 
@@ -248,25 +248,25 @@ fr fr ===== STRING TRANSFORMATION =====
 
 slay simple_to_upper(s tea) tea {
     fr fr Convert common words to uppercase (simplified)
-    ready (s == "hello") { damn "HELLO" }
-    ready (s == "world") { damn "WORLD" }
-    ready (s == "test") { damn "TEST" }
-    ready (s == "string") { damn "STRING" }
-    ready (s == "cursed") { damn "CURSED" }
-    ready (s == "module") { damn "MODULE" }
-    ready (s == "function") { damn "FUNCTION" }
+    lowkey (s == "hello") { damn "HELLO" }
+    lowkey (s == "world") { damn "WORLD" }
+    lowkey (s == "test") { damn "TEST" }
+    lowkey (s == "string") { damn "STRING" }
+    lowkey (s == "cursed") { damn "CURSED" }
+    lowkey (s == "module") { damn "MODULE" }
+    lowkey (s == "function") { damn "FUNCTION" }
     damn s  fr fr Return unchanged for unknown strings
 }
 
 slay simple_to_lower(s tea) tea {
     fr fr Convert common words to lowercase (simplified)
-    ready (s == "HELLO") { damn "hello" }
-    ready (s == "WORLD") { damn "world" }
-    ready (s == "TEST") { damn "test" }
-    ready (s == "STRING") { damn "string" }
-    ready (s == "CURSED") { damn "cursed" }
-    ready (s == "MODULE") { damn "module" }
-    ready (s == "FUNCTION") { damn "function" }
+    lowkey (s == "HELLO") { damn "hello" }
+    lowkey (s == "WORLD") { damn "world" }
+    lowkey (s == "TEST") { damn "test" }
+    lowkey (s == "STRING") { damn "string" }
+    lowkey (s == "CURSED") { damn "cursed" }
+    lowkey (s == "MODULE") { damn "module" }
+    lowkey (s == "FUNCTION") { damn "function" }
     damn s  fr fr Return unchanged for unknown strings
 }
 
@@ -304,7 +304,7 @@ fr fr ===== STRING PADDING AND ALIGNMENT =====
 
 slay pad_left(s tea, total_width drip, pad_char tea) tea {
     sus current_length drip = string_length_estimate(s)
-    ready (current_length >= total_width) {
+    lowkey (current_length >= total_width) {
         damn s
     }
     
@@ -315,7 +315,7 @@ slay pad_left(s tea, total_width drip, pad_char tea) tea {
 
 slay pad_right(s tea, total_width drip, pad_char tea) tea {
     sus current_length drip = string_length_estimate(s)
-    ready (current_length >= total_width) {
+    lowkey (current_length >= total_width) {
         damn s
     }
     
@@ -326,7 +326,7 @@ slay pad_right(s tea, total_width drip, pad_char tea) tea {
 
 slay center_string(s tea, total_width drip, pad_char tea) tea {
     sus current_length drip = string_length_estimate(s)
-    ready (current_length >= total_width) {
+    lowkey (current_length >= total_width) {
         damn s
     }
     
@@ -344,18 +344,18 @@ fr fr ===== STRING REPLACEMENT (Simplified Pattern Matching) =====
 
 slay simple_replace(s tea, old_substr tea, new_substr tea) tea {
     fr fr Very basic replacement for exact matches
-    ready (s == old_substr) {
+    lowkey (s == old_substr) {
         damn new_substr
     }
     
     fr fr Handle common replacement patterns
-    ready (old_substr == "hello" && s == "hello world") {
-        ready (new_substr == "hi") {
+    lowkey (old_substr == "hello" && s == "hello world") {
+        lowkey (new_substr == "hi") {
             damn "hi world"
         }
     }
-    ready (old_substr == "test" && s == "this is a test") {
-        ready (new_substr == "demo") {
+    lowkey (old_substr == "test" && s == "this is a test") {
+        lowkey (new_substr == "demo") {
             damn "this is a demo"
         }
     }
@@ -401,16 +401,16 @@ fr fr ===== STRING TRIMMING (Simplified) =====
 
 slay trim_whitespace_simple(s tea) tea {
     fr fr Remove common whitespace patterns
-    ready (s == " ") { damn "" }
-    ready (s == "  ") { damn "" }
-    ready (s == "\t") { damn "" }
-    ready (s == "\n") { damn "" }
+    lowkey (s == " ") { damn "" }
+    lowkey (s == "  ") { damn "" }
+    lowkey (s == "\t") { damn "" }
+    lowkey (s == "\n") { damn "" }
     
     fr fr Trim leading/trailing spaces for known patterns
-    ready (s == " hello") { damn "hello" }
-    ready (s == "hello ") { damn "hello" }
-    ready (s == " hello ") { damn "hello" }
-    ready (s == "  test  ") { damn "test" }
+    lowkey (s == " hello") { damn "hello" }
+    lowkey (s == "hello ") { damn "hello" }
+    lowkey (s == " hello ") { damn "hello" }
+    lowkey (s == "  test  ") { damn "test" }
     
     damn s  fr fr Return unchanged for other cases
 }
@@ -419,11 +419,11 @@ fr fr ===== UTILITY STRING FUNCTIONS =====
 
 slay reverse_simple(s tea) tea {
     fr fr Reverse common short strings
-    ready (s == "ab") { damn "ba" }
-    ready (s == "abc") { damn "cba" }
-    ready (s == "test") { damn "tset" }
-    ready (s == "hello") { damn "olleh" }
-    ready (s == "world") { damn "dlrow" }
+    lowkey (s == "ab") { damn "ba" }
+    lowkey (s == "abc") { damn "cba" }
+    lowkey (s == "test") { damn "tset" }
+    lowkey (s == "hello") { damn "olleh" }
+    lowkey (s == "world") { damn "dlrow" }
     damn s  fr fr Return unchanged for unknown strings
 }
 

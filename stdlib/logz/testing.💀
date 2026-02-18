@@ -30,7 +30,7 @@ squad TestBackend {
     }
     
     slay get_last_entry(self TestBackend) LogEntry {
-        ready (len(self.entries) > 0) {
+        lowkey (len(self.entries) > 0) {
             damn self.entries[len(self.entries) - 1]
         }
         damn LogEntry{}
@@ -346,7 +346,7 @@ slay test_file_backend() {
     sus test_file tea = "/tmp/cursed_log_test.log"
     
     # Clean up any existing test file
-    ready (file_exists(test_file)) {
+    lowkey (file_exists(test_file)) {
         delete_file(test_file) fam {
             when error -> # Ignore cleanup errors
         }
@@ -379,7 +379,7 @@ slay test_file_backend() {
     }
     
     # Verify file contents
-    ready (file_exists(test_file)) {
+    lowkey (file_exists(test_file)) {
         sus content tea = read_file_string(test_file) fam {
             when error -> {
                 assert_fail("Failed to read log file: " + error)
@@ -391,7 +391,7 @@ slay test_file_backend() {
         assert_true(contains(content, "second log entry"))
         assert_true(contains(content, "INFO"))
         assert_true(contains(content, "WARN"))
-    } otherwise {
+    } highkey {
         assert_fail("Log file was not created")
     }
     
@@ -505,9 +505,9 @@ slay test_concurrent_logging() {
     # Verify message content and thread safety
     sus message_counts map<drip, drip> = map<drip, drip>{}
     bestie (entry in entries) {
-        ready (entry.thread_id in message_counts) {
+        lowkey (entry.thread_id in message_counts) {
             message_counts[entry.thread_id] = message_counts[entry.thread_id] + 1
-        } otherwise {
+        } highkey {
             message_counts[entry.thread_id] = 1
         }
     }
@@ -564,7 +564,7 @@ slay test_memory_usage() {
         i = i + 1
         
         # Periodic cleanup check
-        ready (i % 10000 == 0) {
+        lowkey (i % 10000 == 0) {
             spill("Logged", drip_to_string(i), "messages...")
         }
     }

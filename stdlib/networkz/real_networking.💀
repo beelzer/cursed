@@ -9,7 +9,7 @@ yeet "procesz"
 
 // Real DNS resolution using system resolver
 slay resolve_hostname(hostname tea) yikes<tea> {
-    ready (stringz.len(hostname) == 0) {
+    lowkey (stringz.len(hostname) == 0) {
         yikes "Empty hostname provided"
     }
     
@@ -27,12 +27,12 @@ slay resolve_hostname(hostname tea) yikes<tea> {
     
     // Parse getent output: "IP hostname aliases..."
     sus lines tea[value] = stringz.split(output, "\n")
-    ready (arrayz.len(lines) > 0) {
+    lowkey (arrayz.len(lines) > 0) {
         sus parts tea[value] = stringz.split(lines[0], " ")
-        ready (arrayz.len(parts) > 0) {
+        lowkey (arrayz.len(parts) > 0) {
             sus ip tea = stringz.trim(parts[0])
             // Validate IP address format
-            ready (stringz.contains(ip, ".") || stringz.contains(ip, ":")) {
+            lowkey (stringz.contains(ip, ".") || stringz.contains(ip, ":")) {
                 damn ip
             }
         }
@@ -43,7 +43,7 @@ slay resolve_hostname(hostname tea) yikes<tea> {
 
 // Real reverse DNS lookup
 slay reverse_lookup(ip_address tea) yikes<tea> {
-    ready (stringz.len(ip_address) == 0) {
+    lowkey (stringz.len(ip_address) == 0) {
         yikes "Empty IP address provided"
     }
     
@@ -53,7 +53,7 @@ slay reverse_lookup(ip_address tea) yikes<tea> {
     }
     
     sus hostname tea = stringz.trim(output)
-    ready (stringz.len(hostname) > 0) {
+    lowkey (stringz.len(hostname) > 0) {
         damn hostname
     }
     
@@ -75,7 +75,7 @@ slay get_network_interfaces() yikes<tea> {
             sus json_parts tea[value] = ["{\"interfaces\": ["]
             sus i drip = 0
             bestie (i < arrayz.len(interfaces)) {
-                ready (i > 0) {
+                lowkey (i > 0) {
                     json_parts = arrayz.push(json_parts, ", ")
                 }
                 json_parts = arrayz.push(json_parts, stringz.concat(["\"", interfaces[i], "\""]))
@@ -101,7 +101,7 @@ slay get_local_ip() yikes<tea> {
     }
     
     sus local_ip tea = stringz.trim(ip1)
-    ready (stringz.len(local_ip) > 0 && !stringz.equals(local_ip, "127.0.0.1")) {
+    lowkey (stringz.len(local_ip) > 0 && !stringz.equals(local_ip, "127.0.0.1")) {
         damn local_ip
     }
     
@@ -112,7 +112,7 @@ slay get_local_ip() yikes<tea> {
     }
     
     local_ip = stringz.trim(ip2)
-    ready (stringz.len(local_ip) > 0 && !stringz.equals(local_ip, "127.0.0.1")) {
+    lowkey (stringz.len(local_ip) > 0 && !stringz.equals(local_ip, "127.0.0.1")) {
         damn local_ip
     }
     
@@ -146,11 +146,11 @@ slay get_network_stats() yikes<tea> {
     
     bestie (i < arrayz.len(lines)) {
         sus line tea = stringz.trim(lines[i])
-        ready (stringz.len(line) > 0) {
+        lowkey (stringz.len(line) > 0) {
             sus parts tea[value] = stringz.split(line, " ")
-            ready (arrayz.len(parts) >= 10) {
+            lowkey (arrayz.len(parts) >= 10) {
                 // Skip loopback interface
-                ready (!stringz.contains(parts[0], "lo:")) {
+                lowkey (!stringz.contains(parts[0], "lo:")) {
                     total_rx = total_rx + mathz.parse_int(stringz.trim(parts[1])) fam { when _ -> 0 }
                     total_tx = total_tx + mathz.parse_int(stringz.trim(parts[9])) fam { when _ -> 0 }
                 }
@@ -172,7 +172,7 @@ slay get_network_stats() yikes<tea> {
 
 // Real port availability check using netstat
 slay check_port_available(port drip) yikes<lit> {
-    ready (port <= 0 || port > 65535) {
+    lowkey (port <= 0 || port > 65535) {
         yikes "Invalid port number"
     }
     
@@ -187,11 +187,11 @@ slay check_port_available(port drip) yikes<lit> {
 
 // Real HTTP client using curl
 slay real_http_get(url tea, timeout_seconds drip) yikes<tea> {
-    ready (stringz.len(url) == 0) {
+    lowkey (stringz.len(url) == 0) {
         yikes "Empty URL provided"
     }
     
-    ready (timeout_seconds <= 0) {
+    lowkey (timeout_seconds <= 0) {
         timeout_seconds = 30
     }
     
@@ -209,15 +209,15 @@ slay real_http_get(url tea, timeout_seconds drip) yikes<tea> {
 
 // Real HTTP POST using curl
 slay real_http_post(url tea, body tea, content_type tea, timeout_seconds drip) yikes<tea> {
-    ready (stringz.len(url) == 0) {
+    lowkey (stringz.len(url) == 0) {
         yikes "Empty URL provided"
     }
     
-    ready (timeout_seconds <= 0) {
+    lowkey (timeout_seconds <= 0) {
         timeout_seconds = 30
     }
     
-    ready (stringz.len(content_type) == 0) {
+    lowkey (stringz.len(content_type) == 0) {
         content_type = "application/json"
     }
     
@@ -250,15 +250,15 @@ slay real_http_post(url tea, body tea, content_type tea, timeout_seconds drip) y
 
 // Real HTTP with full response details using curl
 slay real_http_request_full(method tea, url tea, headers tea[value], body tea, timeout_seconds drip) yikes<tea> {
-    ready (stringz.len(url) == 0) {
+    lowkey (stringz.len(url) == 0) {
         yikes "Empty URL provided"
     }
     
-    ready (stringz.len(method) == 0) {
+    lowkey (stringz.len(method) == 0) {
         method = "GET"
     }
     
-    ready (timeout_seconds <= 0) {
+    lowkey (timeout_seconds <= 0) {
         timeout_seconds = 30
     }
     
@@ -277,7 +277,7 @@ slay real_http_request_full(method tea, url tea, headers tea[value], body tea, t
     }
     
     // Add body for POST/PUT requests
-    ready (stringz.len(body) > 0) {
+    lowkey (stringz.len(body) > 0) {
         sus temp_file tea = "/tmp/cursed_http_body"
         filez.write_file(temp_file, body) fam {
             when err -> yikes stringz.concat(["Failed to write request body: ", err])
@@ -290,7 +290,7 @@ slay real_http_request_full(method tea, url tea, headers tea[value], body tea, t
     
     sus response tea = procesz.run_command(cmd) fam {
         when err -> {
-            ready (stringz.len(body) > 0) {
+            lowkey (stringz.len(body) > 0) {
                 procesz.run_command("rm -f /tmp/cursed_http_body") fam { when _ -> {} }
             }
             yikes stringz.concat(["HTTP request failed: ", err])
@@ -298,7 +298,7 @@ slay real_http_request_full(method tea, url tea, headers tea[value], body tea, t
     }
     
     // Clean up temp file if used
-    ready (stringz.len(body) > 0) {
+    lowkey (stringz.len(body) > 0) {
         procesz.run_command("rm -f /tmp/cursed_http_body") fam { when _ -> {} }
     }
     
@@ -307,11 +307,11 @@ slay real_http_request_full(method tea, url tea, headers tea[value], body tea, t
 
 // Real ping using system ping command
 slay real_ping(host tea, count drip) yikes<drip> {
-    ready (stringz.len(host) == 0) {
+    lowkey (stringz.len(host) == 0) {
         yikes "Empty hostname provided"
     }
     
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         count = 1
     }
     
@@ -325,12 +325,12 @@ slay real_ping(host tea, count drip) yikes<drip> {
     }
     
     sus time_str tea = stringz.trim(output)
-    ready (stringz.len(time_str) == 0) {
+    lowkey (stringz.len(time_str) == 0) {
         yikes "Host unreachable"
     }
     
     // Parse time (remove 'ms' suffix if present)
-    ready (stringz.ends_with(time_str, "ms")) {
+    lowkey (stringz.ends_with(time_str, "ms")) {
         time_str = stringz.substring(time_str, 0, stringz.len(time_str) - 2)
     }
     
@@ -343,15 +343,15 @@ slay real_ping(host tea, count drip) yikes<drip> {
 
 // Real port connectivity test using nc (netcat)
 slay real_check_port_open(host tea, port drip, timeout_seconds drip) yikes<lit> {
-    ready (stringz.len(host) == 0) {
+    lowkey (stringz.len(host) == 0) {
         yikes "Empty hostname provided"
     }
     
-    ready (port <= 0 || port > 65535) {
+    lowkey (port <= 0 || port > 65535) {
         yikes "Invalid port number"
     }
     
-    ready (timeout_seconds <= 0) {
+    lowkey (timeout_seconds <= 0) {
         timeout_seconds = 5
     }
     

@@ -11,10 +11,10 @@ fr fr REAL ACTIVATION FUNCTIONS (No Approximations)
 fr fr ===============================================
 
 slay sigmoid_real(x meal) meal {
-    ready (x > 700.0) {
+    lowkey (x > 700.0) {
         damn 1.0
     }
-    ready (x < -700.0) {
+    lowkey (x < -700.0) {
         damn 0.0
     }
     sus exp_neg_x meal = exp_meal(-x)
@@ -27,10 +27,10 @@ slay sigmoid_derivative_real(x meal) meal {
 }
 
 slay tanh_real(x meal) meal {
-    ready (x > 20.0) {
+    lowkey (x > 20.0) {
         damn 1.0
     }
-    ready (x < -20.0) {
+    lowkey (x < -20.0) {
         damn -1.0
     }
     sus exp_2x meal = exp_meal(2.0 * x)
@@ -43,28 +43,28 @@ slay tanh_derivative_real(x meal) meal {
 }
 
 slay relu_real(x meal) meal {
-    ready (x > 0.0) {
+    lowkey (x > 0.0) {
         damn x
     }
     damn 0.0
 }
 
 slay relu_derivative_real(x meal) meal {
-    ready (x > 0.0) {
+    lowkey (x > 0.0) {
         damn 1.0
     }
     damn 0.0
 }
 
 slay leaky_relu_real(x meal, alpha meal) meal {
-    ready (x > 0.0) {
+    lowkey (x > 0.0) {
         damn x
     }
     damn alpha * x
 }
 
 slay leaky_relu_derivative_real(x meal, alpha meal) meal {
-    ready (x > 0.0) {
+    lowkey (x > 0.0) {
         damn 1.0
     }
     damn alpha
@@ -159,17 +159,17 @@ slay dense_layer_forward(layer DenseLayer, input meal[value]) meal[value]{
     j = 0
     bestie (j < layer.output_size) {
         sus activated_val meal = 0.0
-        ready (layer.activation_func == "relu") {
+        lowkey (layer.activation_func == "relu") {
             activated_val = relu_real(output[j])
-        } ready (layer.activation_func == "sigmoid") {
+        } lowkey (layer.activation_func == "sigmoid") {
             activated_val = sigmoid_real(output[j])
-        } ready (layer.activation_func == "tanh") {
+        } lowkey (layer.activation_func == "tanh") {
             activated_val = tanh_real(output[j])
-        } ready (layer.activation_func == "gelu") {
+        } lowkey (layer.activation_func == "gelu") {
             activated_val = gelu_real(output[j])
-        } ready (layer.activation_func == "swish") {
+        } lowkey (layer.activation_func == "swish") {
             activated_val = swish_real(output[j])
-        } otherwise {
+        } highkey {
             activated_val = output[j]  fr fr Linear activation
         }
         activated = append(activated, activated_val)
@@ -184,7 +184,7 @@ fr fr REAL LOSS FUNCTIONS
 fr fr ===============================================
 
 slay mse_loss_real(predictions meal[value], targets meal[value]) meal {
-    ready (len(predictions) != len(targets)) {
+    lowkey (len(predictions) != len(targets)) {
         damn 0.0
     }
     
@@ -200,7 +200,7 @@ slay mse_loss_real(predictions meal[value], targets meal[value]) meal {
 }
 
 slay categorical_crossentropy_loss_real(predictions meal[value], targets meal[value]) meal {
-    ready (len(predictions) != len(targets)) {
+    lowkey (len(predictions) != len(targets)) {
         damn 0.0
     }
     
@@ -217,7 +217,7 @@ slay categorical_crossentropy_loss_real(predictions meal[value], targets meal[va
 }
 
 slay binary_crossentropy_loss_real(predictions meal[value], targets meal[value]) meal {
-    ready (len(predictions) != len(targets)) {
+    lowkey (len(predictions) != len(targets)) {
         damn 0.0
     }
     
@@ -235,7 +235,7 @@ slay binary_crossentropy_loss_real(predictions meal[value], targets meal[value])
 }
 
 slay huber_loss_real(predictions meal[value], targets meal[value], delta meal) meal {
-    ready (len(predictions) != len(targets)) {
+    lowkey (len(predictions) != len(targets)) {
         damn 0.0
     }
     
@@ -243,9 +243,9 @@ slay huber_loss_real(predictions meal[value], targets meal[value], delta meal) m
     sus i drip = 0
     bestie (i < len(predictions)) {
         sus error meal = abs_meal(predictions[i] - targets[i])
-        ready (error <= delta) {
+        lowkey (error <= delta) {
             total_loss = total_loss + 0.5 * error * error
-        } otherwise {
+        } highkey {
             total_loss = total_loss + delta * (error - 0.5 * delta)
         }
         i = i + 1
@@ -337,7 +337,7 @@ slay neural_network_add_layer(network NeuralNetwork, layer DenseLayer) NeuralNet
     network.layers = append(network.layers, layer)
     
     fr fr Reinitialize Adam optimizer with new parameter count
-    ready (network.optimizer_type == "adam") {
+    lowkey (network.optimizer_type == "adam") {
         sus total_params drip = 0
         sus i drip = 0
         bestie (i < len(network.layers)) {
@@ -370,9 +370,9 @@ slay neural_network_backward(network NeuralNetwork, input meal[value], target me
     sus i drip = 0
     bestie (i < len(prediction)) {
         sus gradient meal = 0.0
-        ready (network.loss_function == "mse") {
+        lowkey (network.loss_function == "mse") {
             gradient = 2.0 * (prediction[i] - target[i]) / len(prediction)
-        } ready (network.loss_function == "binary_crossentropy") {
+        } lowkey (network.loss_function == "binary_crossentropy") {
             sus epsilon meal = 1e-15
             sus p meal = clamp_meal(prediction[i], epsilon, 1.0 - epsilon)
             gradient = -(target[i] / p) + ((1.0 - target[i]) / (1.0 - p))
@@ -383,7 +383,7 @@ slay neural_network_backward(network NeuralNetwork, input meal[value], target me
     
     fr fr Backward pass through layers (simplified - would need full backpropagation)
     fr fr For now, just apply simple gradient descent to last layer
-    ready (len(network.layers) > 0) {
+    lowkey (len(network.layers) > 0) {
         sus last_layer_idx drip = len(network.layers) - 1
         sus last_layer DenseLayer = network.layers[last_layer_idx]
         
@@ -437,7 +437,7 @@ slay conv2d_real(input meal[value], input_h drip, input_w drip, input_c drip,
                             sus in_y drip = out_y * stride - padding + ky
                             sus in_x drip = out_x * stride - padding + kx
                             
-                            ready (in_y >= 0 && in_y < input_h && in_x >= 0 && in_x < input_w) {
+                            lowkey (in_y >= 0 && in_y < input_h && in_x >= 0 && in_x < input_w) {
                                 sus input_idx drip = in_y * input_w * input_c + in_x * input_c + in_c
                                 sus kernel_idx drip = out_c * kernel_h * kernel_w * input_c + ky * kernel_w * input_c + kx * input_c + in_c
                                 sum = sum + input[input_idx] * kernel[kernel_idx]
@@ -483,7 +483,7 @@ slay max_pool2d_real(input meal[value], input_h drip, input_w drip, input_c drip
                         sus in_y drip = out_y * stride + py
                         sus in_x drip = out_x * stride + px
                         sus input_idx drip = in_y * input_w * input_c + in_x * input_c + c
-                        ready (input[input_idx] > max_val) {
+                        lowkey (input[input_idx] > max_val) {
                             max_val = input[input_idx]
                         }
                         px = px + 1
@@ -530,7 +530,7 @@ slay batch_norm_create(size drip) BatchNormLayer {
 }
 
 slay batch_norm_forward(layer BatchNormLayer, input meal[value], training lit) (BatchNormLayer, meal[value]) {
-    ready (training) {
+    lowkey (training) {
         fr fr Training mode: use batch statistics
         sus mean meal = tensor_mean_1d(input)
         sus variance meal = tensor_variance_1d(input)
@@ -554,7 +554,7 @@ slay batch_norm_forward(layer BatchNormLayer, input meal[value], training lit) (
         }
         
         damn (layer, output)
-    } otherwise {
+    } highkey {
         fr fr Inference mode: use running statistics
         sus output meal[value] = []
         sus i drip = 0
@@ -607,21 +607,21 @@ slay k_means_clustering_real(data meal[value], n_samples drip, n_features drip, 
                 }
                 distance = sqrt_meal(distance)
                 
-                ready (distance < min_distance) {
+                lowkey (distance < min_distance) {
                     min_distance = distance
                     best_cluster = cluster
                 }
                 cluster = cluster + 1
             }
             
-            ready (assignments[sample] != best_cluster) {
+            lowkey (assignments[sample] != best_cluster) {
                 changed = based
                 assignments[sample] = best_cluster
             }
             sample = sample + 1
         }
         
-        ready (!changed) {
+        lowkey (!changed) {
             ghosted  fr fr Converged
         }
         
@@ -633,7 +633,7 @@ slay k_means_clustering_real(data meal[value], n_samples drip, n_features drip, 
             
             sample = 0
             bestie (sample < n_samples) {
-                ready (assignments[sample] == cluster) {
+                lowkey (assignments[sample] == cluster) {
                     cluster_count = cluster_count + 1
                     sus feature drip = 0
                     bestie (feature < n_features) {
@@ -645,7 +645,7 @@ slay k_means_clustering_real(data meal[value], n_samples drip, n_features drip, 
                 sample = sample + 1
             }
             
-            ready (cluster_count > 0) {
+            lowkey (cluster_count > 0) {
                 sus feature drip = 0
                 bestie (feature < n_features) {
                     sus centroid_idx drip = cluster * n_features + feature
@@ -718,7 +718,7 @@ slay test_neural_network_xor() cringe {
             i = i + 1
         }
         
-        ready (epoch % 100 == 0) {
+        lowkey (epoch % 100 == 0) {
             vibez.spill("Epoch ", epoch, ": Loss = ", total_loss / 4.0)
         }
         epoch = epoch + 1

@@ -44,7 +44,7 @@ fr fr ===== CORE FILE OPERATIONS =====
 
 slay file_open(path tea, mode tea) yikes<FileHandle> {
     fr fr Open file with specified mode (r, w, a, r+, w+, a+)
-    ready (path == "") {
+    lowkey (path == "") {
         yikes "file path cannot be empty"
     }
     
@@ -54,25 +54,25 @@ slay file_open(path tea, mode tea) yikes<FileHandle> {
     handle.position = 0
     handle.buffer_size = 8192
     
-    ready (mode == "r") {
+    lowkey (mode == "r") {
         handle.fd = open_file_readonly(path)
-    } otherwise ready (mode == "w") {
+    } highkey lowkey (mode == "w") {
         handle.fd = open_file_writeonly(path)
-    } otherwise ready (mode == "a") {
+    } highkey lowkey (mode == "a") {
         handle.fd = open_file_append(path)
-    } otherwise ready (mode == "r+") {
+    } highkey lowkey (mode == "r+") {
         handle.fd = open_file_readwrite(path)
-    } otherwise ready (mode == "w+") {
+    } highkey lowkey (mode == "w+") {
         handle.fd = open_file_readwrite_create(path)
-    } otherwise ready (mode == "a+") {
+    } highkey lowkey (mode == "a+") {
         handle.fd = open_file_readwrite_append(path)
-    } otherwise {
+    } highkey {
         yikes "invalid file mode: " + mode
     }
     
     handle.is_open = handle.fd > 0
     
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         yikes "failed to open file: " + path
     }
     
@@ -81,12 +81,12 @@ slay file_open(path tea, mode tea) yikes<FileHandle> {
 
 slay file_close(handle FileHandle) yikes<lit> {
     fr fr Close file handle
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         yikes "file is not open"
     }
     
     sus result lit = close_file_descriptor(handle.fd)
-    ready (!result) {
+    lowkey (!result) {
         yikes "failed to close file: " + handle.path
     }
     
@@ -96,15 +96,15 @@ slay file_close(handle FileHandle) yikes<lit> {
 
 slay file_read(handle FileHandle, buffer_size drip) yikes<tea> {
     fr fr Read data from file
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         yikes "file is not open"
     }
     
-    ready (!contains_substring(handle.mode, "r")) {
+    lowkey (!contains_substring(handle.mode, "r")) {
         yikes "file not opened for reading"
     }
     
-    ready (buffer_size <= 0) {
+    lowkey (buffer_size <= 0) {
         yikes "invalid buffer size"
     }
     
@@ -116,16 +116,16 @@ slay file_read(handle FileHandle, buffer_size drip) yikes<tea> {
 
 slay file_write(handle FileHandle, data tea) yikes<drip> {
     fr fr Write data to file
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         yikes "file is not open"
     }
     
-    ready (!contains_substring(handle.mode, "w") && !contains_substring(handle.mode, "a") && !contains_substring(handle.mode, "+")) {
+    lowkey (!contains_substring(handle.mode, "w") && !contains_substring(handle.mode, "a") && !contains_substring(handle.mode, "+")) {
         yikes "file not opened for writing"
     }
     
     sus bytes_written drip = write_to_file_descriptor(handle.fd, data)
-    ready (bytes_written < 0) {
+    lowkey (bytes_written < 0) {
         yikes "failed to write to file"
     }
     
@@ -136,7 +136,7 @@ slay file_write(handle FileHandle, data tea) yikes<drip> {
 slay file_read_all(path tea) tea {
     fr fr Read entire file contents
     sus handle FileHandle = file_open(path, "r")
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         damn ""
     }
     
@@ -145,7 +145,7 @@ slay file_read_all(path tea) tea {
     
     bestie (based) {
         sus chunk tea = file_read(handle, chunk_size)
-        ready (string_length(chunk) == 0) {
+        lowkey (string_length(chunk) == 0) {
             break
         }
         content = content + chunk
@@ -158,7 +158,7 @@ slay file_read_all(path tea) tea {
 slay file_write_all(path tea, content tea) lit {
     fr fr Write content to file (overwrites existing)
     sus handle FileHandle = file_open(path, "w")
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         damn cringe
     }
     
@@ -171,7 +171,7 @@ slay file_write_all(path tea, content tea) lit {
 slay file_append(path tea, content tea) lit {
     fr fr Append content to file
     sus handle FileHandle = file_open(path, "a")
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         damn cringe
     }
     
@@ -212,7 +212,7 @@ slay file_get_info(path tea) FileInfo {
     sus info FileInfo = FileInfo{}
     
     sus exists lit = check_path_exists(path)
-    ready (!exists) {
+    lowkey (!exists) {
         damn info  fr fr Return empty info
     }
     
@@ -233,9 +233,9 @@ fr fr ===== DIRECTORY OPERATIONS =====
 slay dir_create(path tea) lit {
     fr fr Create directory
     sus result lit = create_directory_native(path)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Created directory: " + path)
-    } otherwise {
+    } highkey {
         vibez.spill("Failed to create directory: " + path)
     }
     damn result
@@ -248,15 +248,15 @@ slay dir_create_recursive(path tea) lit {
     sus i drip = 0
     
     bestie (i < array_length(parts)) {
-        ready (i == 0) {
+        lowkey (i == 0) {
             current_path = parts[i]
-        } otherwise {
+        } highkey {
             current_path = current_path + path_separator() + parts[i]
         }
         
-        ready (!file_exists(current_path)) {
+        lowkey (!file_exists(current_path)) {
             sus created lit = dir_create(current_path)
-            ready (!created) {
+            lowkey (!created) {
                 damn cringe
             }
         }
@@ -270,9 +270,9 @@ slay dir_create_recursive(path tea) lit {
 slay dir_remove(path tea) lit {
     fr fr Remove empty directory
     sus result lit = remove_directory_native(path)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Removed directory: " + path)
-    } otherwise {
+    } highkey {
         vibez.spill("Failed to remove directory: " + path)
     }
     damn result
@@ -280,7 +280,7 @@ slay dir_remove(path tea) lit {
 
 slay dir_list(path tea) DirectoryEntry[value]{
     fr fr List directory contents
-    ready (!file_is_directory(path)) {
+    lowkey (!file_is_directory(path)) {
         sus empty_list DirectoryEntry[value] = []
         damn empty_list
     }
@@ -303,7 +303,7 @@ slay dir_list_recursive(path tea) DirectoryEntry[value]{
         all_entries[entry_count] = entries[i]
         entry_count = entry_count + 1
         
-        ready (entries[i].is_directory) {
+        lowkey (entries[i].is_directory) {
             sus sub_entries DirectoryEntry[value] = dir_list_recursive(entries[i].full_path)
             sus j drip = 0
             bestie (j < array_length(sub_entries)) {
@@ -324,15 +324,15 @@ fr fr ===== FILE MANIPULATION =====
 slay file_copy(source tea, destination tea) lit {
     fr fr Copy file from source to destination
     sus content tea = file_read_all(source)
-    ready (content == "") {
+    lowkey (content == "") {
         vibez.spill("Failed to read source file: " + source)
         damn cringe
     }
     
     sus result lit = file_write_all(destination, content)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Copied file: " + source + " -> " + destination)
-    } otherwise {
+    } highkey {
         vibez.spill("Failed to copy file: " + source + " -> " + destination)
     }
     
@@ -342,12 +342,12 @@ slay file_copy(source tea, destination tea) lit {
 slay file_move(source tea, destination tea) lit {
     fr fr Move/rename file
     sus copy_result lit = file_copy(source, destination)
-    ready (copy_result) {
+    lowkey (copy_result) {
         sus delete_result lit = file_delete(source)
-        ready (delete_result) {
+        lowkey (delete_result) {
             vibez.spill("Moved file: " + source + " -> " + destination)
             damn based
-        } otherwise {
+        } highkey {
             vibez.spill("Copied file but failed to delete source: " + source)
         }
     }
@@ -358,9 +358,9 @@ slay file_move(source tea, destination tea) lit {
 slay file_delete(path tea) lit {
     fr fr Delete file
     sus result lit = delete_file_native(path)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Deleted file: " + path)
-    } otherwise {
+    } highkey {
         vibez.spill("Failed to delete file: " + path)
     }
     damn result
@@ -369,9 +369,9 @@ slay file_delete(path tea) lit {
 slay file_rename(old_path tea, new_path tea) lit {
     fr fr Rename file
     sus result lit = rename_file_native(old_path, new_path)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Renamed file: " + old_path + " -> " + new_path)
-    } otherwise {
+    } highkey {
         vibez.spill("Failed to rename file: " + old_path + " -> " + new_path)
     }
     damn result
@@ -404,14 +404,14 @@ slay path_change_extension(path tea, new_ext tea) tea {
     sus current_ext tea = path_extension(path)
     sus base_path tea = path
     
-    ready (current_ext != "") {
+    lowkey (current_ext != "") {
         sus ext_pos drip = string_length(path) - string_length(current_ext)
         base_path = substring(path, 0, ext_pos)
     }
     
-    ready (starts_with(new_ext, ".")) {
+    lowkey (starts_with(new_ext, ".")) {
         damn base_path + new_ext
-    } otherwise {
+    } highkey {
         damn base_path + "." + new_ext
     }
 }
@@ -437,7 +437,7 @@ slay file_search(directory tea, pattern tea) tea[value]{
     sus i drip = 0
     
     bestie (i < array_length(entries)) {
-        ready (!entries[i].is_directory && matches_pattern(entries[i].name, pattern)) {
+        lowkey (!entries[i].is_directory && matches_pattern(entries[i].name, pattern)) {
             matches[match_count] = entries[i].full_path
             match_count = match_count + 1
         }
@@ -461,7 +461,7 @@ slay file_watch(path tea, callback tea) lit {
     sus i drip = 0
     bestie (i < watch_iterations) {
         sus current_info FileInfo = file_get_info(path)
-        ready (current_info.last_modified != initial_info.last_modified) {
+        lowkey (current_info.last_modified != initial_info.last_modified) {
             vibez.spill("File changed: " + path)
             fr fr Would call callback function here
             initial_info = current_info
@@ -483,7 +483,7 @@ slay file_backup(path tea, backup_dir tea) lit {
     sus backup_path tea = path_join([backup_dir, backup_name])
     
     sus result lit = file_copy(path, backup_path)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Created backup: " + backup_path)
     }
     damn result
@@ -491,12 +491,12 @@ slay file_backup(path tea, backup_dir tea) lit {
 
 slay file_sync(handle FileHandle) lit {
     fr fr Force flush file buffers to disk
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         damn cringe
     }
     
     sus result lit = sync_file_descriptor(handle.fd)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Synced file: " + handle.path)
     }
     damn result
@@ -541,34 +541,34 @@ slay close_file_descriptor(fd drip) lit {
 }
 
 slay read_from_file_descriptor(fd drip, size drip) tea {
-    ready (fd > 0) {
+    lowkey (fd > 0) {
         damn "file_content_chunk"
     }
     damn ""
 }
 
 slay write_to_file_descriptor(fd drip, data tea) drip {
-    ready (fd > 0) {
+    lowkey (fd > 0) {
         damn string_length(data)
     }
     damn 0
 }
 
 slay check_path_exists(path tea) lit {
-    ready (path != "" && path != "/nonexistent") {
+    lowkey (path != "" && path != "/nonexistent") {
         damn based
     }
     damn cringe
 }
 
 slay get_file_size_native(path tea) drip {
-    ready (path == "test.txt") { damn 1024 }
-    ready (path == "large.txt") { damn 1048576 }
+    lowkey (path == "test.txt") { damn 1024 }
+    lowkey (path == "large.txt") { damn 1048576 }
     damn 512  fr fr Default size
 }
 
 slay check_is_directory_native(path tea) lit {
-    ready (contains_substring(path, "dir") || ends_with(path, "/")) {
+    lowkey (contains_substring(path, "dir") || ends_with(path, "/")) {
         damn based
     }
     damn cringe
@@ -580,12 +580,12 @@ slay get_file_modified_time(path tea) drip { damn 1640995200 }
 slay get_file_permissions(path tea) drip { damn 644 }
 
 slay create_directory_native(path tea) lit {
-    ready (path != "") { damn based }
+    lowkey (path != "") { damn based }
     damn cringe
 }
 
 slay remove_directory_native(path tea) lit {
-    ready (path != "") { damn based }
+    lowkey (path != "") { damn based }
     damn cringe
 }
 
@@ -609,12 +609,12 @@ slay list_directory_native(path tea) DirectoryEntry[value]{
 }
 
 slay delete_file_native(path tea) lit {
-    ready (path != "") { damn based }
+    lowkey (path != "") { damn based }
     damn cringe
 }
 
 slay rename_file_native(old_path tea, new_path tea) lit {
-    ready (old_path != "" && new_path != "") { damn based }
+    lowkey (old_path != "" && new_path != "") { damn based }
     damn cringe
 }
 
@@ -642,19 +642,19 @@ slay split_path(path tea) tea[value]{
     
     bestie (i < string_length(path)) {
         sus char tea = substring(path, i, 1)
-        ready (char == separator) {
-            ready (current_part != "") {
+        lowkey (char == separator) {
+            lowkey (current_part != "") {
                 parts[part_count] = current_part
                 part_count = part_count + 1
                 current_part = ""
             }
-        } otherwise {
+        } highkey {
             current_part = current_part + char
         }
         i = i + 1
     }
     
-    ready (current_part != "") {
+    lowkey (current_part != "") {
         parts[part_count] = current_part
     }
     
@@ -667,7 +667,7 @@ slay find_last_occurrence(text tea, search tea) drip {
     
     bestie (i <= string_length(text) - string_length(search)) {
         sus substr tea = substring(text, i, string_length(search))
-        ready (substr == search) {
+        lowkey (substr == search) {
             last_pos = i
         }
         i = i + 1
@@ -678,16 +678,16 @@ slay find_last_occurrence(text tea, search tea) drip {
 
 slay matches_pattern(filename tea, pattern tea) lit {
     fr fr Simple wildcard pattern matching
-    ready (pattern == "*") {
+    lowkey (pattern == "*") {
         damn based  fr fr Match all
     }
-    ready (pattern == "*.txt") {
+    lowkey (pattern == "*.txt") {
         damn ends_with(filename, ".txt")
     }
-    ready (pattern == "*.log") {
+    lowkey (pattern == "*.log") {
         damn ends_with(filename, ".log")
     }
-    ready (starts_with(pattern, "*.")) {
+    lowkey (starts_with(pattern, "*.")) {
         sus ext tea = substring(pattern, 1, string_length(pattern) - 1)
         damn ends_with(filename, ext)
     }
@@ -709,12 +709,12 @@ slay sleep_milliseconds(ms drip) lit {
 }
 
 slay json_number_to_string(num drip) tea {
-    ready (num == 0) { damn "0" }
-    ready (num == 1) { damn "1" }
-    ready (num == 2) { damn "2" }
-    ready (num == 3) { damn "3" }
-    ready (num == 4) { damn "4" }
-    ready (num == 5) { damn "5" }
-    ready (num == 10) { damn "10" }
+    lowkey (num == 0) { damn "0" }
+    lowkey (num == 1) { damn "1" }
+    lowkey (num == 2) { damn "2" }
+    lowkey (num == 3) { damn "3" }
+    lowkey (num == 4) { damn "4" }
+    lowkey (num == 5) { damn "5" }
+    lowkey (num == 10) { damn "10" }
     damn json_number_to_string(num / 10) + json_number_to_string(num % 10)
 }

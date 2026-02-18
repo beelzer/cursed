@@ -206,16 +206,16 @@ slay postgres_connection_string(config PostgresConfig) tea {
     sus params tea[value] = []
     
     fr fr Validate required parameters
-    ready (stringz.is_empty(config.host)) {
+    lowkey (stringz.is_empty(config.host)) {
         yikes "PostgreSQL host cannot be empty"
     }
-    ready (config.port <= 0 || config.port > 65535) {
+    lowkey (config.port <= 0 || config.port > 65535) {
         yikes "PostgreSQL port must be between 1 and 65535"
     }
-    ready (stringz.is_empty(config.database)) {
+    lowkey (stringz.is_empty(config.database)) {
         yikes "PostgreSQL database name cannot be empty"
     }
-    ready (stringz.is_empty(config.username)) {
+    lowkey (stringz.is_empty(config.username)) {
         yikes "PostgreSQL username cannot be empty"
     }
 
@@ -225,79 +225,79 @@ slay postgres_connection_string(config PostgresConfig) tea {
     params = collections.array_append(params, stringz.format("dbname={}", config.database))
     params = collections.array_append(params, stringz.format("user={}", config.username))
     
-    ready (!stringz.is_empty(config.password)) {
+    lowkey (!stringz.is_empty(config.password)) {
         params = collections.array_append(params, stringz.format("password={}", config.password))
     }
     
-    ready (!stringz.is_empty(config.sslmode)) {
+    lowkey (!stringz.is_empty(config.sslmode)) {
         params = collections.array_append(params, stringz.format("sslmode={}", config.sslmode))
     }
     
-    ready (!stringz.is_empty(config.sslcert)) {
+    lowkey (!stringz.is_empty(config.sslcert)) {
         params = collections.array_append(params, stringz.format("sslcert={}", config.sslcert))
     }
     
-    ready (!stringz.is_empty(config.sslkey)) {
+    lowkey (!stringz.is_empty(config.sslkey)) {
         params = collections.array_append(params, stringz.format("sslkey={}", config.sslkey))
     }
     
-    ready (!stringz.is_empty(config.sslrootcert)) {
+    lowkey (!stringz.is_empty(config.sslrootcert)) {
         params = collections.array_append(params, stringz.format("sslrootcert={}", config.sslrootcert))
     }
     
-    ready (config.connect_timeout > 0) {
+    lowkey (config.connect_timeout > 0) {
         params = collections.array_append(params, stringz.format("connect_timeout={}", config.connect_timeout))
     }
     
-    ready (config.statement_timeout > 0) {
+    lowkey (config.statement_timeout > 0) {
         params = collections.array_append(params, stringz.format("statement_timeout={}", config.statement_timeout))
     }
     
-    ready (config.idle_in_transaction_session_timeout > 0) {
+    lowkey (config.idle_in_transaction_session_timeout > 0) {
         params = collections.array_append(params, stringz.format("idle_in_transaction_session_timeout={}", config.idle_in_transaction_session_timeout))
     }
     
-    ready (!stringz.is_empty(config.application_name)) {
+    lowkey (!stringz.is_empty(config.application_name)) {
         params = collections.array_append(params, stringz.format("application_name={}", config.application_name))
     }
     
-    ready (!stringz.is_empty(config.search_path)) {
+    lowkey (!stringz.is_empty(config.search_path)) {
         params = collections.array_append(params, stringz.format("search_path={}", config.search_path))
     }
     
-    ready (!stringz.is_empty(config.timezone)) {
+    lowkey (!stringz.is_empty(config.timezone)) {
         params = collections.array_append(params, stringz.format("TimeZone={}", config.timezone))
     }
     
-    ready (!stringz.is_empty(config.client_encoding)) {
+    lowkey (!stringz.is_empty(config.client_encoding)) {
         params = collections.array_append(params, stringz.format("client_encoding={}", config.client_encoding))
     }
     
-    ready (!stringz.is_empty(config.default_transaction_isolation)) {
+    lowkey (!stringz.is_empty(config.default_transaction_isolation)) {
         params = collections.array_append(params, stringz.format("default_transaction_isolation={}", config.default_transaction_isolation))
     }
     
-    ready (config.lock_timeout > 0) {
+    lowkey (config.lock_timeout > 0) {
         params = collections.array_append(params, stringz.format("lock_timeout={}", config.lock_timeout))
     }
     
-    ready (config.tcp_user_timeout > 0) {
+    lowkey (config.tcp_user_timeout > 0) {
         params = collections.array_append(params, stringz.format("tcp_user_timeout={}", config.tcp_user_timeout))
     }
     
-    ready (config.keepalives_idle > 0) {
+    lowkey (config.keepalives_idle > 0) {
         params = collections.array_append(params, stringz.format("keepalives_idle={}", config.keepalives_idle))
     }
     
-    ready (config.keepalives_interval > 0) {
+    lowkey (config.keepalives_interval > 0) {
         params = collections.array_append(params, stringz.format("keepalives_interval={}", config.keepalives_interval))
     }
     
-    ready (config.keepalives_count > 0) {
+    lowkey (config.keepalives_count > 0) {
         params = collections.array_append(params, stringz.format("keepalives_count={}", config.keepalives_count))
     }
     
-    ready (!stringz.is_empty(config.target_session_attrs)) {
+    lowkey (!stringz.is_empty(config.target_session_attrs)) {
         params = collections.array_append(params, stringz.format("target_session_attrs={}", config.target_session_attrs))
     }
     
@@ -336,7 +336,7 @@ slay postgres_connect(config PostgresConfig) yikes<PostgresConnection> {
         
         fr fr Simulate socket connection (in real implementation, this would use actual sockets)
         sus socket_fd normie = postgres_create_socket(config.host, config.port)
-        ready (socket_fd < 0) {
+        lowkey (socket_fd < 0) {
             yikes stringz.format("Failed to create socket connection to {}:{}", config.host, config.port)
         }
         
@@ -344,21 +344,21 @@ slay postgres_connect(config PostgresConfig) yikes<PostgresConnection> {
         
         fr fr Send startup message
         sus startup_success lit = postgres_send_startup_message(connection, config)
-        ready (!startup_success) {
+        lowkey (!startup_success) {
             postgres_close_socket(socket_fd)
             yikes "Failed to send PostgreSQL startup message"
         }
         
         fr fr Handle authentication
         sus auth_success lit = postgres_handle_authentication(connection, config)
-        ready (!auth_success) {
+        lowkey (!auth_success) {
             postgres_close_socket(socket_fd)
             yikes "PostgreSQL authentication failed"
         }
         
-        fr fr Wait for ready for query message
+        fr fr Wait for lowkey for query message
         sus ready_success lit = postgres_wait_for_ready(connection)
-        ready (!ready_success) {
+        lowkey (!ready_success) {
             postgres_close_socket(socket_fd)
             yikes "PostgreSQL connection setup failed"
         }
@@ -382,7 +382,7 @@ fr fr Socket creation and connection (simulated)
 slay postgres_create_socket(host tea, port normie) normie {
     fr fr In real implementation, this would create actual TCP socket
     fr fr For now, simulate successful socket creation
-    ready (stringz.is_empty(host) || port <= 0) {
+    lowkey (stringz.is_empty(host) || port <= 0) {
         damn -1
     }
     
@@ -394,7 +394,7 @@ slay postgres_create_socket(host tea, port normie) normie {
 fr fr Close socket connection
 slay postgres_close_socket(socket_fd normie) lit {
     fr fr In real implementation, this would close actual socket
-    ready (socket_fd > 0) {
+    lowkey (socket_fd > 0) {
         vibez.spill(stringz.format("Closing PostgreSQL socket: {}", socket_fd))
         damn based
     }
@@ -410,11 +410,11 @@ slay postgres_send_startup_message(connection PostgresConnection, config Postgre
     message_params["application_name"] = config.application_name
     message_params["client_encoding"] = config.client_encoding
     
-    ready (!stringz.is_empty(config.search_path)) {
+    lowkey (!stringz.is_empty(config.search_path)) {
         message_params["search_path"] = config.search_path
     }
     
-    ready (!stringz.is_empty(config.timezone)) {
+    lowkey (!stringz.is_empty(config.timezone)) {
         message_params["TimeZone"] = config.timezone
     }
     
@@ -428,7 +428,7 @@ slay postgres_handle_authentication(connection PostgresConnection, config Postgr
     fr fr In real implementation, this would handle various auth methods:
     fr fr - Trust, MD5, SCRAM-SHA-256, GSS, SSPI, etc.
     
-    ready (stringz.is_empty(config.password)) {
+    lowkey (stringz.is_empty(config.password)) {
         vibez.spill("PostgreSQL authentication: Trust mode")
         damn based
     }
@@ -441,7 +441,7 @@ slay postgres_handle_authentication(connection PostgresConnection, config Postgr
     damn based
 }
 
-fr fr Wait for ready for query message
+fr fr Wait for lowkey for query message
 slay postgres_wait_for_ready(connection PostgresConnection) lit {
     fr fr In real implementation, this would read protocol messages
     connection.transaction_status = 0  fr fr 'I' = idle
@@ -474,7 +474,7 @@ slay postgres_set_connection_parameters(connection PostgresConnection) normie {
 
 fr fr Disconnect from PostgreSQL
 slay postgres_disconnect(connection PostgresConnection) lit {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn based
     }
     
@@ -482,7 +482,7 @@ slay postgres_disconnect(connection PostgresConnection) lit {
     postgres_close_all_prepared_statements(connection)
     
     fr fr Send terminate message
-    ready (connection.socket_fd > 0) {
+    lowkey (connection.socket_fd > 0) {
         postgres_send_terminate_message(connection)
         postgres_close_socket(connection.socket_fd)
     }
@@ -516,7 +516,7 @@ slay postgres_close_all_prepared_statements(connection PostgresConnection) normi
 
 fr fr Simple query execution
 slay postgres_execute_query(connection PostgresConnection, sql tea) yikes<PostgresResult> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
@@ -524,13 +524,13 @@ slay postgres_execute_query(connection PostgresConnection, sql tea) yikes<Postgr
     
     fam {
         fr fr Validate SQL query
-        ready (stringz.is_empty(stringz.trim(sql))) {
+        lowkey (stringz.is_empty(stringz.trim(sql))) {
             yikes "SQL query cannot be empty"
         }
         
         fr fr Send simple query message
         sus query_success lit = postgres_send_simple_query(connection, sql)
-        ready (!query_success) {
+        lowkey (!query_success) {
             yikes "Failed to send PostgreSQL query"
         }
         
@@ -574,21 +574,21 @@ slay postgres_process_query_result(connection PostgresConnection, sql tea) Postg
     fr fr Simulate different query types
     sus sql_upper tea = stringz.to_upper(stringz.trim(sql))
     
-    ready (stringz.starts_with(sql_upper, "SELECT")) {
+    lowkey (stringz.starts_with(sql_upper, "SELECT")) {
         result = postgres_simulate_select_result(sql)
-    } otherwise ready (stringz.starts_with(sql_upper, "INSERT")) {
+    } highkey lowkey (stringz.starts_with(sql_upper, "INSERT")) {
         result = postgres_simulate_insert_result(sql)
-    } otherwise ready (stringz.starts_with(sql_upper, "UPDATE")) {
+    } highkey lowkey (stringz.starts_with(sql_upper, "UPDATE")) {
         result = postgres_simulate_update_result(sql)
-    } otherwise ready (stringz.starts_with(sql_upper, "DELETE")) {
+    } highkey lowkey (stringz.starts_with(sql_upper, "DELETE")) {
         result = postgres_simulate_delete_result(sql)
-    } otherwise ready (stringz.starts_with(sql_upper, "CREATE")) {
+    } highkey lowkey (stringz.starts_with(sql_upper, "CREATE")) {
         result = postgres_simulate_ddl_result(sql, "CREATE")
-    } otherwise ready (stringz.starts_with(sql_upper, "DROP")) {
+    } highkey lowkey (stringz.starts_with(sql_upper, "DROP")) {
         result = postgres_simulate_ddl_result(sql, "DROP")
-    } otherwise ready (stringz.starts_with(sql_upper, "ALTER")) {
+    } highkey lowkey (stringz.starts_with(sql_upper, "ALTER")) {
         result = postgres_simulate_ddl_result(sql, "ALTER")
-    } otherwise {
+    } highkey {
         result.command_tag = "UTILITY"
         result.status_message = "Command completed successfully"
     }
@@ -735,11 +735,11 @@ slay postgres_simulate_ddl_result(sql tea, command tea) PostgresResult {
         has_more_results: cringe
     }
     
-    ready (stringz.equals(command, "CREATE")) {
+    lowkey (stringz.equals(command, "CREATE")) {
         result.command_tag = "CREATE TABLE"
-    } otherwise ready (stringz.equals(command, "DROP")) {
+    } highkey lowkey (stringz.equals(command, "DROP")) {
         result.command_tag = "DROP TABLE"
-    } otherwise ready (stringz.equals(command, "ALTER")) {
+    } highkey lowkey (stringz.equals(command, "ALTER")) {
         result.command_tag = "ALTER TABLE"
     }
     
@@ -752,39 +752,39 @@ slay postgres_prepare_statement(
     statement_name tea, 
     sql tea
 ) yikes<PostgresPreparedStatement> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (stringz.is_empty(statement_name)) {
+    lowkey (stringz.is_empty(statement_name)) {
         yikes "Prepared statement name cannot be empty"
     }
     
-    ready (stringz.is_empty(stringz.trim(sql))) {
+    lowkey (stringz.is_empty(stringz.trim(sql))) {
         yikes "SQL query cannot be empty"
     }
     
     fam {
         fr fr Check if statement already exists
-        ready (collections.map_has_key(connection.prepared_statements, statement_name)) {
+        lowkey (collections.map_has_key(connection.prepared_statements, statement_name)) {
             yikes stringz.format("Prepared statement '{}' already exists", statement_name)
         }
         
         fr fr Send parse message
         sus parse_success lit = postgres_send_parse_message(connection, statement_name, sql)
-        ready (!parse_success) {
+        lowkey (!parse_success) {
             yikes "Failed to send PostgreSQL parse message"
         }
         
         fr fr Send describe message
         sus describe_success lit = postgres_send_describe_message(connection, statement_name)
-        ready (!describe_success) {
+        lowkey (!describe_success) {
             yikes "Failed to send PostgreSQL describe message"
         }
         
         fr fr Send sync message
         sus sync_success lit = postgres_send_sync_message(connection)
-        ready (!sync_success) {
+        lowkey (!sync_success) {
             yikes "Failed to send PostgreSQL sync message"
         }
         
@@ -852,7 +852,7 @@ slay postgres_process_parse_response(
     
     fr fr Simulate result column detection for SELECT statements
     sus sql_upper tea = stringz.to_upper(stringz.trim(sql))
-    ready (stringz.starts_with(sql_upper, "SELECT")) {
+    lowkey (stringz.starts_with(sql_upper, "SELECT")) {
         stmt.result_column_count = 2  fr fr Simulate 2 columns
         stmt.result_column_oids = [23, 25]  fr fr integer, text
     }
@@ -867,7 +867,7 @@ slay postgres_count_parameters(sql tea) normie {
     
     sus i normie = 0
     bestie (i < stringz.length(sql) - 1) {
-        ready (stringz.char_at(sql, i) == '$') {
+        lowkey (stringz.char_at(sql, i) == '$') {
             sus param_num_str tea = ""
             sus j normie = i + 1
             
@@ -876,9 +876,9 @@ slay postgres_count_parameters(sql tea) normie {
                 j = j + 1
             }
             
-            ready (!stringz.is_empty(param_num_str)) {
+            lowkey (!stringz.is_empty(param_num_str)) {
                 sus param_num normie = stringz.to_int(param_num_str)
-                ready (param_num > max_param) {
+                lowkey (param_num > max_param) {
                     max_param = param_num
                 }
             }
@@ -895,11 +895,11 @@ slay postgres_execute_prepared(
     statement_name tea, 
     parameters tea[value]
 ) yikes<PostgresResult> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (!collections.map_has_key(connection.prepared_statements, statement_name)) {
+    lowkey (!collections.map_has_key(connection.prepared_statements, statement_name)) {
         yikes stringz.format("Prepared statement '{}' does not exist", statement_name)
     }
     
@@ -909,26 +909,26 @@ slay postgres_execute_prepared(
         sus stmt PostgresPreparedStatement = connection.prepared_statements[statement_name]
         
         fr fr Validate parameter count
-        ready (collections.array_length(parameters) != stmt.parameter_count) {
+        lowkey (collections.array_length(parameters) != stmt.parameter_count) {
             yikes stringz.format("Expected {} parameters, got {}", 
                 stmt.parameter_count, collections.array_length(parameters))
         }
         
         fr fr Send bind message
         sus bind_success lit = postgres_send_bind_message(connection, statement_name, parameters)
-        ready (!bind_success) {
+        lowkey (!bind_success) {
             yikes "Failed to send PostgreSQL bind message"
         }
         
         fr fr Send execute message
         sus execute_success lit = postgres_send_execute_message(connection, statement_name)
-        ready (!execute_success) {
+        lowkey (!execute_success) {
             yikes "Failed to send PostgreSQL execute message"
         }
         
         fr fr Send sync message
         sus sync_success lit = postgres_send_sync_message(connection)
-        ready (!sync_success) {
+        lowkey (!sync_success) {
             yikes "Failed to send PostgreSQL sync message"
         }
         
@@ -983,7 +983,7 @@ slay postgres_process_prepared_result(
 
 fr fr Close prepared statement
 slay postgres_close_prepared_statement(connection PostgresConnection, statement_name tea) lit {
-    ready (!collections.map_has_key(connection.prepared_statements, statement_name)) {
+    lowkey (!collections.map_has_key(connection.prepared_statements, statement_name)) {
         damn cringe
     }
     
@@ -1006,11 +1006,11 @@ slay postgres_send_close_message(connection PostgresConnection, statement_name t
 
 fr fr Transaction management - begin transaction
 slay postgres_begin_transaction(connection PostgresConnection) yikes<tea> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (connection.is_in_transaction) {
+    lowkey (connection.is_in_transaction) {
         yikes "PostgreSQL connection is already in a transaction"
     }
     
@@ -1019,7 +1019,7 @@ slay postgres_begin_transaction(connection PostgresConnection) yikes<tea> {
         
         fr fr Execute BEGIN statement
         sus result PostgresResult = postgres_execute_query(connection, "BEGIN")
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to begin transaction: {}", result.status_message)
         }
         
@@ -1036,18 +1036,18 @@ slay postgres_begin_transaction(connection PostgresConnection) yikes<tea> {
 
 fr fr Transaction management - commit transaction
 slay postgres_commit_transaction(connection PostgresConnection) yikes<lit> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (!connection.is_in_transaction) {
+    lowkey (!connection.is_in_transaction) {
         yikes "PostgreSQL connection is not in a transaction"
     }
     
     fam {
         fr fr Execute COMMIT statement
         sus result PostgresResult = postgres_execute_query(connection, "COMMIT")
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to commit transaction: {}", result.status_message)
         }
         
@@ -1064,18 +1064,18 @@ slay postgres_commit_transaction(connection PostgresConnection) yikes<lit> {
 
 fr fr Transaction management - rollback transaction
 slay postgres_rollback_transaction(connection PostgresConnection) yikes<lit> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (!connection.is_in_transaction) {
+    lowkey (!connection.is_in_transaction) {
         yikes "PostgreSQL connection is not in a transaction"
     }
     
     fam {
         fr fr Execute ROLLBACK statement
         sus result PostgresResult = postgres_execute_query(connection, "ROLLBACK")
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to rollback transaction: {}", result.status_message)
         }
         
@@ -1092,22 +1092,22 @@ slay postgres_rollback_transaction(connection PostgresConnection) yikes<lit> {
 
 fr fr Savepoint management - create savepoint
 slay postgres_create_savepoint(connection PostgresConnection, savepoint_name tea) yikes<PostgresSavepoint> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (!connection.is_in_transaction) {
+    lowkey (!connection.is_in_transaction) {
         yikes "PostgreSQL connection is not in a transaction"
     }
     
-    ready (stringz.is_empty(savepoint_name)) {
+    lowkey (stringz.is_empty(savepoint_name)) {
         yikes "Savepoint name cannot be empty"
     }
     
     fam {
         sus sql tea = stringz.format("SAVEPOINT {}", savepoint_name)
         sus result PostgresResult = postgres_execute_query(connection, sql)
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to create savepoint: {}", result.status_message)
         }
         
@@ -1127,18 +1127,18 @@ slay postgres_create_savepoint(connection PostgresConnection, savepoint_name tea
 
 fr fr Savepoint management - rollback to savepoint
 slay postgres_rollback_to_savepoint(connection PostgresConnection, savepoint_name tea) yikes<lit> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (!connection.is_in_transaction) {
+    lowkey (!connection.is_in_transaction) {
         yikes "PostgreSQL connection is not in a transaction"
     }
     
     fam {
         sus sql tea = stringz.format("ROLLBACK TO SAVEPOINT {}", savepoint_name)
         sus result PostgresResult = postgres_execute_query(connection, sql)
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to rollback to savepoint: {}", result.status_message)
         }
         
@@ -1152,18 +1152,18 @@ slay postgres_rollback_to_savepoint(connection PostgresConnection, savepoint_nam
 
 fr fr Savepoint management - release savepoint
 slay postgres_release_savepoint(connection PostgresConnection, savepoint_name tea) yikes<lit> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (!connection.is_in_transaction) {
+    lowkey (!connection.is_in_transaction) {
         yikes "PostgreSQL connection is not in a transaction"
     }
     
     fam {
         sus sql tea = stringz.format("RELEASE SAVEPOINT {}", savepoint_name)
         sus result PostgresResult = postgres_execute_query(connection, sql)
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to release savepoint: {}", result.status_message)
         }
         
@@ -1177,20 +1177,20 @@ slay postgres_release_savepoint(connection PostgresConnection, savepoint_name te
 
 fr fr Connection health check
 slay postgres_health_check(connection PostgresConnection) lit {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn cringe
     }
     
     fam {
         fr fr Execute simple health check query
         sus result PostgresResult = postgres_execute_query(connection, "SELECT 1")
-        ready (!result.success) {
+        lowkey (!result.success) {
             connection.last_error = result.status_message
             damn cringe
         }
         
         fr fr Check if we got expected result
-        ready (collections.array_length(result.rows) != 1) {
+        lowkey (collections.array_length(result.rows) != 1) {
             connection.last_error = "Health check returned unexpected row count"
             damn cringe
         }
@@ -1206,18 +1206,18 @@ slay postgres_health_check(connection PostgresConnection) lit {
 
 fr fr LISTEN/NOTIFY support - listen to channel
 slay postgres_listen_channel(connection PostgresConnection, channel tea) yikes<lit> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (stringz.is_empty(channel)) {
+    lowkey (stringz.is_empty(channel)) {
         yikes "Channel name cannot be empty"
     }
     
     fam {
         sus sql tea = stringz.format("LISTEN {}", channel)
         sus result PostgresResult = postgres_execute_query(connection, sql)
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to listen to channel: {}", result.status_message)
         }
         
@@ -1231,24 +1231,24 @@ slay postgres_listen_channel(connection PostgresConnection, channel tea) yikes<l
 
 fr fr LISTEN/NOTIFY support - stop listening to channel
 slay postgres_unlisten_channel(connection PostgresConnection, channel tea) yikes<lit> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
     fam {
-        sus sql tea = ready (stringz.is_empty(channel)) {
+        sus sql tea = lowkey (stringz.is_empty(channel)) {
             "UNLISTEN *"
-        } otherwise {
+        } highkey {
             stringz.format("UNLISTEN {}", channel)
         }
         
         sus result PostgresResult = postgres_execute_query(connection, sql)
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to unlisten: {}", result.status_message)
         }
         
         vibez.spill(stringz.format("PostgreSQL stopped listening to: {}", 
-            ready (stringz.is_empty(channel)) { "all channels" } otherwise { channel }))
+            lowkey (stringz.is_empty(channel)) { "all channels" } highkey { channel }))
         damn based
         
     } shook (error) {
@@ -1258,23 +1258,23 @@ slay postgres_unlisten_channel(connection PostgresConnection, channel tea) yikes
 
 fr fr LISTEN/NOTIFY support - send notification
 slay postgres_notify_channel(connection PostgresConnection, channel tea, payload tea) yikes<lit> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
-    ready (stringz.is_empty(channel)) {
+    lowkey (stringz.is_empty(channel)) {
         yikes "Channel name cannot be empty"
     }
     
     fam {
-        sus sql tea = ready (stringz.is_empty(payload)) {
+        sus sql tea = lowkey (stringz.is_empty(payload)) {
             stringz.format("NOTIFY {}", channel)
-        } otherwise {
+        } highkey {
             stringz.format("NOTIFY {}, '{}'", channel, payload)
         }
         
         sus result PostgresResult = postgres_execute_query(connection, sql)
-        ready (!result.success) {
+        lowkey (!result.success) {
             yikes stringz.format("Failed to send notification: {}", result.status_message)
         }
         
@@ -1288,14 +1288,14 @@ slay postgres_notify_channel(connection PostgresConnection, channel tea, payload
 
 fr fr Large object support - create large object
 slay postgres_create_large_object(connection PostgresConnection) yikes<PostgresLargeObject> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
     fam {
         fr fr Execute lo_create function
         sus result PostgresResult = postgres_execute_query(connection, "SELECT lo_create(0)")
-        ready (!result.success || collections.array_length(result.rows) == 0) {
+        lowkey (!result.success || collections.array_length(result.rows) == 0) {
             yikes "Failed to create large object"
         }
         
@@ -1320,7 +1320,7 @@ slay postgres_create_large_object(connection PostgresConnection) yikes<PostgresL
 
 fr fr Large object support - open large object
 slay postgres_open_large_object(connection PostgresConnection, oid normie, mode normie) yikes<PostgresLargeObject> {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         yikes "PostgreSQL connection is not active"
     }
     
@@ -1328,7 +1328,7 @@ slay postgres_open_large_object(connection PostgresConnection, oid normie, mode 
         fr fr Execute lo_open function
         sus sql tea = stringz.format("SELECT lo_open({}, {})", oid, mode)
         sus result PostgresResult = postgres_execute_query(connection, sql)
-        ready (!result.success || collections.array_length(result.rows) == 0) {
+        lowkey (!result.success || collections.array_length(result.rows) == 0) {
             yikes "Failed to open large object"
         }
         
@@ -1385,15 +1385,15 @@ slay postgres_driver_connect(config DatabaseDriverConfig) tea {
             config.password
         )
         
-        ready (config.ssl_enabled) {
+        lowkey (config.ssl_enabled) {
             pg_config.sslmode = "require"
         }
         
-        ready (config.connection_timeout > 0) {
+        lowkey (config.connection_timeout > 0) {
             pg_config.connect_timeout = config.connection_timeout
         }
         
-        ready (!stringz.is_empty(config.options["application_name"])) {
+        lowkey (!stringz.is_empty(config.options["application_name"])) {
             pg_config.application_name = config.options["application_name"]
         }
         
@@ -1464,23 +1464,23 @@ fr fr Driver registry interface - format value function
 slay postgres_driver_format_value(value tea, data_type tea) tea {
     sus formatted_value tea = value
     
-    ready (stringz.equals(data_type, "text") || stringz.equals(data_type, "varchar")) {
+    lowkey (stringz.equals(data_type, "text") || stringz.equals(data_type, "varchar")) {
         formatted_value = stringz.format("'{}'", stringz.replace(value, "'", "''"))
-    } otherwise ready (stringz.equals(data_type, "integer") || stringz.equals(data_type, "bigint")) {
+    } highkey lowkey (stringz.equals(data_type, "integer") || stringz.equals(data_type, "bigint")) {
         fr fr Validate numeric value
-        ready (!stringz.is_numeric(value)) {
+        lowkey (!stringz.is_numeric(value)) {
             formatted_value = "0"
         }
-    } otherwise ready (stringz.equals(data_type, "boolean")) {
+    } highkey lowkey (stringz.equals(data_type, "boolean")) {
         sus lower_value tea = stringz.to_lower(value)
-        ready (stringz.equals(lower_value, "true") || stringz.equals(lower_value, "1") || stringz.equals(lower_value, "yes")) {
+        lowkey (stringz.equals(lower_value, "true") || stringz.equals(lower_value, "1") || stringz.equals(lower_value, "yes")) {
             formatted_value = "true"
-        } otherwise {
+        } highkey {
             formatted_value = "false"
         }
-    } otherwise ready (stringz.equals(data_type, "timestamp") || stringz.equals(data_type, "timestamptz")) {
+    } highkey lowkey (stringz.equals(data_type, "timestamp") || stringz.equals(data_type, "timestamptz")) {
         formatted_value = stringz.format("'{}'", value)
-    } otherwise ready (stringz.equals(data_type, "json") || stringz.equals(data_type, "jsonb")) {
+    } highkey lowkey (stringz.equals(data_type, "json") || stringz.equals(data_type, "jsonb")) {
         formatted_value = stringz.format("'{}'", stringz.replace(value, "'", "''"))
     }
     
@@ -1498,7 +1498,7 @@ slay postgres_register_driver() lit {
 
 fr fr Utility function to escape SQL identifiers
 slay postgres_escape_identifier(identifier tea) tea {
-    ready (stringz.is_empty(identifier)) {
+    lowkey (stringz.is_empty(identifier)) {
         damn "\"\""
     }
     
@@ -1508,7 +1508,7 @@ slay postgres_escape_identifier(identifier tea) tea {
 
 fr fr Utility function to escape SQL string literals
 slay postgres_escape_string(str tea) tea {
-    ready (stringz.is_empty(str)) {
+    lowkey (stringz.is_empty(str)) {
         damn "''"
     }
     
@@ -1526,8 +1526,8 @@ slay postgres_connection_info(connection PostgresConnection) map[tea]tea {
     info["port"] = stringz.from_int(connection.config.port)
     info["database"] = connection.config.database
     info["username"] = connection.config.username
-    info["is_connected"] = ready (connection.is_connected) { "true" } otherwise { "false" }
-    info["is_in_transaction"] = ready (connection.is_in_transaction) { "true" } otherwise { "false" }
+    info["is_connected"] = lowkey (connection.is_connected) { "true" } highkey { "false" }
+    info["is_in_transaction"] = lowkey (connection.is_in_transaction) { "true" } highkey { "false" }
     info["server_version"] = connection.server_version
     info["server_encoding"] = connection.server_encoding
     info["backend_process_id"] = stringz.from_int(connection.backend_process_id)

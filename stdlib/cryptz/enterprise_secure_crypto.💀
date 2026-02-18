@@ -164,9 +164,9 @@ slay enterprise_aes256_encrypt(plaintext drip[value], key drip[32]) drip[value]{
         sus block drip[16] = []
         sus i drip = 0
         bestie i < 16 {
-            ready (block_idx * 16 + i) < len(plaintext) {
+            lowkey (block_idx * 16 + i) < len(plaintext) {
                 block[i] = plaintext[block_idx * 16 + i]
-            } otherwise {
+            } highkey {
                 fr fr PKCS#7 padding
                 block[i] = 16 - (len(plaintext) % 16)
             }
@@ -204,9 +204,9 @@ slay enterprise_aes256_decrypt(ciphertext drip[value], key drip[32]) drip[value]
     }
     
     fr fr Remove PKCS#7 padding
-    ready len(plaintext) > 0 {
+    lowkey len(plaintext) > 0 {
         sus padding_len drip = plaintext[len(plaintext) - 1]
-        ready padding_len <= 16 && padding_len <= len(plaintext) {
+        lowkey padding_len <= 16 && padding_len <= len(plaintext) {
             plaintext = plaintext[:len(plaintext) - padding_len]
         }
     }
@@ -218,7 +218,7 @@ fr fr ===== MILLER-RABIN PRIMALITY TESTING =====
 
 fr fr Enterprise-grade cryptographic prime generation
 slay generate_cryptographic_prime(bits drip) drip {
-    ready bits < 512 {
+    lowkey bits < 512 {
         vibez.spill("ERROR: Cryptographic primes must be at least 512 bits")
         damn 0
     }
@@ -228,12 +228,12 @@ slay generate_cryptographic_prime(bits drip) drip {
         sus candidate drip = generate_random_odd_candidate(bits)
         
         fr fr Test for obvious non-primes
-        ready is_obviously_composite(candidate) {
+        lowkey is_obviously_composite(candidate) {
             continue
         }
         
         fr fr Miller-Rabin primality test (20 rounds for cryptographic security)
-        ready miller_rabin_test(candidate, 20) {
+        lowkey miller_rabin_test(candidate, 20) {
             vibez.spill("Generated cryptographically secure " + 
                        string_from_number(bits) + "-bit prime")
             damn candidate
@@ -246,13 +246,13 @@ slay generate_cryptographic_prime(bits drip) drip {
 fr fr Miller-Rabin primality test (FIPS 186-4 compliant)
 slay miller_rabin_test(n drip, rounds drip) lit {
     fr fr Handle small cases
-    ready n < 2 {
+    lowkey n < 2 {
         damn cringe
     }
-    ready n == 2 || n == 3 {
+    lowkey n == 2 || n == 3 {
         damn based
     }
-    ready n % 2 == 0 {
+    lowkey n % 2 == 0 {
         damn cringe
     }
     
@@ -272,7 +272,7 @@ slay miller_rabin_test(n drip, rounds drip) lit {
         sus a drip = secure_random_range(2, n - 2)
         sus x drip = modular_exponentiation(a, d, n)
         
-        ready x == 1 || x == n_minus_1 {
+        lowkey x == 1 || x == n_minus_1 {
             round = round + 1
             continue
         }
@@ -281,14 +281,14 @@ slay miller_rabin_test(n drip, rounds drip) lit {
         sus i drip = 0
         bestie i < r - 1 {
             x = modular_exponentiation(x, 2, n)
-            ready x == n_minus_1 {
+            lowkey x == n_minus_1 {
                 is_composite = cringe
                 break
             }
             i = i + 1
         }
         
-        ready is_composite {
+        lowkey is_composite {
             damn cringe  fr fr Composite
         }
         
@@ -301,7 +301,7 @@ slay miller_rabin_test(n drip, rounds drip) lit {
 fr fr ===== CONSTANT-TIME COMPARISON FOR TIMING ATTACK RESISTANCE =====
 
 slay constant_time_compare_bytes(a drip[value], b drip[value]) lit {
-    ready len(a) != len(b) {
+    lowkey len(a) != len(b) {
         damn cringe
     }
     

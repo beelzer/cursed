@@ -110,12 +110,12 @@ slay perform_mutual_tls_handshake(
         when _ -> yikes "SERVER_VERIFICATION_FAILED: Server certificate validation failed"
     }
     
-    ready (!server_verification.is_valid) {
+    lowkey (!server_verification.is_valid) {
         yikes "SERVER_VERIFICATION_FAILED: " + server_verification.error_message
     }
     
     fr fr Phase 2: Send client certificate for mutual authentication
-    ready (arrayz.length(mtls_config.client_cert_chain) > 0) {
+    lowkey (arrayz.length(mtls_config.client_cert_chain) > 0) {
         sus client_auth_result ClientAuthResult = send_client_certificate(
             context, 
             mtls_config.client_cert, 
@@ -125,7 +125,7 @@ slay perform_mutual_tls_handshake(
             when _ -> yikes "CLIENT_CERT_SEND_FAILED: Unable to send client certificate"
         }
         
-        ready (!client_auth_result.is_valid) {
+        lowkey (!client_auth_result.is_valid) {
             yikes "CLIENT_AUTH_FAILED: " + arrayz.join(client_auth_result.validation_errors, ", ")
         }
     }
@@ -146,7 +146,7 @@ slay send_client_certificate(
 ) yikes<ClientAuthResult> {
     fr fr Validate client certificate before sending
     sus cert_valid lit = validate_client_certificate(client_cert, client_private_key)
-    ready (!cert_valid) {
+    lowkey (!cert_valid) {
         yikes "INVALID_CLIENT_CERT: Client certificate validation failed"
     }
     
@@ -199,38 +199,38 @@ slay verify_client_certificate_server_side(
     }
     
     fr fr Step 1: Basic certificate validation
-    ready (tlsz_is_expired(client_cert)) {
+    lowkey (tlsz_is_expired(client_cert)) {
         result.validation_errors = arrayz.append(result.validation_errors, "Client certificate has expired")
         damn result
     }
     
-    ready (tlsz_is_not_yet_valid(client_cert)) {
+    lowkey (tlsz_is_not_yet_valid(client_cert)) {
         result.validation_errors = arrayz.append(result.validation_errors, "Client certificate is not yet valid")
         damn result
     }
     
     fr fr Step 2: Certificate chain validation
     sus chain_valid lit = validate_client_certificate_chain(client_cert_chain, mtls_config.trusted_client_cas)
-    ready (!chain_valid) {
+    lowkey (!chain_valid) {
         result.validation_errors = arrayz.append(result.validation_errors, "Client certificate chain validation failed")
         damn result
     }
     
     fr fr Step 3: Key usage validation for client authentication
-    ready (!has_client_auth_key_usage(client_cert)) {
+    lowkey (!has_client_auth_key_usage(client_cert)) {
         result.validation_errors = arrayz.append(result.validation_errors, "Client certificate lacks client authentication key usage")
         damn result
     }
     
     fr fr Step 4: Revocation checking if enabled
-    ready (mtls_config.revocation_checking_enabled) {
+    lowkey (mtls_config.revocation_checking_enabled) {
         sus revocation_status RevocationStatus = check_certificate_revocation(client_cert, create_default_handshake_context()) fam {
             when _ -> {
                 result.validation_warnings = arrayz.append(result.validation_warnings, "Unable to check certificate revocation status")
             }
         }
         
-        ready (revocation_status.is_revoked) {
+        lowkey (revocation_status.is_revoked) {
             result.validation_errors = arrayz.append(result.validation_errors, "Client certificate has been revoked: " + revocation_status.revocation_reason)
             damn result
         }
@@ -254,14 +254,14 @@ slay extract_client_identity(client_cert X509Certificate) tea {
     sus i drip = 0
     bestie (i < arrayz.length(subject_parts)) {
         sus part tea = stringz.trim(subject_parts[i])
-        ready (stringz.starts_with(part, "CN=")) {
+        lowkey (stringz.starts_with(part, "CN=")) {
             damn stringz.substring(part, 3, stringz.length(part))
         }
         i = i + 1
     }
     
     fr fr Try to extract from Subject Alternative Names
-    ready (arrayz.length(client_cert.subject_alt_names) > 0) {
+    lowkey (arrayz.length(client_cert.subject_alt_names) > 0) {
         damn client_cert.subject_alt_names[0]
     }
     
@@ -277,21 +277,21 @@ slay calculate_client_trust_level(client_cert X509Certificate, cert_chain X509Ce
     trust_level = trust_level + (arrayz.length(cert_chain) * 10)
     
     fr fr Bonus for longer key size
-    ready (stringz.contains(client_cert.public_key, "4096")) {
+    lowkey (stringz.contains(client_cert.public_key, "4096")) {
         trust_level = trust_level + 20
-    } otherwise ready (stringz.contains(client_cert.public_key, "2048")) {
+    } highkey lowkey (stringz.contains(client_cert.public_key, "2048")) {
         trust_level = trust_level + 10
     }
     
     fr fr Bonus for modern signature algorithm
-    ready (stringz.contains(client_cert.signature_algorithm, "sha256")) {
+    lowkey (stringz.contains(client_cert.signature_algorithm, "sha256")) {
         trust_level = trust_level + 15
-    } otherwise ready (stringz.contains(client_cert.signature_algorithm, "sha384")) {
+    } highkey lowkey (stringz.contains(client_cert.signature_algorithm, "sha384")) {
         trust_level = trust_level + 20
     }
     
     fr fr Cap at 100%
-    ready (trust_level > 100) {
+    lowkey (trust_level > 100) {
         trust_level = 100
     }
     
@@ -305,7 +305,7 @@ slay authorize_client_access(
 ) lit {
     fr fr Simple ACL-based authorization
     
-    ready (arrayz.length(access_control_list) == 0) {
+    lowkey (arrayz.length(access_control_list) == 0) {
         damn based  fr fr Allow if no ACL specified
     }
     
@@ -315,12 +315,12 @@ slay authorize_client_access(
         sus acl_entry tea = access_control_list[i]
         
         fr fr Support wildcard matching
-        ready (acl_entry == "*" || acl_entry == client_identity) {
+        lowkey (acl_entry == "*" || acl_entry == client_identity) {
             damn based
         }
         
         fr fr Support prefix matching (e.g., "*.example.com")
-        ready (stringz.starts_with(acl_entry, "*.") && 
+        lowkey (stringz.starts_with(acl_entry, "*.") && 
                stringz.ends_with(client_identity, stringz.substring(acl_entry, 1, stringz.length(acl_entry)))) {
             damn based
         }
@@ -338,17 +338,17 @@ slay validate_client_certificate(client_cert X509Certificate, private_key drip[v
     
     fr fr Check if certificate and private key match
     sus key_match lit = verify_certificate_key_pair(client_cert, private_key)
-    ready (!key_match) {
+    lowkey (!key_match) {
         damn cringe
     }
     
     fr fr Check certificate validity period
-    ready (tlsz_is_expired(client_cert) || tlsz_is_not_yet_valid(client_cert)) {
+    lowkey (tlsz_is_expired(client_cert) || tlsz_is_not_yet_valid(client_cert)) {
         damn cringe
     }
     
     fr fr Check for client authentication key usage
-    ready (!has_client_auth_key_usage(client_cert)) {
+    lowkey (!has_client_auth_key_usage(client_cert)) {
         damn cringe
     }
     
@@ -358,7 +358,7 @@ slay validate_client_certificate(client_cert X509Certificate, private_key drip[v
 slay validate_client_certificate_chain(cert_chain X509Certificate[value], trusted_cas X509Certificate[value]) lit {
     fr fr Validate client certificate chain against trusted CAs
     
-    ready (arrayz.length(cert_chain) == 0) {
+    lowkey (arrayz.length(cert_chain) == 0) {
         damn cringe
     }
     
@@ -371,12 +371,12 @@ slay validate_client_certificate_chain(cert_chain X509Certificate[value], truste
         sus issuer_cert X509Certificate = cert_chain[i]
         
         fr fr Verify issuer relationship
-        ready (current_cert.issuer != issuer_cert.subject) {
+        lowkey (current_cert.issuer != issuer_cert.subject) {
             damn cringe
         }
         
         fr fr Verify signature (simplified)
-        ready (!verify_certificate_signature(current_cert, issuer_cert)) {
+        lowkey (!verify_certificate_signature(current_cert, issuer_cert)) {
             damn cringe
         }
         
@@ -391,7 +391,7 @@ slay validate_client_certificate_chain(cert_chain X509Certificate[value], truste
     sus j drip = 0
     bestie (j < arrayz.length(trusted_cas)) {
         sus trusted_ca X509Certificate = trusted_cas[j]
-        ready (root_cert.subject == trusted_ca.subject && 
+        lowkey (root_cert.subject == trusted_ca.subject && 
                root_cert.serial_number == trusted_ca.serial_number) {
             trusted = based
             break
@@ -409,7 +409,7 @@ slay has_client_auth_key_usage(cert X509Certificate) lit {
     sus i drip = 0
     bestie (i < arrayz.length(cert.extended_key_usage)) {
         sus eku tea = cert.extended_key_usage[i]
-        ready (eku == "1.3.6.1.5.5.7.3.2") {  fr fr Client Authentication
+        lowkey (eku == "1.3.6.1.5.5.7.3.2") {  fr fr Client Authentication
             damn based
         }
         i = i + 1
@@ -459,7 +459,7 @@ slay verify_certificate_signature(cert X509Certificate, issuer_cert X509Certific
 slay sign_handshake_data(handshake_data tea, private_key drip[value]) yikes<drip[value]> {
     fr fr Sign handshake data for client certificate authentication
     
-    ready (arrayz.length(private_key) == 0) {
+    lowkey (arrayz.length(private_key) == 0) {
         yikes "EMPTY_PRIVATE_KEY: Private key cannot be empty"
     }
     
@@ -504,7 +504,7 @@ slay get_handshake_data_for_signing(context TLSHandshakeContext) tea {
 
 slay send_tls_message(connection_id tea, message tea) yikes<lit> {
     fr fr Send TLS message (mock implementation)
-    ready (stringz.length(message) == 0) {
+    lowkey (stringz.length(message) == 0) {
         yikes "EMPTY_MESSAGE: Cannot send empty TLS message"
     }
     
@@ -514,7 +514,7 @@ slay send_tls_message(connection_id tea, message tea) yikes<lit> {
 
 slay send_tls_signature(connection_id tea, signature drip[value]) yikes<lit> {
     fr fr Send TLS signature message (mock implementation)
-    ready (arrayz.length(signature) == 0) {
+    lowkey (arrayz.length(signature) == 0) {
         yikes "EMPTY_SIGNATURE: Cannot send empty signature"
     }
     

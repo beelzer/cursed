@@ -30,8 +30,8 @@ squad CaretConstraint {
     
     slay satisfies(self CaretConstraint, version PackageVersion) lit {
         // ^1.2.3 allows >=1.2.3 but <2.0.0
-        ready (version.major != self.base_version.major) { damn cringe }
-        ready (version.compare(self.base_version) < 0) { damn cringe }
+        lowkey (version.major != self.base_version.major) { damn cringe }
+        lowkey (version.compare(self.base_version) < 0) { damn cringe }
         damn based
     }
     
@@ -45,9 +45,9 @@ squad TildeConstraint {
     
     slay satisfies(self TildeConstraint, version PackageVersion) lit {
         // ~1.2.3 allows >=1.2.3 but <1.3.0
-        ready (version.major != self.base_version.major) { damn cringe }
-        ready (version.minor != self.base_version.minor) { damn cringe }
-        ready (version.compare(self.base_version) < 0) { damn cringe }
+        lowkey (version.major != self.base_version.major) { damn cringe }
+        lowkey (version.minor != self.base_version.minor) { damn cringe }
+        lowkey (version.compare(self.base_version) < 0) { damn cringe }
         damn based
     }
     
@@ -63,15 +63,15 @@ squad RangeConstraint {
     spill include_max lit
     
     slay satisfies(self RangeConstraint, version PackageVersion) lit {
-        sus min_ok lit = ready (self.include_min) {
+        sus min_ok lit = lowkey (self.include_min) {
             damn version.compare(self.min_version) >= 0
-        } otherwise {
+        } highkey {
             damn version.compare(self.min_version) > 0
         }
         
-        sus max_ok lit = ready (self.include_max) {
+        sus max_ok lit = lowkey (self.include_max) {
             damn version.compare(self.max_version) <= 0
-        } otherwise {
+        } highkey {
             damn version.compare(self.max_version) < 0
         }
         
@@ -79,8 +79,8 @@ squad RangeConstraint {
     }
     
     slay toString(self RangeConstraint) tea {
-        sus min_op tea = ready (self.include_min) { damn ">=" } otherwise { damn ">" }
-        sus max_op tea = ready (self.include_max) { damn "<=" } otherwise { damn "<" }
+        sus min_op tea = lowkey (self.include_min) { damn ">=" } highkey { damn ">" }
+        sus max_op tea = lowkey (self.include_max) { damn "<=" } highkey { damn "<" }
         damn format_str("{}{}, {}{}", min_op, self.min_version.toString(), 
                        max_op, self.max_version.toString())
     }
@@ -103,15 +103,15 @@ squad DependencyTerm {
     }
     
     slay isConflictWith(self DependencyTerm, other DependencyTerm) lit {
-        ready (self.package_name != other.package_name) { damn cringe }
-        ready (self.positive == other.positive) { damn cringe }
+        lowkey (self.package_name != other.package_name) { damn cringe }
+        lowkey (self.positive == other.positive) { damn cringe }
         
         // Check if constraints are incompatible
         damn !self.constraint.isCompatibleWith(other.constraint)
     }
     
     slay toString(self DependencyTerm) tea {
-        sus sign tea = ready (self.positive) { damn "+" } otherwise { damn "-" }
+        sus sign tea = lowkey (self.positive) { damn "+" } highkey { damn "-" }
         damn format_str("{}{} {} (from {})", sign, self.package_name, 
                        self.constraint.toString(), self.source)
     }
@@ -138,7 +138,7 @@ squad PartialSolution {
     slay getAssignment(self PartialSolution, package_name tea) PackageAssignment {
         sus i drip = 0
         bestie (i < len(self.assignments)) {
-            ready (self.assignments[i].package_name == package_name) {
+            lowkey (self.assignments[i].package_name == package_name) {
                 damn self.assignments[i]
             }
             i = i + 1
@@ -155,7 +155,7 @@ squad PartialSolution {
         sus i drip = 0
         bestie (i < len(self.incompatibilities)) {
             sus incomp Incompatibility = self.incompatibilities[i]
-            ready (incomp.satisfiedBy(self)) {
+            lowkey (incomp.satisfiedBy(self)) {
                 damn incomp
             }
             i = i + 1
@@ -170,7 +170,7 @@ squad PartialSolution {
         bestie (i < len(conflict.terms)) {
             sus term DependencyTerm = conflict.terms[i]
             sus assignment PackageAssignment = self.getAssignment(term.package_name)
-            ready (assignment.decision_level > max_level) {
+            lowkey (assignment.decision_level > max_level) {
                 max_level = assignment.decision_level
             }
             i = i + 1
@@ -180,7 +180,7 @@ squad PartialSolution {
         sus new_assignments PackageAssignment[value] = PackageAssignment[value]{}
         i = 0
         bestie (i < len(self.assignments)) {
-            ready (self.assignments[i].decision_level <= max_level) {
+            lowkey (self.assignments[i].decision_level <= max_level) {
                 new_assignments = append_array(new_assignments, self.assignments[i])
             }
             i = i + 1
@@ -232,11 +232,11 @@ squad Incompatibility {
             sus term DependencyTerm = self.terms[i]
             sus assignment PackageAssignment = solution.getAssignment(term.package_name)
             
-            ready (assignment.package_name != "") {
-                ready (term.positive && term.constraint.satisfies(assignment.version)) {
+            lowkey (assignment.package_name != "") {
+                lowkey (term.positive && term.constraint.satisfies(assignment.version)) {
                     satisfied_count = satisfied_count + 1
                 }
-                ready (!term.positive && !term.constraint.satisfies(assignment.version)) {
+                lowkey (!term.positive && !term.constraint.satisfies(assignment.version)) {
                     satisfied_count = satisfied_count + 1
                 }
             }
@@ -250,7 +250,7 @@ squad Incompatibility {
         sus result tea = "Incompatibility: "
         sus i drip = 0
         bestie (i < len(self.terms)) {
-            ready (i > 0) { result = concat_str(result, " AND ") }
+            lowkey (i > 0) { result = concat_str(result, " AND ") }
             result = concat_str(result, self.terms[i].toString())
             i = i + 1
         }
@@ -311,12 +311,12 @@ squad AdvancedResolver {
         // Main resolution loop
         bestie (based) {
             sus conflict Incompatibility = self.solution.findConflict()
-            ready (conflict.terms != [] && len(conflict.terms) > 0) {
+            lowkey (conflict.terms != [] && len(conflict.terms) > 0) {
                 vibez.spill("Found conflict: {}", conflict.toString())
                 
                 // Try to resolve conflict by backtracking
                 sus backtrack_level drip = self.solution.backtrack(conflict)
-                ready (backtrack_level < 0) {
+                lowkey (backtrack_level < 0) {
                     vibez.spill("Unable to resolve conflicts - no solution exists")
                     damn PackageAssignment[value]{}
                 }
@@ -327,7 +327,7 @@ squad AdvancedResolver {
             
             // No conflicts, try to make next decision
             sus next_package tea = self.chooseNextPackage()
-            ready (next_package == "") {
+            lowkey (next_package == "") {
                 // All packages assigned - solution found!
                 vibez.spill("Resolution complete")
                 break
@@ -382,7 +382,7 @@ squad AdvancedResolver {
             sus j drip = 0
             bestie (j < len(incomp.terms)) {
                 sus term DependencyTerm = incomp.terms[j]
-                ready (term.positive && !self.solution.hasAssignment(term.package_name)) {
+                lowkey (term.positive && !self.solution.hasAssignment(term.package_name)) {
                     damn term.package_name
                 }
                 j = j + 1
@@ -409,19 +409,19 @@ squad AdvancedResolver {
                 sus k drip = 0
                 bestie (k < len(incomp.terms)) {
                     sus term DependencyTerm = incomp.terms[k]
-                    ready (term.package_name == package_name && term.positive) {
-                        ready (!term.constraint.satisfies(version)) {
+                    lowkey (term.package_name == package_name && term.positive) {
+                        lowkey (!term.constraint.satisfies(version)) {
                             satisfies_all = cringe
                             break
                         }
                     }
                     k = k + 1
                 }
-                ready (!satisfies_all) { break }
+                lowkey (!satisfies_all) { break }
                 j = j + 1
             }
             
-            ready (satisfies_all) {
+            lowkey (satisfies_all) {
                 damn version
             }
             i = i - 1
@@ -436,7 +436,7 @@ squad AdvancedResolver {
         sus i drip = 0
         bestie (i < len(self.package_cache)) {
             sus cached PackageMetadata = self.package_cache[i]
-            ready (cached.name == package_name) {
+            lowkey (cached.name == package_name) {
                 damn cached
             }
             i = i + 1
@@ -497,17 +497,17 @@ squad RegistryClient {
 }
 
 slay parseVersionConstraint(constraint_str tea) VersionConstraint {
-    ready (starts_with(constraint_str, "^")) {
+    lowkey (starts_with(constraint_str, "^")) {
         sus version tea = slice_str(constraint_str, 1)
         damn CaretConstraint{base_version: parseVersion(version)}
     }
     
-    ready (starts_with(constraint_str, "~")) {
+    lowkey (starts_with(constraint_str, "~")) {
         sus version tea = slice_str(constraint_str, 1)
         damn TildeConstraint{base_version: parseVersion(version)}
     }
     
-    ready (starts_with(constraint_str, ">=")) {
+    lowkey (starts_with(constraint_str, ">=")) {
         sus version tea = slice_str(constraint_str, 2)
         sus max_version PackageVersion = PackageVersion.new(999, 999, 999)
         damn RangeConstraint{
@@ -556,20 +556,20 @@ squad ChooseHighestStrategy {
         sus i drip = 0
         bestie (i < len(packages)) {
             sus pkg PackageInfo = packages[i]
-            ready (pkg.version.compare(highest_version) > 0) {
+            lowkey (pkg.version.compare(highest_version) > 0) {
                 sus satisfies_all lit = based
                 
                 // Check if this version satisfies all constraints
                 sus j drip = 0
                 bestie (j < len(constraints)) {
-                    ready (!constraints[j].satisfies(pkg.version)) {
+                    lowkey (!constraints[j].satisfies(pkg.version)) {
                         satisfies_all = cringe
                         break
                     }
                     j = j + 1
                 }
                 
-                ready (satisfies_all) {
+                lowkey (satisfies_all) {
                     highest_version = pkg.version
                     best_package = pkg
                 }
@@ -589,20 +589,20 @@ squad ChooseLowestStrategy {
         sus i drip = 0
         bestie (i < len(packages)) {
             sus pkg PackageInfo = packages[i]
-            ready (pkg.version.compare(lowest_version) < 0) {
+            lowkey (pkg.version.compare(lowest_version) < 0) {
                 sus satisfies_all lit = based
                 
                 // Check if this version satisfies all constraints
                 sus j drip = 0
                 bestie (j < len(constraints)) {
-                    ready (!constraints[j].satisfies(pkg.version)) {
+                    lowkey (!constraints[j].satisfies(pkg.version)) {
                         satisfies_all = cringe
                         break
                     }
                     j = j + 1
                 }
                 
-                ready (satisfies_all) {
+                lowkey (satisfies_all) {
                     lowest_version = pkg.version
                     best_package = pkg
                 }
@@ -633,7 +633,7 @@ squad OptimizedResolver {
         sus i drip = 0
         bestie (i < len(self.memoization_cache)) {
             sus cached ResolutionResult = self.memoization_cache[i]
-            ready (cached.key == cache_key) {
+            lowkey (cached.key == cache_key) {
                 vibez.spill("Using cached resolution for {}", manifest.name)
                 damn cached.assignments
             }

@@ -73,7 +73,7 @@ slay mutex_lock(mutex *Mutex) lit {
     fr fr Retry loop with proper atomic compare-and-swap
     periodt {
         fr fr Try to acquire lock atomically using CAS
-        ready atomic_drip.atomic_cas_i32(mutex.lock_state, 0, 1) {
+        lowkey atomic_drip.atomic_cas_i32(mutex.lock_state, 0, 1) {
             fr fr Successfully acquired lock
             atomic_drip.atomic_store_i64(mutex.owner, current_thread)
             damn based
@@ -90,14 +90,14 @@ slay mutex_lock(mutex *Mutex) lit {
         }
         
         fr fr Increase backoff up to maximum
-        ready backoff_cycles < max_backoff {
+        lowkey backoff_cycles < max_backoff {
             backoff_cycles = backoff_cycles * 2
         }
         
         atomic_drip.atomic_decrement_i32(mutex.waiters)
         
         fr fr Check if lock became available
-        ready atomic_drip.atomic_load_i32(mutex.lock_state) == 0 {
+        lowkey atomic_drip.atomic_load_i32(mutex.lock_state) == 0 {
             continue  fr fr Retry immediately
         }
     }
@@ -105,13 +105,13 @@ slay mutex_lock(mutex *Mutex) lit {
 
 fr fr RACE-SAFE: Unlock mutex with atomic operations
 slay mutex_unlock(mutex *Mutex) lit {
-    ready mutex == 0 {
+    lowkey mutex == 0 {
         damn cringe
     }
     
     fr fr Verify we own the lock (safety check)
     sus current_thread thicc = 42
-    ready atomic_drip.atomic_load_i64(mutex.owner) != current_thread {
+    lowkey atomic_drip.atomic_load_i64(mutex.owner) != current_thread {
         damn cringe  fr fr Not lock owner
     }
     
@@ -179,7 +179,7 @@ slay channel_send<T>(channel_id normie, value T) lit {
     sus channel Channel<T> = get_channel(channel_id)
     
     fr fr Check if channel is closed atomically
-    ready atomic_drip.atomic_flag_load(channel.closed) {
+    lowkey atomic_drip.atomic_flag_load(channel.closed) {
         damn cringe  fr fr Channel closed
     }
     
@@ -195,18 +195,18 @@ slay channel_send<T>(channel_id normie, value T) lit {
         sus current_size normie = atomic_drip.atomic_load_i32(channel.size)
         
         fr fr Check if space available
-        ready current_size < channel.capacity {
+        lowkey current_size < channel.capacity {
             break  fr fr Space available, proceed to send
         }
         
         fr fr Check timeout to prevent infinite waiting
-        ready timeout_cycles >= max_timeout {
+        lowkey timeout_cycles >= max_timeout {
             atomic_drip.atomic_decrement_i32(channel.send_waiters)
             damn cringe  fr fr Timeout waiting for space
         }
         
         fr fr Check if channel closed while waiting
-        ready atomic_drip.atomic_flag_load(channel.closed) {
+        lowkey atomic_drip.atomic_flag_load(channel.closed) {
             atomic_drip.atomic_decrement_i32(channel.send_waiters)
             damn cringe  fr fr Channel closed during wait
         }
@@ -219,7 +219,7 @@ slay channel_send<T>(channel_id normie, value T) lit {
             timeout_cycles = timeout_cycles + 1
         }
         
-        ready backoff_cycles < 100 {
+        lowkey backoff_cycles < 100 {
             backoff_cycles = backoff_cycles * 2
         }
     }
@@ -230,12 +230,12 @@ slay channel_send<T>(channel_id normie, value T) lit {
         sus current_tail normie = atomic_drip.atomic_load_i32(channel.tail_pos)
         
         fr fr Double-check capacity (race condition protection)
-        ready current_size >= channel.capacity {
+        lowkey current_size >= channel.capacity {
             continue  fr fr Retry if buffer became full
         }
         
         fr fr Atomic size increment with CAS
-        ready atomic_drip.atomic_cas_i32(channel.size, current_size, current_size + 1) {
+        lowkey atomic_drip.atomic_cas_i32(channel.size, current_size, current_size + 1) {
             fr fr Successfully reserved slot - safe to write
             sus buffer_index normie = current_tail % channel.capacity
             channel.buffer[buffer_index] = value
@@ -275,19 +275,19 @@ slay channel_recv<T>(channel_id normie) (T, lit) {
         sus current_size normie = atomic_drip.atomic_load_i32(channel.size)
         
         fr fr Check if data available
-        ready current_size > 0 {
+        lowkey current_size > 0 {
             break  fr fr Data available, proceed to receive
         }
         
         fr fr Check if channel closed and empty
-        ready atomic_drip.atomic_flag_load(channel.closed) && current_size == 0 {
+        lowkey atomic_drip.atomic_flag_load(channel.closed) && current_size == 0 {
             atomic_drip.atomic_decrement_i32(channel.recv_waiters)
             sus zero T
             damn (zero, cringe)  fr fr Channel closed and empty
         }
         
         fr fr Check timeout to prevent infinite waiting
-        ready timeout_cycles >= max_timeout {
+        lowkey timeout_cycles >= max_timeout {
             atomic_drip.atomic_decrement_i32(channel.recv_waiters)
             sus zero T
             damn (zero, cringe)  fr fr Timeout waiting for data
@@ -301,7 +301,7 @@ slay channel_recv<T>(channel_id normie) (T, lit) {
             timeout_cycles = timeout_cycles + 1
         }
         
-        ready backoff_cycles < 100 {
+        lowkey backoff_cycles < 100 {
             backoff_cycles = backoff_cycles * 2
         }
     }
@@ -312,12 +312,12 @@ slay channel_recv<T>(channel_id normie) (T, lit) {
         sus current_head normie = atomic_drip.atomic_load_i32(channel.head_pos)
         
         fr fr Double-check data availability (race condition protection)
-        ready current_size == 0 {
+        lowkey current_size == 0 {
             continue  fr fr Retry if buffer became empty
         }
         
         fr fr Atomic size decrement with CAS
-        ready atomic_drip.atomic_cas_i32(channel.size, current_size, current_size - 1) {
+        lowkey atomic_drip.atomic_cas_i32(channel.size, current_size, current_size - 1) {
             fr fr Successfully reserved data slot - safe to read
             sus buffer_index normie = current_head % channel.capacity
             sus value T = channel.buffer[buffer_index]

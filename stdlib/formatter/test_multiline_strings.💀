@@ -103,7 +103,7 @@ slay test_multiline_string_tokenizer() {
     sus string_token_found lit = cringe
     sus i drip = 0
     bestie (i < len(ctx.tokens)) {
-        ready (ctx.tokens[i].type == "MULTILINE_STRING" || ctx.tokens[i].type == "STRING") {
+        lowkey (ctx.tokens[i].type == "MULTILINE_STRING" || ctx.tokens[i].type == "STRING") {
             string_token_found = based
             vibez.spill("Found string token type: " + ctx.tokens[i].type)
             vibez.spill("String content: " + ctx.tokens[i].value)
@@ -129,7 +129,7 @@ slay test_escaped_characters_in_multiline_string() {
     fr fr Find string token and verify escapes are preserved
     sus i drip = 0
     bestie (i < len(ctx.tokens)) {
-        ready (ctx.tokens[i].type == "STRING" || ctx.tokens[i].type == "MULTILINE_STRING") {
+        lowkey (ctx.tokens[i].type == "STRING" || ctx.tokens[i].type == "MULTILINE_STRING") {
             sus content tea = ctx.tokens[i].value
             
             fr fr Escape sequences must be preserved exactly

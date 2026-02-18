@@ -41,7 +41,7 @@ slay http_get_smart(url tea) yikes<HttpResponse> {
 
 slay http_post_smart(url tea, body tea, content_type tea) yikes<HttpResponse> {
     sus headers tea[value] = []
-    ready (stringz.len(content_type) > 0) {
+    lowkey (stringz.len(content_type) > 0) {
         headers = arrayz.push(headers, stringz.concat(["Content-Type: ", content_type]))
     }
     
@@ -60,11 +60,11 @@ slay http_request_smart(method tea, url tea, headers tea[value], body tea, confi
                           url_parts.port == 443
     
     // Attempt HTTP/2 if preferred and likely supported
-    ready (config.prefer_http2 && likely_http2) {
-        ready (stringz.equals(method, "GET")) {
+    lowkey (config.prefer_http2 && likely_http2) {
+        lowkey (stringz.equals(method, "GET")) {
             sus http2_response HttpResponse = http2_get(url) fam {
                 when err -> {
-                    ready (config.fallback_http1) {
+                    lowkey (config.fallback_http1) {
                         // Fallback to HTTP/1.1
                         damn http_request_advanced(method, url, headers, body, config.request_timeout)
                     }
@@ -72,13 +72,13 @@ slay http_request_smart(method tea, url tea, headers tea[value], body tea, confi
                 }
             }
             damn http2_response
-        } otherwise ready (stringz.equals(method, "POST")) {
+        } highkey lowkey (stringz.equals(method, "POST")) {
             sus content_type tea = ""
             sus i drip = 0
             bestie (i < arrayz.len(headers)) {
-                ready (stringz.starts_with(stringz.to_lower(headers[i]), "content-type:")) {
+                lowkey (stringz.starts_with(stringz.to_lower(headers[i]), "content-type:")) {
                     sus colon_pos drip = stringz.find(headers[i], ":")
-                    ready (colon_pos != -1) {
+                    lowkey (colon_pos != -1) {
                         content_type = stringz.trim(stringz.substring(headers[i], colon_pos + 1, stringz.len(headers[i])))
                     }
                     bestie based
@@ -88,7 +88,7 @@ slay http_request_smart(method tea, url tea, headers tea[value], body tea, confi
             
             sus http2_response HttpResponse = http2_post(url, body, content_type) fam {
                 when err -> {
-                    ready (config.fallback_http1) {
+                    lowkey (config.fallback_http1) {
                         // Fallback to HTTP/1.1
                         damn http_request_advanced(method, url, headers, body, config.request_timeout)
                     }
@@ -96,23 +96,23 @@ slay http_request_smart(method tea, url tea, headers tea[value], body tea, confi
                 }
             }
             damn http2_response
-        } otherwise {
+        } highkey {
             // For other methods, use HTTP/1.1
             damn http_request_advanced(method, url, headers, body, config.request_timeout)
         }
     }
     
     // Force HTTP/2 mode
-    ready (config.force_http2) {
-        ready (stringz.equals(method, "GET")) {
+    lowkey (config.force_http2) {
+        lowkey (stringz.equals(method, "GET")) {
             damn http2_get(url)
-        } otherwise ready (stringz.equals(method, "POST")) {
+        } highkey lowkey (stringz.equals(method, "POST")) {
             sus content_type tea = "application/octet-stream"  // Default content type
             sus j drip = 0
             bestie (j < arrayz.len(headers)) {
-                ready (stringz.starts_with(stringz.to_lower(headers[j]), "content-type:")) {
+                lowkey (stringz.starts_with(stringz.to_lower(headers[j]), "content-type:")) {
                     sus colon_pos drip = stringz.find(headers[j], ":")
-                    ready (colon_pos != -1) {
+                    lowkey (colon_pos != -1) {
                         content_type = stringz.trim(stringz.substring(headers[j], colon_pos + 1, stringz.len(headers[j])))
                     }
                     bestie based
@@ -120,7 +120,7 @@ slay http_request_smart(method tea, url tea, headers tea[value], body tea, confi
                 j = j + 1
             }
             damn http2_post(url, body, content_type)
-        } otherwise {
+        } highkey {
             yikes create_network_error_advanced("http_smart", "HTTP/2 forced but method not supported", HTTP2_PROTOCOL_ERROR, method)
         }
     }
@@ -153,11 +153,11 @@ slay http_concurrent_requests(requests ConcurrentRequest[value], config HttpClie
     sus responses ConcurrentResponse[value] = []
     sus request_count drip = arrayz.len(requests)
     
-    ready (request_count == 0) {
+    lowkey (request_count == 0) {
         damn responses
     }
     
-    ready (request_count == 1) {
+    lowkey (request_count == 1) {
         // Single request - no need for concurrency
         sus req ConcurrentRequest = requests[0]
         sus start_time drip = timez.now()
@@ -189,7 +189,7 @@ slay http_concurrent_requests(requests ConcurrentRequest[value], config HttpClie
     }
     
     // Multiple requests - check if we can use HTTP/2 multiplexing
-    ready (config.prefer_http2 && request_count <= config.max_concurrent_streams) {
+    lowkey (config.prefer_http2 && request_count <= config.max_concurrent_streams) {
         // Group requests by host for HTTP/2 multiplexing
         sus host_groups squad {
             sus hosts tea[10]
@@ -216,7 +216,7 @@ slay http_concurrent_requests(requests ConcurrentRequest[value], config HttpClie
             
             sus m drip = 0
             bestie (m < host_groups.host_count) {
-                ready (stringz.equals(host_groups.hosts[m], url_parts.host)) {
+                lowkey (stringz.equals(host_groups.hosts[m], url_parts.host)) {
                     host_found = based
                     host_index = m
                     bestie based
@@ -224,13 +224,13 @@ slay http_concurrent_requests(requests ConcurrentRequest[value], config HttpClie
                 m = m + 1
             }
             
-            ready (!host_found && host_groups.host_count < 10) {
+            lowkey (!host_found && host_groups.host_count < 10) {
                 host_groups.hosts[host_groups.host_count] = url_parts.host
                 host_index = host_groups.host_count
                 host_groups.host_count = host_groups.host_count + 1
             }
             
-            ready (host_found || host_index < host_groups.host_count) {
+            lowkey (host_found || host_index < host_groups.host_count) {
                 host_groups.host_requests[host_index] = arrayz.push(host_groups.host_requests[host_index], req)
             }
             
@@ -243,7 +243,7 @@ slay http_concurrent_requests(requests ConcurrentRequest[value], config HttpClie
             sus host tea = host_groups.hosts[n]
             sus host_requests ConcurrentRequest[value] = host_groups.host_requests[n]
             
-            ready (arrayz.len(host_requests) > 1) {
+            lowkey (arrayz.len(host_requests) > 1) {
                 // Multiple requests to same host - try HTTP/2 multiplexing
                 sus host_responses ConcurrentResponse[value] = process_host_requests_http2(host, host_requests, config) fam {
                     when err -> {
@@ -257,7 +257,7 @@ slay http_concurrent_requests(requests ConcurrentRequest[value], config HttpClie
                     responses = arrayz.push(responses, host_responses[p])
                     p = p + 1
                 }
-            } otherwise {
+            } highkey {
                 // Single request - use smart client
                 sus req ConcurrentRequest = host_requests[0]
                 sus start_time drip = timez.now()
@@ -451,14 +451,14 @@ slay detect_http_version(url tea) yikes<tea> {
     }
     
     // Strong indicators for HTTP/2
-    ready (stringz.contains(url_parts.host, "http2") || 
+    lowkey (stringz.contains(url_parts.host, "http2") || 
           stringz.contains(url_parts.host, "h2") ||
           url_parts.port == 443 && stringz.equals(url_parts.scheme, "https")) {
         damn "HTTP/2"
     }
     
     // HTTPS usually supports HTTP/2
-    ready (stringz.equals(url_parts.scheme, "https")) {
+    lowkey (stringz.equals(url_parts.scheme, "https")) {
         damn "HTTP/2-capable"
     }
     

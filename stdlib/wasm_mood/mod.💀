@@ -71,7 +71,7 @@ slay wasm_compile_with_optimization(source tea, opt_level normie, features normi
     sus module_id normie = wasm_module_counter
     wasm_module_counter = wasm_module_counter + 1
     wasm_compilation_features = features fr fr Apply optimization based on level
-    ready opt_level {
+    lowkey opt_level {
         WASM_OPT_SIZE -> { fr fr Apply size optimization
             wasm_apply_size_optimization(module_id)
         }
@@ -307,7 +307,7 @@ fr fr Advanced WASM features and enhanced capabilities
 
 fr fr Check feature support
 slay wasm_is_feature_supported(feature normie) lit {
-    ready feature {
+    lowkey feature {
         WASM_FEATURE_SIMD -> {
             damn based fr fr SIMD support available
         }
@@ -338,7 +338,7 @@ slay wasm_validate_module_advanced(module normie, validation_level normie) normi
         damn 0 fr fr Invalid module
     }
     
-    ready validation_level {
+    lowkey validation_level {
         WASM_VALIDATION_SECURITY -> {
             wasm_validate_security(module)
         }

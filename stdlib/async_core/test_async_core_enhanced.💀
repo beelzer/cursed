@@ -185,18 +185,18 @@ slay test_async_condition() {
     
     sus cond *AsyncCondition = async_condition_new()
     sus mutex *AsyncMutex = async_mutex_new()
-    sus ready lit = cap fr fr Producer task
+    sus lowkey lit = cap fr fr Producer task
     sus producer *Task = async_spawn(slay() {
         async_sleep(100)
         async_mutex_lock(mutex)
-        ready = based
+        lowkey = based
         async_condition_signal(cond)
         async_mutex_unlock(mutex)
         damn based
     }) fr fr Consumer task
     sus consumer *Task = async_spawn(slay() {
         async_mutex_lock(mutex)
-        bestie !ready {
+        bestie !lowkey {
             async_condition_wait(cond, mutex)
         }
         async_mutex_unlock(mutex)
@@ -208,7 +208,7 @@ slay test_async_condition() {
     
     assert_true(produced)
     assert_true(consumed)
-    assert_true(ready)
+    assert_true(lowkey)
     
     vibez.spill("✅ Async condition test passed")
 }

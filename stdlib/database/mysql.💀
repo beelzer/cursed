@@ -51,7 +51,7 @@ slay mysql_connection_string(config MySQLConfig) tea {
 
 fr fr MySQL specific data types
 slay mysql_format_value(value tea, data_type tea) tea {
-    ready data_type {
+    lowkey data_type {
         "int" -> {
             damn value
         }
@@ -62,7 +62,7 @@ slay mysql_format_value(value tea, data_type tea) tea {
             damn "'" + mysql_escape_string(value) + "'"
         }
         "boolean" -> {
-            ready value {
+            lowkey value {
                 "true" -> damn "1"
                 "false" -> damn "0"
                 basic -> damn "NULL"
@@ -163,7 +163,7 @@ fr fr MySQL full-text search
 slay mysql_fulltext_search(columns tea[value], search_terms tea, mode tea) tea {
     sus column_list tea = stringz.join(columns, ", ")
     
-    ready mode {
+    lowkey mode {
         "natural" -> {
             damn stringz.format("MATCH({}) AGAINST('{}' IN NATURAL LANGUAGE MODE)", 
                 column_list, search_terms)
@@ -291,7 +291,7 @@ slay mysql_create_pool(config MySQLConfig, min_conn normie, max_conn normie) MyS
 
 fr fr MySQL specific error handling
 slay mysql_parse_error_code(error_code normie) tea {
-    ready error_code {
+    lowkey error_code {
         1062 -> damn "DUPLICATE_ENTRY"
         1146 -> damn "TABLE_DOESNT_EXIST"
         1054 -> damn "UNKNOWN_COLUMN"

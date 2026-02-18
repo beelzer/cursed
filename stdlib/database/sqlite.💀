@@ -71,7 +71,7 @@ slay sqlite_set_cache_size(size normie) tea {
 
 fr fr SQLite specific data types
 slay sqlite_format_value(value tea, data_type tea) tea {
-    ready data_type {
+    lowkey data_type {
         "integer" -> {
             damn value
         }
@@ -85,7 +85,7 @@ slay sqlite_format_value(value tea, data_type tea) tea {
             damn "X'" + value + "'" fr fr Hex literal
         }
         "boolean" -> {
-            ready value {
+            lowkey value {
                 "true" -> damn "1"
                 "false" -> damn "0"
                 basic -> damn "NULL"
@@ -251,7 +251,7 @@ slay sqlite_date_add(date_value tea, interval tea, unit tea) tea {
 }
 
 slay sqlite_date_diff(date1 tea, date2 tea, unit tea) tea {
-    ready unit {
+    lowkey unit {
         "days" -> {
             damn stringz.format("julianday({}) - julianday({})", date1, date2)
         }
@@ -320,7 +320,7 @@ slay sqlite_create_pool(config SQLiteConfig, max_conn normie) SQLitePool {
 
 fr fr SQLite error handling
 slay sqlite_parse_error(error_message tea) tea {
-    ready {
+    lowkey {
         stringz.contains(error_message, "UNIQUE constraint") -> {
             damn "UNIQUE_CONSTRAINT_ERROR"
         }

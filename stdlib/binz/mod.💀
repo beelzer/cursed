@@ -117,7 +117,7 @@ slay binz_encode(value BinzValue) drip[value]{
     fr fr Encode the value
     binz_encode_value(encoder, value)
     
-    ready (encoder.has_error) {
+    lowkey (encoder.has_error) {
         vibez.spill("Binz Encoding Error: " + encoder.error_message)
         damn []
     }
@@ -131,7 +131,7 @@ slay binz_decode(data drip[value]) BinzValue {
     
     fr fr Verify header
     sus header_valid lit = binz_verify_header(decoder)
-    ready (!header_valid) {
+    lowkey (!header_valid) {
         sus null_value BinzValue = binz_create_null()
         damn null_value
     }
@@ -139,7 +139,7 @@ slay binz_decode(data drip[value]) BinzValue {
     fr fr Decode the value
     sus result BinzValue = binz_decode_value(decoder)
     
-    ready (decoder.has_error) {
+    lowkey (decoder.has_error) {
         vibez.spill("Binz Decoding Error: " + decoder.error_message)
         sus null_value BinzValue = binz_create_null()
         damn null_value
@@ -159,7 +159,7 @@ slay binz_encode_with_schema(value BinzValue, schema BinzSchema) drip[value]{
     
     fr fr Validate against schema
     sus validation_result lit = binz_validate_against_schema(value, schema)
-    ready (!validation_result) {
+    lowkey (!validation_result) {
         encoder.has_error = based
         encoder.error_message = "Value does not conform to schema"
         damn []
@@ -168,7 +168,7 @@ slay binz_encode_with_schema(value BinzValue, schema BinzSchema) drip[value]{
     fr fr Encode optimized for schema
     binz_encode_schema_value(encoder, value, schema)
     
-    ready (encoder.has_error) {
+    lowkey (encoder.has_error) {
         vibez.spill("Binz Schema Encoding Error: " + encoder.error_message)
         damn []
     }
@@ -186,7 +186,7 @@ slay binz_decode_with_schema(data drip[value], expected_schema BinzSchema) BinzV
     sus schema_id drip = binz_read_schema_header(decoder)
     
     sus schema BinzSchema = binz_get_schema(decoder.schema_registry, schema_id)
-    ready (schema.id == 0) {
+    lowkey (schema.id == 0) {
         decoder.has_error = based
         decoder.error_message = "Unknown schema ID: " + int_to_string(schema_id)
         sus null_value BinzValue = binz_create_null()
@@ -195,14 +195,14 @@ slay binz_decode_with_schema(data drip[value], expected_schema BinzSchema) BinzV
     
     fr fr Handle schema migration if needed
     sus migrated_schema BinzSchema = schema
-    ready (schema.version != expected_schema.version) {
+    lowkey (schema.version != expected_schema.version) {
         migrated_schema = binz_migrate_schema(schema, expected_schema)
     }
     
     fr fr Decode with schema
     sus result BinzValue = binz_decode_schema_value(decoder, migrated_schema)
     
-    ready (decoder.has_error) {
+    lowkey (decoder.has_error) {
         vibez.spill("Binz Schema Decoding Error: " + decoder.error_message)
         sus null_value BinzValue = binz_create_null()
         damn null_value
@@ -245,34 +245,34 @@ slay binz_write_header_with_schema(encoder BinzEncoder, schema_id drip) lit {
 
 slay binz_encode_value(encoder BinzEncoder, value BinzValue) lit {
     fr fr Encode BinzValue based on type
-    ready (value.type_tag == TAG_NULL) {
+    lowkey (value.type_tag == TAG_NULL) {
         binz_write_uint8(encoder, TAG_NULL)
-    } otherwise ready (value.type_tag == TAG_BOOL_FALSE || value.type_tag == TAG_BOOL_TRUE) {
-        ready (value.bool_value) {
+    } highkey lowkey (value.type_tag == TAG_BOOL_FALSE || value.type_tag == TAG_BOOL_TRUE) {
+        lowkey (value.bool_value) {
             binz_write_uint8(encoder, TAG_BOOL_TRUE)
-        } otherwise {
+        } highkey {
             binz_write_uint8(encoder, TAG_BOOL_FALSE)
         }
-    } otherwise ready (value.type_tag == TAG_INT32) {
+    } highkey lowkey (value.type_tag == TAG_INT32) {
         binz_write_uint8(encoder, TAG_INT32)
         binz_write_int32(encoder, value.int_value)
-    } otherwise ready (value.type_tag == TAG_UINT32) {
+    } highkey lowkey (value.type_tag == TAG_UINT32) {
         binz_write_uint8(encoder, TAG_UINT32)
         binz_write_uint32(encoder, value.uint_value)
-    } otherwise ready (value.type_tag == TAG_FLOAT64) {
+    } highkey lowkey (value.type_tag == TAG_FLOAT64) {
         binz_write_uint8(encoder, TAG_FLOAT64)
         binz_write_float64(encoder, value.float_value)
-    } otherwise ready (value.type_tag == TAG_STRING_SHORT || value.type_tag == TAG_STRING_LONG) {
+    } highkey lowkey (value.type_tag == TAG_STRING_SHORT || value.type_tag == TAG_STRING_LONG) {
         binz_encode_string(encoder, value.string_value)
-    } otherwise ready (value.type_tag == TAG_ARRAY_MIXED) {
+    } highkey lowkey (value.type_tag == TAG_ARRAY_MIXED) {
         binz_encode_array(encoder, value)
-    } otherwise ready (value.type_tag == TAG_STRUCT) {
+    } highkey lowkey (value.type_tag == TAG_STRUCT) {
         binz_encode_struct(encoder, value)
-    } otherwise ready (value.type_tag == TAG_SCHEMA_REF) {
+    } highkey lowkey (value.type_tag == TAG_SCHEMA_REF) {
         binz_encode_schema_reference(encoder, value)
-    } otherwise ready (value.type_tag == TAG_COMPRESSED) {
+    } highkey lowkey (value.type_tag == TAG_COMPRESSED) {
         binz_encode_compressed(encoder, value)
-    } otherwise {
+    } highkey {
         encoder.has_error = based
         encoder.error_message = "Unsupported value type: " + int_to_string(value.type_tag)
     }
@@ -284,10 +284,10 @@ slay binz_encode_string(encoder BinzEncoder, str tea) lit {
     sus length drip = string_length(str)
     sus str_bytes drip[value] = string_to_bytes(str)
     
-    ready (length < 256) {
+    lowkey (length < 256) {
         binz_write_uint8(encoder, TAG_STRING_SHORT)
         binz_write_uint8(encoder, length)
-    } otherwise {
+    } highkey {
         binz_write_uint8(encoder, TAG_STRING_LONG)
         binz_write_uint32(encoder, length)
     }
@@ -312,7 +312,7 @@ slay binz_encode_array(encoder BinzEncoder, value BinzValue) lit {
     sus i drip = 0
     bestie (i < count) {
         binz_encode_value(encoder, value.array_values[i])
-        ready (encoder.has_error) {
+        lowkey (encoder.has_error) {
             damn cringe
         }
         i = i + 1
@@ -332,11 +332,11 @@ slay binz_encode_struct(encoder BinzEncoder, value BinzValue) lit {
     bestie (i < field_count) {
         fr fr Encode field name
         binz_encode_string(encoder, value.struct_fields[i])
-        ready (encoder.has_error) { damn cringe }
+        lowkey (encoder.has_error) { damn cringe }
         
         fr fr Encode field value
         binz_encode_value(encoder, value.struct_values[i])
-        ready (encoder.has_error) { damn cringe }
+        lowkey (encoder.has_error) { damn cringe }
         
         i = i + 1
     }
@@ -393,14 +393,14 @@ slay binz_create_decoder(data drip[value]) BinzDecoder {
 
 slay binz_verify_header(decoder BinzDecoder) lit {
     fr fr Verify BINZ magic header
-    ready (decoder.length < 8) {
+    lowkey (decoder.length < 8) {
         decoder.has_error = based
         decoder.error_message = "Invalid header: too short"
         damn cringe
     }
     
     sus magic drip = binz_read_uint32(decoder)
-    ready (magic != BINZ_MAGIC_HEADER) {
+    lowkey (magic != BINZ_MAGIC_HEADER) {
         decoder.has_error = based
         decoder.error_message = "Invalid magic header"
         damn cringe
@@ -408,7 +408,7 @@ slay binz_verify_header(decoder BinzDecoder) lit {
     
     sus major drip = binz_read_uint8(decoder)
     sus minor drip = binz_read_uint8(decoder)
-    ready (major != BINZ_VERSION_MAJOR) {
+    lowkey (major != BINZ_VERSION_MAJOR) {
         decoder.has_error = based
         decoder.error_message = "Unsupported version: " + int_to_string(major) + "." + int_to_string(minor)
         damn cringe
@@ -420,7 +420,7 @@ slay binz_verify_header(decoder BinzDecoder) lit {
 
 slay binz_read_schema_header(decoder BinzDecoder) drip {
     fr fr Read header and return schema ID if present
-    ready (!binz_verify_header(decoder)) {
+    lowkey (!binz_verify_header(decoder)) {
         damn 0
     }
     
@@ -428,7 +428,7 @@ slay binz_read_schema_header(decoder BinzDecoder) drip {
     decoder.position = decoder.position - 2
     sus flags drip = binz_read_uint16(decoder)
     
-    ready ((flags & 0x0001) == 0) {
+    lowkey ((flags & 0x0001) == 0) {
         fr fr No schema flag
         damn 0
     }
@@ -439,7 +439,7 @@ slay binz_read_schema_header(decoder BinzDecoder) drip {
 
 slay binz_decode_value(decoder BinzDecoder) BinzValue {
     fr fr Decode next value from binary stream
-    ready (decoder.position >= decoder.length) {
+    lowkey (decoder.position >= decoder.length) {
         decoder.has_error = based
         decoder.error_message = "Unexpected end of data"
         sus null_value BinzValue = binz_create_null()
@@ -448,40 +448,40 @@ slay binz_decode_value(decoder BinzDecoder) BinzValue {
     
     sus type_tag drip = binz_read_uint8(decoder)
     
-    ready (type_tag == TAG_NULL) {
+    lowkey (type_tag == TAG_NULL) {
         sus value BinzValue = binz_create_null()
         damn value
-    } otherwise ready (type_tag == TAG_BOOL_FALSE) {
+    } highkey lowkey (type_tag == TAG_BOOL_FALSE) {
         sus value BinzValue = binz_create_bool(cringe)
         damn value
-    } otherwise ready (type_tag == TAG_BOOL_TRUE) {
+    } highkey lowkey (type_tag == TAG_BOOL_TRUE) {
         sus value BinzValue = binz_create_bool(based)
         damn value
-    } otherwise ready (type_tag == TAG_INT32) {
+    } highkey lowkey (type_tag == TAG_INT32) {
         sus int_val drip = binz_read_int32(decoder)
         sus value BinzValue = binz_create_int(int_val)
         damn value
-    } otherwise ready (type_tag == TAG_UINT32) {
+    } highkey lowkey (type_tag == TAG_UINT32) {
         sus uint_val drip = binz_read_uint32(decoder)
         sus value BinzValue = binz_create_uint(uint_val)
         damn value
-    } otherwise ready (type_tag == TAG_FLOAT64) {
+    } highkey lowkey (type_tag == TAG_FLOAT64) {
         sus float_val normie = binz_read_float64(decoder)
         sus value BinzValue = binz_create_float(float_val)
         damn value
-    } otherwise ready (type_tag == TAG_STRING_SHORT || type_tag == TAG_STRING_LONG) {
+    } highkey lowkey (type_tag == TAG_STRING_SHORT || type_tag == TAG_STRING_LONG) {
         sus str_val tea = binz_decode_string(decoder, type_tag)
         sus value BinzValue = binz_create_string(str_val)
         damn value
-    } otherwise ready (type_tag == TAG_ARRAY_MIXED) {
+    } highkey lowkey (type_tag == TAG_ARRAY_MIXED) {
         damn binz_decode_array(decoder)
-    } otherwise ready (type_tag == TAG_STRUCT) {
+    } highkey lowkey (type_tag == TAG_STRUCT) {
         damn binz_decode_struct(decoder)
-    } otherwise ready (type_tag == TAG_SCHEMA_REF) {
+    } highkey lowkey (type_tag == TAG_SCHEMA_REF) {
         damn binz_decode_schema_reference(decoder)
-    } otherwise ready (type_tag == TAG_COMPRESSED) {
+    } highkey lowkey (type_tag == TAG_COMPRESSED) {
         damn binz_decode_compressed(decoder)
-    } otherwise {
+    } highkey {
         decoder.has_error = based
         decoder.error_message = "Unknown type tag: " + int_to_string(type_tag)
         sus null_value BinzValue = binz_create_null()
@@ -492,13 +492,13 @@ slay binz_decode_value(decoder BinzDecoder) BinzValue {
 slay binz_decode_string(decoder BinzDecoder, type_tag drip) tea {
     sus length drip = 0
     
-    ready (type_tag == TAG_STRING_SHORT) {
+    lowkey (type_tag == TAG_STRING_SHORT) {
         length = binz_read_uint8(decoder)
-    } otherwise {
+    } highkey {
         length = binz_read_uint32(decoder)
     }
     
-    ready (decoder.position + length > decoder.length) {
+    lowkey (decoder.position + length > decoder.length) {
         decoder.has_error = based
         decoder.error_message = "String length exceeds remaining data"
         damn ""
@@ -522,7 +522,7 @@ slay binz_decode_array(decoder BinzDecoder) BinzValue {
     sus i drip = 0
     bestie (i < count) {
         sus element BinzValue = binz_decode_value(decoder)
-        ready (decoder.has_error) {
+        lowkey (decoder.has_error) {
             damn value
         }
         
@@ -541,7 +541,7 @@ slay binz_decode_struct(decoder BinzDecoder) BinzValue {
     bestie (i < field_count) {
         fr fr Decode field name
         sus field_name_val BinzValue = binz_decode_value(decoder)
-        ready (decoder.has_error || field_name_val.type_tag != TAG_STRING_SHORT && field_name_val.type_tag != TAG_STRING_LONG) {
+        lowkey (decoder.has_error || field_name_val.type_tag != TAG_STRING_SHORT && field_name_val.type_tag != TAG_STRING_LONG) {
             decoder.has_error = based
             decoder.error_message = "Expected string field name"
             damn value
@@ -549,7 +549,7 @@ slay binz_decode_struct(decoder BinzDecoder) BinzValue {
         
         fr fr Decode field value
         sus field_value BinzValue = binz_decode_value(decoder)
-        ready (decoder.has_error) {
+        lowkey (decoder.has_error) {
             damn value
         }
         
@@ -565,7 +565,7 @@ slay binz_decode_compressed(decoder BinzDecoder) BinzValue {
     sus compressed_size drip = binz_read_uint32(decoder)
     sus original_size drip = binz_read_uint32(decoder)
     
-    ready (decoder.position + compressed_size > decoder.length) {
+    lowkey (decoder.position + compressed_size > decoder.length) {
         decoder.has_error = based
         decoder.error_message = "Compressed data exceeds remaining bytes"
         sus null_value BinzValue = binz_create_null()
@@ -587,7 +587,7 @@ slay binz_decode_compressed(decoder BinzDecoder) BinzValue {
     sus temp_decoder BinzDecoder = binz_create_decoder(decompressed_data)
     sus result BinzValue = binz_decode_value(temp_decoder)
     
-    ready (temp_decoder.has_error) {
+    lowkey (temp_decoder.has_error) {
         decoder.has_error = based
         decoder.error_message = "Error decoding compressed data: " + temp_decoder.error_message
     }
@@ -615,7 +615,7 @@ slay binz_register_schema(registry BinzSchemaRegistry, schema BinzSchema) lit {
 slay binz_get_schema(registry BinzSchemaRegistry, schema_id drip) BinzSchema {
     sus i drip = 0
     bestie (i < registry.schema_count) {
-        ready (registry.schemas[i].id == schema_id) {
+        lowkey (registry.schemas[i].id == schema_id) {
             damn registry.schemas[i]
         }
         i = i + 1
@@ -650,7 +650,7 @@ slay binz_schema_add_field(schema BinzSchema, name tea, field_type tea, optional
 
 slay binz_validate_against_schema(value BinzValue, schema BinzSchema) lit {
     fr fr Validate value against schema definition
-    ready (value.type_tag != TAG_STRUCT) {
+    lowkey (value.type_tag != TAG_STRUCT) {
         damn cringe
     }
     
@@ -660,18 +660,18 @@ slay binz_validate_against_schema(value BinzValue, schema BinzSchema) lit {
     fr fr Check all required fields are present
     sus i drip = 0
     bestie (i < schema_field_count) {
-        ready (!schema.field_optional[i]) {
+        lowkey (!schema.field_optional[i]) {
             sus found lit = cringe
             sus j drip = 0
             bestie (j < field_count) {
-                ready (value.struct_fields[j] == schema.field_names[i]) {
+                lowkey (value.struct_fields[j] == schema.field_names[i]) {
                     found = based
                     break
                 }
                 j = j + 1
             }
             
-            ready (!found) {
+            lowkey (!found) {
                 damn cringe  fr fr Required field missing
             }
         }
@@ -684,7 +684,7 @@ slay binz_validate_against_schema(value BinzValue, schema BinzSchema) lit {
 
 slay binz_migrate_schema(from_schema BinzSchema, to_schema BinzSchema) BinzSchema {
     fr fr Handle schema migration between versions
-    ready (from_schema.version == to_schema.version) {
+    lowkey (from_schema.version == to_schema.version) {
         damn to_schema  fr fr No migration needed
     }
     
@@ -693,7 +693,7 @@ slay binz_migrate_schema(from_schema BinzSchema, to_schema BinzSchema) BinzSchem
     sus i drip = 0
     bestie (i < migration_count) {
         sus rule BinzMigrationRule = from_schema.migration_rules[i]
-        ready (rule.from_version == from_schema.version && rule.to_version == to_schema.version) {
+        lowkey (rule.from_version == from_schema.version && rule.to_version == to_schema.version) {
             fr fr Found applicable migration rule
             fr fr Apply field mappings and defaults
             damn binz_apply_migration_rule(from_schema, to_schema, rule)
@@ -702,7 +702,7 @@ slay binz_migrate_schema(from_schema BinzSchema, to_schema BinzSchema) BinzSchem
     }
     
     fr fr Default migration strategy
-    ready (to_schema.compatibility_mode == "forward" || to_schema.compatibility_mode == "full") {
+    lowkey (to_schema.compatibility_mode == "forward" || to_schema.compatibility_mode == "full") {
         damn to_schema  fr fr Allow forward compatibility
     }
     
@@ -756,7 +756,7 @@ slay binz_serialize_struct_with_reflection(obj lit, schema BinzSchema) BinzValue
 
 slay binz_deserialize_struct_with_reflection(value BinzValue, target_type tea) lit {
     fr fr Use reflection to automatically deserialize into structs
-    ready (value.type_tag != TAG_STRUCT) {
+    lowkey (value.type_tag != TAG_STRUCT) {
         damn cringe  fr fr Cannot deserialize non-struct
     }
     
@@ -780,19 +780,19 @@ slay binz_deserialize_struct_with_reflection(value BinzValue, target_type tea) l
 
 slay binz_reflect_value(obj lit, type_name tea) BinzValue {
     fr fr Convert any value to BinzValue using reflection
-    ready (type_name == "drip") {
+    lowkey (type_name == "drip") {
         sus int_val drip = cast_to_drip(obj)
         damn binz_create_int(int_val)
-    } otherwise ready (type_name == "normie") {
+    } highkey lowkey (type_name == "normie") {
         sus float_val normie = cast_to_normie(obj)
         damn binz_create_float(float_val)
-    } otherwise ready (type_name == "tea") {
+    } highkey lowkey (type_name == "tea") {
         sus str_val tea = cast_to_tea(obj)
         damn binz_create_string(str_val)
-    } otherwise ready (type_name == "lit") {
+    } highkey lowkey (type_name == "lit") {
         sus bool_val lit = cast_to_lit(obj)
         damn binz_create_bool(bool_val)
-    } otherwise {
+    } highkey {
         fr fr Complex type - serialize as struct
         damn binz_serialize_complex_type(obj, type_name)
     }
@@ -800,15 +800,15 @@ slay binz_reflect_value(obj lit, type_name tea) BinzValue {
 
 slay binz_unreflect_value(value BinzValue) lit {
     fr fr Convert BinzValue back to appropriate type
-    ready (value.type_tag == TAG_INT32) {
+    lowkey (value.type_tag == TAG_INT32) {
         damn cast_from_drip(value.int_value)
-    } otherwise ready (value.type_tag == TAG_FLOAT64) {
+    } highkey lowkey (value.type_tag == TAG_FLOAT64) {
         damn cast_from_normie(value.float_value)
-    } otherwise ready (value.type_tag == TAG_STRING_SHORT || value.type_tag == TAG_STRING_LONG) {
+    } highkey lowkey (value.type_tag == TAG_STRING_SHORT || value.type_tag == TAG_STRING_LONG) {
         damn cast_from_tea(value.string_value)
-    } otherwise ready (value.type_tag == TAG_BOOL_TRUE || value.type_tag == TAG_BOOL_FALSE) {
+    } highkey lowkey (value.type_tag == TAG_BOOL_TRUE || value.type_tag == TAG_BOOL_FALSE) {
         damn cast_from_lit(value.bool_value)
-    } otherwise {
+    } highkey {
         fr fr Complex type
         damn binz_deserialize_complex_type(value)
     }
@@ -832,13 +832,13 @@ slay binz_compress_data(data drip[value]) drip[value]{
             run_length = run_length + 1
         }
         
-        ready (run_length > 3) {
+        lowkey (run_length > 3) {
             fr fr Use run-length encoding
             compressed[compressed_pos] = 0xFF  fr fr RLE marker
             compressed[compressed_pos + 1] = run_length
             compressed[compressed_pos + 2] = current_byte
             compressed_pos = compressed_pos + 3
-        } otherwise {
+        } highkey {
             fr fr Store literally
             sus i drip = 0
             bestie (i < run_length) {
@@ -864,7 +864,7 @@ slay binz_decompress_data(compressed_data drip[value], original_size drip) drip[
     bestie (pos < compressed_length && decompressed_pos < original_size) {
         sus byte drip = compressed_data[pos]
         
-        ready (byte == 0xFF && pos + 2 < compressed_length) {
+        lowkey (byte == 0xFF && pos + 2 < compressed_length) {
             fr fr RLE sequence
             sus run_length drip = compressed_data[pos + 1]
             sus value drip = compressed_data[pos + 2]
@@ -877,7 +877,7 @@ slay binz_decompress_data(compressed_data drip[value], original_size drip) drip[
             }
             
             pos = pos + 3
-        } otherwise {
+        } highkey {
             fr fr Literal byte
             decompressed[decompressed_pos] = byte
             decompressed_pos = decompressed_pos + 1
@@ -935,7 +935,7 @@ slay binz_write_varint(encoder BinzEncoder, value drip) lit {
 }
 
 slay binz_read_uint8(decoder BinzDecoder) drip {
-    ready (decoder.position >= decoder.length) {
+    lowkey (decoder.position >= decoder.length) {
         decoder.has_error = based
         decoder.error_message = "Unexpected end of data reading uint8"
         damn 0
@@ -978,11 +978,11 @@ slay binz_read_varint(decoder BinzDecoder) drip {
     
     bestie (shift < 32) {
         sus byte drip = binz_read_uint8(decoder)
-        ready (decoder.has_error) { damn 0 }
+        lowkey (decoder.has_error) { damn 0 }
         
         result = result | ((byte & 0x7F) << shift)
         
-        ready ((byte & 0x80) == 0) {
+        lowkey ((byte & 0x80) == 0) {
             break
         }
         
@@ -1002,7 +1002,7 @@ slay binz_create_null() BinzValue {
 
 slay binz_create_bool(val lit) BinzValue {
     sus value BinzValue = BinzValue{}
-    value.type_tag = ready (val) { TAG_BOOL_TRUE } otherwise { TAG_BOOL_FALSE }
+    value.type_tag = lowkey (val) { TAG_BOOL_TRUE } highkey { TAG_BOOL_FALSE }
     value.bool_value = val
     damn value
 }
@@ -1031,7 +1031,7 @@ slay binz_create_float(val normie) BinzValue {
 slay binz_create_string(val tea) BinzValue {
     sus value BinzValue = BinzValue{}
     sus length drip = string_length(val)
-    value.type_tag = ready (length < 256) { TAG_STRING_SHORT } otherwise { TAG_STRING_LONG }
+    value.type_tag = lowkey (length < 256) { TAG_STRING_SHORT } highkey { TAG_STRING_LONG }
     value.string_value = val
     damn value
 }
@@ -1085,33 +1085,33 @@ slay bytes_to_string(bytes drip[value]) tea {
 }
 
 slay int_to_string(val drip) tea {
-    ready (val == 0) { damn "0" }
-    ready (val == 1) { damn "1" }
-    ready (val == 2) { damn "2" }
-    ready (val == 3) { damn "3" }
-    ready (val < 0) { damn "-" + int_to_string(-val) }
+    lowkey (val == 0) { damn "0" }
+    lowkey (val == 1) { damn "1" }
+    lowkey (val == 2) { damn "2" }
+    lowkey (val == 3) { damn "3" }
+    lowkey (val < 0) { damn "-" + int_to_string(-val) }
     damn int_to_string(val / 10) + int_to_string(val % 10)
 }
 
 slay float_to_int_bits(val normie) drip {
     fr fr IEEE 754 conversion (simplified)
-    ready (val == 0.0) { damn 0 }
-    ready (val == 1.0) { damn 0x3FF0000000000000 }
-    ready (val == 3.14159) { damn 0x400921FB54442D18 }
+    lowkey (val == 0.0) { damn 0 }
+    lowkey (val == 1.0) { damn 0x3FF0000000000000 }
+    lowkey (val == 3.14159) { damn 0x400921FB54442D18 }
     damn 0  fr fr Fallback
 }
 
 slay int_bits_to_float(bits drip) normie {
     fr fr IEEE 754 conversion (simplified)
-    ready (bits == 0) { damn 0.0 }
-    ready (bits == 0x3FF0000000000000) { damn 1.0 }
-    ready (bits == 0x400921FB54442D18) { damn 3.14159 }
+    lowkey (bits == 0) { damn 0.0 }
+    lowkey (bits == 0x3FF0000000000000) { damn 1.0 }
+    lowkey (bits == 0x400921FB54442D18) { damn 3.14159 }
     damn 0.0  fr fr Fallback
 }
 
 slay signed_int_from_unsigned(unsigned_val drip) drip {
     fr fr Two's complement conversion
-    ready (unsigned_val > 0x7FFFFFFF) {
+    lowkey (unsigned_val > 0x7FFFFFFF) {
         damn unsigned_val - 0x100000000
     }
     damn unsigned_val
@@ -1144,7 +1144,7 @@ slay binz_deserialize_simple_struct(data drip[value]) lit {
     fr fr Example: deserialize and extract fields
     sus value BinzValue = binz_decode(data)
     
-    ready (value.type_tag != TAG_STRUCT) {
+    lowkey (value.type_tag != TAG_STRUCT) {
         vibez.spill("Not a struct!")
         damn cringe
     }
@@ -1156,14 +1156,14 @@ slay binz_deserialize_simple_struct(data drip[value]) lit {
         sus field_name tea = value.struct_fields[i]
         sus field_value BinzValue = value.struct_values[i]
         
-        ready (field_name == "name") {
+        lowkey (field_name == "name") {
             vibez.spill("Name: " + field_value.string_value)
-        } otherwise ready (field_name == "age") {
+        } highkey lowkey (field_name == "age") {
             vibez.spill("Age: " + int_to_string(field_value.int_value))
-        } otherwise ready (field_name == "active") {
-            ready (field_value.bool_value) {
+        } highkey lowkey (field_name == "active") {
+            lowkey (field_value.bool_value) {
                 vibez.spill("Status: Active")
-            } otherwise {
+            } highkey {
                 vibez.spill("Status: Inactive")
             }
         }
@@ -1201,7 +1201,7 @@ slay binz_encode_with_pool(value BinzValue, pool BinzMemoryPool) drip[value]{
     binz_write_header(encoder)
     binz_encode_value(encoder, value)
     
-    ready (encoder.has_error) {
+    lowkey (encoder.has_error) {
         damn []
     }
     
@@ -1220,22 +1220,22 @@ slay binz_get_encoded_size(value BinzValue) drip {
     fr fr Calculate encoded size without actually encoding
     sus size drip = 8  fr fr Header size
     
-    ready (value.type_tag == TAG_NULL) {
+    lowkey (value.type_tag == TAG_NULL) {
         size = size + 1
-    } otherwise ready (value.type_tag == TAG_BOOL_TRUE || value.type_tag == TAG_BOOL_FALSE) {
+    } highkey lowkey (value.type_tag == TAG_BOOL_TRUE || value.type_tag == TAG_BOOL_FALSE) {
         size = size + 1
-    } otherwise ready (value.type_tag == TAG_INT32 || value.type_tag == TAG_UINT32) {
+    } highkey lowkey (value.type_tag == TAG_INT32 || value.type_tag == TAG_UINT32) {
         size = size + 5  fr fr Tag + 4 bytes
-    } otherwise ready (value.type_tag == TAG_FLOAT64) {
+    } highkey lowkey (value.type_tag == TAG_FLOAT64) {
         size = size + 9  fr fr Tag + 8 bytes
-    } otherwise ready (value.type_tag == TAG_STRING_SHORT || value.type_tag == TAG_STRING_LONG) {
+    } highkey lowkey (value.type_tag == TAG_STRING_SHORT || value.type_tag == TAG_STRING_LONG) {
         sus str_len drip = string_length(value.string_value)
-        ready (str_len < 256) {
+        lowkey (str_len < 256) {
             size = size + 2 + str_len  fr fr Tag + length byte + data
-        } otherwise {
+        } highkey {
             size = size + 5 + str_len  fr fr Tag + length int + data
         }
-    } otherwise ready (value.type_tag == TAG_ARRAY_MIXED) {
+    } highkey lowkey (value.type_tag == TAG_ARRAY_MIXED) {
         size = size + 1  fr fr Tag
         size = size + binz_varint_size(array_length(value.array_values))
         
@@ -1245,7 +1245,7 @@ slay binz_get_encoded_size(value BinzValue) drip {
             size = size + binz_get_encoded_size(value.array_values[i])
             i = i + 1
         }
-    } otherwise ready (value.type_tag == TAG_STRUCT) {
+    } highkey lowkey (value.type_tag == TAG_STRUCT) {
         size = size + 1  fr fr Tag
         size = size + binz_varint_size(array_length(value.struct_fields))
         
@@ -1254,9 +1254,9 @@ slay binz_get_encoded_size(value BinzValue) drip {
         bestie (i < field_count) {
             fr fr Field name
             sus name_len drip = string_length(value.struct_fields[i])
-            ready (name_len < 256) {
+            lowkey (name_len < 256) {
                 size = size + 2 + name_len
-            } otherwise {
+            } highkey {
                 size = size + 5 + name_len
             }
             
@@ -1270,10 +1270,10 @@ slay binz_get_encoded_size(value BinzValue) drip {
 }
 
 slay binz_varint_size(value drip) drip {
-    ready (value < 128) { damn 1 }
-    ready (value < 16384) { damn 2 }
-    ready (value < 2097152) { damn 3 }
-    ready (value < 268435456) { damn 4 }
+    lowkey (value < 128) { damn 1 }
+    lowkey (value < 16384) { damn 2 }
+    lowkey (value < 2097152) { damn 3 }
+    lowkey (value < 268435456) { damn 4 }
     damn 5
 }
 
@@ -1301,7 +1301,7 @@ slay binz_encode_batch(values BinzValue[value]) drip[value]{
     sus j drip = 0
     bestie (j < count) {
         binz_encode_value(encoder, values[j])
-        ready (encoder.has_error) {
+        lowkey (encoder.has_error) {
             damn []
         }
         j = j + 1
@@ -1314,7 +1314,7 @@ slay binz_decode_batch(data drip[value]) BinzValue[value]{
     fr fr Decode multiple values efficiently
     sus decoder BinzDecoder = binz_create_decoder(data)
     
-    ready (!binz_verify_header(decoder)) {
+    lowkey (!binz_verify_header(decoder)) {
         damn []
     }
     
@@ -1324,7 +1324,7 @@ slay binz_decode_batch(data drip[value]) BinzValue[value]{
     sus i drip = 0
     bestie (i < count) {
         sus value BinzValue = binz_decode_value(decoder)
-        ready (decoder.has_error) {
+        lowkey (decoder.has_error) {
             damn []
         }
         

@@ -415,11 +415,11 @@ slay assert_eq_float(actual meal, expected meal) {
 fr fr Mock implementations for missing trigonometric functions
 slay Sin(x meal) meal {
     fr fr Simple sine approximation for small angles
-    ready Abs(x) < 0.1 {
+    lowkey Abs(x) < 0.1 {
         damn x - (x * x * x) / 6.0  fr fr Taylor series approximation
     }
     fr fr For larger angles, return reasonable approximation
-    ready x > 0.0 {
+    lowkey x > 0.0 {
         damn 0.8  fr fr Positive sine
     }
     damn -0.8  fr fr Negative sine
@@ -427,7 +427,7 @@ slay Sin(x meal) meal {
 
 slay Cos(x meal) meal {
     fr fr Simple cosine approximation
-    ready Abs(x) < 0.1 {
+    lowkey Abs(x) < 0.1 {
         damn 1.0 - (x * x) / 2.0  fr fr Taylor series
     }
     damn 0.6  fr fr Reasonable cosine value
@@ -435,13 +435,13 @@ slay Cos(x meal) meal {
 
 slay Log(x meal) meal {
     fr fr Natural logarithm approximation
-    ready x <= 0.0 {
+    lowkey x <= 0.0 {
         damn -1000.0  fr fr Negative infinity approximation
     }
-    ready x == 1.0 {
+    lowkey x == 1.0 {
         damn 0.0
     }
-    ready x > 1.0 {
+    lowkey x > 1.0 {
         damn 1.0  fr fr Positive log
     }
     damn -1.0  fr fr Negative log for 0 < x < 1
@@ -449,10 +449,10 @@ slay Log(x meal) meal {
 
 slay Exp(x meal) meal {
     fr fr Exponential function approximation
-    ready x == 0.0 {
+    lowkey x == 0.0 {
         damn 1.0
     }
-    ready x > 0.0 {
+    lowkey x > 0.0 {
         damn 2.0 + x  fr fr Simple positive approximation
     }
     damn 0.5  fr fr Simple negative approximation

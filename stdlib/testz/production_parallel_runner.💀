@@ -122,7 +122,7 @@ slay execute_worker_loop(worker_id normie) lit {
     worker.total_execution_time = 0
     worker.last_heartbeat = timez.get_current_timestamp()
     
-    vibez.spill("👷 Worker", worker_id, "started and ready for tasks")
+    vibez.spill("👷 Worker", worker_id, "started and lowkey for tasks")
     
     bestie (based) {
         worker.last_heartbeat = timez.get_current_timestamp()
@@ -155,7 +155,7 @@ slay execute_worker_loop(worker_id normie) lit {
         __parallel_runner.result_queue <- result
         
         fr fr Check for completion signal
-        ready (check_completion_status()) {
+        lowkey (check_completion_status()) {
             break
         }
     }
@@ -209,7 +209,7 @@ slay simulate_test_execution(task TestTask) TestResult {
     result.cpu_time_ms = 10  fr fr 10ms simulated CPU time
     
     fr fr Simulate different test outcomes based on test_id
-    ready (task.test_id % 10 == 0) {
+    lowkey (task.test_id % 10 == 0) {
         result.success = cringe
         result.assertions_failed = 1
         result.error_message = "Simulated test failure for demonstration"
@@ -231,17 +231,17 @@ slay aggregate_test_results() lit {
         total_memory_used += result.memory_used_bytes
         total_assertions += result.assertions_passed + result.assertions_failed
         
-        ready (!result.success) {
+        lowkey (!result.success) {
             __parallel_runner.failed_tests += 1
             vibez.spill("❌ Test failed:", result.test_name, "-", result.error_message)
-        } otherwise {
+        } highkey {
             vibez.spill("✅ Test passed:", result.test_name, 
                        "(" + result.execution_time_ms + "ms,", 
                        result.assertions_passed, "assertions)")
         }
         
         fr fr Check if all tests are completed
-        ready (__parallel_runner.completed_tests >= __parallel_runner.total_tests) {
+        lowkey (__parallel_runner.completed_tests >= __parallel_runner.total_tests) {
             sus end_time normie = timez.get_current_timestamp()
             sus total_time normie = end_time - __parallel_runner.execution_start_time
             
@@ -269,7 +269,7 @@ slay handle_execution_errors() lit {
             }
             when timez.timeout(5000) -> {
                 fr fr Check for completion every 5 seconds
-                ready (check_completion_status()) {
+                lowkey (check_completion_status()) {
                     break
                 }
                 continue
@@ -280,7 +280,7 @@ slay handle_execution_errors() lit {
                    "for test", error.test_id, ":", error.error_message)
         
         fr fr Log stack trace if available
-        ready (error.stack_trace != "") {
+        lowkey (error.stack_trace != "") {
             vibez.spill("📚 Stack trace:", error.stack_trace)
         }
     }
@@ -297,7 +297,7 @@ fr fr Public Parallel Execution API
 fr fr ================================
 
 slay run_tests_in_parallel(test_functions slay[value]() TestResult, worker_count normie) lit {
-    ready (len(test_functions) == 0) {
+    lowkey (len(test_functions) == 0) {
         vibez.spill("⚠️  No tests to execute")
         damn based  fr fr No tests provided
     }
@@ -346,7 +346,7 @@ slay get_parallel_execution_stats() ParallelExecutionStats {
     stats.failed_tests = __parallel_runner.failed_tests
     stats.active_workers = __parallel_runner.active_workers
     
-    ready (__parallel_runner.completed_tests > 0) {
+    lowkey (__parallel_runner.completed_tests > 0) {
         sus total_time normie = timez.get_current_timestamp() - __parallel_runner.execution_start_time
         stats.average_execution_time = total_time / __parallel_runner.completed_tests
         stats.success_rate = (__parallel_runner.completed_tests - __parallel_runner.failed_tests) / __parallel_runner.completed_tests
@@ -386,10 +386,10 @@ slay run_performance_benchmark(benchmark_function slay() BenchmarkResult, iterat
         sus iteration_end normie = timez.get_current_timestamp()
         sus iteration_time normie = iteration_end - iteration_start
         
-        ready (iteration_time < result.min_time_ms) {
+        lowkey (iteration_time < result.min_time_ms) {
             result.min_time_ms = iteration_time
         }
-        ready (iteration_time > result.max_time_ms) {
+        lowkey (iteration_time > result.max_time_ms) {
             result.max_time_ms = iteration_time
         }
     }
@@ -427,7 +427,7 @@ slay initialize_coverage_tracking() lit {
     __coverage_data.function_coverage_map = {}
     
     vibez.spill("📊 Coverage tracking initialized")
-    damn based  fr fr Coverage tracking ready
+    damn based  fr fr Coverage tracking lowkey
 }
 
 slay record_function_coverage(function_name tea) lit {
@@ -437,7 +437,7 @@ slay record_function_coverage(function_name tea) lit {
 }
 
 slay generate_coverage_report() CoverageReport {
-    ready (__coverage_data.total_lines > 0) {
+    lowkey (__coverage_data.total_lines > 0) {
         __coverage_data.coverage_percentage = __coverage_data.covered_lines / __coverage_data.total_lines * 100.0
     }
     
@@ -459,10 +459,10 @@ slay assert_parallel_execution_time(expected_max_ms normie, actual_ms normie) Te
     result.assertions_passed = result.success ? 1 : 0
     result.assertions_failed = result.success ? 0 : 1
     
-    ready (!result.success) {
+    lowkey (!result.success) {
         result.error_message = "Parallel execution took " + actual_ms + "ms, expected max " + expected_max_ms + "ms"
         vibez.spill("❌ Performance assertion failed:", result.error_message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Performance assertion passed: execution took", actual_ms, "ms (under", expected_max_ms, "ms limit)")
     }
     
@@ -475,10 +475,10 @@ slay assert_worker_efficiency(expected_min_efficiency drip, actual_efficiency dr
     result.assertions_passed = result.success ? 1 : 0
     result.assertions_failed = result.success ? 0 : 1
     
-    ready (!result.success) {
+    lowkey (!result.success) {
         result.error_message = "Worker efficiency " + actual_efficiency + "% below expected " + expected_min_efficiency + "%"
         vibez.spill("❌ Efficiency assertion failed:", result.error_message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Efficiency assertion passed:", actual_efficiency, "% efficiency")
     }
     
@@ -519,7 +519,7 @@ slay simulate_test_result(test_name tea, should_pass lit) TestResult {
     result.assertions_failed = should_pass ? 0 : 1
     result.execution_time_ms = 50 + (test_name.length * 10)  fr fr Variable execution time
     
-    ready (!should_pass) {
+    lowkey (!should_pass) {
         result.error_message = "Simulated failure in " + test_name
     }
     

@@ -147,55 +147,55 @@ slay append_gpio_pin(pins GpioPin[value], pin GpioPin) GpioPin[value]{
 }
 
 slay gpio_set_mode(pin_num drip, mode drip) {
-    ready (pin_num >= 0 && pin_num < len(system_state.pins)) {
+    lowkey (pin_num >= 0 && pin_num < len(system_state.pins)) {
         system_state.pins[pin_num].mode = mode
         vibez.spill("[GPIO] Pin", pin_num, "set to mode", mode)
-    } otherwise {
+    } highkey {
         vibez.spill("[GPIO] Error: Invalid pin number", pin_num)
     }
 }
 
 slay gpio_write(pin_num drip, value lit) {
-    ready (pin_num >= 0 && pin_num < len(system_state.pins)) {
-        ready (system_state.pins[pin_num].mode == OUTPUT) {
+    lowkey (pin_num >= 0 && pin_num < len(system_state.pins)) {
+        lowkey (system_state.pins[pin_num].mode == OUTPUT) {
             system_state.pins[pin_num].value = value
             hardware_write_pin(pin_num, value)
             vibez.spill("[GPIO] Pin", pin_num, "written:", value)
-        } otherwise {
+        } highkey {
             vibez.spill("[GPIO] Error: Pin", pin_num, "not set to OUTPUT mode")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("[GPIO] Error: Invalid pin number", pin_num)
     }
 }
 
 slay gpio_read(pin_num drip) lit {
-    ready (pin_num >= 0 && pin_num < len(system_state.pins)) {
+    lowkey (pin_num >= 0 && pin_num < len(system_state.pins)) {
         sus value lit = hardware_read_pin(pin_num)
         system_state.pins[pin_num].value = value
         damn value
-    } otherwise {
+    } highkey {
         vibez.spill("[GPIO] Error: Invalid pin number", pin_num)
         damn LOW
     }
 }
 
 slay pwm_write(pin_num drip, duty_cycle drip) {
-    ready (duty_cycle >= 0 && duty_cycle <= 255) {
+    lowkey (duty_cycle >= 0 && duty_cycle <= 255) {
         hardware_pwm_write(pin_num, duty_cycle)
         vibez.spill("[PWM] Pin", pin_num, "duty cycle:", duty_cycle)
-    } otherwise {
+    } highkey {
         vibez.spill("[PWM] Error: Invalid duty cycle", duty_cycle, "(must be 0-255)")
     }
 }
 
 slay gpio_attach_interrupt(pin_num drip, mode drip, callback tea) {
-    ready (pin_num >= 0 && pin_num < len(system_state.pins)) {
+    lowkey (pin_num >= 0 && pin_num < len(system_state.pins)) {
         system_state.pins[pin_num].interrupt_enabled = based
         system_state.pins[pin_num].interrupt_callback = callback
         hardware_attach_interrupt(pin_num, mode)
         vibez.spill("[GPIO] Interrupt attached to pin", pin_num, "mode:", mode)
-    } otherwise {
+    } highkey {
         vibez.spill("[GPIO] Error: Invalid pin number", pin_num)
     }
 }
@@ -241,7 +241,7 @@ slay read_temperature(sensor TempSensor) drip {
     sus current_time drip = get_system_time()
     
     # DHT22 requires minimum 2-second intervals between readings
-    ready (current_time - sensor.last_update_time < 2000) {
+    lowkey (current_time - sensor.last_update_time < 2000) {
         damn sensor.last_reading
     }
     
@@ -357,7 +357,7 @@ slay i2c_init(sda_pin drip, scl_pin drip) I2cDevice {
 }
 
 slay i2c_write(device I2cDevice, address drip, data drip[value]) lit {
-    ready (!device.initialized) {
+    lowkey (!device.initialized) {
         vibez.spill("[I2C] Error: Device not initialized")
         damn fake
     }
@@ -368,7 +368,7 @@ slay i2c_write(device I2cDevice, address drip, data drip[value]) lit {
 }
 
 slay i2c_read(device I2cDevice, address drip, length drip) drip[value]{
-    ready (!device.initialized) {
+    lowkey (!device.initialized) {
         vibez.spill("[I2C] Error: Device not initialized")
         damn make_drip_array(0)
     }
@@ -404,7 +404,7 @@ slay spi_init(mosi_pin drip, miso_pin drip, sclk_pin drip, cs_pin drip) SpiDevic
 }
 
 slay spi_transfer(device SpiDevice, data drip[value]) drip[value]{
-    ready (!device.initialized) {
+    lowkey (!device.initialized) {
         vibez.spill("[SPI] Error: Device not initialized")
         damn make_drip_array(0)
     }
@@ -441,7 +441,7 @@ slay uart_init(baud_rate drip) UartDevice {
 }
 
 slay uart_write(device UartDevice, data tea) {
-    ready (!device.initialized) {
+    lowkey (!device.initialized) {
         vibez.spill("[UART] Error: Device not initialized")
         damn
     }
@@ -450,7 +450,7 @@ slay uart_write(device UartDevice, data tea) {
 }
 
 slay uart_read(device UartDevice) tea {
-    ready (!device.initialized) {
+    lowkey (!device.initialized) {
         vibez.spill("[UART] Error: Device not initialized")
         damn ""
     }
@@ -493,7 +493,7 @@ slay start_scheduler() {
         bestie (sus i drip = 0; i < len_task_array(system_state.tasks); i = i + 1) {
             sus task Task = system_state.tasks[i]
             
-            ready (task.enabled && current_time >= task.next_run_time) {
+            lowkey (task.enabled && current_time >= task.next_run_time) {
                 execute_task(task)
                 task.last_run_time = current_time
                 task.next_run_time = current_time + task.interval_ms
@@ -510,11 +510,11 @@ slay execute_task(task Task) {
     vibez.spill("[Scheduler] Executing task:", task.name)
     
     # In real implementation, would call the actual task function
-    ready (task.function == "led_blink_task") {
+    lowkey (task.function == "led_blink_task") {
         led_blink_task()
-    } otherwise ready (task.function == "sensor_read_task") {
+    } highkey lowkey (task.function == "sensor_read_task") {
         sensor_read_task()
-    } otherwise ready (task.function == "data_logging_task") {
+    } highkey lowkey (task.function == "data_logging_task") {
         data_logging_task()
     }
 }
@@ -615,7 +615,7 @@ slay stepper_step(step_pin drip, dir_pin drip, steps drip, delay_ms drip) {
     gpio_write(dir_pin, steps > 0)
     
     sus abs_steps drip = steps
-    ready (steps < 0) {
+    lowkey (steps < 0) {
         abs_steps = -steps
     }
     
@@ -651,7 +651,7 @@ slay len_task_array(arr Task[value]) drip {
 
 slay int_to_string(value drip) tea {
     # Simplified int to string conversion
-    ready (value == 0) {
+    lowkey (value == 0) {
         damn "0"
     }
     damn "123"  # Placeholder

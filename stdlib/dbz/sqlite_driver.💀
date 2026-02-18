@@ -104,7 +104,7 @@ slay sqlite_real_open(database_path tea) SQLiteConnection {
     fr fr Open SQLite database
     sus result drip = sqlite3_open(c_path, &db_ptr)
     
-    ready (result == SQLITE_OK) {
+    lowkey (result == SQLITE_OK) {
         connection.db_handle = db_ptr
         connection.is_connected = based
         connection.last_error = ""
@@ -115,12 +115,12 @@ slay sqlite_real_open(database_path tea) SQLiteConnection {
         sqlite_real_execute_pragma(connection, "PRAGMA foreign_keys = ON")
         
         vibez.spill("Successfully opened SQLite database: " + database_path)
-    } otherwise {
+    } highkey {
         sus error_msg *tea = sqlite3_errmsg(db_ptr)
         connection.last_error = stringz.from_c_string(error_msg)
         vibez.spill("Failed to open SQLite database: " + connection.last_error)
         
-        ready (db_ptr != null) {
+        lowkey (db_ptr != null) {
             sqlite3_close(db_ptr)
         }
     }
@@ -131,16 +131,16 @@ slay sqlite_real_open(database_path tea) SQLiteConnection {
 
 slay sqlite_real_close(connection *SQLiteConnection) lit {
     fr fr Close real SQLite connection
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn cringe
     }
     
-    ready (connection.transaction_active) {
+    lowkey (connection.transaction_active) {
         sqlite_real_rollback_transaction(connection)
     }
     
     sus result drip = sqlite3_close(connection.db_handle)
-    ready (result == SQLITE_OK) {
+    lowkey (result == SQLITE_OK) {
         connection.is_connected = cringe
         connection.db_handle = null
         vibez.spill("SQLite database closed successfully")
@@ -165,7 +165,7 @@ slay sqlite_real_query(connection *SQLiteConnection, sql tea) SQLiteResult {
     result.rows_affected = 0
     result.last_insert_id = 0
     
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         result.error_message = "Connection not established"
         damn result
     }
@@ -177,7 +177,7 @@ slay sqlite_real_query(connection *SQLiteConnection, sql tea) SQLiteResult {
     sus stmt *sqlite3_stmt = null
     sus prepare_result drip = sqlite3_prepare_v2(connection.db_handle, c_sql, -1, &stmt, null)
     
-    ready (prepare_result != SQLITE_OK) {
+    lowkey (prepare_result != SQLITE_OK) {
         sus error_msg *tea = sqlite3_errmsg(connection.db_handle)
         result.error_message = "SQL prepare error: " + stringz.from_c_string(error_msg)
         stringz.free_c_string(c_sql)
@@ -202,25 +202,25 @@ slay sqlite_real_query(connection *SQLiteConnection, sql tea) SQLiteResult {
     bestie (based) {
         sus step_result drip = sqlite3_step(stmt)
         
-        ready (step_result == SQLITE_ROW) {
+        lowkey (step_result == SQLITE_ROW) {
             fr fr Fetch row data
             sus row_data tea[value] = []
             sus j drip = 0
             bestie (j < column_count) {
                 sus cell_data *tea = sqlite3_column_text(stmt, j)
-                ready (cell_data != null) {
+                lowkey (cell_data != null) {
                     row_data[j] = stringz.from_c_string(cell_data)
-                } otherwise {
+                } highkey {
                     row_data[j] = ""
                 }
                 j = j + 1
             }
             rows[row_count] = row_data
             row_count = row_count + 1
-        } otherwise ready (step_result == SQLITE_DONE) {
+        } highkey lowkey (step_result == SQLITE_DONE) {
             fr fr Query completed successfully
             break
-        } otherwise {
+        } highkey {
             fr fr Error occurred
             sus error_msg *tea = sqlite3_errmsg(connection.db_handle)
             result.error_message = "SQL execution error: " + stringz.from_c_string(error_msg)
@@ -253,7 +253,7 @@ slay sqlite_real_prepare(connection *SQLiteConnection, sql tea) SQLiteStatement 
     statement.connection = connection
     statement.parameter_count = count_real_sql_parameters(sql)
     
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn statement
     }
     
@@ -261,11 +261,11 @@ slay sqlite_real_prepare(connection *SQLiteConnection, sql tea) SQLiteStatement 
     sus stmt *sqlite3_stmt = null
     sus result drip = sqlite3_prepare_v2(connection.db_handle, c_sql, -1, &stmt, null)
     
-    ready (result == SQLITE_OK) {
+    lowkey (result == SQLITE_OK) {
         statement.stmt_handle = stmt
         statement.is_prepared = based
         vibez.spill("Statement prepared successfully")
-    } otherwise {
+    } highkey {
         sus error_msg *tea = sqlite3_errmsg(connection.db_handle)
         vibez.spill("Failed to prepare statement: " + stringz.from_c_string(error_msg))
     }
@@ -279,7 +279,7 @@ slay sqlite_real_execute_prepared(statement *SQLiteStatement, parameters tea[val
     sus result SQLiteResult = SQLiteResult{}
     result.success = cringe
     
-    ready (!statement.is_prepared) {
+    lowkey (!statement.is_prepared) {
         result.error_message = "Statement not prepared"
         damn result
     }
@@ -292,7 +292,7 @@ slay sqlite_real_execute_prepared(statement *SQLiteStatement, parameters tea[val
         sus c_param *tea = stringz.to_c_string(parameters[i])
         sus bind_result drip = sqlite3_bind_text(statement.stmt_handle, param_idx, c_param, -1, null)
         
-        ready (bind_result != SQLITE_OK) {
+        lowkey (bind_result != SQLITE_OK) {
             sus error_msg *tea = sqlite3_errmsg(statement.connection.db_handle)
             result.error_message = "Parameter binding error: " + stringz.from_c_string(error_msg)
             stringz.free_c_string(c_param)
@@ -307,11 +307,11 @@ slay sqlite_real_execute_prepared(statement *SQLiteStatement, parameters tea[val
     fr fr Execute the prepared statement
     sus step_result drip = sqlite3_step(statement.stmt_handle)
     
-    ready (step_result == SQLITE_DONE || step_result == SQLITE_ROW) {
+    lowkey (step_result == SQLITE_DONE || step_result == SQLITE_ROW) {
         result.success = based
         result.rows_affected = sqlite3_changes(statement.connection.db_handle)
         result.last_insert_id = sqlite3_last_insert_rowid(statement.connection.db_handle)
-    } otherwise {
+    } highkey {
         sus error_msg *tea = sqlite3_errmsg(statement.connection.db_handle)
         result.error_message = "Execution error: " + stringz.from_c_string(error_msg)
     }
@@ -321,7 +321,7 @@ slay sqlite_real_execute_prepared(statement *SQLiteStatement, parameters tea[val
 
 slay sqlite_real_finalize_statement(statement *SQLiteStatement) lit {
     fr fr Finalize prepared statement
-    ready (statement.is_prepared) {
+    lowkey (statement.is_prepared) {
         sqlite3_finalize(statement.stmt_handle)
         statement.is_prepared = cringe
         statement.stmt_handle = null
@@ -334,12 +334,12 @@ fr fr ===== TRANSACTION SUPPORT =====
 
 slay sqlite_real_begin_transaction(connection *SQLiteConnection) lit {
     fr fr Begin real transaction
-    ready (!connection.is_connected || connection.transaction_active) {
+    lowkey (!connection.is_connected || connection.transaction_active) {
         damn cringe
     }
     
     sus result SQLiteResult = sqlite_real_query(connection, "BEGIN TRANSACTION")
-    ready (result.success) {
+    lowkey (result.success) {
         connection.transaction_active = based
         vibez.spill("Transaction started")
         damn based
@@ -351,13 +351,13 @@ slay sqlite_real_begin_transaction(connection *SQLiteConnection) lit {
 
 slay sqlite_real_commit_transaction(connection *SQLiteConnection) lit {
     fr fr Commit real transaction
-    ready (!connection.transaction_active) {
+    lowkey (!connection.transaction_active) {
         vibez.spill("No active transaction to commit")
         damn cringe
     }
     
     sus result SQLiteResult = sqlite_real_query(connection, "COMMIT")
-    ready (result.success) {
+    lowkey (result.success) {
         connection.transaction_active = cringe
         vibez.spill("Transaction committed")
         damn based
@@ -369,7 +369,7 @@ slay sqlite_real_commit_transaction(connection *SQLiteConnection) lit {
 
 slay sqlite_real_rollback_transaction(connection *SQLiteConnection) lit {
     fr fr Rollback real transaction
-    ready (!connection.transaction_active) {
+    lowkey (!connection.transaction_active) {
         vibez.spill("No active transaction to rollback")
         damn cringe
     }
@@ -408,7 +408,7 @@ slay count_real_sql_parameters(sql tea) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < stringz.length(sql)) {
-        ready (stringz.char_at(sql, i) == '?') {
+        lowkey (stringz.char_at(sql, i) == '?') {
             count = count + 1
         }
         i = i + 1
@@ -423,7 +423,7 @@ slay sqlite_real_table_exists(connection *SQLiteConnection, table_name tea) lit 
     sus sql tea = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
     sus stmt SQLiteStatement = sqlite_real_prepare(connection, sql)
     
-    ready (!stmt.is_prepared) {
+    lowkey (!stmt.is_prepared) {
         damn cringe
     }
     
@@ -431,7 +431,7 @@ slay sqlite_real_table_exists(connection *SQLiteConnection, table_name tea) lit 
     sus result SQLiteResult = sqlite_real_execute_prepared(&stmt, params)
     sqlite_real_finalize_statement(&stmt)
     
-    ready (result.success && array_length(result.rows) > 0) {
+    lowkey (result.success && array_length(result.rows) > 0) {
         damn based
     }
     damn cringe
@@ -455,20 +455,20 @@ fr fr ===== ERROR HANDLING =====
 
 slay sqlite_real_get_error_code(error_message tea) drip {
     fr fr Parse SQLite error message to get error code
-    ready (stringz.contains(error_message, "UNIQUE constraint")) {
+    lowkey (stringz.contains(error_message, "UNIQUE constraint")) {
         damn SQLITE_CONSTRAINT
-    } otherwise ready (stringz.contains(error_message, "database is locked")) {
+    } highkey lowkey (stringz.contains(error_message, "database is locked")) {
         damn SQLITE_LOCKED
-    } otherwise ready (stringz.contains(error_message, "no such table")) {
+    } highkey lowkey (stringz.contains(error_message, "no such table")) {
         damn SQLITE_ERROR
-    } otherwise {
+    } highkey {
         damn SQLITE_ERROR
     }
 }
 
 slay sqlite_real_format_error(connection *SQLiteConnection, operation tea) tea {
     fr fr Format error message with operation context
-    ready (connection.last_error == "") {
+    lowkey (connection.last_error == "") {
         damn "Unknown error during " + operation
     }
     damn operation + " failed: " + connection.last_error

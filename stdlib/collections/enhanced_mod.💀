@@ -40,7 +40,7 @@ slay hashmap_new[K, V](initial_capacity normie) HashMap[K, V] {
 fr fr Hash function for different key types
 slay hashmap_hash[K](key K) normie {
     fr fr Simple hash function - in production would use proper hashing
-    ready typeof(key) == "tea" {
+    lowkey typeof(key) == "tea" {
         sus str_key tea = string(key)
         sus hash normie = 5381
         sus i normie = 0
@@ -51,7 +51,7 @@ slay hashmap_hash[K](key K) normie {
         damn abs(hash)
     }
     
-    ready typeof(key) == "normie" {
+    lowkey typeof(key) == "normie" {
         sus int_key normie = normie(key)
         damn abs(int_key * 31)
     }
@@ -63,7 +63,7 @@ fr fr Insert key-value pair into hashmap
 slay hashmap_put[K, V](map HashMap[K, V], key K, value V) HashMap[K, V] {
     fr fr Check if resize is needed
     sus threshold normie = (map.capacity * map.load_factor) / 100
-    ready map.size >= threshold {
+    lowkey map.size >= threshold {
         map = hashmap_resize(map, map.capacity * 2)
     }
     
@@ -73,7 +73,7 @@ slay hashmap_put[K, V](map HashMap[K, V], key K, value V) HashMap[K, V] {
     fr fr Look for existing key
     sus i normie = 0
     bestie i < len(map.buckets) {
-        ready map.buckets[i].hash == hash && equals(map.buckets[i].key, key) {
+        lowkey map.buckets[i].hash == hash && equals(map.buckets[i].key, key) {
             fr fr Update existing entry
             map.buckets[i].value = value
             damn map
@@ -101,7 +101,7 @@ slay hashmap_get[K, V](map HashMap[K, V], key K) (V, lit) {
     
     sus i normie = 0
     bestie i < len(map.buckets) {
-        ready map.buckets[i].hash == hash && equals(map.buckets[i].key, key) {
+        lowkey map.buckets[i].hash == hash && equals(map.buckets[i].key, key) {
             damn map.buckets[i].value, based
         }
         i = i + 1
@@ -118,7 +118,7 @@ slay hashmap_remove[K, V](map HashMap[K, V], key K) (HashMap[K, V], lit) {
     
     sus i normie = 0
     bestie i < len(map.buckets) {
-        ready map.buckets[i].hash == hash && equals(map.buckets[i].key, key) {
+        lowkey map.buckets[i].hash == hash && equals(map.buckets[i].key, key) {
             fr fr Remove entry by shifting remaining elements
             map.buckets = array_remove_at(map.buckets, i)
             map.size = map.size - 1
@@ -221,9 +221,9 @@ slay linkedlist_push_front[T](list LinkedList[T], data T) LinkedList[T] {
         prev: -1
     }
     
-    ready list.head != -1 {
+    lowkey list.head != -1 {
         list.nodes[list.head].prev = node_index
-    } otherwise {
+    } highkey {
         list.tail = node_index
     }
     
@@ -243,9 +243,9 @@ slay linkedlist_push_back[T](list LinkedList[T], data T) LinkedList[T] {
         prev: list.tail
     }
     
-    ready list.tail != -1 {
+    lowkey list.tail != -1 {
         list.nodes[list.tail].next = node_index
-    } otherwise {
+    } highkey {
         list.head = node_index
     }
     
@@ -257,7 +257,7 @@ slay linkedlist_push_back[T](list LinkedList[T], data T) LinkedList[T] {
 
 fr fr Remove and return front element
 slay linkedlist_pop_front[T](list LinkedList[T]) (LinkedList[T], T, lit) {
-    ready list.head == -1 {
+    lowkey list.head == -1 {
         sus zero_value T
         damn list, zero_value, cringe
     }
@@ -266,9 +266,9 @@ slay linkedlist_pop_front[T](list LinkedList[T]) (LinkedList[T], T, lit) {
     sus old_head normie = list.head
     
     list.head = list.nodes[list.head].next
-    ready list.head != -1 {
+    lowkey list.head != -1 {
         list.nodes[list.head].prev = -1
-    } otherwise {
+    } highkey {
         list.tail = -1
     }
     
@@ -280,7 +280,7 @@ slay linkedlist_pop_front[T](list LinkedList[T]) (LinkedList[T], T, lit) {
 
 fr fr Remove and return back element
 slay linkedlist_pop_back[T](list LinkedList[T]) (LinkedList[T], T, lit) {
-    ready list.tail == -1 {
+    lowkey list.tail == -1 {
         sus zero_value T
         damn list, zero_value, cringe
     }
@@ -289,9 +289,9 @@ slay linkedlist_pop_back[T](list LinkedList[T]) (LinkedList[T], T, lit) {
     sus old_tail normie = list.tail
     
     list.tail = list.nodes[list.tail].prev
-    ready list.tail != -1 {
+    lowkey list.tail != -1 {
         list.nodes[list.tail].next = -1
-    } otherwise {
+    } highkey {
         list.head = -1
     }
     
@@ -303,15 +303,15 @@ slay linkedlist_pop_back[T](list LinkedList[T]) (LinkedList[T], T, lit) {
 
 fr fr Insert element at specific index
 slay linkedlist_insert_at[T](list LinkedList[T], index normie, data T) (LinkedList[T], lit) {
-    ready index < 0 || index > list.size {
+    lowkey index < 0 || index > list.size {
         damn list, cringe
     }
     
-    ready index == 0 {
+    lowkey index == 0 {
         damn linkedlist_push_front(list, data), based
     }
     
-    ready index == list.size {
+    lowkey index == list.size {
         damn linkedlist_push_back(list, data), based
     }
     
@@ -340,7 +340,7 @@ slay linkedlist_insert_at[T](list LinkedList[T], index normie, data T) (LinkedLi
 
 fr fr Get element at index
 slay linkedlist_get[T](list LinkedList[T], index normie) (T, lit) {
-    ready index < 0 || index >= list.size {
+    lowkey index < 0 || index >= list.size {
         sus zero_value T
         damn zero_value, cringe
     }
@@ -361,7 +361,7 @@ slay linkedlist_find[T](list LinkedList[T], data T) normie {
     sus index normie = 0
     
     bestie current != -1 {
-        ready equals(list.nodes[current].data, data) {
+        lowkey equals(list.nodes[current].data, data) {
             damn index
         }
         current = list.nodes[current].next
@@ -386,7 +386,7 @@ slay linkedlist_to_array[T](list LinkedList[T]) T[value]{
 
 fr fr Allocate a new node index
 slay linkedlist_allocate_node[T](list LinkedList[T]) normie {
-    ready len(list.free_indices) > 0 {
+    lowkey len(list.free_indices) > 0 {
         sus index normie = list.free_indices[len(list.free_indices) - 1]
         list.free_indices = array_slice(list.free_indices, 0, len(list.free_indices) - 1)
         damn index
@@ -480,7 +480,7 @@ slay set_intersection[T](set1 Set[T], set2 Set[T]) Set[T] {
     sus keys1 T[value] = set_to_array(set1)
     sus i normie = 0
     bestie i < len(keys1) {
-        ready set_contains(set2, keys1[i]) {
+        lowkey set_contains(set2, keys1[i]) {
             result = set_insert(result, keys1[i])
         }
         i = i + 1
@@ -496,7 +496,7 @@ slay set_difference[T](set1 Set[T], set2 Set[T]) Set[T] {
     sus keys1 T[value] = set_to_array(set1)
     sus i normie = 0
     bestie i < len(keys1) {
-        ready !set_contains(set2, keys1[i]) {
+        lowkey !set_contains(set2, keys1[i]) {
             result = set_insert(result, keys1[i])
         }
         i = i + 1
@@ -531,7 +531,7 @@ slay stack_push[T](stack Stack[T], element T) Stack[T] {
 
 fr fr Pop element from stack
 slay stack_pop[T](stack Stack[T]) (Stack[T], T, lit) {
-    ready stack.top < 0 {
+    lowkey stack.top < 0 {
         sus zero_value T
         damn stack, zero_value, cringe
     }
@@ -545,7 +545,7 @@ slay stack_pop[T](stack Stack[T]) (Stack[T], T, lit) {
 
 fr fr Peek at top element
 slay stack_peek[T](stack Stack[T]) (T, lit) {
-    ready stack.top < 0 {
+    lowkey stack.top < 0 {
         sus zero_value T
         damn zero_value, cringe
     }
@@ -589,13 +589,13 @@ slay queue_new[T](initial_capacity normie) Queue[T] {
 
 fr fr Enqueue element to rear
 slay queue_enqueue[T](queue Queue[T], element T) Queue[T] {
-    ready queue.size >= queue.capacity {
+    lowkey queue.size >= queue.capacity {
         queue = queue_resize(queue, queue.capacity * 2)
     }
     
-    ready len(queue.data) <= queue.rear {
+    lowkey len(queue.data) <= queue.rear {
         queue.data = array_append(queue.data, element)
-    } otherwise {
+    } highkey {
         queue.data[queue.rear] = element
     }
     
@@ -607,7 +607,7 @@ slay queue_enqueue[T](queue Queue[T], element T) Queue[T] {
 
 fr fr Dequeue element from front
 slay queue_dequeue[T](queue Queue[T]) (Queue[T], T, lit) {
-    ready queue.size == 0 {
+    lowkey queue.size == 0 {
         sus zero_value T
         damn queue, zero_value, cringe
     }
@@ -621,7 +621,7 @@ slay queue_dequeue[T](queue Queue[T]) (Queue[T], T, lit) {
 
 fr fr Peek at front element
 slay queue_front[T](queue Queue[T]) (T, lit) {
-    ready queue.size == 0 {
+    lowkey queue.size == 0 {
         sus zero_value T
         damn zero_value, cringe
     }
@@ -647,7 +647,7 @@ slay queue_resize[T](old_queue Queue[T], new_capacity normie) Queue[T] {
         sus element T
         sus success lit
         old_queue, element, success = queue_dequeue(old_queue)
-        ready success {
+        lowkey success {
             new_queue = queue_enqueue(new_queue, element)
         }
     }
@@ -666,21 +666,21 @@ slay equals[T](a T, b T) lit {
 
 slay char_code_at(str tea, index normie) normie {
     fr fr Simulate character code access
-    ready index == 0 { damn 72 }  fr fr 'H'
-    ready index == 1 { damn 101 } fr fr 'e'
-    ready index == 2 { damn 108 } fr fr 'l'
+    lowkey index == 0 { damn 72 }  fr fr 'H'
+    lowkey index == 1 { damn 101 } fr fr 'e'
+    lowkey index == 2 { damn 108 } fr fr 'l'
     damn 65  fr fr Default 'A'
 }
 
 slay abs(n normie) normie {
-    ready n < 0 {
+    lowkey n < 0 {
         damn -n
     }
     damn n
 }
 
 slay max(a normie, b normie) normie {
-    ready a >= b {
+    lowkey a >= b {
         damn a
     }
     damn b

@@ -5,7 +5,7 @@ yeet "vibez"
 
 fr fr O(n log n) QuickSort implementation
 slay optimized_quicksort_integers(arr drip[value], low drip, high drip) drip[value]{
-    ready (low < high) {
+    lowkey (low < high) {
         sus pivot_index drip = partition_integers(arr, low, high)
         arr = optimized_quicksort_integers(arr, low, pivot_index - 1)
         arr = optimized_quicksort_integers(arr, pivot_index + 1, high)
@@ -19,7 +19,7 @@ slay partition_integers(arr drip[value], low drip, high drip) drip {
     sus j drip = low
     
     periodt (j < high) {
-        ready (arr[j] <= pivot) {
+        lowkey (arr[j] <= pivot) {
             i = i + 1
             arr = swap_integer_elements(arr, i, j)
         }
@@ -39,7 +39,7 @@ slay swap_integer_elements(arr drip[value], i drip, j drip) drip[value]{
 
 fr fr O(n log n) MergeSort implementation
 slay optimized_mergesort_integers(arr drip[value], left drip, right drip) drip[value]{
-    ready (left >= right) {
+    lowkey (left >= right) {
         damn arr
     }
     
@@ -76,7 +76,7 @@ slay merge_integer_arrays(arr drip[value], left drip, mid drip, right drip) drip
     sus k drip = left
     
     periodt (i < left_size && j < right_size) {
-        ready (left_arr[i] <= right_arr[j]) {
+        lowkey (left_arr[i] <= right_arr[j]) {
             arr[k] = left_arr[i]
             i = i + 1
         } else {
@@ -104,7 +104,7 @@ slay merge_integer_arrays(arr drip[value], left drip, mid drip, right drip) drip
 
 fr fr Hybrid sort: QuickSort for large arrays, InsertionSort for small
 slay hybrid_sort_integers(arr drip[value]) drip[value]{
-    ready (arr.len <= 10) {
+    lowkey (arr.len <= 10) {
         damn insertion_sort_integers(arr)
     }
     damn optimized_quicksort_integers(arr, 0, arr.len - 1)
@@ -154,15 +154,15 @@ slay heapify_integers(arr drip[value], n drip, i drip) drip[value]{
     sus left drip = 2 * i + 1
     sus right drip = 2 * i + 2
     
-    ready (left < n && arr[left] > arr[largest]) {
+    lowkey (left < n && arr[left] > arr[largest]) {
         largest = left
     }
     
-    ready (right < n && arr[right] > arr[largest]) {
+    lowkey (right < n && arr[right] > arr[largest]) {
         largest = right
     }
     
-    ready (largest != i) {
+    lowkey (largest != i) {
         arr = swap_integer_elements(arr, i, largest)
         arr = heapify_integers(arr, n, largest)
     }
@@ -172,7 +172,7 @@ slay heapify_integers(arr drip[value], n drip, i drip) drip[value]{
 
 fr fr Optimized replacement for bubble_sort_array
 slay optimized_sort_array(nums drip[value]) drip[value]{
-    ready (nums.len <= 1) {
+    lowkey (nums.len <= 1) {
         damn nums
     }
     
@@ -226,7 +226,7 @@ slay benchmark_sorting_algorithms() {
     
     fr fr Verify sorting correctness
     sus is_sorted lit = verify_sorted(large_sorted)
-    ready (is_sorted) {
+    lowkey (is_sorted) {
         vibez.spill("✅ Large dataset is correctly sorted")
     } else {
         vibez.spill("❌ Sorting verification failed")
@@ -243,7 +243,7 @@ slay benchmark_sorting_algorithms() {
 slay verify_sorted(arr drip[value]) lit {
     sus i drip = 1
     periodt (i < arr.len) {
-        ready (arr[i-1] > arr[i]) {
+        lowkey (arr[i-1] > arr[i]) {
             damn cringe
         }
         i = i + 1

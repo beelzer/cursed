@@ -257,77 +257,77 @@ slay init_unicode_blocks() drip {
 # Property matching implementation
 slay match_unicode_property(ch drip, property tea) lit {
     # Handle general category properties
-    ready (unicode_categories.has(property)) {
+    lowkey (unicode_categories.has(property)) {
         sus ranges drip[value] = unicode_categories[property]
         damn is_in_ranges(ch, ranges)
     }
     
     # Handle script properties
-    ready (property.starts_with("Script=") || property.starts_with("sc=")) {
-        sus script tea = ready (property.starts_with("Script=")) {
+    lowkey (property.starts_with("Script=") || property.starts_with("sc=")) {
+        sus script tea = lowkey (property.starts_with("Script=")) {
             property.substring(7, property.len())
-        } otherwise {
+        } highkey {
             property.substring(3, property.len())
         }
         
-        ready (unicode_scripts.has(script)) {
+        lowkey (unicode_scripts.has(script)) {
             sus ranges drip[value] = unicode_scripts[script]
             damn is_in_ranges(ch, ranges)
         }
     }
     
     # Handle block properties
-    ready (property.starts_with("Block=") || property.starts_with("blk=")) {
-        sus block tea = ready (property.starts_with("Block=")) {
+    lowkey (property.starts_with("Block=") || property.starts_with("blk=")) {
+        sus block tea = lowkey (property.starts_with("Block=")) {
             property.substring(6, property.len())
-        } otherwise {
+        } highkey {
             property.substring(4, property.len())
         }
         
-        ready (unicode_blocks.has(block)) {
+        lowkey (unicode_blocks.has(block)) {
             sus range drip[value] = unicode_blocks[block]
             damn ch >= range[0] && ch <= range[1]
         }
     }
     
     # Handle derived properties
-    ready (property == "Alphabetic") {
+    lowkey (property == "Alphabetic") {
         damn is_alphabetic(ch)
     }
     
-    ready (property == "Lowercase") {
+    lowkey (property == "Lowercase") {
         damn is_lowercase(ch)
     }
     
-    ready (property == "Uppercase") {
+    lowkey (property == "Uppercase") {
         damn is_uppercase(ch)
     }
     
-    ready (property == "White_Space") {
+    lowkey (property == "White_Space") {
         damn is_whitespace(ch)
     }
     
-    ready (property == "Hex_Digit") {
+    lowkey (property == "Hex_Digit") {
         damn is_hex_digit(ch)
     }
     
-    ready (property == "ASCII_Hex_Digit") {
+    lowkey (property == "ASCII_Hex_Digit") {
         damn is_ascii_hex_digit(ch)
     }
     
-    ready (property == "Ideographic") {
+    lowkey (property == "Ideographic") {
         damn is_ideographic(ch)
     }
     
-    ready (property == "Diacritic") {
+    lowkey (property == "Diacritic") {
         damn is_diacritic(ch)
     }
     
-    ready (property == "Extender") {
+    lowkey (property == "Extender") {
         damn is_extender(ch)
     }
     
-    ready (property == "Noncharacter_Code_Point") {
+    lowkey (property == "Noncharacter_Code_Point") {
         damn is_noncharacter(ch)
     }
     
@@ -339,7 +339,7 @@ slay match_unicode_property(ch drip, property tea) lit {
 slay is_in_ranges(ch drip, ranges drip[value]) lit {
     sus i drip = 0
     bestie (i < ranges.len()) {
-        ready (ch >= ranges[i] && ch <= ranges[i + 1]) {
+        lowkey (ch >= ranges[i] && ch <= ranges[i + 1]) {
             damn based
         }
         i += 2
@@ -380,7 +380,7 @@ slay is_uppercase(ch drip) lit {
 
 slay is_whitespace(ch drip) lit {
     # Basic ASCII whitespace
-    ready (ch == 0x0020 || ch == 0x0009 || ch == 0x000A || ch == 0x000D) {
+    lowkey (ch == 0x0020 || ch == 0x0009 || ch == 0x000A || ch == 0x000D) {
         damn based
     }
     

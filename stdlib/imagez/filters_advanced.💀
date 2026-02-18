@@ -81,7 +81,7 @@ facts EDGE_ENHANCE ConvolutionKernel = ConvolutionKernel{
 
 # Advanced Gaussian blur with separable filters for performance
 slay gaussian_blur_separable(img Image, sigma drip) yikes<Image> {
-    ready (sigma <= 0) {
+    lowkey (sigma <= 0) {
         yikes "sigma must be positive"
     }
     
@@ -152,7 +152,7 @@ slay bilateral_filter(img Image, spatial_sigma drip, color_sigma drip, kernel_si
                     sus sample_y drip = y + dy
                     
                     # Check bounds
-                    ready (sample_x >= 0 && sample_x < img.width && sample_y >= 0 && sample_y < img.height) {
+                    lowkey (sample_x >= 0 && sample_x < img.width && sample_y >= 0 && sample_y < img.height) {
                         sus sample_pixel drip[value] = get_pixel(img, sample_x, sample_y) fam {
                             when _ -> continue
                         }
@@ -177,7 +177,7 @@ slay bilateral_filter(img Image, spatial_sigma drip, color_sigma drip, kernel_si
             }
             
             # Normalize by total weight
-            ready (weight_sum > 0) {
+            lowkey (weight_sum > 0) {
                 bestie (c drip = 0; c < img.channels; c = c + 1) {
                     filtered_pixel[c] = filtered_pixel[c] / weight_sum
                 }
@@ -217,13 +217,13 @@ slay unsharp_mask_advanced(img Image, radius drip, amount drip, threshold drip) 
                 sus difference drip = original_pixel[c] - blurred_pixel[c]
                 
                 # Apply threshold
-                ready (mathz.abs_normie(difference) >= threshold) {
+                lowkey (mathz.abs_normie(difference) >= threshold) {
                     sharpened_pixel[c] = original_pixel[c] + (amount * difference)
                     
                     # Clamp to valid range
-                    ready (sharpened_pixel[c] > 255.0) { sharpened_pixel[c] = 255.0 }
-                    ready (sharpened_pixel[c] < 0.0) { sharpened_pixel[c] = 0.0 }
-                } otherwise {
+                    lowkey (sharpened_pixel[c] > 255.0) { sharpened_pixel[c] = 255.0 }
+                    lowkey (sharpened_pixel[c] < 0.0) { sharpened_pixel[c] = 0.0 }
+                } highkey {
                     sharpened_pixel[c] = original_pixel[c]
                 }
             }
@@ -255,13 +255,13 @@ slay morphological_dilate(img Image, kernel_size drip, iterations drip) yikes<Im
                         sus sample_x drip = x + dx
                         sus sample_y drip = y + dy
                         
-                        ready (sample_x >= 0 && sample_x < img.width && sample_y >= 0 && sample_y < img.height) {
+                        lowkey (sample_x >= 0 && sample_x < img.width && sample_y >= 0 && sample_y < img.height) {
                             sus sample_pixel drip[value] = get_pixel(temp, sample_x, sample_y) fam {
                                 when _ -> continue
                             }
                             
                             bestie (c drip = 0; c < img.channels; c = c + 1) {
-                                ready (sample_pixel[c] > max_values[c]) {
+                                lowkey (sample_pixel[c] > max_values[c]) {
                                     max_values[c] = sample_pixel[c]
                                 }
                             }
@@ -296,13 +296,13 @@ slay morphological_erode(img Image, kernel_size drip, iterations drip) yikes<Ima
                         sus sample_x drip = x + dx
                         sus sample_y drip = y + dy
                         
-                        ready (sample_x >= 0 && sample_x < img.width && sample_y >= 0 && sample_y < img.height) {
+                        lowkey (sample_x >= 0 && sample_x < img.width && sample_y >= 0 && sample_y < img.height) {
                             sus sample_pixel drip[value] = get_pixel(temp, sample_x, sample_y) fam {
                                 when _ -> continue
                             }
                             
                             bestie (c drip = 0; c < img.channels; c = c + 1) {
-                                ready (sample_pixel[c] < min_values[c]) {
+                                lowkey (sample_pixel[c] < min_values[c]) {
                                     min_values[c] = sample_pixel[c]
                                 }
                             }
@@ -328,11 +328,11 @@ slay canny_edge_detection(img Image, low_threshold drip, high_threshold drip, si
     }
     
     # Convert to grayscale if needed
-    sus gray_img Image = ready (smoothed.channels > 1) {
+    sus gray_img Image = lowkey (smoothed.channels > 1) {
         damn convert_to_grayscale_advanced(smoothed) fam {
             when err -> yikes "grayscale conversion failed: " + err
         }
-    } otherwise {
+    } highkey {
         damn smoothed
     }
     
@@ -358,7 +358,7 @@ slay canny_edge_detection(img Image, low_threshold drip, high_threshold drip, si
             sus angle drip = mathz.atan2(gy[0], gx[0]) * 180.0 / mathz.pi()
             
             # Normalize angle to 0-180 degrees
-            ready (angle < 0) { angle += 180 }
+            lowkey (angle < 0) { angle += 180 }
             
             set_pixel(&magnitude, x, y, [mag]) fam { when _ -> continue }
             set_pixel(&direction, x, y, [angle]) fam { when _ -> continue }
@@ -402,7 +402,7 @@ slay histogram_equalization_adaptive(img Image, tile_size drip, clip_limit drip)
                     bestie (x drip = start_x; x < end_x; x = x + 1) {
                         sus pixel drip[value] = get_pixel(img, x, y) fam { when _ -> continue }
                         sus intensity drip = drip(pixel[c])
-                        ready (intensity >= 0 && intensity <= 255) {
+                        lowkey (intensity >= 0 && intensity <= 255) {
                             histogram[drip(intensity)]++
                             pixel_count++
                         }
@@ -412,7 +412,7 @@ slay histogram_equalization_adaptive(img Image, tile_size drip, clip_limit drip)
                 # Apply clip limit
                 sus excess drip = 0
                 bestie (i drip = 0; i < 256; i = i + 1) {
-                    ready (histogram[i] > clip_limit) {
+                    lowkey (histogram[i] > clip_limit) {
                         excess += histogram[i] - clip_limit
                         histogram[i] = clip_limit
                     }

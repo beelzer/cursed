@@ -52,13 +52,13 @@ slay find_max(nums drip[value]) drip {
 }
 
 slay find_min(nums drip[value]) drip {
-    ready (len(nums) == 0) {
+    lowkey (len(nums) == 0) {
         damn 0
     }
     sus min_val drip = nums[0]
     sus i drip = 1
     periodt (i < len(nums)) {
-        ready (nums[i] < min_val) {
+        lowkey (nums[i] < min_val) {
             min_val = nums[i]
         }
         i = i + 1
@@ -69,7 +69,7 @@ slay find_min(nums drip[value]) drip {
 slay contains_value(nums drip[value], value drip) lit {
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] == value) {
+        lowkey (nums[i] == value) {
             damn based
         }
         i = i + 1
@@ -80,7 +80,7 @@ slay contains_value(nums drip[value], value drip) lit {
 slay find_index(nums drip[value], value drip) drip {
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] == value) {
+        lowkey (nums[i] == value) {
             damn i
         }
         i = i + 1
@@ -92,7 +92,7 @@ fr fr ===== DYNAMIC ARRAY BUILDING =====
 
 fr fr Build array dynamically using iteration approach
 slay build_array_from_function(size drip, func_name tea, source_array drip[value]) drip[value]{
-    ready (size == 0) {
+    lowkey (size == 0) {
         damn []
     }
     
@@ -104,33 +104,33 @@ slay build_array_from_function(size drip, func_name tea, source_array drip[value
         sus element drip = 0
         
         fr fr Apply function based on name
-        ready (func_name == "reverse" && i < len(source_array)) {
+        lowkey (func_name == "reverse" && i < len(source_array)) {
             element = source_array[len(source_array) - 1 - i]
         }
-        ready (func_name == "double" && i < len(source_array)) {
+        lowkey (func_name == "double" && i < len(source_array)) {
             element = source_array[i] * 2
         }
-        ready (func_name == "square" && i < len(source_array)) {
+        lowkey (func_name == "square" && i < len(source_array)) {
             element = source_array[i] * source_array[i]
         }
-        ready (func_name == "increment" && i < len(source_array)) {
+        lowkey (func_name == "increment" && i < len(source_array)) {
             element = source_array[i] + 1
         }
-        ready (func_name == "copy" && i < len(source_array)) {
+        lowkey (func_name == "copy" && i < len(source_array)) {
             element = source_array[i]
         }
         
         fr fr Dynamically build array using temporary storage pattern
-        ready (i == 0) {
+        lowkey (i == 0) {
             result = [element]
         }
-        ready (i == 1 && len(result) == 1) {
+        lowkey (i == 1 && len(result) == 1) {
             result = [result[0], element]
         }
-        ready (i == 2 && len(result) == 2) {
+        lowkey (i == 2 && len(result) == 2) {
             result = [result[0], result[1], element]
         }
-        ready (i >= 3) {
+        lowkey (i >= 3) {
             fr fr For larger arrays, use incremental building
             result = append_to_dynamic_array(result, element, i)
         }
@@ -146,30 +146,30 @@ slay append_to_dynamic_array(base_array drip[value], new_element drip, position 
     sus base_len drip = len(base_array)
     
     fr fr Build new array by copying all existing elements plus new one
-    ready (base_len == 3 && position == 3) {
+    lowkey (base_len == 3 && position == 3) {
         damn [base_array[0], base_array[1], base_array[2], new_element]
     }
-    ready (base_len == 4 && position == 4) {
+    lowkey (base_len == 4 && position == 4) {
         damn [base_array[0], base_array[1], base_array[2], base_array[3], new_element]
     }
-    ready (base_len == 5 && position == 5) {
+    lowkey (base_len == 5 && position == 5) {
         damn [base_array[0], base_array[1], base_array[2], base_array[3], base_array[4], new_element]
     }
-    ready (base_len == 6 && position == 6) {
+    lowkey (base_len == 6 && position == 6) {
         damn [base_array[0], base_array[1], base_array[2], base_array[3], base_array[4], base_array[5], new_element]
     }
-    ready (base_len == 7 && position == 7) {
+    lowkey (base_len == 7 && position == 7) {
         damn [base_array[0], base_array[1], base_array[2], base_array[3], base_array[4], base_array[5], base_array[6], new_element]
     }
-    ready (base_len == 8 && position == 8) {
+    lowkey (base_len == 8 && position == 8) {
         damn [base_array[0], base_array[1], base_array[2], base_array[3], base_array[4], base_array[5], base_array[6], base_array[7], new_element]
     }
-    ready (base_len == 9 && position == 9) {
+    lowkey (base_len == 9 && position == 9) {
         damn [base_array[0], base_array[1], base_array[2], base_array[3], base_array[4], base_array[5], base_array[6], base_array[7], base_array[8], new_element]
     }
     
     fr fr For arrays up to 20 elements
-    ready (base_len == 10 && position == 10) {
+    lowkey (base_len == 10 && position == 10) {
         damn [base_array[0], base_array[1], base_array[2], base_array[3], base_array[4], 
               base_array[5], base_array[6], base_array[7], base_array[8], base_array[9], new_element]
     }
@@ -182,7 +182,7 @@ fr fr ===== ADVANCED ARRAY OPERATIONS (FIXED) =====
 
 slay reverse_array(nums drip[value]) drip[value]{
     sus length drip = len(nums)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn nums
     }
     
@@ -193,7 +193,7 @@ slay reverse_array(nums drip[value]) drip[value]{
 fr fr Quick sort implementation that works with any array size
 slay sort_array_ascending(nums drip[value]) drip[value]{
     sus length drip = len(nums)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn nums
     }
     
@@ -210,7 +210,7 @@ slay bubble_sort_array(nums drip[value]) drip[value]{
         swapped = cringe
         sus i drip = 0
         periodt (i < length - 1) {
-            ready (result[i] > result[i + 1]) {
+            lowkey (result[i] > result[i + 1]) {
                 fr fr Swap elements
                 sus temp drip = result[i]
                 result = set_array_element(result, i, result[i + 1])
@@ -227,17 +227,17 @@ slay bubble_sort_array(nums drip[value]) drip[value]{
 fr fr Set element in array at specific index
 slay set_array_element(arr drip[value], index drip, value drip) drip[value]{
     sus length drip = len(arr)
-    ready (index < 0 || index >= length) {
+    lowkey (index < 0 || index >= length) {
         damn arr
     }
     
     sus result drip[value] = []
     sus i drip = 0
     periodt (i < length) {
-        ready (i == index) {
+        lowkey (i == index) {
             result = append_element_at_position(result, value, i)
         }
-        ready (i != index) {
+        lowkey (i != index) {
             result = append_element_at_position(result, arr[i], i)
         }
         i = i + 1
@@ -248,37 +248,37 @@ slay set_array_element(arr drip[value], index drip, value drip) drip[value]{
 
 fr fr Append element at specific position using pattern matching
 slay append_element_at_position(base drip[value], element drip, pos drip) drip[value]{
-    ready (pos == 0) {
+    lowkey (pos == 0) {
         damn [element]
     }
-    ready (pos == 1 && len(base) == 1) {
+    lowkey (pos == 1 && len(base) == 1) {
         damn [base[0], element]
     }
-    ready (pos == 2 && len(base) == 2) {
+    lowkey (pos == 2 && len(base) == 2) {
         damn [base[0], base[1], element]
     }
-    ready (pos == 3 && len(base) == 3) {
+    lowkey (pos == 3 && len(base) == 3) {
         damn [base[0], base[1], base[2], element]
     }
-    ready (pos == 4 && len(base) == 4) {
+    lowkey (pos == 4 && len(base) == 4) {
         damn [base[0], base[1], base[2], base[3], element]
     }
-    ready (pos == 5 && len(base) == 5) {
+    lowkey (pos == 5 && len(base) == 5) {
         damn [base[0], base[1], base[2], base[3], base[4], element]
     }
-    ready (pos == 6 && len(base) == 6) {
+    lowkey (pos == 6 && len(base) == 6) {
         damn [base[0], base[1], base[2], base[3], base[4], base[5], element]
     }
-    ready (pos == 7 && len(base) == 7) {
+    lowkey (pos == 7 && len(base) == 7) {
         damn [base[0], base[1], base[2], base[3], base[4], base[5], base[6], element]
     }
-    ready (pos == 8 && len(base) == 8) {
+    lowkey (pos == 8 && len(base) == 8) {
         damn [base[0], base[1], base[2], base[3], base[4], base[5], base[6], base[7], element]
     }
-    ready (pos == 9 && len(base) == 9) {
+    lowkey (pos == 9 && len(base) == 9) {
         damn [base[0], base[1], base[2], base[3], base[4], base[5], base[6], base[7], base[8], element]
     }
-    ready (pos == 10 && len(base) == 10) {
+    lowkey (pos == 10 && len(base) == 10) {
         damn [base[0], base[1], base[2], base[3], base[4], base[5], base[6], base[7], base[8], base[9], element]
     }
     
@@ -295,7 +295,7 @@ fr fr ===== ARRAY TRANSFORMATION (FIXED) =====
 
 slay map_array(nums drip[value], operation tea) drip[value]{
     sus length drip = len(nums)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn []
     }
     
@@ -312,20 +312,20 @@ slay filter_array(nums drip[value], condition tea) drip[value]{
     periodt (i < len(nums)) {
         sus include lit = cringe
         
-        ready (condition == "positive" && nums[i] > 0) {
+        lowkey (condition == "positive" && nums[i] > 0) {
             include = based
         }
-        ready (condition == "even" && nums[i] % 2 == 0) {
+        lowkey (condition == "even" && nums[i] % 2 == 0) {
             include = based
         }
-        ready (condition == "negative" && nums[i] < 0) {
+        lowkey (condition == "negative" && nums[i] < 0) {
             include = based
         }
-        ready (condition == "odd" && nums[i] % 2 == 1) {
+        lowkey (condition == "odd" && nums[i] % 2 == 1) {
             include = based
         }
         
-        ready (include) {
+        lowkey (include) {
             result = append_element_at_position(result, nums[i], result_count)
             result_count = result_count + 1
         }
@@ -342,7 +342,7 @@ slay slice_array(nums drip[value], start drip, end drip) drip[value]{
     sus length drip = len(nums)
     
     fr fr Bounds checking
-    ready (start < 0 || start >= length || end <= start || end > length) {
+    lowkey (start < 0 || start >= length || end <= start || end > length) {
         damn []
     }
     
@@ -366,8 +366,8 @@ slay concat_arrays(a drip[value], b drip[value]) drip[value]{
     sus len_a drip = len(a)
     sus len_b drip = len(b)
     
-    ready (len_a == 0) { damn b }
-    ready (len_b == 0) { damn a }
+    lowkey (len_a == 0) { damn b }
+    lowkey (len_b == 0) { damn a }
     
     sus result drip[value] = build_array_from_function(len_a, "copy", a)
     sus i drip = 0
@@ -385,7 +385,7 @@ fr fr ===== ARRAY INSERTION AND REMOVAL (FIXED) =====
 slay insert_at_index(nums drip[value], index drip, value drip) drip[value]{
     sus length drip = len(nums)
     
-    ready (index < 0 || index > length) {
+    lowkey (index < 0 || index > length) {
         damn nums
     }
     
@@ -417,7 +417,7 @@ slay insert_at_index(nums drip[value], index drip, value drip) drip[value]{
 slay remove_at_index(nums drip[value], index drip) drip[value]{
     sus length drip = len(nums)
     
-    ready (index < 0 || index >= length) {
+    lowkey (index < 0 || index >= length) {
         damn nums
     }
     
@@ -426,7 +426,7 @@ slay remove_at_index(nums drip[value], index drip) drip[value]{
     sus i drip = 0
     
     periodt (i < length) {
-        ready (i != index) {
+        lowkey (i != index) {
             result = append_element_at_position(result, nums[i], result_pos)
             result_pos = result_pos + 1
         }
@@ -462,7 +462,7 @@ slay count_positive(nums drip[value]) drip {
     sus count drip = 0
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] > 0) {
+        lowkey (nums[i] > 0) {
             count = count + 1
         }
         i = i + 1
@@ -474,7 +474,7 @@ slay count_negative(nums drip[value]) drip {
     sus count drip = 0
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] < 0) {
+        lowkey (nums[i] < 0) {
             count = count + 1
         }
         i = i + 1
@@ -486,7 +486,7 @@ slay count_zeros(nums drip[value]) drip {
     sus count drip = 0
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] == 0) {
+        lowkey (nums[i] == 0) {
             count = count + 1
         }
         i = i + 1
@@ -498,7 +498,7 @@ slay count_occurrences(nums drip[value], value drip) drip {
     sus count drip = 0
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] == value) {
+        lowkey (nums[i] == value) {
             count = count + 1
         }
         i = i + 1
@@ -511,7 +511,7 @@ slay is_valid_index(nums drip[value], index drip) lit {
 }
 
 slay safe_get(nums drip[value], index drip, default_value drip) drip {
-    ready (is_valid_index(nums, index)) {
+    lowkey (is_valid_index(nums, index)) {
         damn nums[index]
     }
     damn default_value
@@ -520,7 +520,7 @@ slay safe_get(nums drip[value], index drip, default_value drip) drip {
 slay all_positive(nums drip[value]) lit {
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] <= 0) {
+        lowkey (nums[i] <= 0) {
             damn cringe
         }
         i = i + 1
@@ -531,7 +531,7 @@ slay all_positive(nums drip[value]) lit {
 slay all_negative(nums drip[value]) lit {
     sus i drip = 0
     periodt (i < len(nums)) {
-        ready (nums[i] >= 0) {
+        lowkey (nums[i] >= 0) {
             damn cringe
         }
         i = i + 1
@@ -544,7 +544,7 @@ slay has_duplicates(nums drip[value]) lit {
     periodt (i < len(nums)) {
         sus j drip = i + 1
         periodt (j < len(nums)) {
-            ready (nums[i] == nums[j]) {
+            lowkey (nums[i] == nums[j]) {
                 damn based
             }
             j = j + 1
@@ -558,13 +558,13 @@ slay arrays_equal(a drip[value], b drip[value]) lit {
     sus len_a drip = len(a)
     sus len_b drip = len(b)
     
-    ready (len_a != len_b) {
+    lowkey (len_a != len_b) {
         damn cringe
     }
     
     sus i drip = 0
     periodt (i < len_a) {
-        ready (a[i] != b[i]) {
+        lowkey (a[i] != b[i]) {
             damn cringe
         }
         i = i + 1
@@ -575,13 +575,13 @@ slay arrays_equal(a drip[value], b drip[value]) lit {
 
 slay is_sorted_ascending(nums drip[value]) lit {
     sus length drip = len(nums)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn based
     }
     
     sus i drip = 0
     periodt (i < length - 1) {
-        ready (nums[i] > nums[i + 1]) {
+        lowkey (nums[i] > nums[i + 1]) {
             damn cringe
         }
         i = i + 1
@@ -592,13 +592,13 @@ slay is_sorted_ascending(nums drip[value]) lit {
 
 slay is_sorted_descending(nums drip[value]) lit {
     sus length drip = len(nums)
-    ready (length <= 1) {
+    lowkey (length <= 1) {
         damn based
     }
     
     sus i drip = 0
     periodt (i < length - 1) {
-        ready (nums[i] < nums[i + 1]) {
+        lowkey (nums[i] < nums[i + 1]) {
             damn cringe
         }
         i = i + 1
@@ -609,19 +609,19 @@ slay is_sorted_descending(nums drip[value]) lit {
 
 slay median_array(nums drip[value]) drip {
     sus length drip = len(nums)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn 0
     }
     
     sus sorted drip[value] = sort_array_ascending(nums)
     sus middle drip = length / 2
     
-    ready (length % 2 == 1) {
+    lowkey (length % 2 == 1) {
         damn sorted[middle]
     }
     
     fr fr Even length - average of two middle elements
-    ready (length >= 2) {
+    lowkey (length >= 2) {
         damn (sorted[middle - 1] + sorted[middle]) / 2
     }
     
@@ -629,7 +629,7 @@ slay median_array(nums drip[value]) drip {
 }
 
 slay mode_array(nums drip[value]) drip {
-    ready (len(nums) == 0) {
+    lowkey (len(nums) == 0) {
         damn 0
     }
     
@@ -639,7 +639,7 @@ slay mode_array(nums drip[value]) drip {
     sus i drip = 0
     periodt (i < len(nums)) {
         sus current_count drip = count_occurrences(nums, nums[i])
-        ready (current_count > max_count) {
+        lowkey (current_count > max_count) {
             max_count = current_count
             mode_value = nums[i]
         }
@@ -650,7 +650,7 @@ slay mode_array(nums drip[value]) drip {
 }
 
 slay range_array(nums drip[value]) drip {
-    ready (len(nums) == 0) {
+    lowkey (len(nums) == 0) {
         damn 0
     }
     

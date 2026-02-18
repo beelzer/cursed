@@ -40,7 +40,7 @@ struct SelectContext {
     spill operations normie[value]          fr fr Operation types (0=recv, 1=send)
     spill send_data normie[value]           fr fr Data for send operations
     spill timeout_ms normie            fr fr Timeout in milliseconds
-    spill ready_channel normie         fr fr Index of ready channel (-1 = none)
+    spill ready_channel normie         fr fr Index of lowkey channel (-1 = none)
     spill result_data normie           fr fr Data from successful operation
     spill random_seed normie           fr fr Random seed for fairness
 }
@@ -89,9 +89,9 @@ slay create_enhanced_channel(capacity normie) *EnhancedChannel {
     sus ch *EnhancedChannel = memory.allocate(EnhancedChannel)
     
     fr fr Initialize buffer
-    ready capacity > 0 {
+    lowkey capacity > 0 {
         ch.buffer = memory.allocate_array(normie, capacity)
-    } otherwise {
+    } highkey {
         ch.buffer = memory.allocate_array(normie, 1)  fr fr Minimal buffer for sync channels
     }
     
@@ -121,23 +121,23 @@ slay create_enhanced_channel(capacity normie) *EnhancedChannel {
 
 fr fr Enhanced blocking send with deadlock prevention
 slay enhanced_channel_send(ch *EnhancedChannel, data normie) lit {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn cap  fr fr Invalid channel
     }
     
     fr fr Check if channel is closed
-    ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+    lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
         damn cap  fr fr Cannot send to closed channel
     }
     
     fr fr Deadlock prevention: Check waiter limits
     sus current_send_waiters normie = atomic_drip.atomic_load_i32(&ch.send_waiters, ACQUIRE)
-    ready current_send_waiters >= ch.max_waiters {
+    lowkey current_send_waiters >= ch.max_waiters {
         damn cap  fr fr Too many waiters - potential deadlock
     }
     
     fr fr For unbuffered channels (synchronous communication)
-    ready ch.capacity == 0 {
+    lowkey ch.capacity == 0 {
         damn enhanced_sync_channel_send(ch, data)
     }
     
@@ -156,20 +156,20 @@ slay enhanced_sync_channel_send(ch *EnhancedChannel, data normie) lit {
     periodt {
         fr fr Check for receiver
         sus recv_waiters normie = atomic_drip.atomic_load_i32(&ch.recv_waiters, ACQUIRE)
-        ready recv_waiters > 0 {
+        lowkey recv_waiters > 0 {
             fr fr Receiver waiting - can proceed with synchronous transfer
             break
         }
         
         fr fr Check if channel closed during wait
-        ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+        lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
             atomic_drip.atomic_sub_i32(&ch.send_waiters, 1, RELAXED)
             damn cap
         }
         
         fr fr Deadlock prevention: Timeout check
         sus elapsed_time thicc = get_current_time_ms() - wait_start_time
-        ready global_deadlock_config.prevention_enabled && 
+        lowkey global_deadlock_config.prevention_enabled && 
               elapsed_time > global_deadlock_config.max_wait_time {
             atomic_drip.atomic_sub_i32(&ch.send_waiters, 1, RELAXED)
             damn cap  fr fr Timeout to prevent deadlock
@@ -182,9 +182,9 @@ slay enhanced_sync_channel_send(ch *EnhancedChannel, data normie) lit {
             yield_cycles = yield_cycles + 1
         }
         
-        ready backoff_count < max_backoff {
+        lowkey backoff_count < max_backoff {
             backoff_count = backoff_count * 2
-        } otherwise {
+        } highkey {
             backoff_count = max_backoff
         }
         
@@ -213,18 +213,18 @@ slay enhanced_buffered_channel_send(ch *EnhancedChannel, data normie) lit {
     fr fr Wait for buffer space with timeout
     periodt {
         sus current_size normie = atomic_drip.atomic_load_i32(&ch.size, ACQUIRE)
-        ready current_size < ch.capacity {
+        lowkey current_size < ch.capacity {
             break  fr fr Space available
         }
         
         fr fr Check if channel closed
-        ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+        lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
             damn cap
         }
         
         fr fr Deadlock prevention: Timeout check
         sus elapsed_time thicc = get_current_time_ms() - wait_start_time
-        ready global_deadlock_config.prevention_enabled && 
+        lowkey global_deadlock_config.prevention_enabled && 
               elapsed_time > global_deadlock_config.max_wait_time {
             damn cap  fr fr Timeout to prevent deadlock
         }
@@ -239,9 +239,9 @@ slay enhanced_buffered_channel_send(ch *EnhancedChannel, data normie) lit {
             yield_cycles = yield_cycles + 1
         }
         
-        ready space_backoff < 500 {
+        lowkey space_backoff < 500 {
             space_backoff = space_backoff * 2
-        } otherwise {
+        } highkey {
             space_backoff = 500
         }
         
@@ -254,12 +254,12 @@ slay enhanced_buffered_channel_send(ch *EnhancedChannel, data normie) lit {
         sus current_pos normie = atomic_drip.atomic_load_i32(&ch.send_pos, ACQUIRE)
         
         fr fr Double-check capacity
-        ready current_size >= ch.capacity {
+        lowkey current_size >= ch.capacity {
             continue  fr fr Retry if buffer became full
         }
         
         fr fr Atomic size and position update
-        ready atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size + 1, ACQREL) {
+        lowkey atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size + 1, ACQREL) {
             fr fr Successfully reserved slot
             sus buffer_index normie = current_pos % ch.capacity
             atomic_drip.memory_fence(ACQUIRE)
@@ -285,18 +285,18 @@ slay enhanced_buffered_channel_send(ch *EnhancedChannel, data normie) lit {
 
 fr fr Enhanced blocking receive with deadlock prevention
 slay enhanced_channel_receive(ch *EnhancedChannel) (normie, lit) {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn (0, cap)  fr fr Invalid channel
     }
     
     fr fr Deadlock prevention: Check waiter limits
     sus current_recv_waiters normie = atomic_drip.atomic_load_i32(&ch.recv_waiters, ACQUIRE)
-    ready current_recv_waiters >= ch.max_waiters {
+    lowkey current_recv_waiters >= ch.max_waiters {
         damn (0, cap)  fr fr Too many waiters - potential deadlock
     }
     
     fr fr For unbuffered channels
-    ready ch.capacity == 0 {
+    lowkey ch.capacity == 0 {
         damn enhanced_sync_channel_receive(ch)
     }
     
@@ -314,19 +314,19 @@ slay enhanced_sync_channel_receive(ch *EnhancedChannel) (normie, lit) {
     periodt {
         fr fr Check for sender
         sus send_waiters normie = atomic_drip.atomic_load_i32(&ch.send_waiters, ACQUIRE)
-        ready send_waiters > 0 {
+        lowkey send_waiters > 0 {
             break  fr fr Sender waiting - can proceed
         }
         
         fr fr Check if channel closed
-        ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+        lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
             atomic_drip.atomic_sub_i32(&ch.recv_waiters, 1, RELAXED)
             damn (0, cap)  fr fr Channel closed, no data
         }
         
         fr fr Deadlock prevention: Timeout check
         sus elapsed_time thicc = get_current_time_ms() - wait_start_time
-        ready global_deadlock_config.prevention_enabled && 
+        lowkey global_deadlock_config.prevention_enabled && 
               elapsed_time > global_deadlock_config.max_wait_time {
             atomic_drip.atomic_sub_i32(&ch.recv_waiters, 1, RELAXED)
             damn (0, cap)  fr fr Timeout to prevent deadlock
@@ -339,9 +339,9 @@ slay enhanced_sync_channel_receive(ch *EnhancedChannel) (normie, lit) {
             yield_cycles = yield_cycles + 1
         }
         
-        ready backoff_count < 1000 {
+        lowkey backoff_count < 1000 {
             backoff_count = backoff_count * 2
-        } otherwise {
+        } highkey {
             backoff_count = 1000
         }
         
@@ -370,18 +370,18 @@ slay enhanced_buffered_channel_receive(ch *EnhancedChannel) (normie, lit) {
     fr fr Wait for data with timeout
     periodt {
         sus current_size normie = atomic_drip.atomic_load_i32(&ch.size, ACQUIRE)
-        ready current_size > 0 {
+        lowkey current_size > 0 {
             break  fr fr Data available
         }
         
         fr fr Check if channel closed and empty
-        ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+        lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
             damn (0, cap)  fr fr Channel closed and empty
         }
         
         fr fr Deadlock prevention: Timeout check
         sus elapsed_time thicc = get_current_time_ms() - wait_start_time
-        ready global_deadlock_config.prevention_enabled && 
+        lowkey global_deadlock_config.prevention_enabled && 
               elapsed_time > global_deadlock_config.max_wait_time {
             damn (0, cap)  fr fr Timeout to prevent deadlock
         }
@@ -396,9 +396,9 @@ slay enhanced_buffered_channel_receive(ch *EnhancedChannel) (normie, lit) {
             yield_cycles = yield_cycles + 1
         }
         
-        ready data_backoff < 500 {
+        lowkey data_backoff < 500 {
             data_backoff = data_backoff * 2
-        } otherwise {
+        } highkey {
             data_backoff = 500
         }
         
@@ -411,12 +411,12 @@ slay enhanced_buffered_channel_receive(ch *EnhancedChannel) (normie, lit) {
         sus current_pos normie = atomic_drip.atomic_load_i32(&ch.recv_pos, ACQUIRE)
         
         fr fr Double-check data availability
-        ready current_size == 0 {
+        lowkey current_size == 0 {
             continue  fr fr Retry if buffer became empty
         }
         
         fr fr Atomic size decrement and position update
-        ready atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size - 1, ACQREL) {
+        lowkey atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size - 1, ACQREL) {
             fr fr Successfully reserved data slot
             sus buffer_index normie = current_pos % ch.capacity
             atomic_drip.memory_fence(ACQUIRE)
@@ -460,7 +460,7 @@ slay create_select_context(channel_count normie) *SelectContext {
 
 fr fr Add channel to select context for receive operation
 slay select_add_recv(ctx *SelectContext, index normie, ch *EnhancedChannel) lit {
-    ready ctx == 0 || index >= ctx.channel_count || ch == 0 {
+    lowkey ctx == 0 || index >= ctx.channel_count || ch == 0 {
         damn cap
     }
     
@@ -472,7 +472,7 @@ slay select_add_recv(ctx *SelectContext, index normie, ch *EnhancedChannel) lit 
 
 fr fr Add channel to select context for send operation
 slay select_add_send(ctx *SelectContext, index normie, ch *EnhancedChannel, data normie) lit {
-    ready ctx == 0 || index >= ctx.channel_count || ch == 0 {
+    lowkey ctx == 0 || index >= ctx.channel_count || ch == 0 {
         damn cap
     }
     
@@ -484,7 +484,7 @@ slay select_add_send(ctx *SelectContext, index normie, ch *EnhancedChannel, data
 
 fr fr Execute select statement with timeout and fairness
 slay enhanced_select_execute(ctx *SelectContext, timeout_ms normie) normie {
-    ready ctx == 0 {
+    lowkey ctx == 0 {
         damn -1  fr fr Invalid context
     }
     
@@ -498,9 +498,9 @@ slay enhanced_select_execute(ctx *SelectContext, timeout_ms normie) normie {
     
     bestie iterations < max_iterations {
         fr fr Check timeout
-        ready timeout_ms > 0 {
+        lowkey timeout_ms > 0 {
             sus elapsed thicc = get_current_time_ms() - start_time
-            ready elapsed >= timeout_ms {
+            lowkey elapsed >= timeout_ms {
                 damn -1  fr fr Timeout
             }
         }
@@ -512,7 +512,7 @@ slay enhanced_select_execute(ctx *SelectContext, timeout_ms normie) normie {
             sus ch *EnhancedChannel = ctx.channels[channel_index]
             sus operation normie = ctx.operations[channel_index]
             
-            ready ch == 0 {
+            lowkey ch == 0 {
                 i = i + 1
                 continue  fr fr Skip invalid channels
             }
@@ -520,18 +520,18 @@ slay enhanced_select_execute(ctx *SelectContext, timeout_ms normie) normie {
             fr fr Try the operation
             sus operation_result lit = cap
             
-            ready operation == 0 {
+            lowkey operation == 0 {
                 fr fr Receive operation
                 operation_result = select_try_receive_enhanced(ch, &ctx.result_data)
-            } otherwise {
+            } highkey {
                 fr fr Send operation
                 sus data_to_send normie = ctx.send_data[channel_index]
                 operation_result = select_try_send_enhanced(ch, data_to_send)
             }
             
-            ready operation_result {
+            lowkey operation_result {
                 ctx.ready_channel = channel_index
-                damn channel_index  fr fr Return index of ready channel
+                damn channel_index  fr fr Return index of lowkey channel
             }
             
             i = i + 1
@@ -543,7 +543,7 @@ slay enhanced_select_execute(ctx *SelectContext, timeout_ms normie) normie {
         random_start = (random_start + 1) % ctx.channel_count
         
         fr fr Adaptive backoff for busy waiting
-        ready iterations % 100 == 0 {
+        lowkey iterations % 100 == 0 {
             sus yield_count normie = iterations / 1000 + 1
             sus j normie = 0
             bestie j < yield_count {
@@ -558,23 +558,23 @@ slay enhanced_select_execute(ctx *SelectContext, timeout_ms normie) normie {
 
 fr fr Non-blocking receive for select statements
 slay select_try_receive_enhanced(ch *EnhancedChannel, result_data *normie) lit {
-    ready ch == 0 || result_data == 0 {
+    lowkey ch == 0 || result_data == 0 {
         damn cap
     }
     
     fr fr Check if channel closed
-    ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+    lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
         sus current_size normie = atomic_drip.atomic_load_i32(&ch.size, ACQUIRE)
-        ready current_size == 0 {
+        lowkey current_size == 0 {
             *result_data = 0
             damn based  fr fr Closed and empty - return success with 0 data
         }
     }
     
     fr fr For unbuffered channels - check for waiting senders
-    ready ch.capacity == 0 {
+    lowkey ch.capacity == 0 {
         sus send_waiters normie = atomic_drip.atomic_load_i32(&ch.send_waiters, ACQUIRE)
-        ready send_waiters > 0 {
+        lowkey send_waiters > 0 {
             fr fr Sender available - attempt atomic receive
             atomic_drip.memory_fence(ACQUIRE)
             *result_data = ch.buffer[0]
@@ -590,11 +590,11 @@ slay select_try_receive_enhanced(ch *EnhancedChannel, result_data *normie) lit {
     
     fr fr For buffered channels - try atomic receive
     sus current_size normie = atomic_drip.atomic_load_i32(&ch.size, ACQUIRE)
-    ready current_size > 0 {
+    lowkey current_size > 0 {
         sus current_pos normie = atomic_drip.atomic_load_i32(&ch.recv_pos, ACQUIRE)
         
         fr fr Atomic buffer extraction
-        ready atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size - 1, ACQREL) {
+        lowkey atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size - 1, ACQREL) {
             sus buffer_index normie = current_pos % ch.capacity
             atomic_drip.memory_fence(ACQUIRE)
             *result_data = ch.buffer[buffer_index]
@@ -613,19 +613,19 @@ slay select_try_receive_enhanced(ch *EnhancedChannel, result_data *normie) lit {
 
 fr fr Non-blocking send for select statements
 slay select_try_send_enhanced(ch *EnhancedChannel, data normie) lit {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn cap
     }
     
     fr fr Check if channel closed
-    ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+    lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
         damn cap  fr fr Cannot send to closed channel
     }
     
     fr fr For unbuffered channels - check for waiting receivers
-    ready ch.capacity == 0 {
+    lowkey ch.capacity == 0 {
         sus recv_waiters normie = atomic_drip.atomic_load_i32(&ch.recv_waiters, ACQUIRE)
-        ready recv_waiters > 0 {
+        lowkey recv_waiters > 0 {
             fr fr Receiver available - attempt atomic send
             atomic_drip.memory_fence(ACQREL)
             ch.buffer[0] = data
@@ -641,11 +641,11 @@ slay select_try_send_enhanced(ch *EnhancedChannel, data normie) lit {
     
     fr fr For buffered channels - try atomic send
     sus current_size normie = atomic_drip.atomic_load_i32(&ch.size, ACQUIRE)
-    ready current_size < ch.capacity {
+    lowkey current_size < ch.capacity {
         sus current_pos normie = atomic_drip.atomic_load_i32(&ch.send_pos, ACQUIRE)
         
         fr fr Atomic buffer insertion
-        ready atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size + 1, ACQREL) {
+        lowkey atomic_drip.compare_and_swap_i32(&ch.size, current_size, current_size + 1, ACQREL) {
             sus buffer_index normie = current_pos % ch.capacity
             atomic_drip.memory_fence(ACQUIRE)
             ch.buffer[buffer_index] = data
@@ -668,12 +668,12 @@ fr fr ==========================================================================
 
 fr fr Close channel with proper cleanup and notification
 slay enhanced_channel_close(ch *EnhancedChannel) lit {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn cap
     }
     
     fr fr Check if already closed
-    ready atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
+    lowkey atomic_drip.atomic_load_i32(&ch.closed, ACQUIRE) == 1 {
         damn based  fr fr Already closed - idempotent operation
     }
     
@@ -701,7 +701,7 @@ slay enhanced_channel_close(ch *EnhancedChannel) lit {
 
 fr fr Check if channel is closed
 slay enhanced_channel_is_closed(ch *EnhancedChannel) lit {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn based  fr fr Invalid channels are considered closed
     }
     
@@ -723,7 +723,7 @@ slay enhanced_channel_stats(ch *EnhancedChannel) ChannelStats {
         last_activity: 0
     }
     
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn stats  fr fr Return empty stats for invalid channel
     }
     
@@ -744,7 +744,7 @@ slay enhanced_channel_stats(ch *EnhancedChannel) ChannelStats {
 
 fr fr Cleanup channel resources (call before deallocation)
 slay enhanced_channel_cleanup(ch *EnhancedChannel) {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn
     }
     
@@ -756,7 +756,7 @@ slay enhanced_channel_cleanup(ch *EnhancedChannel) {
     bestie cleanup_attempts < 100 {
         sus total_waiters normie = atomic_drip.atomic_load_i32(&ch.send_waiters, ACQUIRE) + 
                                   atomic_drip.atomic_load_i32(&ch.recv_waiters, ACQUIRE)
-        ready total_waiters == 0 {
+        lowkey total_waiters == 0 {
             break  fr fr All operations completed
         }
         
@@ -768,7 +768,7 @@ slay enhanced_channel_cleanup(ch *EnhancedChannel) {
     }
     
     fr fr Clear buffer contents (security)
-    ready ch.buffer != 0 {
+    lowkey ch.buffer != 0 {
         sus i normie = 0
         bestie i < ch.capacity {
             ch.buffer[i] = 0
@@ -783,18 +783,18 @@ fr fr ==========================================================================
 
 fr fr Register channel for global deadlock detection
 slay register_channel_for_deadlock_detection(ch *EnhancedChannel) {
-    ready ch == 0 || !global_deadlock_config.prevention_enabled {
+    lowkey ch == 0 || !global_deadlock_config.prevention_enabled {
         damn
     }
     
     fr fr Initialize global registry if needed
-    ready global_channel_registry == 0 {
+    lowkey global_channel_registry == 0 {
         global_channel_registry = memory.allocate_array(*EnhancedChannel, global_registry_capacity)
         global_registry_size = 0
     }
     
     fr fr Add to registry if space available
-    ready global_registry_size < global_registry_capacity {
+    lowkey global_registry_size < global_registry_capacity {
         global_channel_registry[global_registry_size] = ch
         global_registry_size = global_registry_size + 1
     }
@@ -802,14 +802,14 @@ slay register_channel_for_deadlock_detection(ch *EnhancedChannel) {
 
 fr fr Unregister channel from deadlock detection
 slay unregister_channel_from_deadlock_detection(ch *EnhancedChannel) {
-    ready ch == 0 || global_channel_registry == 0 {
+    lowkey ch == 0 || global_channel_registry == 0 {
         damn
     }
     
     fr fr Find and remove channel from registry
     sus i normie = 0
     bestie i < global_registry_size {
-        ready global_channel_registry[i] == ch {
+        lowkey global_channel_registry[i] == ch {
             fr fr Shift remaining channels down
             sus j normie = i
             bestie j < global_registry_size - 1 {
@@ -825,7 +825,7 @@ slay unregister_channel_from_deadlock_detection(ch *EnhancedChannel) {
 
 fr fr Check for potential deadlocks across all channels
 slay check_for_deadlocks() lit {
-    ready !global_deadlock_config.prevention_enabled || global_channel_registry == 0 {
+    lowkey !global_deadlock_config.prevention_enabled || global_channel_registry == 0 {
         damn cap  fr fr Deadlock detection disabled or no channels
     }
     
@@ -836,14 +836,14 @@ slay check_for_deadlocks() lit {
     sus i normie = 0
     bestie i < global_registry_size {
         sus ch *EnhancedChannel = global_channel_registry[i]
-        ready ch != 0 && !enhanced_channel_is_closed(ch) {
+        lowkey ch != 0 && !enhanced_channel_is_closed(ch) {
             sus send_waiters normie = atomic_drip.atomic_load_i32(&ch.send_waiters, ACQUIRE)
             sus recv_waiters normie = atomic_drip.atomic_load_i32(&ch.recv_waiters, ACQUIRE)
             sus channel_waiters normie = send_waiters + recv_waiters
             
             total_waiters = total_waiters + channel_waiters
             
-            ready channel_waiters > 0 {
+            lowkey channel_waiters > 0 {
                 blocked_channels = blocked_channels + 1
             }
         }
@@ -851,11 +851,11 @@ slay check_for_deadlocks() lit {
     }
     
     fr fr Potential deadlock detection heuristics
-    ready total_waiters > global_deadlock_config.max_total_waiters {
+    lowkey total_waiters > global_deadlock_config.max_total_waiters {
         damn based  fr fr Too many total waiters - potential deadlock
     }
     
-    ready blocked_channels > global_registry_size / 2 && blocked_channels > 5 {
+    lowkey blocked_channels > global_registry_size / 2 && blocked_channels > 5 {
         damn based  fr fr More than half of channels blocked - potential deadlock
     }
     

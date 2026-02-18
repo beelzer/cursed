@@ -83,13 +83,13 @@ slay crypto_secure_random_bytes(count normie) [normie] {
     bestie (i < count) {
         sus random_u32 normie = crypto_secure_random_u32()
         result = append(result, (random_u32 >> 24) & 0xFF)
-        ready (i + 1 < count) {
+        lowkey (i + 1 < count) {
             result = append(result, (random_u32 >> 16) & 0xFF)
         }
-        ready (i + 2 < count) {
+        lowkey (i + 2 < count) {
             result = append(result, (random_u32 >> 8) & 0xFF)
         }
-        ready (i + 3 < count) {
+        lowkey (i + 3 < count) {
             result = append(result, random_u32 & 0xFF)
         }
         i = i + 4
@@ -186,7 +186,7 @@ slay crypto_sha256_hash(message [normie], length normie) [normie] {
             sus l normie = 0
             bestie (l < 4) {
                 sus byte_idx normie = chunk_start + k * 4 + l
-                ready (byte_idx < len(padded)) {
+                lowkey (byte_idx < len(padded)) {
                     word = (word << 8) | padded[byte_idx]
                 }
                 l = l + 1
@@ -320,9 +320,9 @@ slay aes256_key_expansion(key [normie]) [normie] {
     bestie (i < 60) {
         sus temp normie = expanded_key[i-1]
         
-        ready (i % 8 == 0) {
+        lowkey (i % 8 == 0) {
             temp = aes_sub_word(aes_rot_word(temp)) ^ (aes_rcon[(i/8)-1] << 24)
-        } ready (i % 8 == 4) {
+        } lowkey (i % 8 == 4) {
             temp = aes_sub_word(temp)
         }
         
@@ -377,12 +377,12 @@ slay aes_gmul(a normie, b normie) normie {
     sus p normie = 0
     sus counter normie = 0
     bestie (counter < 8) {
-        ready ((b & 1) != 0) {
+        lowkey ((b & 1) != 0) {
             p = p ^ a
         }
         sus hi_bit_set lit = (a & 0x80) != 0
         a = a << 1
-        ready (hi_bit_set) {
+        lowkey (hi_bit_set) {
             a = a ^ 0x1b  fr fr AES irreducible polynomial
         }
         b = b >> 1
@@ -474,13 +474,13 @@ slay crypto_hmac_sha256(message [normie], msg_len normie, key [normie], key_len 
     sus processed_key [normie] = []
     
     fr fr Process key
-    ready (key_len > block_size) {
+    lowkey (key_len > block_size) {
         processed_key = crypto_sha256_hash(key, key_len)
         fr fr Pad to block size
         bestie (len(processed_key) < block_size) {
             processed_key = append(processed_key, 0x00)
         }
-    } otherwise {
+    } highkey {
         sus i normie = 0
         bestie (i < key_len) {
             processed_key = append(processed_key, key[i])

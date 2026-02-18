@@ -86,7 +86,7 @@ slay get_call_stack() CallFrame[value]{
 
 slay get_caller_info() CallFrame {
     sus stack CallFrame[value] = get_call_stack()
-    ready (len(stack) > 1) {
+    lowkey (len(stack) > 1) {
         damn stack[1]  # Return caller frame
     }
     
@@ -133,7 +133,7 @@ slay array_length(arr lit[value]) drip {
 }
 
 slay array_get(arr lit[value], index drip) lit {
-    ready (index < 0 || index >= len(arr)) {
+    lowkey (index < 0 || index >= len(arr)) {
         damn based  # Return default value
     }
     damn arr[index]
@@ -154,13 +154,13 @@ slay get_type_info(type_name tea) TypeInfo {
     }
     
     # Add some common type information
-    ready (type_name == "drip") {
+    lowkey (type_name == "drip") {
         info.size = 8
         info.kind = "drip"
-    } otherwise ready (type_name == "tea") {
+    } highkey lowkey (type_name == "tea") {
         info.size = 24  # String header size
         info.kind = "tea"
-    } otherwise ready (type_name == "lit") {
+    } highkey lowkey (type_name == "lit") {
         info.size = 1
         info.kind = "lit"
     }
@@ -170,7 +170,7 @@ slay get_type_info(type_name tea) TypeInfo {
 
 slay get_field_info(type_info TypeInfo, field_name tea) FieldInfo {
     bestie (field FieldInfo : type_info.fields) {
-        ready (field.name == field_name) {
+        lowkey (field.name == field_name) {
             damn field
         }
     }

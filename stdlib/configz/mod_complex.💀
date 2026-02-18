@@ -70,12 +70,12 @@ slay parse_json_advanced(content tea) ConfigContext {
     }
     
     sus trimmed tea = trim_whitespace(content)
-    ready (is_valid_json(trimmed)) {
+    lowkey (is_valid_json(trimmed)) {
         sus parsed_values ConfigValue[value] = extract_json_values(trimmed)
         ctx.values = parsed_values
         ctx = apply_environment_substitution(ctx)
         ctx = validate_configuration(ctx)
-    } otherwise {
+    } highkey {
         ctx.validation_errors = add_error(ctx.validation_errors, "Invalid JSON format")
     }
     
@@ -94,12 +94,12 @@ slay parse_yaml_advanced(content tea) ConfigContext {
     }
     
     sus trimmed tea = trim_whitespace(content)
-    ready (is_valid_yaml(trimmed)) {
+    lowkey (is_valid_yaml(trimmed)) {
         sus parsed_values ConfigValue[value] = extract_yaml_values(trimmed)
         ctx.values = parsed_values
         ctx = apply_environment_substitution(ctx)
         ctx = validate_configuration(ctx)
-    } otherwise {
+    } highkey {
         ctx.validation_errors = add_error(ctx.validation_errors, "Invalid YAML format")
     }
     
@@ -118,12 +118,12 @@ slay parse_toml_advanced(content tea) ConfigContext {
     }
     
     sus trimmed tea = trim_whitespace(content)
-    ready (is_valid_toml(trimmed)) {
+    lowkey (is_valid_toml(trimmed)) {
         sus parsed_values ConfigValue[value] = extract_toml_values(trimmed)
         ctx.values = parsed_values
         ctx = apply_environment_substitution(ctx)
         ctx = validate_configuration(ctx)
-    } otherwise {
+    } highkey {
         ctx.validation_errors = add_error(ctx.validation_errors, "Invalid TOML format")
     }
     
@@ -145,7 +145,7 @@ slay parse_env_advanced(content tea) ConfigContext {
     sus i normie = 0
     bestie (i < len(lines)) {
         sus line tea = trim_whitespace(lines[i])
-        ready (is_valid_env_line(line)) {
+        lowkey (is_valid_env_line(line)) {
             sus config_value ConfigValue = parse_env_line(line)
             ctx.values = append_config_value(ctx.values, config_value)
         }
@@ -203,7 +203,7 @@ slay validate_against_schema(ctx ConfigContext, schema ConfigSchema) ConfigConte
     sus i normie = 0
     bestie (i < len(schema.required_keys)) {
         sus required_key tea = schema.required_keys[i]
-        ready (!has_configuration_key(ctx, required_key)) {
+        lowkey (!has_configuration_key(ctx, required_key)) {
             sus error_msg tea = "Missing required key: " + required_key
             ctx.validation_errors = add_error(ctx.validation_errors, error_msg)
         }
@@ -215,10 +215,10 @@ slay validate_against_schema(ctx ConfigContext, schema ConfigSchema) ConfigConte
     bestie (j < len(schema.default_values)) {
         sus default_pair tea = schema.default_values[j]
         sus parts tea[value] = split_by_colon(default_pair)
-        ready (len(parts) == 2) {
+        lowkey (len(parts) == 2) {
             sus key tea = parts[0]
             sus default_value tea = parts[1]
-            ready (!has_configuration_key(ctx, key)) {
+            lowkey (!has_configuration_key(ctx, key)) {
                 sus default_config ConfigValue = ConfigValue{
                     key: key,
                     value: default_value,
@@ -294,7 +294,7 @@ slay load_environment_config() ConfigContext {
     bestie (i < len(common_env_vars)) {
         sus var_name tea = common_env_vars[i]
         sus env_value tea = get_env_value(var_name)
-        ready (string_length(env_value) > 0) {
+        lowkey (string_length(env_value) > 0) {
             sus config_value ConfigValue = ConfigValue{
                 key: var_name,
                 value: env_value,
@@ -369,7 +369,7 @@ slay validate_configuration(ctx ConfigContext) ConfigContext {
     sus i normie = 0
     bestie (i < len(ctx.values)) {
         sus config_value ConfigValue = ctx.values[i]
-        ready (!is_valid_configuration_value(config_value)) {
+        lowkey (!is_valid_configuration_value(config_value)) {
             sus error_msg tea = "Invalid value for key: " + config_value.key
             ctx.validation_errors = add_error(ctx.validation_errors, error_msg)
             config_value.is_valid = cap
@@ -386,12 +386,12 @@ slay apply_validation_rules(ctx ConfigContext, schema ConfigSchema) ConfigContex
     bestie (i < len(schema.validators)) {
         sus validator tea = schema.validators[i]
         sus parts tea[value] = split_by_colon(validator)
-        ready (len(parts) == 2) {
+        lowkey (len(parts) == 2) {
             sus key tea = parts[0]
             sus rule tea = parts[1]
-            ready (has_configuration_key(ctx, key)) {
+            lowkey (has_configuration_key(ctx, key)) {
                 sus value tea = get_configuration_value(ctx, key)
-                ready (!validate_value_against_rule(value, rule)) {
+                lowkey (!validate_value_against_rule(value, rule)) {
                     sus error_msg tea = "Validation failed for key '" + key + "' with rule '" + rule + "'"
                     ctx.validation_errors = add_error(ctx.validation_errors, error_msg)
                 }
@@ -404,27 +404,27 @@ slay apply_validation_rules(ctx ConfigContext, schema ConfigSchema) ConfigContex
 
 slay validate_value_against_rule(value tea, rule tea) lit {
     fr fr Validate a value against a validation rule
-    ready (rule == "required") {
+    lowkey (rule == "required") {
         damn string_length(value) > 0
     }
-    ready (rule == "integer") {
+    lowkey (rule == "integer") {
         damn is_valid_integer(value)
     }
-    ready (rule == "boolean") {
+    lowkey (rule == "boolean") {
         damn is_valid_boolean(value)
     }
-    ready (rule == "url") {
+    lowkey (rule == "url") {
         damn is_valid_url(value)
     }
-    ready (rule == "email") {
+    lowkey (rule == "email") {
         damn is_valid_email(value)
     }
-    ready (string_starts_with(rule, "min_length:")) {
+    lowkey (string_starts_with(rule, "min_length:")) {
         sus min_len_str tea = string_after(rule, "min_length:")
         sus min_len normie = parse_integer(min_len_str)
         damn string_length(value) >= min_len
     }
-    ready (string_starts_with(rule, "max_length:")) {
+    lowkey (string_starts_with(rule, "max_length:")) {
         sus max_len_str tea = string_after(rule, "max_length:")
         sus max_len normie = parse_integer(max_len_str)
         damn string_length(value) <= max_len
@@ -438,19 +438,19 @@ fr fr ==========================================
 
 slay detect_value_type(value tea) tea {
     fr fr Detect the type of a configuration value
-    ready (is_valid_boolean(value)) {
+    lowkey (is_valid_boolean(value)) {
         damn "boolean"
     }
-    ready (is_valid_integer(value)) {
+    lowkey (is_valid_integer(value)) {
         damn "integer"
     }
-    ready (is_valid_float(value)) {
+    lowkey (is_valid_float(value)) {
         damn "float"
     }
-    ready (is_array_value(value)) {
+    lowkey (is_array_value(value)) {
         damn "array"
     }
-    ready (is_object_value(value)) {
+    lowkey (is_object_value(value)) {
         damn "object"
     }
     damn "string"
@@ -459,7 +459,7 @@ slay detect_value_type(value tea) tea {
 slay convert_to_boolean(value tea) lit {
     fr fr Convert string value to boolean
     sus lower tea = to_lowercase(value)
-    ready (lower == "true" || lower == "1" || lower == "yes" || lower == "on") {
+    lowkey (lower == "true" || lower == "1" || lower == "yes" || lower == "on") {
         damn based
     }
     damn cap
@@ -473,18 +473,18 @@ slay convert_to_integer(value tea) normie {
 slay get_typed_value(ctx ConfigContext, key tea, default_type tea) tea {
     fr fr Get configuration value with type conversion
     sus value tea = get_configuration_value(ctx, key)
-    ready (string_length(value) == 0) {
+    lowkey (string_length(value) == 0) {
         damn ""
     }
     
-    ready (default_type == "boolean") {
-        ready (convert_to_boolean(value)) {
+    lowkey (default_type == "boolean") {
+        lowkey (convert_to_boolean(value)) {
             damn "true"
-        } otherwise {
+        } highkey {
             damn "false"
         }
     }
-    ready (default_type == "integer") {
+    lowkey (default_type == "integer") {
         sus int_val normie = convert_to_integer(value)
         damn integer_to_string(int_val)
     }
@@ -501,33 +501,33 @@ slay auto_detect_format(content tea) tea {
     sus trimmed tea = trim_whitespace(content)
     
     fr fr JSON detection (more comprehensive)
-    ready ((string_starts_with(trimmed, "{") && string_ends_with(trimmed, "}")) ||
+    lowkey ((string_starts_with(trimmed, "{") && string_ends_with(trimmed, "}")) ||
            (string_starts_with(trimmed, "[") && string_ends_with(trimmed, "]"))) {
-        ready (count_occurrences(trimmed, "\"") >= 2) {
+        lowkey (count_occurrences(trimmed, "\"") >= 2) {
             damn format_json()
         }
     }
     
     fr fr YAML detection (improved)
-    ready (string_contains(trimmed, "---") || 
+    lowkey (string_contains(trimmed, "---") || 
            (string_contains(trimmed, ": ") && !string_contains(trimmed, "="))) {
         damn format_yaml()
     }
     
     fr fr TOML detection
-    ready (string_contains(trimmed, "[[") || 
+    lowkey (string_contains(trimmed, "[[") || 
            (string_contains(trimmed, " = ") && string_contains(trimmed, "\""))) {
         damn format_toml()
     }
     
     fr fr INI detection
-    ready (string_contains(trimmed, "[") && string_contains(trimmed, "]") && 
+    lowkey (string_contains(trimmed, "[") && string_contains(trimmed, "]") && 
            string_contains(trimmed, "=")) {
         damn format_ini()
     }
     
     fr fr Environment file detection
-    ready (string_contains(trimmed, "=") && !string_contains(trimmed, " ")) {
+    lowkey (string_contains(trimmed, "=") && !string_contains(trimmed, " ")) {
         damn format_env()
     }
     
@@ -538,20 +538,20 @@ slay load_configuration_file(filename tea) ConfigContext {
     fr fr Load and parse configuration file with auto-detection
     sus content tea = read_file_content(filename)
     sus format tea = detect_format_from_filename(filename)
-    ready (format == "auto") {
+    lowkey (format == "auto") {
         format = auto_detect_format(content)
     }
     
     sus ctx ConfigContext
-    ready (format == format_json()) {
+    lowkey (format == format_json()) {
         ctx = parse_json_advanced(content)
-    } alternatively ready (format == format_yaml()) {
+    } alternatively lowkey (format == format_yaml()) {
         ctx = parse_yaml_advanced(content)
-    } alternatively ready (format == format_toml()) {
+    } alternatively lowkey (format == format_toml()) {
         ctx = parse_toml_advanced(content)
-    } alternatively ready (format == format_env()) {
+    } alternatively lowkey (format == format_env()) {
         ctx = parse_env_advanced(content)
-    } otherwise {
+    } highkey {
         ctx = parse_json_advanced(content) fr fr Fallback to JSON
     }
     
@@ -561,13 +561,13 @@ slay load_configuration_file(filename tea) ConfigContext {
 
 slay detect_format_from_filename(filename tea) tea {
     fr fr Enhanced filename-based format detection
-    ready (string_ends_with(filename, ".json")) { damn format_json() }
-    ready (string_ends_with(filename, ".yaml") || string_ends_with(filename, ".yml")) { damn format_yaml() }
-    ready (string_ends_with(filename, ".toml")) { damn format_toml() }
-    ready (string_ends_with(filename, ".ini") || string_ends_with(filename, ".cfg")) { damn format_ini() }
-    ready (string_ends_with(filename, ".env") || string_ends_with(filename, ".environment")) { damn format_env() }
-    ready (string_ends_with(filename, ".properties")) { damn format_properties() }
-    ready (string_ends_with(filename, ".xml")) { damn format_xml() }
+    lowkey (string_ends_with(filename, ".json")) { damn format_json() }
+    lowkey (string_ends_with(filename, ".yaml") || string_ends_with(filename, ".yml")) { damn format_yaml() }
+    lowkey (string_ends_with(filename, ".toml")) { damn format_toml() }
+    lowkey (string_ends_with(filename, ".ini") || string_ends_with(filename, ".cfg")) { damn format_ini() }
+    lowkey (string_ends_with(filename, ".env") || string_ends_with(filename, ".environment")) { damn format_env() }
+    lowkey (string_ends_with(filename, ".properties")) { damn format_properties() }
+    lowkey (string_ends_with(filename, ".xml")) { damn format_xml() }
     damn "auto"
 }
 
@@ -602,7 +602,7 @@ slay load_config_with_defaults(config_files tea[value], default_schema ConfigSch
 slay get_config_string(ctx ConfigContext, key tea, default_value tea) tea {
     fr fr Get string configuration value with default
     sus value tea = get_configuration_value(ctx, key)
-    ready (string_length(value) == 0) {
+    lowkey (string_length(value) == 0) {
         damn default_value
     }
     damn value
@@ -611,11 +611,11 @@ slay get_config_string(ctx ConfigContext, key tea, default_value tea) tea {
 slay get_config_int(ctx ConfigContext, key tea, default_value normie) normie {
     fr fr Get integer configuration value with default
     sus value tea = get_configuration_value(ctx, key)
-    ready (string_length(value) == 0) {
+    lowkey (string_length(value) == 0) {
         damn default_value
     }
     sus int_val normie = convert_to_integer(value)
-    ready (int_val == 0 && value != "0") {
+    lowkey (int_val == 0 && value != "0") {
         damn default_value
     }
     damn int_val
@@ -624,7 +624,7 @@ slay get_config_int(ctx ConfigContext, key tea, default_value normie) normie {
 slay get_config_bool(ctx ConfigContext, key tea, default_value lit) lit {
     fr fr Get boolean configuration value with default
     sus value tea = get_configuration_value(ctx, key)
-    ready (string_length(value) == 0) {
+    lowkey (string_length(value) == 0) {
         damn default_value
     }
     damn convert_to_boolean(value)
@@ -633,7 +633,7 @@ slay get_config_bool(ctx ConfigContext, key tea, default_value lit) lit {
 slay get_config_array(ctx ConfigContext, key tea) tea[value]{
     fr fr Get array configuration value
     sus value tea = get_configuration_value(ctx, key)
-    ready (is_array_value(value)) {
+    lowkey (is_array_value(value)) {
         damn parse_array_value(value)
     }
     damn []
@@ -656,10 +656,10 @@ fr fr ==========================================
 slay trim_whitespace(str tea) tea {
     fr fr Remove leading and trailing whitespace
     fr fr Simplified implementation
-    ready (string_starts_with(str, " ") || string_starts_with(str, "\t") || string_starts_with(str, "\n")) {
+    lowkey (string_starts_with(str, " ") || string_starts_with(str, "\t") || string_starts_with(str, "\n")) {
         damn trim_whitespace(string_substring(str, 1, string_length(str) - 1))
     }
-    ready (string_ends_with(str, " ") || string_ends_with(str, "\t") || string_ends_with(str, "\n")) {
+    lowkey (string_ends_with(str, " ") || string_ends_with(str, "\t") || string_ends_with(str, "\n")) {
         damn trim_whitespace(string_substring(str, 0, string_length(str) - 1))
     }
     damn str
@@ -669,10 +669,10 @@ slay split_by_newline(content tea) tea[value]{
     fr fr Split content by newlines
     fr fr Simplified implementation - would use proper string splitting in real implementation
     sus lines tea[value] = []
-    ready (string_contains(content, "\n")) {
+    lowkey (string_contains(content, "\n")) {
         lines = append_string(lines, "line1")
         lines = append_string(lines, "line2")
-    } otherwise {
+    } highkey {
         lines = append_string(lines, content)
     }
     damn lines
@@ -681,12 +681,12 @@ slay split_by_newline(content tea) tea[value]{
 slay split_by_colon(str tea) tea[value]{
     fr fr Split string by colon
     sus parts tea[value] = []
-    ready (string_contains(str, ":")) {
+    lowkey (string_contains(str, ":")) {
         sus before tea = string_before(str, ":")
         sus after tea = string_after(str, ":")
         parts = append_string(parts, before)
         parts = append_string(parts, after)
-    } otherwise {
+    } highkey {
         parts = append_string(parts, str)
     }
     damn parts
@@ -696,8 +696,8 @@ slay count_occurrences(str tea, char tea) normie {
     fr fr Count occurrences of character in string
     sus count normie = 0
     fr fr Simplified implementation
-    ready (char == "\"") {
-        ready (string_contains(str, "\"")) {
+    lowkey (char == "\"") {
+        lowkey (string_contains(str, "\"")) {
             count = 2 fr fr Simplified count
         }
     }
@@ -707,11 +707,11 @@ slay count_occurrences(str tea, char tea) normie {
 slay string_before(str tea, delimiter tea) tea {
     fr fr Get substring before delimiter
     fr fr Simplified implementation
-    ready (delimiter == ":") {
-        ready (str == "key:value") {
+    lowkey (delimiter == ":") {
+        lowkey (str == "key:value") {
             damn "key"
         }
-        ready (str == "database:localhost") {
+        lowkey (str == "database:localhost") {
             damn "database"
         }
     }
@@ -721,14 +721,14 @@ slay string_before(str tea, delimiter tea) tea {
 slay string_after(str tea, delimiter tea) tea {
     fr fr Get substring after delimiter
     fr fr Simplified implementation
-    ready (delimiter == ":") {
-        ready (str == "key:value") {
+    lowkey (delimiter == ":") {
+        lowkey (str == "key:value") {
             damn "value"
         }
-        ready (str == "database:localhost") {
+        lowkey (str == "database:localhost") {
             damn "localhost"
         }
-        ready (str == "min_length:5") {
+        lowkey (str == "min_length:5") {
             damn "5"
         }
     }
@@ -748,10 +748,10 @@ slay is_valid_boolean(value tea) lit {
 
 slay is_valid_integer(value tea) lit {
     fr fr Check if value is a valid integer
-    ready (value == "0" || value == "1" || value == "42" || value == "100") {
+    lowkey (value == "0" || value == "1" || value == "42" || value == "100") {
         damn based
     }
-    ready (string_starts_with(value, "-")) {
+    lowkey (string_starts_with(value, "-")) {
         damn is_valid_integer(string_substring(value, 1, string_length(value) - 1))
     }
     damn cap
@@ -759,7 +759,7 @@ slay is_valid_integer(value tea) lit {
 
 slay is_valid_float(value tea) lit {
     fr fr Check if value is a valid float
-    ready (string_contains(value, ".")) {
+    lowkey (string_contains(value, ".")) {
         damn based
     }
     damn cap
@@ -794,7 +794,7 @@ slay has_configuration_key(ctx ConfigContext, key tea) lit {
     fr fr Check if configuration has a key
     sus i normie = 0
     bestie (i < len(ctx.values)) {
-        ready (ctx.values[i].key == key) {
+        lowkey (ctx.values[i].key == key) {
             damn based
         }
         i = i + 1
@@ -806,7 +806,7 @@ slay get_configuration_value(ctx ConfigContext, key tea) tea {
     fr fr Get configuration value by key
     sus i normie = 0
     bestie (i < len(ctx.values)) {
-        ready (ctx.values[i].key == key) {
+        lowkey (ctx.values[i].key == key) {
             damn ctx.values[i].value
         }
         i = i + 1
@@ -818,7 +818,7 @@ slay set_configuration_value(ctx ConfigContext, key tea, value tea, source tea) 
     fr fr Set configuration value
     sus i normie = 0
     bestie (i < len(ctx.values)) {
-        ready (ctx.values[i].key == key) {
+        lowkey (ctx.values[i].key == key) {
             ctx.values[i].value = value
             ctx.values[i].source = source
             ctx.values[i].value_type = detect_value_type(value)
@@ -874,14 +874,14 @@ fr fr ==========================================
 slay detect_environment() tea {
     fr fr Detect current environment (dev, test, prod)
     sus node_env tea = get_env_value("NODE_ENV")
-    ready (node_env == "development") { damn "development" }
-    ready (node_env == "production") { damn "production" }
-    ready (node_env == "test") { damn "test" }
+    lowkey (node_env == "development") { damn "development" }
+    lowkey (node_env == "production") { damn "production" }
+    lowkey (node_env == "test") { damn "test" }
     
     sus rails_env tea = get_env_value("RAILS_ENV")
-    ready (rails_env == "development") { damn "development" }
-    ready (rails_env == "production") { damn "production" }
-    ready (rails_env == "test") { damn "test" }
+    lowkey (rails_env == "development") { damn "development" }
+    lowkey (rails_env == "production") { damn "production" }
+    lowkey (rails_env == "test") { damn "test" }
     
     damn "development" fr fr Default to development
 }
@@ -889,10 +889,10 @@ slay detect_environment() tea {
 slay get_env_value(name tea) tea {
     fr fr Get environment variable value
     fr fr This would interface with the envz module
-    ready (name == "NODE_ENV") { damn "development" }
-    ready (name == "HOME") { damn "/home/user" }
-    ready (name == "PATH") { damn "/usr/bin:/bin" }
-    ready (name == "USER") { damn "cursed_user" }
+    lowkey (name == "NODE_ENV") { damn "development" }
+    lowkey (name == "HOME") { damn "/home/user" }
+    lowkey (name == "PATH") { damn "/usr/bin:/bin" }
+    lowkey (name == "USER") { damn "cursed_user" }
     damn ""
 }
 
@@ -902,13 +902,13 @@ fr fr ==========================================
 
 slay read_file_content(filename tea) tea {
     fr fr Read file content (simulated)
-    ready (filename == "config.json") {
+    lowkey (filename == "config.json") {
         damn "{\"database\":{\"host\":\"${DB_HOST}\",\"port\":5432},\"app\":{\"name\":\"MyApp\",\"debug\":true}}"
     }
-    ready (filename == "config.yaml") {
+    lowkey (filename == "config.yaml") {
         damn "database:\n  host: ${DB_HOST}\n  port: 5432\napp:\n  name: MyApp\n  debug: true"
     }
-    ready (filename == ".env") {
+    lowkey (filename == ".env") {
         damn "DB_HOST=localhost\nDEBUG=true\nPORT=3000"
     }
     damn "{}"
@@ -962,7 +962,7 @@ slay extract_toml_values(content tea) ConfigValue[value]{
 slay parse_env_line(line tea) ConfigValue {
     fr fr Parse environment variable line
     sus parts tea[value] = split_by_equals(line)
-    ready (len(parts) == 2) {
+    lowkey (len(parts) == 2) {
         damn ConfigValue{
             key: parts[0],
             value: parts[1],
@@ -977,12 +977,12 @@ slay parse_env_line(line tea) ConfigValue {
 slay split_by_equals(str tea) tea[value]{
     fr fr Split string by equals sign
     sus parts tea[value] = []
-    ready (string_contains(str, "=")) {
+    lowkey (string_contains(str, "=")) {
         sus before tea = string_before(str, "=")
         sus after tea = string_after(str, "=")
         parts = append_string(parts, before)
         parts = append_string(parts, after)
-    } otherwise {
+    } highkey {
         parts = append_string(parts, str)
     }
     damn parts
@@ -992,7 +992,7 @@ slay parse_array_value(value tea) tea[value]{
     fr fr Parse array value from string
     sus result tea[value] = []
     fr fr Simplified array parsing
-    ready (value == "[1,2,3]") {
+    lowkey (value == "[1,2,3]") {
         result = append_string(result, "1")
         result = append_string(result, "2")
         result = append_string(result, "3")
@@ -1007,7 +1007,7 @@ fr fr ==========================================
 slay extract_env_patterns(input tea) tea[value]{
     fr fr Extract ${VAR} and $VAR patterns from input
     sus patterns tea[value] = []
-    ready (string_contains(input, "${")) {
+    lowkey (string_contains(input, "${")) {
         patterns = append_string(patterns, "${DB_HOST}")
     }
     damn patterns
@@ -1015,7 +1015,7 @@ slay extract_env_patterns(input tea) tea[value]{
 
 slay extract_var_name(pattern tea) tea {
     fr fr Extract variable name from pattern
-    ready (pattern == "${DB_HOST}") {
+    lowkey (pattern == "${DB_HOST}") {
         damn "DB_HOST"
     }
     damn "UNKNOWN"
@@ -1023,7 +1023,7 @@ slay extract_var_name(pattern tea) tea {
 
 slay replace_string(source tea, old_str tea, new_str tea) tea {
     fr fr Replace string (simplified)
-    ready (old_str == "${DB_HOST}" && new_str == "localhost") {
+    lowkey (old_str == "${DB_HOST}" && new_str == "localhost") {
         damn string_replace_db_host(source)
     }
     damn source
@@ -1031,7 +1031,7 @@ slay replace_string(source tea, old_str tea, new_str tea) tea {
 
 slay string_replace_db_host(source tea) tea {
     fr fr Replace ${DB_HOST} with localhost
-    ready (string_contains(source, "${DB_HOST}")) {
+    lowkey (string_contains(source, "${DB_HOST}")) {
         damn "localhost_replaced_in_config"
     }
     damn source
@@ -1039,80 +1039,80 @@ slay string_replace_db_host(source tea) tea {
 
 slay parse_integer(str tea) normie {
     fr fr Parse string to integer (simplified)
-    ready (str == "0") { damn 0 }
-    ready (str == "1") { damn 1 }
-    ready (str == "5") { damn 5 }
-    ready (str == "42") { damn 42 }
-    ready (str == "100") { damn 100 }
-    ready (str == "3000") { damn 3000 }
-    ready (str == "5432") { damn 5432 }
+    lowkey (str == "0") { damn 0 }
+    lowkey (str == "1") { damn 1 }
+    lowkey (str == "5") { damn 5 }
+    lowkey (str == "42") { damn 42 }
+    lowkey (str == "100") { damn 100 }
+    lowkey (str == "3000") { damn 3000 }
+    lowkey (str == "5432") { damn 5432 }
     damn 0
 }
 
 slay integer_to_string(value normie) tea {
     fr fr Convert integer to string (simplified)
-    ready (value == 0) { damn "0" }
-    ready (value == 1) { damn "1" }
-    ready (value == 42) { damn "42" }
-    ready (value == 100) { damn "100" }
-    ready (value == 3000) { damn "3000" }
-    ready (value == 5432) { damn "5432" }
+    lowkey (value == 0) { damn "0" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value == 42) { damn "42" }
+    lowkey (value == 100) { damn "100" }
+    lowkey (value == 3000) { damn "3000" }
+    lowkey (value == 5432) { damn "5432" }
     damn "unknown"
 }
 
 slay to_lowercase(str tea) tea {
     fr fr Convert string to lowercase (simplified)
-    ready (str == "TRUE") { damn "true" }
-    ready (str == "FALSE") { damn "false" }
-    ready (str == "YES") { damn "yes" }
-    ready (str == "NO") { damn "no" }
-    ready (str == "ON") { damn "on" }
-    ready (str == "OFF") { damn "off" }
+    lowkey (str == "TRUE") { damn "true" }
+    lowkey (str == "FALSE") { damn "false" }
+    lowkey (str == "YES") { damn "yes" }
+    lowkey (str == "NO") { damn "no" }
+    lowkey (str == "ON") { damn "on" }
+    lowkey (str == "OFF") { damn "off" }
     damn str
 }
 
 slay string_length(str tea) normie {
     fr fr Get string length (simplified)
-    ready (str == "") { damn 0 }
-    ready (str == "a") { damn 1 }
-    ready (str == "true") { damn 4 }
-    ready (str == "false") { damn 5 }
-    ready (str == "localhost") { damn 9 }
-    ready (str == "development") { damn 11 }
+    lowkey (str == "") { damn 0 }
+    lowkey (str == "a") { damn 1 }
+    lowkey (str == "true") { damn 4 }
+    lowkey (str == "false") { damn 5 }
+    lowkey (str == "localhost") { damn 9 }
+    lowkey (str == "development") { damn 11 }
     damn 10 fr fr Default estimate
 }
 
 slay string_starts_with(str tea, prefix tea) lit {
     fr fr Check if string starts with prefix (simplified)
-    ready (prefix == "{") { damn string_contains(str, "{") }
-    ready (prefix == "[") { damn string_contains(str, "[") }
-    ready (prefix == "http://") { damn str == "http://example.com" }
-    ready (prefix == "https://") { damn str == "https://example.com" }
-    ready (prefix == "min_length:") { damn str == "min_length:5" }
-    ready (prefix == "max_length:") { damn str == "max_length:100" }
+    lowkey (prefix == "{") { damn string_contains(str, "{") }
+    lowkey (prefix == "[") { damn string_contains(str, "[") }
+    lowkey (prefix == "http://") { damn str == "http://example.com" }
+    lowkey (prefix == "https://") { damn str == "https://example.com" }
+    lowkey (prefix == "min_length:") { damn str == "min_length:5" }
+    lowkey (prefix == "max_length:") { damn str == "max_length:100" }
     damn cap
 }
 
 slay string_ends_with(str tea, suffix tea) lit {
     fr fr Check if string ends with suffix (simplified)
-    ready (suffix == "}") { damn string_contains(str, "}") }
-    ready (suffix == "]") { damn string_contains(str, "]") }
-    ready (suffix == ".json") { damn str == "config.json" }
-    ready (suffix == ".yaml") { damn str == "config.yaml" }
-    ready (suffix == ".env") { damn str == ".env" }
+    lowkey (suffix == "}") { damn string_contains(str, "}") }
+    lowkey (suffix == "]") { damn string_contains(str, "]") }
+    lowkey (suffix == ".json") { damn str == "config.json" }
+    lowkey (suffix == ".yaml") { damn str == "config.yaml" }
+    lowkey (suffix == ".env") { damn str == ".env" }
     damn cap
 }
 
 slay string_contains(str tea, needle tea) lit {
     fr fr Check if string contains substring (simplified)
-    ready (needle == "{") { damn str == "{\"key\":\"value\"}" || str == "{}" }
-    ready (needle == "}") { damn str == "{\"key\":\"value\"}" || str == "{}" }
-    ready (needle == ":") { damn str == "key: value" || string_contains_colon_advanced(str) }
-    ready (needle == "=") { damn str == "key=value" || string_contains_equals_advanced(str) }
-    ready (needle == "@") { damn str == "user@example.com" }
-    ready (needle == ".") { damn str == "user@example.com" || str == "3.14" }
-    ready (needle == "\n") { damn str == "line1\nline2" }
-    ready (needle == "${") { damn str == "${DB_HOST}" || string_contains_env_var(str) }
+    lowkey (needle == "{") { damn str == "{\"key\":\"value\"}" || str == "{}" }
+    lowkey (needle == "}") { damn str == "{\"key\":\"value\"}" || str == "{}" }
+    lowkey (needle == ":") { damn str == "key: value" || string_contains_colon_advanced(str) }
+    lowkey (needle == "=") { damn str == "key=value" || string_contains_equals_advanced(str) }
+    lowkey (needle == "@") { damn str == "user@example.com" }
+    lowkey (needle == ".") { damn str == "user@example.com" || str == "3.14" }
+    lowkey (needle == "\n") { damn str == "line1\nline2" }
+    lowkey (needle == "${") { damn str == "${DB_HOST}" || string_contains_env_var(str) }
     damn cap
 }
 
@@ -1133,20 +1133,20 @@ slay string_contains_env_var(str tea) lit {
 
 slay string_substring(str tea, start normie, length normie) tea {
     fr fr Get substring (simplified)
-    ready (str == "config.json" && start == 0 && length == 6) { damn "config" }
-    ready (str == "min_length:5" && start == 11 && length == 1) { damn "5" }
+    lowkey (str == "config.json" && start == 0 && length == 6) { damn "config" }
+    lowkey (str == "min_length:5" && start == 11 && length == 1) { damn "5" }
     damn str
 }
 
 slay is_valid_configuration_value(config_value ConfigValue) lit {
     fr fr Validate a single configuration value
-    ready (string_length(config_value.value) == 0) {
+    lowkey (string_length(config_value.value) == 0) {
         damn cap
     }
-    ready (config_value.value_type == "boolean") {
+    lowkey (config_value.value_type == "boolean") {
         damn is_valid_boolean(config_value.value)
     }
-    ready (config_value.value_type == "integer") {
+    lowkey (config_value.value_type == "integer") {
         damn is_valid_integer(config_value.value)
     }
     damn based fr fr Default: valid

@@ -144,9 +144,9 @@ fr fr ===== LEAP YEAR CALCULATIONS =====
 
 slay is_gregorian_leap_year(year drip) lit {
     fr fr Gregorian leap year rule: divisible by 4, except centuries unless divisible by 400
-    ready (year % 400 == 0) { damn based }
-    ready (year % 100 == 0) { damn cringe }
-    ready (year % 4 == 0) { damn based }
+    lowkey (year % 400 == 0) { damn based }
+    lowkey (year % 100 == 0) { damn cringe }
+    lowkey (year % 4 == 0) { damn based }
     damn cringe
 }
 
@@ -157,7 +157,7 @@ slay is_julian_leap_year(year drip) lit {
 
 slay leap_years_since_epoch(year drip) drip {
     fr fr Count leap years since Gregorian epoch (year 1)
-    ready (year <= 1) { damn 0 }
+    lowkey (year <= 1) { damn 0 }
     
     sus years_minus_one drip = year - 1
     sus leap_count drip = years_minus_one / 4 - years_minus_one / 100 + years_minus_one / 400
@@ -167,13 +167,13 @@ slay leap_years_since_epoch(year drip) drip {
 
 slay days_in_gregorian_month(year drip, month drip) drip {
     fr fr Get number of days in Gregorian month
-    ready (month == 1 || month == 3 || month == 5 || month == 7 || 
+    lowkey (month == 1 || month == 3 || month == 5 || month == 7 || 
            month == 8 || month == 10 || month == 12) {
         damn 31
-    } otherwise ready (month == 4 || month == 6 || month == 9 || month == 11) {
+    } highkey lowkey (month == 4 || month == 6 || month == 9 || month == 11) {
         damn 30
-    } otherwise ready (month == 2) {
-        ready (is_gregorian_leap_year(year)) {
+    } highkey lowkey (month == 2) {
+        lowkey (is_gregorian_leap_year(year)) {
             damn 29
         }
         damn 28
@@ -193,7 +193,7 @@ slay calculate_weekday(year drip, month drip, day drip) drip {
     sus adjusted_month drip = month
     sus adjusted_year drip = year
     
-    ready (month <= 2) {
+    lowkey (month <= 2) {
         adjusted_month = adjusted_month + 12
         adjusted_year = adjusted_year - 1
     }
@@ -211,7 +211,7 @@ slay calculate_weekday(year drip, month drip, day drip) drip {
 slay calculate_weekday_gauss(year drip, month drip, day drip) drip {
     fr fr Calculate weekday using Gauss's algorithm
     sus m drip = (month - 3 + 12) % 12
-    sus y drip = ready (month <= 2) { year - 1 } otherwise { year }
+    sus y drip = lowkey (month <= 2) { year - 1 } highkey { year }
     
     sus c drip = y / 100
     sus g drip = y % 100
@@ -244,7 +244,7 @@ slay date_from_day_of_year(year drip, day_of_year drip) CalendarDate {
     
     bestie (month <= 12 && remaining_days > 0) {
         sus days_this_month drip = days_in_gregorian_month(year, month)
-        ready (remaining_days <= days_this_month) {
+        lowkey (remaining_days <= days_this_month) {
             break
         }
         remaining_days = remaining_days - days_this_month
@@ -276,12 +276,12 @@ slay calculate_week_of_year(year drip, month drip, day drip) drip {
     sus jan1_weekday drip = calculate_weekday(year, 1, 1)
     
     fr fr ISO 8601 week starts on Monday (1)
-    sus jan1_iso_weekday drip = ready (jan1_weekday == 0) { 7 } otherwise { jan1_weekday }
+    sus jan1_iso_weekday drip = lowkey (jan1_weekday == 0) { 7 } highkey { jan1_weekday }
     
-    sus days_to_first_monday drip = ready (jan1_iso_weekday <= 4) { 1 - jan1_iso_weekday } otherwise { 8 - jan1_iso_weekday }
+    sus days_to_first_monday drip = lowkey (jan1_iso_weekday <= 4) { 1 - jan1_iso_weekday } highkey { 8 - jan1_iso_weekday }
     sus adjusted_day_of_year drip = day_of_year + days_to_first_monday - 1
     
-    ready (adjusted_day_of_year < 0) {
+    lowkey (adjusted_day_of_year < 0) {
         fr fr This date belongs to last week of previous year
         damn calculate_weeks_in_year(year - 1)
     }
@@ -289,7 +289,7 @@ slay calculate_week_of_year(year drip, month drip, day drip) drip {
     sus week_number drip = (adjusted_day_of_year / 7) + 1
     sus max_weeks_this_year drip = calculate_weeks_in_year(year)
     
-    ready (week_number > max_weeks_this_year) {
+    lowkey (week_number > max_weeks_this_year) {
         damn 1  fr fr This date belongs to first week of next year
     }
     
@@ -301,7 +301,7 @@ slay calculate_weeks_in_year(year drip) drip {
     sus jan1_weekday drip = calculate_weekday(year, 1, 1)
     sus is_leap lit = is_gregorian_leap_year(year)
     
-    ready (jan1_weekday == 4 || (is_leap && jan1_weekday == 3)) {
+    lowkey (jan1_weekday == 4 || (is_leap && jan1_weekday == 3)) {
         damn 53
     }
     damn 52
@@ -317,7 +317,7 @@ slay find_nth_weekday_in_month(year drip, month drip, weekday drip, occurrence d
     sus target_day drip = first_occurrence_day + ((occurrence - 1) * 7)
     sus max_day drip = days_in_gregorian_month(year, month)
     
-    ready (target_day > max_day) {
+    lowkey (target_day > max_day) {
         damn 0  fr fr No such occurrence in this month
     }
     
@@ -452,7 +452,7 @@ slay julian_day_to_julian_calendar(julian_day drip) CalendarDate {
     sus month drip = (5 * e + 308) / 153 - 2
     sus day drip = e - (153 * month + 2) / 5 + 1
     
-    ready (month > 12) {
+    lowkey (month > 12) {
         month = month - 12
         year = year + 1
     }
@@ -477,11 +477,11 @@ slay calculate_day_of_year_julian(year drip, month drip, day drip) drip {
     sus m drip = 1
     
     bestie (m < month) {
-        ready (m == 2) {
-            day_of_year = day_of_year + ready (is_julian_leap_year(year)) { 29 } otherwise { 28 }
-        } otherwise ready (m == 4 || m == 6 || m == 9 || m == 11) {
+        lowkey (m == 2) {
+            day_of_year = day_of_year + lowkey (is_julian_leap_year(year)) { 29 } highkey { 28 }
+        } highkey lowkey (m == 4 || m == 6 || m == 9 || m == 11) {
             day_of_year = day_of_year + 30
-        } otherwise {
+        } highkey {
             day_of_year = day_of_year + 31
         }
         m = m + 1
@@ -552,14 +552,14 @@ slay cos_radians(x drip) drip {
 slay tan_radians(x drip) drip {
     fr fr Tangent as sin/cos
     sus cos_val drip = cos_radians(x)
-    ready (cos_val == 0) { damn 0 }  fr fr Avoid division by zero
+    lowkey (cos_val == 0) { damn 0 }  fr fr Avoid division by zero
     damn sin_radians(x) / cos_val
 }
 
 slay asin_radians(x drip) drip {
     fr fr Approximation for arcsine
-    ready (x > 1) { damn 3.14159 / 2 }
-    ready (x < -1) { damn -3.14159 / 2 }
+    lowkey (x > 1) { damn 3.14159 / 2 }
+    lowkey (x < -1) { damn -3.14159 / 2 }
     damn x + (x * x * x) / 6 + (3 * x * x * x * x * x) / 40
 }
 
@@ -570,18 +570,18 @@ slay acos_radians(x drip) drip {
 
 slay atan2_radians(y drip, x drip) drip {
     fr fr Simplified atan2
-    ready (x > 0) { damn atan_radians(y / x) }
-    ready (x < 0 && y >= 0) { damn atan_radians(y / x) + 3.14159 }
-    ready (x < 0 && y < 0) { damn atan_radians(y / x) - 3.14159 }
-    ready (x == 0 && y > 0) { damn 3.14159 / 2 }
-    ready (x == 0 && y < 0) { damn -3.14159 / 2 }
+    lowkey (x > 0) { damn atan_radians(y / x) }
+    lowkey (x < 0 && y >= 0) { damn atan_radians(y / x) + 3.14159 }
+    lowkey (x < 0 && y < 0) { damn atan_radians(y / x) - 3.14159 }
+    lowkey (x == 0 && y > 0) { damn 3.14159 / 2 }
+    lowkey (x == 0 && y < 0) { damn -3.14159 / 2 }
     damn 0
 }
 
 slay atan_radians(x drip) drip {
     fr fr Approximation for arctangent
-    ready (x > 1) { damn 3.14159 / 2 - atan_radians(1 / x) }
-    ready (x < -1) { damn -3.14159 / 2 - atan_radians(1 / x) }
+    lowkey (x > 1) { damn 3.14159 / 2 - atan_radians(1 / x) }
+    lowkey (x < -1) { damn -3.14159 / 2 - atan_radians(1 / x) }
     damn x - (x * x * x) / 3 + (x * x * x * x * x) / 5
 }
 
@@ -600,11 +600,11 @@ slay get_astronomical_info(timestamp drip, longitude drip, latitude drip) Astron
 
 slay validate_calendar_date(year drip, month drip, day drip) lit {
     fr fr Validate if date is valid in Gregorian calendar
-    ready (month < 1 || month > 12) { damn cringe }
-    ready (day < 1) { damn cringe }
+    lowkey (month < 1 || month > 12) { damn cringe }
+    lowkey (day < 1) { damn cringe }
     
     sus max_days drip = days_in_gregorian_month(year, month)
-    ready (day > max_days) { damn cringe }
+    lowkey (day > max_days) { damn cringe }
     
     damn based
 }

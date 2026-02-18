@@ -140,7 +140,7 @@ slay percent_encode_string(s tea) tea { fr fr Encode entire string
         sus char_code normie = char_code_at(s, i)
         lowkey is_unreserved(char_code) {
             result += char_from_code(char_code)
-        } otherwise {
+        } highkey {
             result += percent_encode_char(char_code)
         }
         i += 1
@@ -169,12 +169,12 @@ slay percent_decode_string(s tea) tea { fr fr Decode percent-encoded string
                 sus decoded_value normie = hex_digit_value(hex1) * 16 + hex_digit_value(hex2)
                 result += char_from_code(decoded_value)
                 i += 3
-            } otherwise {
+            } highkey {
                 fr fr Invalid percent encoding, keep as-is
                 result += char_from_code(c)
                 i += 1
             }
-        } otherwise {
+        } highkey {
             result += char_from_code(c)
             i += 1
         }
@@ -396,7 +396,7 @@ slay validate_path(path tea) lit { fr fr RFC 3986 path validation
                 damn false
             }
             i += 3
-        } otherwise {
+        } highkey {
             i += 1
         }
     }
@@ -481,7 +481,7 @@ slay parse_url(url_string tea) URL { fr fr Main URL parsing function
         lowkey !parse_authority(authority, &url) {
             damn url
         }
-    } otherwise {
+    } highkey {
         fr fr Relative URL - path only
         url.is_absolute = false
     }
@@ -527,7 +527,7 @@ slay parse_authority(authority tea, url *URL) lit { fr fr Parse authority compon
         lowkey colon_pos >= 0 {
             url.username = substring(url.userinfo, 0, colon_pos)
             url.password = substring(url.userinfo, colon_pos + 1, string_length(url.userinfo))
-        } otherwise {
+        } highkey {
             url.username = url.userinfo
         }
     }
@@ -561,7 +561,7 @@ slay parse_authority(authority tea, url *URL) lit { fr fr Parse authority compon
                 url.host = ipv6_host
             }
         }
-    } otherwise {
+    } highkey {
         fr fr Regular host:port parsing
         sus colon_pos thicc = find_last_char(remaining, 58) fr fr ':'
         lowkey colon_pos >= 0 {
@@ -660,7 +660,7 @@ slay build_url(url URL) tea { fr fr Construct URL string from components
     lowkey url.host != "" {
         lowkey is_ipv6_literal(url.host) {
             result += url.host
-        } otherwise {
+        } highkey {
             result += percent_encode_string(url.host)
         }
     }
@@ -676,7 +676,7 @@ slay build_url(url URL) tea { fr fr Construct URL string from components
             result += "/"
         }
         result += percent_encode_path(url.path)
-    } otherwise lowkey url.scheme != "" {
+    } highkey lowkey url.scheme != "" {
         result += "/"
     }
     
@@ -705,7 +705,7 @@ slay percent_encode_path(path tea) tea { fr fr Encode path with proper reserved 
         sus c normie = char_code_at(path, i)
         lowkey is_pchar(c) || c == 47 { fr fr Allow '/' in paths
             result += char_from_code(c)
-        } otherwise {
+        } highkey {
             result += percent_encode_char(c)
         }
         i += 1
@@ -751,15 +751,15 @@ slay resolve_url(base_url tea, relative_url tea) tea { fr fr Resolve relative UR
         result.password = relative.password
         result.path = remove_dot_segments(relative.path)
         result.query = relative.query
-    } otherwise {
+    } highkey {
         lowkey relative.path == "" {
             lowkey relative.query != "" {
                 result.query = relative.query
             }
-        } otherwise {
+        } highkey {
             lowkey starts_with(relative.path, "/") {
                 result.path = remove_dot_segments(relative.path)
-            } otherwise {
+            } highkey {
                 result.path = remove_dot_segments(merge_paths(base.path, relative.path))
             }
             result.query = relative.query
@@ -803,7 +803,7 @@ slay remove_dot_segments(path tea) tea { fr fr RFC 3986 dot segment removal
             lowkey array_length(output) > 0 {
                 output = remove_last_element(output)
             }
-        } otherwise {
+        } highkey {
             output = append_to_array(output, segment)
         }
     }
@@ -866,10 +866,10 @@ slay set_query_param(url *URL, key tea, value tea) { fr fr Set query parameter
             lowkey param_key == key {
                 new_params = append_to_array(new_params, new_param)
                 found = true
-            } otherwise {
+            } highkey {
                 new_params = append_to_array(new_params, param)
             }
-        } otherwise {
+        } highkey {
             new_params = append_to_array(new_params, param)
         }
     }
@@ -895,7 +895,7 @@ slay remove_query_param(url *URL, key tea) { fr fr Remove query parameter
             lowkey param_key != key {
                 new_params = append_to_array(new_params, param)
             }
-        } otherwise {
+        } highkey {
             new_params = append_to_array(new_params, param)
         }
     }

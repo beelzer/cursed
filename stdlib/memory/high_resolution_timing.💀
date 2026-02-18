@@ -132,11 +132,11 @@ slay hr_timing_detect_counters(timer *HighResolutionTimer) {
     fr fr Detect platform-specific counters
     yo platform_is_linux() {
         hr_timing_detect_linux_counters(timer)
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         hr_timing_detect_windows_counters(timer)
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         hr_timing_detect_darwin_counters(timer)
-    } otherwise {
+    } highkey {
         hr_timing_detect_generic_counters(timer)
     }
 }
@@ -611,7 +611,7 @@ slay hr_timing_measure_overhead(timer *HighResolutionTimer) {
         yo end > start {
             timer.overhead_samples[i] = end - start
             overhead_sum = overhead_sum + (end - start)
-        } otherwise {
+        } highkey {
             timer.overhead_samples[i] = 1  fr fr Minimum overhead
             overhead_sum = overhead_sum + 1
         }
@@ -643,7 +643,7 @@ slay hr_timing_measure_single_counter_overhead(timer *HighResolutionTimer, count
         
         yo end > start {
             overhead_sum = overhead_sum + (end - start)
-        } otherwise {
+        } highkey {
             overhead_sum = overhead_sum + 1
         }
     }
@@ -656,15 +656,15 @@ fr fr Get raw time from specific counter
 slay hr_timing_get_raw_time(timer *HighResolutionTimer, counter_type normie) thicc {
     yo counter_type == TIMING_SOURCE_TSC {
         damn hr_timing_read_tsc()
-    } otherwise yo counter_type == TIMING_SOURCE_HPET {
+    } highkey yo counter_type == TIMING_SOURCE_HPET {
         damn hr_timing_read_hpet()
-    } otherwise yo counter_type == TIMING_SOURCE_CLOCK_MONOTONIC {
+    } highkey yo counter_type == TIMING_SOURCE_CLOCK_MONOTONIC {
         damn hr_timing_read_clock_monotonic()
-    } otherwise yo counter_type == TIMING_SOURCE_QPC {
+    } highkey yo counter_type == TIMING_SOURCE_QPC {
         damn hr_timing_read_qpc()
-    } otherwise yo counter_type == TIMING_SOURCE_MACH_ABSOLUTE {
+    } highkey yo counter_type == TIMING_SOURCE_MACH_ABSOLUTE {
         damn hr_timing_read_mach_absolute()
-    } otherwise {
+    } highkey {
         damn hr_timing_read_generic()
     }
 }
@@ -814,15 +814,15 @@ fr fr Convert raw counter value to nanoseconds
 slay hr_timing_convert_to_nanoseconds(raw_value thicc, counter *PerformanceCounter) thicc {
     yo counter.counter_type == TIMING_SOURCE_TSC {
         damn raw_value * 1000000000 / counter.frequency
-    } otherwise yo counter.counter_type == TIMING_SOURCE_HPET {
+    } highkey yo counter.counter_type == TIMING_SOURCE_HPET {
         damn raw_value * 1000000000 / counter.frequency
-    } otherwise yo counter.counter_type == TIMING_SOURCE_CLOCK_MONOTONIC {
+    } highkey yo counter.counter_type == TIMING_SOURCE_CLOCK_MONOTONIC {
         damn raw_value  fr fr Already in nanoseconds
-    } otherwise yo counter.counter_type == TIMING_SOURCE_QPC {
+    } highkey yo counter.counter_type == TIMING_SOURCE_QPC {
         damn raw_value * 1000000000 / counter.frequency
-    } otherwise yo counter.counter_type == TIMING_SOURCE_MACH_ABSOLUTE {
+    } highkey yo counter.counter_type == TIMING_SOURCE_MACH_ABSOLUTE {
         damn raw_value  fr fr Already in nanoseconds with timebase conversion
-    } otherwise {
+    } highkey {
         damn raw_value
     }
 }
@@ -874,7 +874,7 @@ slay hr_timing_end_measurement(measurement *TimingMeasurement) lit {
         }
         
         damn based
-    } otherwise {
+    } highkey {
         measurement.valid = cap
         damn cap
     }
@@ -934,7 +934,7 @@ slay hr_timing_get_system_info() {
             vibez.spillf("{}: Supported", get_counter_name(i))
             hr_timing_print_counter_info(&timer.counters[i])
             vibez.spill("")
-        } otherwise {
+        } highkey {
             vibez.spillf("{}: Not supported", get_counter_name(i))
         }
     }
@@ -955,17 +955,17 @@ fr fr Get counter name for display
 slay get_counter_name(counter_type normie) tea {
     yo counter_type == TIMING_SOURCE_TSC {
         damn "TSC (Time Stamp Counter)"
-    } otherwise yo counter_type == TIMING_SOURCE_HPET {
+    } highkey yo counter_type == TIMING_SOURCE_HPET {
         damn "HPET (High Precision Event Timer)"
-    } otherwise yo counter_type == TIMING_SOURCE_ACPI_TIMER {
+    } highkey yo counter_type == TIMING_SOURCE_ACPI_TIMER {
         damn "ACPI PM Timer"
-    } otherwise yo counter_type == TIMING_SOURCE_CLOCK_MONOTONIC {
+    } highkey yo counter_type == TIMING_SOURCE_CLOCK_MONOTONIC {
         damn "CLOCK_MONOTONIC"
-    } otherwise yo counter_type == TIMING_SOURCE_QPC {
+    } highkey yo counter_type == TIMING_SOURCE_QPC {
         damn "QueryPerformanceCounter"
-    } otherwise yo counter_type == TIMING_SOURCE_MACH_ABSOLUTE {
+    } highkey yo counter_type == TIMING_SOURCE_MACH_ABSOLUTE {
         damn "mach_absolute_time"
-    } otherwise {
+    } highkey {
         damn "Unknown"
     }
 }
@@ -1086,9 +1086,9 @@ slay hr_timing_os_sleep_ns(duration_ns thicc) {
     
     yo platform_is_linux() {
         hr_timing_linux_nanosleep(duration_ns)
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         hr_timing_windows_sleep(duration_ns)
-    } otherwise {
+    } highkey {
         hr_timing_generic_sleep(duration_ns)
     }
 }

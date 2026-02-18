@@ -207,27 +207,27 @@ fr fr ================================
 
 slay should_run_test(test_name tea, pattern tea) lit {
     fr fr Real pattern matching using regexz
-    ready pattern == "*" {
+    lowkey pattern == "*" {
         damn based
     }
     
-    ready pattern.starts_with("*") && pattern.ends_with("*") {
+    lowkey pattern.starts_with("*") && pattern.ends_with("*") {
         sus inner_pattern tea = pattern[1:pattern.length-1]
         damn regexz.contains(test_name, inner_pattern)
     }
     
-    ready pattern.starts_with("*") {
+    lowkey pattern.starts_with("*") {
         sus suffix tea = pattern[1:pattern.length]
         damn regexz.ends_with(test_name, suffix)
     }
     
-    ready pattern.ends_with("*") {
+    lowkey pattern.ends_with("*") {
         sus prefix tea = pattern[0:pattern.length-1]
         damn regexz.starts_with(test_name, prefix)
     }
     
     fr fr Exact match or regex
-    ready regexz.is_valid_regex(pattern) {
+    lowkey regexz.is_valid_regex(pattern) {
         damn regexz.matches(test_name, pattern)
     }
     
@@ -236,20 +236,20 @@ slay should_run_test(test_name tea, pattern tea) lit {
 
 slay match_test_pattern(filename tea, pattern tea) lit {
     fr fr Advanced pattern matching for test discovery
-    ready pattern == "test_*" {
+    lowkey pattern == "test_*" {
         damn regexz.matches(filename, "^test_.*\\.💀$")
     }
     
-    ready pattern == "*_test" {
+    lowkey pattern == "*_test" {
         damn regexz.matches(filename, "^.*_test\\.💀$")
     }
     
-    ready pattern == "*test*" {
+    lowkey pattern == "*test*" {
         damn regexz.contains(filename, "test") && filename.ends_with(".💀")
     }
     
     fr fr Custom regex pattern
-    ready regexz.is_valid_regex(pattern) {
+    lowkey regexz.is_valid_regex(pattern) {
         damn regexz.matches(filename, pattern)
     }
     
@@ -265,7 +265,7 @@ slay discover_tests(directory tea) TestDiscoveryResult {
     sus start_time normie = get_high_resolution_time()
     sus test_files [tea] = []
     
-    ready !filez.directory_exists(directory) {
+    lowkey !filez.directory_exists(directory) {
         vibez.spill("Warning: Test directory does not exist: " + directory)
         damn TestDiscoveryResult{
             test_files: [],
@@ -282,7 +282,7 @@ slay discover_tests(directory tea) TestDiscoveryResult {
     sus i normie = 0
     periodt i < all_files.length {
         sus filename tea = all_files[i]
-        ready match_test_pattern(filename, config.pattern) {
+        lowkey match_test_pattern(filename, config.pattern) {
             test_files = test_files + [filename]
             matched_files = matched_files + 1
         }
@@ -291,7 +291,7 @@ slay discover_tests(directory tea) TestDiscoveryResult {
     
     sus discovery_time normie = get_high_resolution_time() - start_time
     
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("Test Discovery Results:")
         vibez.spill("  Directory: " + directory)
         vibez.spill("  Pattern: " + config.pattern)
@@ -310,11 +310,11 @@ slay discover_tests(directory tea) TestDiscoveryResult {
 
 slay run_test_file(filename tea) normie {
     fr fr Real test file execution using procesz
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("Executing test file: " + filename)
     }
     
-    ready !filez.file_exists(filename) {
+    lowkey !filez.file_exists(filename) {
         vibez.spill("Error: Test file does not exist: " + filename)
         damn 1
     }
@@ -323,9 +323,9 @@ slay run_test_file(filename tea) normie {
     sus command tea = "./zig-out/bin/cursed-zig \"" + filename + "\""
     sus result ProcessResult = procesz.execute_command(command)
     
-    ready result.exit_code != 0 {
+    lowkey result.exit_code != 0 {
         vibez.spill("Test file failed: " + filename)
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("  Exit code: " + tea(result.exit_code))
             vibez.spill("  Stdout: " + result.stdout)
             vibez.spill("  Stderr: " + result.stderr)
@@ -352,23 +352,23 @@ slay assert_throws(test_function tea, expected_error tea) {
     sus actual_error tea = ""
     
     fr fr Set up panic recovery
-    ready panic_recovery_enabled {
+    lowkey panic_recovery_enabled {
         fr fr In real implementation, this would set up exception handling
         fr fr For now, simulate error catching
         error_caught = based
         actual_error = expected_error
     }
     
-    ready error_caught && actual_error == expected_error {
+    lowkey error_caught && actual_error == expected_error {
         test_passed = test_passed + 1
         sus result TestResult = create_pass_result("assert_throws", 
             "Expected error '" + expected_error + "' was thrown")
         test_results = test_results + [result]
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("  ✓ PASS: assert_throws - error caught: " + actual_error)
         }
-    } otherwise error_caught {
+    } highkey error_caught {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("assert_throws", 
             "Wrong error thrown", expected_error, actual_error)
@@ -377,7 +377,7 @@ slay assert_throws(test_function tea, expected_error tea) {
         vibez.spill("  ✗ FAIL: assert_throws - got error '" + actual_error + 
                    "', expected '" + expected_error + "'")
         handle_test_failure()
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("assert_throws", 
             "No error was thrown", expected_error, "no error")
@@ -394,22 +394,22 @@ slay assert_no_throw(test_function tea) {
     sus actual_error tea = ""
     
     fr fr Set up panic recovery
-    ready panic_recovery_enabled {
+    lowkey panic_recovery_enabled {
         fr fr In real implementation, this would monitor for exceptions
         fr fr For now, simulate no error
         error_caught = cap
     }
     
-    ready !error_caught {
+    lowkey !error_caught {
         test_passed = test_passed + 1
         sus result TestResult = create_pass_result("assert_no_throw", 
             "No error was thrown as expected")
         test_results = test_results + [result]
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("  ✓ PASS: assert_no_throw - no error thrown")
         }
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("assert_no_throw", 
             "Unexpected error was thrown", "no error", actual_error)
@@ -428,16 +428,16 @@ slay expect_panic(function_name tea) {
     fr fr For demonstration, assume panic is caught
     panic_caught = based
     
-    ready panic_caught {
+    lowkey panic_caught {
         test_passed = test_passed + 1
         sus result TestResult = create_pass_result("expect_panic", 
             "Panic was expected and caught for function: " + function_name)
         test_results = test_results + [result]
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("  ✓ PASS: expect_panic - panic caught for " + function_name)
         }
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("expect_panic", 
             "Expected panic was not triggered", "panic", "no panic")
@@ -449,7 +449,7 @@ slay expect_panic(function_name tea) {
 }
 
 slay handle_test_failure() {
-    ready config.fail_fast {
+    lowkey config.fail_fast {
         vibez.spill("FAIL FAST: Stopping execution due to test failure")
         print_test_summary()
         procesz.exit_with_code(1)
@@ -546,7 +546,7 @@ fr fr ================================
 
 slay get_performance_metrics() PerformanceMetrics {
     fr fr Real performance metrics collection
-    ready !config.performance_tracking {
+    lowkey !config.performance_tracking {
         damn PerformanceMetrics{
             cpu_time: 0,
             memory_used: 0,
@@ -574,9 +574,9 @@ slay get_current_line() normie {
     sus stack_info tea = get_runtime_stack_info()
     sus line_match tea = regexz.extract_first_match(stack_info, "line:(\\d+)")
     
-    ready line_match != "" {
+    lowkey line_match != "" {
         damn parse_int(line_match)
-    } otherwise {
+    } highkey {
         fr fr Fallback to approximate line calculation
         sus caller_info tea = get_caller_context()
         damn parse_line_number_from_context(caller_info)
@@ -588,15 +588,15 @@ slay get_current_file() tea {
     sus stack_info tea = get_runtime_stack_info()
     sus file_match tea = regexz.extract_first_match(stack_info, "file:([^\\s]+)")
     
-    ready file_match != "" && file_match.ends_with(".💀") {
+    lowkey file_match != "" && file_match.ends_with(".💀") {
         damn extract_filename(file_match)
-    } otherwise {
+    } highkey {
         fr fr Fallback to environment-based detection
         sus current_execution tea = procesz.get_current_execution_context()
         sus detected_file tea = extract_test_file_from_context(current_execution)
-        ready detected_file != "" {
+        lowkey detected_file != "" {
             damn detected_file
-        } otherwise {
+        } highkey {
             damn "unknown_test.💀"
         }
     }
@@ -607,14 +607,14 @@ slay get_stack_trace() tea {
     sus full_stack tea = get_runtime_stack_info()
     sus filtered_stack tea = filter_relevant_stack_frames(full_stack)
     
-    ready filtered_stack != "" {
+    lowkey filtered_stack != "" {
         damn format_stack_trace_for_display(filtered_stack)
-    } otherwise {
+    } highkey {
         fr fr Fallback stack trace generation
         sus basic_trace tea = generate_basic_stack_trace()
-        ready basic_trace != "" {
+        lowkey basic_trace != "" {
             damn basic_trace
-        } otherwise {
+        } highkey {
             damn "Stack trace: " + get_current_file() + ":" + tea(get_current_line()) + 
                  " in test '" + current_test_name + "' assertion '" + current_assertion_name + "'"
         }
@@ -643,9 +643,9 @@ slay parse_int(str tea) normie {
     sus i normie = 0
     periodt i < str.length {
         sus digit normie = str[i] - "0"[0]
-        ready digit >= 0 && digit <= 9 {
+        lowkey digit >= 0 && digit <= 9 {
             result = result * 10 + digit
-        } otherwise {
+        } highkey {
             ghosted  fr fr Invalid character, stop parsing
         }
         i = i + 1
@@ -657,9 +657,9 @@ slay parse_line_number_from_context(context tea) normie {
     fr fr Extract line number from context information
     sus line_pattern tea = ":(\\d+):"
     sus line_match tea = regexz.extract_first_match(context, line_pattern)
-    ready line_match != "" {
+    lowkey line_match != "" {
         damn parse_int(line_match)
-    } otherwise {
+    } highkey {
         damn 1  fr fr Default line number
     }
 }
@@ -667,9 +667,9 @@ slay parse_line_number_from_context(context tea) normie {
 slay extract_filename(filepath tea) tea {
     fr fr Extract filename from full path
     sus last_slash normie = filepath.last_index_of("/")
-    ready last_slash >= 0 {
+    lowkey last_slash >= 0 {
         damn filepath[last_slash + 1:filepath.length]
-    } otherwise {
+    } highkey {
         damn filepath
     }
 }
@@ -689,7 +689,7 @@ slay filter_relevant_stack_frames(full_stack tea) tea {
     sus i normie = 0
     periodt i < lines.length {
         sus line tea = lines[i]
-        ready !line.contains("testz/") && !line.contains("framework_internal") {
+        lowkey !line.contains("testz/") && !line.contains("framework_internal") {
             filtered_lines = filtered_lines + [line]
         }
         i = i + 1
@@ -706,16 +706,16 @@ slay format_stack_trace_for_display(stack tea) tea {
     sus i normie = 0
     periodt i < lines.length {
         sus line tea = lines[i]
-        ready line.contains(".💀") {
+        lowkey line.contains(".💀") {
             sus formatted tea = "  at " + line.trim()
             formatted_lines = formatted_lines + [formatted]
         }
         i = i + 1
     }
     
-    ready formatted_lines.length > 0 {
+    lowkey formatted_lines.length > 0 {
         damn "Stack trace:\n" + formatted_lines.join("\n")
-    } otherwise {
+    } highkey {
         damn ""
     }
 }
@@ -757,7 +757,7 @@ slay create_default_config() TestConfig {
 
 slay load_config_from_file(config_file tea) TestConfig {
     fr fr Real configuration loading from file
-    ready !filez.file_exists(config_file) {
+    lowkey !filez.file_exists(config_file) {
         vibez.spill("Warning: Config file not found, using defaults: " + config_file)
         damn create_default_config()
     }
@@ -773,7 +773,7 @@ slay save_config_to_file(test_config TestConfig, config_file tea) {
     sus config_json tea = serialize_config_to_json(test_config)
     filez.write_file_text(config_file, config_json)
     
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("Configuration saved to: " + config_file)
     }
 }
@@ -807,12 +807,12 @@ slay test_start(name tea) {
     test_count = test_count + 1
     test_start_time = get_high_resolution_time()
     
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("  🧪 Running test: " + name + " at " + get_timestamp())
     }
     
     fr fr Set up panic recovery for this test
-    ready config.panic_recovery {
+    lowkey config.panic_recovery {
         current_panic_handler = name
     }
 }
@@ -820,14 +820,14 @@ slay test_start(name tea) {
 slay test_end() {
     sus execution_time normie = get_high_resolution_time() - test_start_time
     
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("  ⏱️  Test completed: " + current_test_name + 
                    " (execution time: " + tea(execution_time) + "ms)")
     }
     
-    ready config.memory_tracking {
+    lowkey config.memory_tracking {
         sus metrics PerformanceMetrics = get_performance_metrics()
-        ready metrics.memory_used > 10000000 {  fr fr 10MB threshold
+        lowkey metrics.memory_used > 10000000 {  fr fr 10MB threshold
             vibez.spill("  ⚠️  High memory usage detected: " + tea(metrics.memory_used) + " bytes")
         }
     }
@@ -905,16 +905,16 @@ fr fr ================================
 slay assert_eq_int(actual normie, expected normie) {
     current_assertion_name = "assert_eq_int"
     
-    ready actual == expected {
+    lowkey actual == expected {
         test_passed = test_passed + 1
         sus result TestResult = create_pass_result("assert_eq_int", 
             "Integer equality: " + tea(actual) + " == " + tea(expected))
         test_results = test_results + [result]
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("  ✓ PASS: assert_eq_int(" + tea(actual) + ", " + tea(expected) + ")")
         }
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("assert_eq_int", 
             "Integer equality failed", tea(expected), tea(actual))
@@ -928,16 +928,16 @@ slay assert_eq_int(actual normie, expected normie) {
 slay assert_eq_string(actual tea, expected tea) {
     current_assertion_name = "assert_eq_string"
     
-    ready actual == expected {
+    lowkey actual == expected {
         test_passed = test_passed + 1
         sus result TestResult = create_pass_result("assert_eq_string", 
             "String equality: \"" + actual + "\" == \"" + expected + "\"")
         test_results = test_results + [result]
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("  ✓ PASS: assert_eq_string(\"" + actual + "\", \"" + expected + "\")")
         }
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("assert_eq_string", 
             "String equality failed", expected, actual)
@@ -945,7 +945,7 @@ slay assert_eq_string(actual tea, expected tea) {
         
         vibez.spill("  ✗ FAIL: assert_eq_string - got \"" + actual + "\", expected \"" + expected + "\"")
         
-        ready config.verbose {
+        lowkey config.verbose {
             fr fr Show detailed string diff
             show_string_diff(expected, actual)
         }
@@ -960,13 +960,13 @@ slay show_string_diff(expected tea, actual tea) {
     vibez.spill("    Actual:   \"" + actual + "\"")
     
     sus min_length normie = expected.length
-    ready actual.length < min_length {
+    lowkey actual.length < min_length {
         min_length = actual.length
     }
     
     sus i normie = 0
     periodt i < min_length {
-        ready expected[i] != actual[i] {
+        lowkey expected[i] != actual[i] {
             vibez.spill("    First diff at position " + tea(i) + ": expected '" + 
                        expected[i] + "' but got '" + actual[i] + "'")
             damn
@@ -974,7 +974,7 @@ slay show_string_diff(expected tea, actual tea) {
         i = i + 1
     }
     
-    ready expected.length != actual.length {
+    lowkey expected.length != actual.length {
         vibez.spill("    Length diff: expected " + tea(expected.length) + 
                    " chars, got " + tea(actual.length) + " chars")
     }
@@ -985,7 +985,7 @@ fr fr Advanced Mock System with Real Tracking
 fr fr ================================
 
 slay create_mock(name tea) MockFunction {
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("  🎭 Creating mock: " + name)
     }
     
@@ -1005,7 +1005,7 @@ slay mock_return(mock MockFunction, value tea) MockFunction {
     mock.return_value = value
     mock.configured = based
     
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("  🎭 Mock '" + mock.name + "' configured to return: " + value)
     }
     
@@ -1017,7 +1017,7 @@ slay mock_throw(mock MockFunction, error tea) MockFunction {
     mock.throw_message = error
     mock.configured = based
     
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("  🎭 Mock '" + mock.name + "' configured to throw: " + error)
     }
     
@@ -1028,16 +1028,16 @@ slay mock_call(mock MockFunction, args tea) tea {
     mock.call_count = mock.call_count + 1
     mock.call_history = mock.call_history + [args]
     
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("  🎭 Mock '" + mock.name + "' called with: " + args + 
                    " (call #" + tea(mock.call_count) + ")")
     }
     
-    ready mock.should_throw {
+    lowkey mock.should_throw {
         fr fr In real implementation, this would throw an actual error
         vibez.spill("  🎭 Mock '" + mock.name + "' throwing: " + mock.throw_message)
         damn "ERROR: " + mock.throw_message
-    } otherwise {
+    } highkey {
         damn mock.return_value
     }
 }
@@ -1045,16 +1045,16 @@ slay mock_call(mock MockFunction, args tea) tea {
 slay mock_verify_calls(mock MockFunction, expected_calls normie) {
     current_assertion_name = "mock_verify_calls"
     
-    ready mock.call_count == expected_calls {
+    lowkey mock.call_count == expected_calls {
         test_passed = test_passed + 1
         sus result TestResult = create_pass_result("mock_verify_calls", 
             "Mock '" + mock.name + "' called expected " + tea(expected_calls) + " times")
         test_results = test_results + [result]
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("  ✓ PASS: Mock '" + mock.name + "' verification passed")
         }
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("mock_verify_calls", 
             "Mock call count mismatch", tea(expected_calls), tea(mock.call_count))
@@ -1069,27 +1069,27 @@ slay mock_verify_calls(mock MockFunction, expected_calls normie) {
 slay mock_verify_call_history(mock MockFunction, expected_args [tea]) {
     current_assertion_name = "mock_verify_call_history"
     
-    ready mock.call_history.length == expected_args.length {
+    lowkey mock.call_history.length == expected_args.length {
         sus all_match lit = based
         sus i normie = 0
         periodt i < expected_args.length {
-            ready mock.call_history[i] != expected_args[i] {
+            lowkey mock.call_history[i] != expected_args[i] {
                 all_match = cap
                 ghosted
             }
             i = i + 1
         }
         
-        ready all_match {
+        lowkey all_match {
             test_passed = test_passed + 1
             sus result TestResult = create_pass_result("mock_verify_call_history", 
                 "Mock '" + mock.name + "' call history matches expected")
             test_results = test_results + [result]
             
-            ready config.verbose {
+            lowkey config.verbose {
                 vibez.spill("  ✓ PASS: Mock '" + mock.name + "' call history verification passed")
             }
-        } otherwise {
+        } highkey {
             test_failed = test_failed + 1
             sus result TestResult = create_fail_result("mock_verify_call_history", 
                 "Mock call history content mismatch", "matching history", "different history")
@@ -1098,7 +1098,7 @@ slay mock_verify_call_history(mock MockFunction, expected_args [tea]) {
             vibez.spill("  ✗ FAIL: Mock '" + mock.name + "' call history content mismatch")
             handle_test_failure()
         }
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         sus result TestResult = create_fail_result("mock_verify_call_history", 
             "Mock call history length mismatch", tea(expected_args.length), tea(mock.call_history.length))
@@ -1117,11 +1117,11 @@ fr fr ================================
 slay generate_json_report() tea {
     sus json_content tea = create_comprehensive_json_report()
     
-    ready config.json_output {
+    lowkey config.json_output {
         sus filename tea = "test-results-" + format_timestamp_for_filename() + ".json"
         filez.write_file_text(filename, json_content)
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("JSON report saved to: " + filename)
         }
     }
@@ -1150,7 +1150,7 @@ slay create_comprehensive_json_report() tea {
     sus i normie = 0
     periodt i < test_results.length {
         json = json + serialize_test_result_to_json(test_results[i])
-        ready i < test_results.length - 1 {
+        lowkey i < test_results.length - 1 {
             json = json + ","
         }
         json = json + "\n"
@@ -1205,7 +1205,7 @@ slay format_timestamp_for_filename() tea {
 }
 
 slay calculate_pass_rate() normie {
-    ready test_count == 0 {
+    lowkey test_count == 0 {
         damn 0
     }
     damn (test_passed * 100) / test_count
@@ -1239,47 +1239,47 @@ slay print_test_summary() {
     vibez.spill("")
     
     fr fr Performance summary
-    ready config.performance_tracking {
+    lowkey config.performance_tracking {
         print_performance_summary()
     }
     
     fr fr Coverage summary
-    ready config.coverage_enabled {
+    lowkey config.coverage_enabled {
         print_coverage_summary()
     }
     
     fr fr Detailed failure report
-    ready test_failed > 0 {
+    lowkey test_failed > 0 {
         print_detailed_failure_report()
     }
     
     fr fr Generate all enabled output formats
-    ready config.json_output {
+    lowkey config.json_output {
         generate_json_report()
     }
     
-    ready config.xml_output {
+    lowkey config.xml_output {
         generate_xml_report()
     }
     
-    ready config.html_output {
+    lowkey config.html_output {
         generate_html_report()
     }
     
-    ready config.tap_output {
+    lowkey config.tap_output {
         generate_tap_report()
     }
     
-    ready config.junit_output {
+    lowkey config.junit_output {
         generate_junit_report()
     }
     
     vibez.spill("==================================================")
     
-    ready test_failed == 0 && test_errors == 0 {
+    lowkey test_failed == 0 && test_errors == 0 {
         vibez.spill("🎉 ALL TESTS PASSED! 🎉")
         vibez.spill("Your code is production-ready!")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ TESTS FAILED OR HAD ERRORS")
         vibez.spill("Please review the failures and fix the issues.")
     }
@@ -1332,7 +1332,7 @@ slay print_detailed_failure_report() {
     sus i normie = 0
     periodt i < test_results.length {
         sus result TestResult = test_results[i]
-        ready result.status == "FAIL" {
+        lowkey result.status == "FAIL" {
             vibez.spill("  ❌ " + result.test_name + ": " + result.assertion_name)
             vibez.spill("      Expected: " + result.expected)
             vibez.spill("      Actual: " + result.actual)
@@ -1353,11 +1353,11 @@ fr fr ================================
 slay generate_junit_report() {
     sus xml_content tea = create_junit_xml()
     
-    ready config.junit_output {
+    lowkey config.junit_output {
         sus filename tea = "junit-results-" + format_timestamp_for_filename() + ".xml"
         filez.write_file_text(filename, xml_content)
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("JUnit XML report saved to: " + filename)
         }
     }
@@ -1368,11 +1368,11 @@ slay generate_junit_report() {
 slay generate_xml_report() {
     sus xml_content tea = create_xml_report()
     
-    ready config.xml_output {
+    lowkey config.xml_output {
         sus filename tea = "test-results-" + format_timestamp_for_filename() + ".xml"
         filez.write_file_text(filename, xml_content)
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("XML report saved to: " + filename)
         }
     }
@@ -1411,7 +1411,7 @@ slay serialize_test_result_to_xml(result TestResult) tea {
     xml = xml + "      <status>" + result.status + "</status>\n"
     xml = xml + "      <execution_time>" + tea(result.execution_time) + "</execution_time>\n"
     xml = xml + "      <timestamp>" + result.timestamp + "</timestamp>\n"
-    ready result.status == "FAIL" {
+    lowkey result.status == "FAIL" {
         xml = xml + "      <expected>" + escape_xml_string(result.expected) + "</expected>\n"
         xml = xml + "      <actual>" + escape_xml_string(result.actual) + "</actual>\n"
         xml = xml + "      <message>" + escape_xml_string(result.message) + "</message>\n"
@@ -1423,11 +1423,11 @@ slay serialize_test_result_to_xml(result TestResult) tea {
 slay generate_html_report() {
     sus html_content tea = create_html_report()
     
-    ready config.html_output {
+    lowkey config.html_output {
         sus filename tea = "test-results-" + format_timestamp_for_filename() + ".html"
         filez.write_file_text(filename, html_content)
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("HTML report saved to: " + filename)
         }
     }
@@ -1457,11 +1457,11 @@ slay create_html_report() tea {
 slay generate_tap_report() {
     sus tap_content tea = create_tap_report()
     
-    ready config.tap_output {
+    lowkey config.tap_output {
         sus filename tea = "test-results-" + format_timestamp_for_filename() + ".tap"
         filez.write_file_text(filename, tap_content)
         
-        ready config.verbose {
+        lowkey config.verbose {
             vibez.spill("TAP report saved to: " + filename)
         }
     }
@@ -1476,9 +1476,9 @@ slay create_tap_report() tea {
     sus i normie = 0
     periodt i < test_results.length {
         sus result TestResult = test_results[i]
-        ready result.status == "PASS" {
+        lowkey result.status == "PASS" {
             tap = tap + "ok " + tea(i + 1) + " - " + result.test_name + ":" + result.assertion_name + "\n"
-        } otherwise {
+        } highkey {
             tap = tap + "not ok " + tea(i + 1) + " - " + result.test_name + ":" + result.assertion_name + "\n"
             tap = tap + "  ---\n"
             tap = tap + "  message: " + result.message + "\n"
@@ -1507,18 +1507,18 @@ slay create_junit_xml() tea {
         xml = xml + "    <testcase name=\"" + result.test_name + "\" classname=\"" + result.assertion_name + 
                 "\" time=\"" + tea(result.execution_time / 1000.0) + "\">\n"
         
-        ready result.status == "FAIL" {
+        lowkey result.status == "FAIL" {
             xml = xml + "      <failure message=\"" + escape_xml_string(result.message) + 
                     "\" type=\"assertion\">\n"
             xml = xml + "        Expected: " + escape_xml_string(result.expected) + "\n"
             xml = xml + "        Actual: " + escape_xml_string(result.actual) + "\n"
             xml = xml + "      </failure>\n"
-        } otherwise ready result.status == "ERROR" {
+        } highkey lowkey result.status == "ERROR" {
             xml = xml + "      <error message=\"" + escape_xml_string(result.message) + 
                     "\" type=\"error\">\n"
             xml = xml + "        " + escape_xml_string(result.error_details) + "\n"
             xml = xml + "      </error>\n"
-        } otherwise ready result.status == "SKIP" {
+        } highkey lowkey result.status == "SKIP" {
             xml = xml + "      <skipped message=\"" + escape_xml_string(result.message) + "\"/>\n"
         }
         
@@ -1567,9 +1567,9 @@ slay parse_memory_usage(memory_info tea) normie {
     fr fr Parse memory usage from system info
     sus memory_pattern tea = "memory:([0-9]+)"
     sus memory_match tea = regexz.extract_first_match(memory_info, memory_pattern)
-    ready memory_match != "" {
+    lowkey memory_match != "" {
         damn parse_int(memory_match)
-    } otherwise {
+    } highkey {
         damn 0
     }
 }
@@ -1579,9 +1579,9 @@ slay get_allocation_count() normie {
     sus alloc_info tea = reflectz.get_allocation_stats()
     sus count_pattern tea = "allocations:([0-9]+)"
     sus count_match tea = regexz.extract_first_match(alloc_info, count_pattern)
-    ready count_match != "" {
+    lowkey count_match != "" {
         damn parse_int(count_match)
-    } otherwise {
+    } highkey {
         damn 0
     }
 }
@@ -1591,9 +1591,9 @@ slay get_gc_collection_count() normie {
     sus gc_info tea = reflectz.get_gc_stats()
     sus gc_pattern tea = "collections:([0-9]+)"
     sus gc_match tea = regexz.extract_first_match(gc_info, gc_pattern)
-    ready gc_match != "" {
+    lowkey gc_match != "" {
         damn parse_int(gc_match)
-    } otherwise {
+    } highkey {
         damn 0
     }
 }
@@ -1635,18 +1635,18 @@ slay extract_functions_coverage(coverage_info tea) tea {
 
 slay parse_coverage_total(coverage_data tea) normie {
     sus parts [tea] = coverage_data.split("/")
-    ready parts.length >= 2 {
+    lowkey parts.length >= 2 {
         damn parse_int(parts[1])
-    } otherwise {
+    } highkey {
         damn 100  fr fr Default total
     }
 }
 
 slay parse_coverage_covered(coverage_data tea) normie {
     sus parts [tea] = coverage_data.split("/")
-    ready parts.length >= 1 {
+    lowkey parts.length >= 1 {
         damn parse_int(parts[0])
-    } otherwise {
+    } highkey {
         damn 0  fr fr Default covered
     }
 }
@@ -1687,9 +1687,9 @@ slay run_all_tests() normie {
     print_test_summary()
     
     fr fr Return appropriate exit code
-    ready test_failed > 0 || test_errors > 0 {
+    lowkey test_failed > 0 || test_errors > 0 {
         damn 1
-    } otherwise {
+    } highkey {
         damn 0
     }
 }
@@ -1698,7 +1698,7 @@ slay run_all_discovered_tests(directory tea) normie {
     sus discovery_result TestDiscoveryResult = discover_tests(directory)
     sus total_exit_code normie = 0
     
-    ready discovery_result.matched_files == 0 {
+    lowkey discovery_result.matched_files == 0 {
         vibez.spill("No test files found in directory: " + directory)
         damn 1
     }
@@ -1708,9 +1708,9 @@ slay run_all_discovered_tests(directory tea) normie {
     sus i normie = 0
     periodt i < discovery_result.test_files.length {
         sus exit_code normie = run_test_file(discovery_result.test_files[i])
-        ready exit_code != 0 {
+        lowkey exit_code != 0 {
             total_exit_code = exit_code
-            ready config.fail_fast {
+            lowkey config.fail_fast {
                 vibez.spill("Stopping test execution due to failure (fail-fast mode)")
                 damn exit_code
             }
@@ -1741,14 +1741,14 @@ slay reset_test_state() {
     panic_recovery_enabled = based
     current_panic_handler = ""
     
-    ready config.verbose {
-        vibez.spill("🔄 Test state reset - ready for new test execution")
+    lowkey config.verbose {
+        vibez.spill("🔄 Test state reset - lowkey for new test execution")
     }
 }
 
 slay cleanup_test_resources() {
     fr fr Clean up any resources used during testing
-    ready config.verbose {
+    lowkey config.verbose {
         vibez.spill("🧹 Cleaning up test resources...")
     }
     

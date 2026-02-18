@@ -121,16 +121,16 @@ slay decode_utf8_char(data tea, position thicc) (normie, normie) { fr fr Decode 
     
     lowkey char_len == 1 {
         code_point = first_byte
-    } otherwise lowkey char_len == 2 {
+    } highkey lowkey char_len == 2 {
         sus second_byte normie = get_byte_at(data, position + 1)
         code_point = ((first_byte & 0x1F) << 6) | (second_byte & 0x3F)
-    } otherwise lowkey char_len == 3 {
+    } highkey lowkey char_len == 3 {
         sus second_byte normie = get_byte_at(data, position + 1)
         sus third_byte normie = get_byte_at(data, position + 2)
         code_point = ((first_byte & 0x0F) << 12) | 
                     ((second_byte & 0x3F) << 6) | 
                     (third_byte & 0x3F)
-    } otherwise lowkey char_len == 4 {
+    } highkey lowkey char_len == 4 {
         sus second_byte normie = get_byte_at(data, position + 1)
         sus third_byte normie = get_byte_at(data, position + 2)
         sus fourth_byte normie = get_byte_at(data, position + 3)
@@ -194,21 +194,21 @@ slay get_unicode_info(code_point normie) UnicodeInfo { fr fr Get Unicode charact
         info.category = UNICODE_CATEGORY_LETTER
         info.is_letter = true
         info.lowercase_mapping = code_point + 32
-    } otherwise lowkey code_point >= 97 && code_point <= 122 { fr fr a-z
+    } highkey lowkey code_point >= 97 && code_point <= 122 { fr fr a-z
         info.category = UNICODE_CATEGORY_LETTER
         info.is_letter = true
         info.uppercase_mapping = code_point - 32
         info.titlecase_mapping = code_point - 32
-    } otherwise lowkey code_point >= 48 && code_point <= 57 { fr fr 0-9
+    } highkey lowkey code_point >= 48 && code_point <= 57 { fr fr 0-9
         info.category = UNICODE_CATEGORY_DIGIT
         info.is_digit = true
-    } otherwise lowkey is_ascii_whitespace(code_point) {
+    } highkey lowkey is_ascii_whitespace(code_point) {
         info.category = UNICODE_CATEGORY_WHITESPACE
         info.is_whitespace = true
-    } otherwise lowkey is_ascii_punctuation(code_point) {
+    } highkey lowkey is_ascii_punctuation(code_point) {
         info.category = UNICODE_CATEGORY_PUNCTUATION
         info.is_punctuation = true
-    } otherwise lowkey code_point < 32 || code_point == 127 {
+    } highkey lowkey code_point < 32 || code_point == 127 {
         info.category = UNICODE_CATEGORY_CONTROL
         info.is_control = true
     }
@@ -264,7 +264,7 @@ slay string_char_count(s tea) thicc { fr fr Count Unicode characters
         lowkey char_len > 0 {
             count += 1
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             byte_pos += 1 fr fr Skip invalid byte
         }
     }
@@ -296,7 +296,7 @@ slay char_at_position(s tea, char_index thicc) tea { fr fr Get character at Unic
         lowkey char_len > 0 {
             current_char += 1
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             byte_pos += 1
         }
     }
@@ -317,7 +317,7 @@ slay byte_index_to_char_index(s tea, byte_index thicc) thicc { fr fr Convert byt
         
         lowkey char_len > 0 {
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             byte_pos += 1
         }
         
@@ -341,7 +341,7 @@ slay char_index_to_byte_index(s tea, char_index thicc) thicc { fr fr Convert cha
         
         lowkey char_len > 0 {
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             byte_pos += 1
         }
         
@@ -370,10 +370,10 @@ slay compile_search_pattern(pattern tea, algorithm normie) StringPattern { fr fr
     lowkey algorithm == SEARCH_ALGORITHM_KMP {
         compiled.compiled_data = compute_kmp_failure_function(pattern)
         compiled.is_compiled = true
-    } otherwise lowkey algorithm == SEARCH_ALGORITHM_BOYER_MOORE {
+    } highkey lowkey algorithm == SEARCH_ALGORITHM_BOYER_MOORE {
         compiled.compiled_data = compute_boyer_moore_table(pattern)
         compiled.is_compiled = true
-    } otherwise lowkey algorithm == SEARCH_ALGORITHM_RABIN_KARP {
+    } highkey lowkey algorithm == SEARCH_ALGORITHM_RABIN_KARP {
         compiled.compiled_data = [compute_rabin_karp_hash(pattern)]
         compiled.is_compiled = true
     }
@@ -395,11 +395,11 @@ slay search_with_pattern(text tea, pattern StringPattern) StringSearchResult { f
     
     lowkey pattern.algorithm == SEARCH_ALGORITHM_KMP {
         result = kmp_search(text, pattern)
-    } otherwise lowkey pattern.algorithm == SEARCH_ALGORITHM_BOYER_MOORE {
+    } highkey lowkey pattern.algorithm == SEARCH_ALGORITHM_BOYER_MOORE {
         result = boyer_moore_search(text, pattern)
-    } otherwise lowkey pattern.algorithm == SEARCH_ALGORITHM_RABIN_KARP {
+    } highkey lowkey pattern.algorithm == SEARCH_ALGORITHM_RABIN_KARP {
         result = rabin_karp_search(text, pattern)
-    } otherwise {
+    } highkey {
         result = naive_search(text, pattern.pattern)
     }
     
@@ -455,10 +455,10 @@ slay kmp_search(text tea, pattern StringPattern) StringSearchResult { fr fr Knut
                 fr fr Reset for next match
                 pattern_pos = failure_function[pattern_pos - 1]
             }
-        } otherwise {
+        } highkey {
             lowkey pattern_pos > 0 {
                 pattern_pos = failure_function[pattern_pos - 1]
-            } otherwise {
+            } highkey {
                 text_pos += 1
             }
         }
@@ -487,10 +487,10 @@ slay compute_kmp_failure_function(pattern tea) normie[value]{ fr fr Compute KMP 
             len += 1
             failure[i] = len
             i += 1
-        } otherwise {
+        } highkey {
             lowkey len > 0 {
                 len = failure[len - 1]
-            } otherwise {
+            } highkey {
                 failure[i] = 0
                 i += 1
             }
@@ -552,14 +552,14 @@ slay boyer_moore_search(text tea, pattern StringPattern) StringSearchResult { fr
             result.total_count += 1
             
             skip += 1 fr fr Move to next position
-        } otherwise {
+        } highkey {
             fr fr Use bad character rule for skip distance
             sus mismatch_char tea = char_at_position(text, skip + j)
             sus char_code normie = get_first_byte(mismatch_char)
             
             lowkey char_code < array_length(bad_char) {
                 skip += max_int(1, j - bad_char[char_code])
-            } otherwise {
+            } highkey {
                 skip += j + 1
             }
         }
@@ -756,7 +756,7 @@ slay to_lowercase_advanced(s tea) tea { fr fr Advanced lowercase conversion
             sus lowercase_char tea = encode_utf8_char(info.lowercase_mapping)
             result = string_concat(result, lowercase_char)
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             fr fr Invalid UTF-8, copy as-is
             sus invalid_char tea = char_from_byte(get_byte_at(s, byte_pos))
             result = string_concat(result, invalid_char)
@@ -784,7 +784,7 @@ slay to_uppercase_advanced(s tea) tea { fr fr Advanced uppercase conversion
             sus uppercase_char tea = encode_utf8_char(info.uppercase_mapping)
             result = string_concat(result, uppercase_char)
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             sus invalid_char tea = char_from_byte(get_byte_at(s, byte_pos))
             result = string_concat(result, invalid_char)
             byte_pos += 1
@@ -814,10 +814,10 @@ slay to_titlecase(s tea) tea { fr fr Convert to title case
                 sus titlecase_char tea = encode_utf8_char(info.titlecase_mapping)
                 result = string_concat(result, titlecase_char)
                 is_word_start = false
-            } otherwise lowkey info.is_letter {
+            } highkey lowkey info.is_letter {
                 sus lowercase_char tea = encode_utf8_char(info.lowercase_mapping)
                 result = string_concat(result, lowercase_char)
-            } otherwise {
+            } highkey {
                 sus original_char tea = encode_utf8_char(code_point)
                 result = string_concat(result, original_char)
                 
@@ -828,7 +828,7 @@ slay to_titlecase(s tea) tea { fr fr Convert to title case
             }
             
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             sus invalid_char tea = char_from_byte(get_byte_at(s, byte_pos))
             result = string_concat(result, invalid_char)
             byte_pos += 1
@@ -897,7 +897,7 @@ slay split_advanced(s tea, delimiter tea, options StringSplitOptions) tea[value]
             current_part = ""
             text_pos += delim_len
             splits_made += 1
-        } otherwise {
+        } highkey {
             sus char tea = char_at_position(s, text_pos)
             current_part = string_concat(current_part, char)
             text_pos += 1
@@ -938,7 +938,7 @@ slay split_into_chars(s tea) tea[value]{ fr fr Split string into individual char
             sus char tea = encode_utf8_char(code_point)
             result = append_string_array(result, char)
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             sus invalid_char tea = char_from_byte(get_byte_at(s, byte_pos))
             result = append_string_array(result, invalid_char)
             byte_pos += 1
@@ -965,13 +965,13 @@ slay split_whitespace(s tea) tea[value]{ fr fr Split on any whitespace
                     result = append_string_array(result, current_word)
                     current_word = ""
                 }
-            } otherwise {
+            } highkey {
                 sus char tea = encode_utf8_char(code_point)
                 current_word = string_concat(current_word, char)
             }
             
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             sus invalid_char tea = char_from_byte(get_byte_at(s, byte_pos))
             current_word = string_concat(current_word, invalid_char)
             byte_pos += 1
@@ -1010,7 +1010,7 @@ slay trim_left_whitespace(s tea) tea { fr fr Trim left whitespace
                 break
             }
             byte_pos += char_len
-        } otherwise {
+        } highkey {
             byte_pos += 1
         }
     }
@@ -1041,7 +1041,7 @@ slay trim_right_whitespace(s tea) tea { fr fr Trim right whitespace
                 break
             }
             end_pos = byte_pos
-        } otherwise {
+        } highkey {
             end_pos -= 1
         }
     }
@@ -1133,7 +1133,7 @@ slay compare_strings_advanced(s1 tea, s2 tea, options StringCompareOptions) norm
             
             lowkey code1 < code2 {
                 damn -1
-            } otherwise {
+            } highkey {
                 damn 1
             }
         }
@@ -1142,7 +1142,7 @@ slay compare_strings_advanced(s1 tea, s2 tea, options StringCompareOptions) norm
     fr fr Strings are equal up to minimum length, compare lengths
     lowkey len1 < len2 {
         damn -1
-    } otherwise lowkey len1 > len2 {
+    } highkey lowkey len1 > len2 {
         damn 1
     }
     
@@ -1170,14 +1170,14 @@ slay numeric_string_compare(s1 tea, s2 tea) normie { fr fr Compare strings with 
             lowkey num1 != num2 {
                 lowkey num1 < num2 {
                     damn -1
-                } otherwise {
+                } highkey {
                     damn 1
                 }
             }
             
             pos1 = end1
             pos2 = end2
-        } otherwise {
+        } highkey {
             fr fr Compare characters normally
             lowkey char1 != char2 {
                 sus code1, _ := decode_utf8_char(char1, 0)
@@ -1185,7 +1185,7 @@ slay numeric_string_compare(s1 tea, s2 tea) normie { fr fr Compare strings with 
                 
                 lowkey code1 < code2 {
                     damn -1
-                } otherwise {
+                } highkey {
                     damn 1
                 }
             }
@@ -1198,7 +1198,7 @@ slay numeric_string_compare(s1 tea, s2 tea) normie { fr fr Compare strings with 
     fr fr Handle remaining characters
     lowkey pos1 < len1 {
         damn 1
-    } otherwise lowkey pos2 < len2 {
+    } highkey lowkey pos2 < len2 {
         damn -1
     }
     

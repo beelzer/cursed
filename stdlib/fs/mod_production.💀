@@ -82,11 +82,11 @@ slay utf8_byte_length(s tea) thicc { fr fr Calculate actual UTF-8 byte length
         
         lowkey char_code <= 0x7F {
             length += 1  fr fr ASCII - 1 byte
-        } otherwise lowkey char_code <= 0x7FF {
+        } highkey lowkey char_code <= 0x7FF {
             length += 2  fr fr 2-byte UTF-8
-        } otherwise lowkey char_code <= 0xFFFF {
+        } highkey lowkey char_code <= 0xFFFF {
             length += 3  fr fr 3-byte UTF-8
-        } otherwise {
+        } highkey {
             length += 4  fr fr 4-byte UTF-8
         }
         
@@ -111,11 +111,11 @@ slay string_char_count(s tea) thicc { fr fr Count actual Unicode characters
         fr fr Determine UTF-8 character length
         lowkey (first_byte & 0x80) == 0 {
             char_bytes = 1  fr fr ASCII
-        } otherwise lowkey (first_byte & 0xE0) == 0xC0 {
+        } highkey lowkey (first_byte & 0xE0) == 0xC0 {
             char_bytes = 2  fr fr 2-byte
-        } otherwise lowkey (first_byte & 0xF0) == 0xE0 {
+        } highkey lowkey (first_byte & 0xF0) == 0xE0 {
             char_bytes = 3  fr fr 3-byte
-        } otherwise lowkey (first_byte & 0xF8) == 0xF0 {
+        } highkey lowkey (first_byte & 0xF8) == 0xF0 {
             char_bytes = 4  fr fr 4-byte
         }
         
@@ -141,16 +141,16 @@ slay string_to_bytes_utf8(s tea) byte[value]{ fr fr Convert string to UTF-8 byte
         lowkey char_code <= 0x7F {
             result[byte_index] = byte(char_code)
             byte_index += 1
-        } otherwise lowkey char_code <= 0x7FF {
+        } highkey lowkey char_code <= 0x7FF {
             result[byte_index] = byte(0xC0 | (char_code >> 6))
             result[byte_index + 1] = byte(0x80 | (char_code & 0x3F))
             byte_index += 2
-        } otherwise lowkey char_code <= 0xFFFF {
+        } highkey lowkey char_code <= 0xFFFF {
             result[byte_index] = byte(0xE0 | (char_code >> 12))
             result[byte_index + 1] = byte(0x80 | ((char_code >> 6) & 0x3F))
             result[byte_index + 2] = byte(0x80 | (char_code & 0x3F))
             byte_index += 3
-        } otherwise {
+        } highkey {
             result[byte_index] = byte(0xF0 | (char_code >> 18))
             result[byte_index + 1] = byte(0x80 | ((char_code >> 12) & 0x3F))
             result[byte_index + 2] = byte(0x80 | ((char_code >> 6) & 0x3F))
@@ -181,18 +181,18 @@ slay bytes_to_string_utf8(data byte[value]) tea { fr fr Convert UTF-8 bytes to s
             fr fr ASCII character
             char_code = normie(first_byte)
             char_bytes = 1
-        } otherwise lowkey (first_byte & 0xE0) == 0xC0 {
+        } highkey lowkey (first_byte & 0xE0) == 0xC0 {
             fr fr 2-byte UTF-8
             char_code = ((normie(first_byte) & 0x1F) << 6) |
                        (normie(data[byte_index + 1]) & 0x3F)
             char_bytes = 2
-        } otherwise lowkey (first_byte & 0xF0) == 0xE0 {
+        } highkey lowkey (first_byte & 0xF0) == 0xE0 {
             fr fr 3-byte UTF-8
             char_code = ((normie(first_byte) & 0x0F) << 12) |
                        ((normie(data[byte_index + 1]) & 0x3F) << 6) |
                        (normie(data[byte_index + 2]) & 0x3F)
             char_bytes = 3
-        } otherwise lowkey (first_byte & 0xF8) == 0xF0 {
+        } highkey lowkey (first_byte & 0xF8) == 0xF0 {
             fr fr 4-byte UTF-8
             char_code = ((normie(first_byte) & 0x07) << 18) |
                        ((normie(data[byte_index + 1]) & 0x3F) << 12) |
@@ -230,14 +230,14 @@ slay normalize_path(path tea) tea { fr fr Normalize path separators and resolve 
         lowkey component == "" || component == "." {
             fr fr Skip empty components and current directory references
             continue
-        } otherwise lowkey component == ".." {
+        } highkey lowkey component == ".." {
             fr fr Handle parent directory reference
             lowkey len(result_components) > 0 && result_components[len(result_components)-1] != ".." {
                 result_components = slice_array(result_components, 0, len(result_components)-1)
-            } otherwise {
+            } highkey {
                 result_components = append_to_array(result_components, component)
             }
-        } otherwise {
+        } highkey {
             result_components = append_to_array(result_components, component)
         }
     }
@@ -273,7 +273,7 @@ slay parse_path(path tea) PathInfo { fr fr Parse path into components
     lowkey last_slash >= 0 {
         directory = substring_range(normalized, 0, last_slash)
         filename = substring_range(normalized, last_slash + 1, string_char_count(normalized))
-    } otherwise {
+    } highkey {
         directory = ""
         filename = normalized
     }

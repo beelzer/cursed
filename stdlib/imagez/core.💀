@@ -92,7 +92,7 @@ slay create_image(width drip, height drip, channels drip) Image {
         channels: channels,
         data: data,
         format: "RAW",
-        color_space: ready (channels == 4) { damn "RGBA" } otherwise { damn "RGB" }
+        color_space: lowkey (channels == 4) { damn "RGBA" } highkey { damn "RGB" }
     }
 }
 
@@ -115,7 +115,7 @@ slay clone_image(img Image) Image {
 
 # Get pixel at coordinates (with bounds checking)
 slay get_pixel(img Image, x drip, y drip) yikes<drip[value]> {
-    ready (x < 0 || x >= img.width || y < 0 || y >= img.height) {
+    lowkey (x < 0 || x >= img.width || y < 0 || y >= img.height) {
         yikes "pixel coordinates out of bounds"
     }
     
@@ -131,11 +131,11 @@ slay get_pixel(img Image, x drip, y drip) yikes<drip[value]> {
 
 # Set pixel at coordinates (with bounds checking)
 slay set_pixel(img *Image, x drip, y drip, pixel drip[value]) yikes<lit> {
-    ready (x < 0 || x >= img.width || y < 0 || y >= img.height) {
+    lowkey (x < 0 || x >= img.width || y < 0 || y >= img.height) {
         yikes "pixel coordinates out of bounds"
     }
     
-    ready (len(pixel) != img.channels) {
+    lowkey (len(pixel) != img.channels) {
         yikes "pixel channel count mismatch"
     }
     
@@ -159,20 +159,20 @@ slay rgb_to_hsv(rgb RGB) HSV {
     sus delta tea = max_val - min_val
     
     sus h tea = 0.0
-    sus s tea = ready (max_val == 0.0) { damn 0.0 } otherwise { damn delta / max_val }
+    sus s tea = lowkey (max_val == 0.0) { damn 0.0 } highkey { damn delta / max_val }
     sus v tea = max_val
     
-    ready (delta > 0.0) {
-        ready (max_val == r_norm) {
+    lowkey (delta > 0.0) {
+        lowkey (max_val == r_norm) {
             h = 60.0 * (((g_norm - b_norm) / delta) % 6.0)
-        } otherwise ready (max_val == g_norm) {
+        } highkey lowkey (max_val == g_norm) {
             h = 60.0 * (((b_norm - r_norm) / delta) + 2.0)
-        } otherwise {
+        } highkey {
             h = 60.0 * (((r_norm - g_norm) / delta) + 4.0)
         }
     }
     
-    ready (h < 0.0) {
+    lowkey (h < 0.0) {
         h = h + 360.0
     }
     
@@ -188,17 +188,17 @@ slay hsv_to_rgb(hsv HSV) RGB {
     sus g tea = 0.0
     sus b tea = 0.0
     
-    ready (hsv.h < 60.0) {
+    lowkey (hsv.h < 60.0) {
         r = c; g = x; b = 0.0
-    } otherwise ready (hsv.h < 120.0) {
+    } highkey lowkey (hsv.h < 120.0) {
         r = x; g = c; b = 0.0
-    } otherwise ready (hsv.h < 180.0) {
+    } highkey lowkey (hsv.h < 180.0) {
         r = 0.0; g = c; b = x
-    } otherwise ready (hsv.h < 240.0) {
+    } highkey lowkey (hsv.h < 240.0) {
         r = 0.0; g = x; b = c
-    } otherwise ready (hsv.h < 300.0) {
+    } highkey lowkey (hsv.h < 300.0) {
         r = x; g = 0.0; b = c
-    } otherwise {
+    } highkey {
         r = c; g = 0.0; b = x
     }
     
@@ -211,29 +211,29 @@ slay hsv_to_rgb(hsv HSV) RGB {
 
 # Helper math functions
 slay max_tea(a tea, b tea) tea {
-    damn ready (a > b) { damn a } otherwise { damn b }
+    damn lowkey (a > b) { damn a } highkey { damn b }
 }
 
 slay min_tea(a tea, b tea) tea {
-    damn ready (a < b) { damn a } otherwise { damn b }
+    damn lowkey (a < b) { damn a } highkey { damn b }
 }
 
 slay abs_tea(x tea) tea {
-    damn ready (x < 0.0) { damn -x } otherwise { damn x }
+    damn lowkey (x < 0.0) { damn -x } highkey { damn x }
 }
 
 # Image validation
 slay validate_image(img Image) yikes<lit> {
-    ready (img.width <= 0 || img.height <= 0) {
+    lowkey (img.width <= 0 || img.height <= 0) {
         yikes "invalid image dimensions"
     }
     
-    ready (img.channels < 1 || img.channels > 4) {
+    lowkey (img.channels < 1 || img.channels > 4) {
         yikes "invalid channel count"
     }
     
     sus expected_size drip = img.width * img.height * img.channels
-    ready (len(img.data) != expected_size) {
+    lowkey (len(img.data) != expected_size) {
         yikes "image data size mismatch"
     }
     

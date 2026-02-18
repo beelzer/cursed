@@ -57,19 +57,19 @@ slay audioz_encode_wav_production(audio AudioData) tea {
             sus sample_index normie = (i * audio.channels) + c
             sus sample_value drip = audioz_get_sample_as_float(audio.samples, sample_index)
             
-            ready (audio.bit_depth == 16) {
+            lowkey (audio.bit_depth == 16) {
                 sus int_sample normie = mathz_float_to_int(sample_value * 32767.0)
-                ready (int_sample > 32767) { int_sample = 32767 }
-                ready (int_sample < -32768) { int_sample = -32768 }
+                lowkey (int_sample > 32767) { int_sample = 32767 }
+                lowkey (int_sample < -32768) { int_sample = -32768 }
                 buffer = audioz_write_uint16_le(buffer, offset, int_sample)
                 offset += 2
-            } otherwise (audio.bit_depth == 24) {
+            } highkey (audio.bit_depth == 24) {
                 sus int_sample normie = mathz_float_to_int(sample_value * 8388607.0)
-                ready (int_sample > 8388607) { int_sample = 8388607 }
-                ready (int_sample < -8388608) { int_sample = -8388608 }
+                lowkey (int_sample > 8388607) { int_sample = 8388607 }
+                lowkey (int_sample < -8388608) { int_sample = -8388608 }
                 buffer = audioz_write_uint24_le(buffer, offset, int_sample)
                 offset += 3
-            } otherwise (audio.bit_depth == 32) {
+            } highkey (audio.bit_depth == 32) {
                 sus int_sample normie = mathz_float_to_int(sample_value * 2147483647.0)
                 buffer = audioz_write_uint32_le(buffer, offset, int_sample)
                 offset += 4
@@ -87,7 +87,7 @@ slay audioz_decode_wav_production(data tea) AudioData {
     
     fr fr Validate RIFF header
     sus riff_id tea = stringz_substring(data, offset, 4)
-    ready (!stringz_equals(riff_id, "RIFF")) {
+    lowkey (!stringz_equals(riff_id, "RIFF")) {
         damn audio
     }
     offset += 4
@@ -96,7 +96,7 @@ slay audioz_decode_wav_production(data tea) AudioData {
     offset += 4
     
     sus wave_id tea = stringz_substring(data, offset, 4)
-    ready (!stringz_equals(wave_id, "WAVE")) {
+    lowkey (!stringz_equals(wave_id, "WAVE")) {
         damn audio
     }
     offset += 4
@@ -107,9 +107,9 @@ slay audioz_decode_wav_production(data tea) AudioData {
         sus chunk_size normie = audioz_read_uint32_le(data, offset + 4)
         offset += 8
         
-        ready (stringz_equals(chunk_id, "fmt ")) {
+        lowkey (stringz_equals(chunk_id, "fmt ")) {
             sus format_tag normie = audioz_read_uint16_le(data, offset)
-            ready (format_tag != 1) {
+            lowkey (format_tag != 1) {
                 vibez.spill("Error: Unsupported WAV format:", format_tag)
                 damn audio
             }
@@ -119,7 +119,7 @@ slay audioz_decode_wav_production(data tea) AudioData {
             audio.bit_depth = audioz_read_uint16_le(data, offset + 14)
             audio.format = "WAV"
             
-        } otherwise (stringz_equals(chunk_id, "data")) {
+        } highkey (stringz_equals(chunk_id, "data")) {
             audio.frame_count = chunk_size / (audio.channels * (audio.bit_depth / 8))
             audio.duration = mathz_int_to_float(audio.frame_count) / mathz_int_to_float(audio.sample_rate)
             
@@ -128,7 +128,7 @@ slay audioz_decode_wav_production(data tea) AudioData {
         }
         
         offset += chunk_size
-        ready (chunk_size % 2 == 1) {
+        lowkey (chunk_size % 2 == 1) {
             offset += 1 fr fr Pad byte for odd chunk sizes
         }
     }
@@ -145,7 +145,7 @@ slay audioz_decode_mp3_production(data tea) AudioData {
     
     fr fr Find first valid frame
     sus frame_offset normie = audioz_find_mp3_sync(data, 0)
-    ready (frame_offset == -1) {
+    lowkey (frame_offset == -1) {
         vibez.spill("Error: No valid MP3 frame found")
         damn audio
     }
@@ -160,7 +160,7 @@ slay audioz_decode_mp3_production(data tea) AudioData {
     
     fr fr Decode MP3 parameters
     audio.sample_rate = audioz_get_mp3_sample_rate(version, sample_rate_index)
-    audio.channels = ready (channel_mode == 3) { damn 1 } otherwise { damn 2 }
+    audio.channels = lowkey (channel_mode == 3) { damn 1 } highkey { damn 2 }
     audio.bit_depth = 16 fr fr MP3 output is typically 16-bit
     
     fr fr Estimate frame count and duration
@@ -179,10 +179,10 @@ slay audioz_find_mp3_sync(data tea, start_offset normie) normie {
     fr fr Find MP3 frame sync pattern (0xFFE0+)
     bestie (sus i normie = start_offset; i < stringz_length(data) - 4; i++) {
         sus sync_word normie = audioz_read_uint16_be(data, i)
-        ready ((sync_word & 0xFFE0) == 0xFFE0) {
+        lowkey ((sync_word & 0xFFE0) == 0xFFE0) {
             fr fr Validate frame header
             sus header normie = audioz_read_uint32_be(data, i)
-            ready (audioz_validate_mp3_header(header)) {
+            lowkey (audioz_validate_mp3_header(header)) {
                 damn i
             }
         }
@@ -198,9 +198,9 @@ slay audioz_validate_mp3_header(header normie) lit {
     sus sample_rate_index normie = (header >> 10) & 0x3
     
     fr fr Check for valid values
-    ready (version == 1 || bitrate_index == 0 || bitrate_index == 15) { damn false }
-    ready (sample_rate_index == 3) { damn false }
-    ready (layer == 0) { damn false }
+    lowkey (version == 1 || bitrate_index == 0 || bitrate_index == 15) { damn false }
+    lowkey (sample_rate_index == 3) { damn false }
+    lowkey (layer == 0) { damn false }
     
     damn true
 }
@@ -214,7 +214,7 @@ slay audioz_decode_flac_production(data tea) AudioData {
     
     fr fr Validate FLAC signature
     sus signature tea = stringz_substring(data, 0, 4)
-    ready (!stringz_equals(signature, "fLaC")) {
+    lowkey (!stringz_equals(signature, "fLaC")) {
         vibez.spill("Error: Invalid FLAC signature")
         damn audio
     }
@@ -230,7 +230,7 @@ slay audioz_decode_flac_production(data tea) AudioData {
         sus block_size normie = audioz_read_uint24_be(data, offset + 1)
         offset += 4
         
-        ready (block_type == 0) { fr fr STREAMINFO block
+        lowkey (block_type == 0) { fr fr STREAMINFO block
             audio.sample_rate = (audioz_read_uint32_be(data, offset + 10) >> 12) & 0xFFFFF
             audio.channels = ((audioz_read_uint8(data, offset + 12) >> 1) & 0x7) + 1
             audio.bit_depth = ((audioz_read_uint16_be(data, offset + 12) >> 4) & 0x1F) + 1
@@ -246,13 +246,13 @@ slay audioz_decode_flac_production(data tea) AudioData {
         
         offset += block_size
         
-        ready (is_last) {
+        lowkey (is_last) {
             fr fr No more metadata blocks
             shook
         }
     }
     
-    ready (!found_streaminfo) {
+    lowkey (!found_streaminfo) {
         vibez.spill("Error: No STREAMINFO block found in FLAC")
         damn audio
     }
@@ -276,19 +276,19 @@ slay audioz_decode_pcm_samples(data tea, offset normie, size normie, bit_depth n
         bestie (sus channel normie = 0; channel < channels; channel++) {
             sus sample_value drip = 0.0
             
-            ready (bit_depth == 8) {
+            lowkey (bit_depth == 8) {
                 sus byte_val normie = audioz_read_uint8(data, read_pos)
                 sample_value = (mathz_int_to_float(byte_val) - 128.0) / 128.0
                 read_pos += 1
-            } otherwise (bit_depth == 16) {
+            } highkey (bit_depth == 16) {
                 sus int_val normie = audioz_read_int16_le(data, read_pos)
                 sample_value = mathz_int_to_float(int_val) / 32768.0
                 read_pos += 2
-            } otherwise (bit_depth == 24) {
+            } highkey (bit_depth == 24) {
                 sus int_val normie = audioz_read_int24_le(data, read_pos)
                 sample_value = mathz_int_to_float(int_val) / 8388608.0
                 read_pos += 3
-            } otherwise (bit_depth == 32) {
+            } highkey (bit_depth == 32) {
                 sus int_val normie = audioz_read_int32_le(data, read_pos)
                 sample_value = mathz_int_to_float(int_val) / 2147483648.0
                 read_pos += 4

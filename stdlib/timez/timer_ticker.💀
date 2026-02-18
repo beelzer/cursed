@@ -70,7 +70,7 @@ slay after(d Duration) chan<lit> {
 
 slay timer_reset(timer *Timer, d Duration) lit {
     fr fr Reset timer with new duration
-    ready (!timer.active) {
+    lowkey (!timer.active) {
         damn cringe  fr fr Cannot reset stopped timer
     }
     
@@ -83,7 +83,7 @@ slay timer_reset(timer *Timer, d Duration) lit {
 
 slay timer_stop(timer *Timer) lit {
     fr fr Stop the timer and return whether it was stopped
-    ready (!timer.active) {
+    lowkey (!timer.active) {
         damn cringe  fr fr Already stopped
     }
     
@@ -93,7 +93,7 @@ slay timer_stop(timer *Timer) lit {
     select {
         case <- timer.channel:
             fr fr Drained
-        otherwise:
+        highkey:
             fr fr Nothing to drain
     }
     
@@ -114,13 +114,13 @@ slay timer_worker(timer Timer) {
     
     bestie (timer.active) {
         sus current_time drip = get_current_time_ns()
-        ready (current_time >= target_time) {
+        lowkey (current_time >= target_time) {
             fr fr Timer expired
-            ready (timer.active) {
+            lowkey (timer.active) {
                 timer.channel <- based
-                ready (!timer.repeating) {
+                lowkey (!timer.repeating) {
                     break
-                } otherwise {
+                } highkey {
                     fr fr Reset for next tick
                     start_time = current_time
                     target_time = start_time + duration_ns
@@ -154,7 +154,7 @@ slay new_ticker(d Duration) Ticker {
 
 slay ticker_stop(ticker *Ticker) {
     fr fr Stop the ticker
-    ready (!ticker.active) {
+    lowkey (!ticker.active) {
         vibez.spill("⚠️ Ticker already stopped")
         damn
     }
@@ -169,7 +169,7 @@ slay ticker_stop(ticker *Ticker) {
 
 slay ticker_reset(ticker *Ticker, d Duration) {
     fr fr Reset ticker with new interval
-    ready (!ticker.active) {
+    lowkey (!ticker.active) {
         vibez.spill("⚠️ Cannot reset stopped ticker")
         damn
     }
@@ -192,15 +192,15 @@ slay ticker_worker(ticker Ticker) {
     
     bestie (ticker.active) {
         sus current_time drip = get_current_time_ns()
-        ready (current_time >= next_tick) {
+        lowkey (current_time >= next_tick) {
             fr fr Time to tick
-            ready (ticker.active) {
+            lowkey (ticker.active) {
                 select {
                     case ticker.channel <- based:
                         ticker.tick_count = ticker.tick_count + 1
                         ticker.last_tick_time = current_time
                         next_tick = current_time + interval_ns
-                    otherwise:
+                    highkey:
                         fr fr Channel blocked, skip this tick
                         next_tick = current_time + interval_ns
                 }
@@ -209,9 +209,9 @@ slay ticker_worker(ticker Ticker) {
         
         fr fr Sleep for precise timing
         sus sleep_duration drip = next_tick - current_time
-        ready (sleep_duration > 1000000) {  fr fr > 1ms
+        lowkey (sleep_duration > 1000000) {  fr fr > 1ms
             runtime_sleep_ns(sleep_duration / 2)  fr fr Sleep half the remaining time
-        } otherwise {
+        } highkey {
             runtime_sleep_ns(100000)  fr fr 0.1ms for fine timing
         }
     }
@@ -232,7 +232,7 @@ slay new_stopwatch() StopWatch {
 
 slay stopwatch_start(sw *StopWatch) {
     fr fr Start or resume the stopwatch
-    ready (sw.running) {
+    lowkey (sw.running) {
         vibez.spill("⚠️ Stopwatch already running")
         damn
     }
@@ -245,7 +245,7 @@ slay stopwatch_start(sw *StopWatch) {
 
 slay stopwatch_stop(sw *StopWatch) Duration {
     fr fr Stop the stopwatch and return elapsed time
-    ready (!sw.running) {
+    lowkey (!sw.running) {
         vibez.spill("⚠️ Stopwatch not running")
         damn duration_zero()
     }
@@ -264,7 +264,7 @@ slay stopwatch_stop(sw *StopWatch) Duration {
 
 slay stopwatch_lap(sw *StopWatch) Duration {
     fr fr Record a lap time and return lap duration
-    ready (!sw.running) {
+    lowkey (!sw.running) {
         vibez.spill("⚠️ Stopwatch not running")
         damn duration_zero()
     }
@@ -286,7 +286,7 @@ slay stopwatch_lap(sw *StopWatch) Duration {
 
 slay stopwatch_elapsed(sw StopWatch) Duration {
     fr fr Get current elapsed time without stopping
-    ready (!sw.running) {
+    lowkey (!sw.running) {
         damn duration_nanoseconds(sw.total_elapsed_ns)
     }
     
@@ -299,7 +299,7 @@ slay stopwatch_elapsed(sw StopWatch) Duration {
 
 slay stopwatch_reset(sw *StopWatch) {
     fr fr Reset the stopwatch to zero
-    sw.start_time = ready (sw.running) { get_current_time_ns() } otherwise { 0 }
+    sw.start_time = lowkey (sw.running) { get_current_time_ns() } highkey { 0 }
     sw.lap_times = []
     sw.total_elapsed_ns = 0
     
@@ -311,7 +311,7 @@ fr fr ===== SCHEDULING AND SLEEP FUNCTIONS =====
 slay sleep(d Duration) {
     fr fr Sleep for the specified duration
     sus ns drip = duration_nanoseconds_value(d)
-    ready (ns <= 0) {
+    lowkey (ns <= 0) {
         damn
     }
     
@@ -322,7 +322,7 @@ slay sleep(d Duration) {
 slay sleep_until(target_time drip) {
     fr fr Sleep until specific timestamp
     sus current_time drip = get_current_time_ns()
-    ready (target_time <= current_time) {
+    lowkey (target_time <= current_time) {
         damn  fr fr Already past target time
     }
     
@@ -390,7 +390,7 @@ fr fr ===== DEADLINE OPERATIONS =====
 slay with_deadline(deadline_timestamp drip, operation tea) lit {
     fr fr Execute operation with absolute deadline
     sus current_time drip = get_current_time_ns()
-    ready (deadline_timestamp <= current_time) {
+    lowkey (deadline_timestamp <= current_time) {
         vibez.spill("⚠️ Deadline already passed for:", operation)
         damn cringe
     }
@@ -430,7 +430,7 @@ slay rate_limiter_allow(rl *RateLimiter) lit {
     fr fr Check if operation is allowed without blocking
     rate_limiter_refill(rl)
     
-    ready (rl.tokens > 0) {
+    lowkey (rl.tokens > 0) {
         rl.tokens = rl.tokens - 1
         damn based
     }
@@ -453,9 +453,9 @@ slay rate_limiter_refill(rl *RateLimiter) {
     sus interval_ns drip = duration_nanoseconds_value(rl.interval)
     
     sus new_tokens drip = elapsed_ns / interval_ns
-    ready (new_tokens > 0) {
+    lowkey (new_tokens > 0) {
         rl.tokens = rl.tokens + new_tokens
-        ready (rl.tokens > rl.burst) {
+        lowkey (rl.tokens > rl.burst) {
             rl.tokens = rl.burst
         }
         rl.last_refill = current_time
@@ -506,7 +506,7 @@ outer slay make_chan_lit(size drip) chan<lit>
 
 fr fr Initialize timer/ticker system
 slay initialize_timer_system() {
-    ready (!scheduler_initialized) {
+    lowkey (!scheduler_initialized) {
         global_scheduler.pending_timers = []
         global_scheduler.pending_tickers = []
         global_scheduler.running = based

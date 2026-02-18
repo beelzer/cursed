@@ -47,9 +47,9 @@ slay get_env_string(key tea, default_value tea) tea {
     fr fr Simulate environment variable reading
     fr fr In real implementation, would read from actual environment
     
-    ready (key == "CURSED_TEST_FILTER") {
+    lowkey (key == "CURSED_TEST_FILTER") {
         damn "*"
-    } otherwise ready (key == "CURSED_TEST_EXCLUDE") {
+    } highkey lowkey (key == "CURSED_TEST_EXCLUDE") {
         damn ""
     }
     
@@ -60,11 +60,11 @@ slay get_env_int(key tea, default_value normie) normie {
     fr fr Simulate environment variable reading
     fr fr In real implementation, would parse int from environment
     
-    ready (key == "CURSED_TEST_WORKERS") {
+    lowkey (key == "CURSED_TEST_WORKERS") {
         damn 4  fr fr Default to 4 workers
-    } otherwise ready (key == "CURSED_TEST_TIMEOUT") {
+    } highkey lowkey (key == "CURSED_TEST_TIMEOUT") {
         damn 30  fr fr Default 30 second timeout
-    } otherwise ready (key == "CURSED_TEST_MEMORY_LIMIT") {
+    } highkey lowkey (key == "CURSED_TEST_MEMORY_LIMIT") {
         damn 512  fr fr Default 512MB memory limit
     }
     
@@ -75,19 +75,19 @@ slay get_env_bool(key tea, default_value lit) lit {
     fr fr Simulate environment variable reading
     fr fr In real implementation, would parse bool from environment
     
-    ready (key == "CURSED_TEST_PARALLEL") {
+    lowkey (key == "CURSED_TEST_PARALLEL") {
         damn based  fr fr Default to parallel
-    } otherwise ready (key == "CURSED_TEST_VERBOSE") {
+    } highkey lowkey (key == "CURSED_TEST_VERBOSE") {
         damn cringe  fr fr Default non-verbose
-    } otherwise ready (key == "CURSED_TEST_FAIL_FAST") {
+    } highkey lowkey (key == "CURSED_TEST_FAIL_FAST") {
         damn cringe  fr fr Default no fail-fast
-    } otherwise ready (key == "CURSED_TEST_ISOLATION") {
+    } highkey lowkey (key == "CURSED_TEST_ISOLATION") {
         damn based  fr fr Default with isolation
-    } otherwise ready (key == "CURSED_TEST_CLEANUP") {
+    } highkey lowkey (key == "CURSED_TEST_CLEANUP") {
         damn based  fr fr Default with cleanup
-    } otherwise ready (key == "CURSED_TEST_DEBUG") {
+    } highkey lowkey (key == "CURSED_TEST_DEBUG") {
         damn cringe  fr fr Default no debug
-    } otherwise ready (key == "CURSED_TEST_PROFILE") {
+    } highkey lowkey (key == "CURSED_TEST_PROFILE") {
         damn cringe  fr fr Default no profiling
     }
     
@@ -136,7 +136,7 @@ slay create_parallelism_config(env_config EnvironmentConfig) ParallelismConfig {
     vibez.spill("⚙️ Creating parallelism configuration...")
     
     sus execution_mode tea = "parallel"
-    ready (env_config.cursed_test_parallel == cringe) {
+    lowkey (env_config.cursed_test_parallel == cringe) {
         execution_mode = "sequential"
     }
     
@@ -295,7 +295,7 @@ slay execute_tests_sequential(test_tasks [TestTask], env_config EnvironmentConfi
     bestie (i < len(test_tasks)) {
         sus task TestTask = test_tasks[i]
         
-        ready (env_config.cursed_test_verbose) {
+        lowkey (env_config.cursed_test_verbose) {
             vibez.spill("  🧪 Running test:", task.test_name)
         }
         
@@ -303,13 +303,13 @@ slay execute_tests_sequential(test_tasks [TestTask], env_config EnvironmentConfi
         results = append_test_result(results, result)
         
         fr fr Check fail-fast
-        ready (env_config.cursed_test_fail_fast && !result.success) {
+        lowkey (env_config.cursed_test_fail_fast && !result.success) {
             vibez.spill("❌ Fail-fast enabled - stopping on first failure")
             break
         }
         
         fr fr Cleanup between tests if enabled
-        ready (env_config.cursed_test_cleanup) {
+        lowkey (env_config.cursed_test_cleanup) {
             cleanup_test_environment(task)
         }
         
@@ -352,13 +352,13 @@ slay execute_tests_adaptive(test_tasks [TestTask], parallel_config ParallelismCo
     sus analysis TaskAnalysis = analyze_test_tasks(test_tasks)
     
     fr fr Choose execution strategy based on analysis
-    ready (analysis.small_tests_ratio > 0.8 && len(test_tasks) > 10) {
+    lowkey (analysis.small_tests_ratio > 0.8 && len(test_tasks) > 10) {
         vibez.spill("  📈 Many small tests detected - using parallel execution")
         damn execute_tests_parallel(test_tasks, parallel_config, env_config)
-    } otherwise ready (analysis.resource_intensive_ratio > 0.5) {
+    } highkey lowkey (analysis.resource_intensive_ratio > 0.5) {
         vibez.spill("  🎯 Resource-intensive tests detected - using sequential execution")
         damn execute_tests_sequential(test_tasks, env_config)
-    } otherwise {
+    } highkey {
         vibez.spill("  ⚖️ Mixed workload - using hybrid execution")
         damn execute_tests_hybrid(test_tasks, parallel_config, env_config)
     }
@@ -385,7 +385,7 @@ slay monitor_resources(resource_manager ResourceManager, worker_pool WorkerPool)
     
     fr fr Check for resource warnings
     sus memory_usage_percent normie = (total_memory_used * 100) / updated_manager.total_memory
-    ready (memory_usage_percent > updated_manager.memory_threshold) {
+    lowkey (memory_usage_percent > updated_manager.memory_threshold) {
         updated_manager.resource_warnings = updated_manager.resource_warnings + 1
         vibez.spill("⚠️ Memory usage high:", memory_usage_percent, "%")
     }
@@ -396,11 +396,11 @@ slay monitor_resources(resource_manager ResourceManager, worker_pool WorkerPool)
 slay allocate_worker(worker_pool WorkerPool, task TestTask, resource_manager ResourceManager) normie {
     fr fr Find best available worker using load balancing strategy
     
-    ready (worker_pool.load_balancer.strategy == "round_robin") {
+    lowkey (worker_pool.load_balancer.strategy == "round_robin") {
         damn allocate_worker_round_robin(worker_pool, task)
-    } otherwise ready (worker_pool.load_balancer.strategy == "least_loaded") {
+    } highkey lowkey (worker_pool.load_balancer.strategy == "least_loaded") {
         damn allocate_worker_least_loaded(worker_pool, task)
-    } otherwise ready (worker_pool.load_balancer.strategy == "resource_aware") {
+    } highkey lowkey (worker_pool.load_balancer.strategy == "resource_aware") {
         damn allocate_worker_resource_aware(worker_pool, task, resource_manager)
     }
     
@@ -415,14 +415,14 @@ slay allocate_worker_resource_aware(worker_pool WorkerPool, task TestTask, resou
     bestie (i < len(worker_pool.workers)) {
         sus worker WorkerState = worker_pool.workers[i]
         
-        ready (worker.status == "idle") {
+        lowkey (worker.status == "idle") {
             fr fr Calculate suitability score
             sus memory_available normie = resource_manager.available_memory
             sus memory_required normie = task.resource_requirements.memory_mb
             
-            ready (memory_available >= memory_required) {
+            lowkey (memory_available >= memory_required) {
                 sus score normie = calculate_worker_score(worker, task, resource_manager)
-                ready (score > best_score) {
+                lowkey (score > best_score) {
                     best_score = score
                     best_worker = i
                 }
@@ -440,18 +440,18 @@ slay calculate_worker_score(worker WorkerState, task TestTask, resource_manager 
     sus base_score normie = 100
     
     fr fr Penalize high error rate
-    ready (worker.test_count > 0) {
+    lowkey (worker.test_count > 0) {
         sus error_rate normie = (worker.error_count * 100) / worker.test_count
         base_score = base_score - error_rate
     }
     
     fr fr Bonus for low memory usage
-    ready (worker.memory_usage < 50) {
+    lowkey (worker.memory_usage < 50) {
         base_score = base_score + 20
     }
     
     fr fr Bonus for recent completion
-    ready (worker.status == "completed") {
+    lowkey (worker.status == "completed") {
         base_score = base_score + 10
     }
     
@@ -495,7 +495,7 @@ slay queue_tasks(worker_pool WorkerPool, test_tasks [TestTask]) WorkerPool {
         i = i + 1
     }
     
-    updated_pool.pool_status = "ready"
+    updated_pool.pool_status = "lowkey"
     vibez.spill("📋 Queued", len(test_tasks), "tasks for execution")
     
     damn updated_pool
@@ -518,7 +518,7 @@ slay execute_with_worker_pool(worker_pool WorkerPool, resource_manager ResourceM
         fr fr Allocate worker for task
         sus worker_id normie = allocate_worker(updated_pool, task, updated_manager)
         
-        ready (worker_id >= 0) {
+        lowkey (worker_id >= 0) {
             fr fr Execute task with allocated worker
             sus result TestExecutionResult = execute_task_with_worker(task, worker_id, env_config)
             results = append_test_result(results, result)
@@ -530,11 +530,11 @@ slay execute_with_worker_pool(worker_pool WorkerPool, resource_manager ResourceM
             updated_pool.task_queue = remove_first_task(updated_pool.task_queue)
             
             fr fr Check fail-fast
-            ready (env_config.cursed_test_fail_fast && !result.success) {
+            lowkey (env_config.cursed_test_fail_fast && !result.success) {
                 vibez.spill("❌ Fail-fast enabled - stopping parallel execution")
                 break
             }
-        } otherwise {
+        } highkey {
             fr fr No worker available - wait and retry
             vibez.spill("⏳ No workers available - waiting...")
             sleep_ms(100)
@@ -553,7 +553,7 @@ fr fr ================================
 slay execute_single_test(task TestTask, env_config EnvironmentConfig) TestExecutionResult {
     sus start_time normie = get_current_timestamp()
     
-    ready (env_config.cursed_test_debug) {
+    lowkey (env_config.cursed_test_debug) {
         vibez.spill("🔍 Debug: Executing", task.test_name, "from", task.test_file)
     }
     
@@ -562,7 +562,7 @@ slay execute_single_test(task TestTask, env_config EnvironmentConfig) TestExecut
     sus error_message tea = ""
     
     fr fr Simulate occasional failures for testing
-    ready (task.test_name.contains("fail")) {
+    lowkey (task.test_name.contains("fail")) {
         success = cringe
         error_message = "Simulated test failure"
     }
@@ -572,7 +572,7 @@ slay execute_single_test(task TestTask, env_config EnvironmentConfig) TestExecut
     
     damn TestExecutionResult{
         test_file: task.test_file,
-        exit_code: ready (success) { 0 } otherwise { 1 },
+        exit_code: lowkey (success) { 0 } highkey { 1 },
         execution_time: execution_time,
         stdout_output: "Test output for " + task.test_name,
         stderr_output: error_message,
@@ -583,7 +583,7 @@ slay execute_single_test(task TestTask, env_config EnvironmentConfig) TestExecut
 }
 
 slay execute_task_with_worker(task TestTask, worker_id normie, env_config EnvironmentConfig) TestExecutionResult {
-    ready (env_config.cursed_test_verbose) {
+    lowkey (env_config.cursed_test_verbose) {
         vibez.spill("👷 Worker", worker_id, "executing:", task.test_name)
     }
     
@@ -644,18 +644,18 @@ slay run_parallel_test_suite(test_files [tea]) TestRunSummary {
     fr fr Execute based on strategy
     sus results [TestExecutionResult] = []
     
-    ready (config.execution_strategy == "sequential") {
+    lowkey (config.execution_strategy == "sequential") {
         results = execute_tests_sequential(test_tasks, config.env_config)
-    } otherwise ready (config.execution_strategy == "parallel") {
+    } highkey lowkey (config.execution_strategy == "parallel") {
         results = execute_tests_parallel(test_tasks, config.parallel_config, config.env_config)
-    } otherwise ready (config.execution_strategy == "adaptive") {
+    } highkey lowkey (config.execution_strategy == "adaptive") {
         results = execute_tests_adaptive(test_tasks, config.parallel_config, config.env_config)
     }
     
     fr fr Generate summary
     sus summary TestRunSummary = aggregate_test_results(results)
     
-    ready (config.env_config.cursed_test_profile) {
+    lowkey (config.env_config.cursed_test_profile) {
         print_performance_profile(summary, results)
     }
     
@@ -675,10 +675,10 @@ slay main_character() {
     
     sus summary TestRunSummary = run_parallel_test_suite(test_files)
     
-    ready (summary.failed_tests > 0) {
+    lowkey (summary.failed_tests > 0) {
         vibez.spill("❌ Some tests failed")
         damn 1
-    } otherwise {
+    } highkey {
         vibez.spill("✅ All tests passed")
         damn 0
     }

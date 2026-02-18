@@ -41,7 +41,7 @@ slay parse_for_linting(source tea) ASTNode[value]{
         sus line tea = lines[line_num]
         sus trimmed tea = trim_str(line)
         
-        ready (len_str(trimmed) > 0 && !starts_with(trimmed, "//")) {
+        lowkey (len_str(trimmed) > 0 && !starts_with(trimmed, "//")) {
             sus node ASTNode = classify_line_to_node(trimmed, line_num + 1)
             push(nodes, node)
         }
@@ -56,7 +56,7 @@ slay parse_for_linting(source tea) ASTNode[value]{
 slay classify_line_to_node(line tea, line_num drip) ASTNode {
     sus trimmed tea = trim_str(line)
     
-    ready (starts_with(trimmed, "sus ")) {
+    lowkey (starts_with(trimmed, "sus ")) {
         damn ASTNode{
             node_type: "variable_declaration",
             content: line,
@@ -66,7 +66,7 @@ slay classify_line_to_node(line tea, line_num drip) ASTNode {
         }
     }
     
-    ready (starts_with(trimmed, "slay ")) {
+    lowkey (starts_with(trimmed, "slay ")) {
         damn ASTNode{
             node_type: "function_declaration",
             content: line,
@@ -76,7 +76,7 @@ slay classify_line_to_node(line tea, line_num drip) ASTNode {
         }
     }
     
-    ready (starts_with(trimmed, "squad ")) {
+    lowkey (starts_with(trimmed, "squad ")) {
         damn ASTNode{
             node_type: "struct_declaration",
             content: line,
@@ -86,7 +86,7 @@ slay classify_line_to_node(line tea, line_num drip) ASTNode {
         }
     }
     
-    ready (starts_with(trimmed, "collab ")) {
+    lowkey (starts_with(trimmed, "collab ")) {
         damn ASTNode{
             node_type: "interface_declaration",
             content: line,
@@ -96,7 +96,7 @@ slay classify_line_to_node(line tea, line_num drip) ASTNode {
         }
     }
     
-    ready (starts_with(trimmed, "yeet ")) {
+    lowkey (starts_with(trimmed, "yeet ")) {
         damn ASTNode{
             node_type: "import_statement",
             content: line,
@@ -106,7 +106,7 @@ slay classify_line_to_node(line tea, line_num drip) ASTNode {
         }
     }
     
-    ready (starts_with(trimmed, "ready ") || starts_with(trimmed, "bestie ")) {
+    lowkey (starts_with(trimmed, "lowkey ") || starts_with(trimmed, "bestie ")) {
         damn ASTNode{
             node_type: "control_flow",
             content: line,
@@ -116,7 +116,7 @@ slay classify_line_to_node(line tea, line_num drip) ASTNode {
         }
     }
     
-    ready (contains_str(trimmed, "vibez.spill") || contains_str(trimmed, "damn ")) {
+    lowkey (contains_str(trimmed, "vibez.spill") || contains_str(trimmed, "damn ")) {
         damn ASTNode{
             node_type: "statement",
             content: line,
@@ -145,16 +145,16 @@ slay analyze_variable_scopes(nodes ASTNode[value], context ASTAnalysisContext) V
     bestie (i < len(nodes)) {
         sus node ASTNode = nodes[i]
         
-        ready (node.node_type == "variable_declaration") {
+        lowkey (node.node_type == "variable_declaration") {
             sus var_info VariableInfo = extract_variable_from_ast(node, scope_depth)
             push(variables, var_info)
         }
         
-        ready (node.node_type == "function_declaration") {
+        lowkey (node.node_type == "function_declaration") {
             scope_depth = scope_depth + 1
         }
         
-        ready (contains_str(node.content, "}")) {
+        lowkey (contains_str(node.content, "}")) {
             scope_depth = max_int(0, scope_depth - 1)
         }
         
@@ -172,7 +172,7 @@ slay extract_variable_from_ast(node ASTNode, scope_depth drip) VariableInfo {
     sus var_name tea = ""
     sus var_type tea = ""
     
-    ready (len(parts) >= 3) {
+    lowkey (len(parts) >= 3) {
         var_name = parts[1]
         var_type = parts[2]
     }
@@ -202,8 +202,8 @@ slay analyze_function_complexity(nodes ASTNode[value]) FunctionInfo[value]{
     bestie (i < len(nodes)) {
         sus node ASTNode = nodes[i]
         
-        ready (node.node_type == "function_declaration") {
-            ready (in_function) {
+        lowkey (node.node_type == "function_declaration") {
+            lowkey (in_function) {
                 current_func.cognitive_complexity = complexity
                 push(functions, current_func)
             }
@@ -213,11 +213,11 @@ slay analyze_function_complexity(nodes ASTNode[value]) FunctionInfo[value]{
             complexity = 1
         }
         
-        ready (in_function && node.node_type == "control_flow") {
+        lowkey (in_function && node.node_type == "control_flow") {
             complexity = complexity + calculate_control_flow_complexity(node)
         }
         
-        ready (in_function && contains_str(node.content, "}") && 
+        lowkey (in_function && contains_str(node.content, "}") && 
                !contains_str(node.content, "{")) {
             current_func.end_line = node.line
             current_func.cognitive_complexity = complexity
@@ -255,11 +255,11 @@ slay calculate_control_flow_complexity(node ASTNode) drip {
     sus content tea = node.content
     sus complexity drip = 0
     
-    ready (contains_str(content, "ready ")) { complexity = complexity + 1 }
-    ready (contains_str(content, "bestie ")) { complexity = complexity + 2 }
-    ready (contains_str(content, "otherwise")) { complexity = complexity + 1 }
-    ready (contains_str(content, "sick ")) { complexity = complexity + 2 }
-    ready (contains_str(content, "when ")) { complexity = complexity + 1 }
+    lowkey (contains_str(content, "lowkey ")) { complexity = complexity + 1 }
+    lowkey (contains_str(content, "bestie ")) { complexity = complexity + 2 }
+    lowkey (contains_str(content, "highkey")) { complexity = complexity + 1 }
+    lowkey (contains_str(content, "sick ")) { complexity = complexity + 2 }
+    lowkey (contains_str(content, "when ")) { complexity = complexity + 1 }
     
     damn complexity
 }
@@ -272,7 +272,7 @@ slay analyze_imports(nodes ASTNode[value]) ImportInfo[value]{
     bestie (i < len(nodes)) {
         sus node ASTNode = nodes[i]
         
-        ready (node.node_type == "import_statement") {
+        lowkey (node.node_type == "import_statement") {
             sus import_info ImportInfo = extract_import_from_ast(node)
             push(imports, import_info)
         }
@@ -313,7 +313,7 @@ slay is_stdlib_module(module_name tea) lit {
     
     sus i drip = 0
     bestie (i < len(stdlib_modules)) {
-        ready (stdlib_modules[i] == module_name) {
+        lowkey (stdlib_modules[i] == module_name) {
             damn based
         }
         i = i + 1
@@ -331,7 +331,7 @@ slay detect_code_patterns(nodes ASTNode[value]) CodePattern[value]{
         sus node ASTNode = nodes[i]
         
         // Detect singleton pattern
-        ready (is_singleton_pattern(node)) {
+        lowkey (is_singleton_pattern(node)) {
             sus pattern CodePattern = CodePattern{
                 pattern_type: "singleton",
                 line: node.line,
@@ -341,7 +341,7 @@ slay detect_code_patterns(nodes ASTNode[value]) CodePattern[value]{
         }
         
         // Detect factory pattern
-        ready (is_factory_pattern(node)) {
+        lowkey (is_factory_pattern(node)) {
             sus pattern CodePattern = CodePattern{
                 pattern_type: "factory",
                 line: node.line,
@@ -372,9 +372,9 @@ slay detect_dead_code(nodes ASTNode[value], variables VariableInfo[value]) DeadC
     bestie (i < len(nodes)) {
         sus node ASTNode = nodes[i]
         
-        ready (contains_str(node.content, "damn ") && i + 1 < len(nodes)) {
+        lowkey (contains_str(node.content, "damn ") && i + 1 < len(nodes)) {
             sus next_node ASTNode = nodes[i + 1]
-            ready (next_node.node_type != "function_declaration" && 
+            lowkey (next_node.node_type != "function_declaration" && 
                    !contains_str(next_node.content, "}")) {
                 sus dead_info DeadCodeInfo = DeadCodeInfo{
                     dead_type: "unreachable_after_return",
@@ -401,10 +401,10 @@ squad DeadCodeInfo {
 // Helper functions for AST analysis
 slay extract_function_name_from_line(line tea) tea {
     sus parts tea[value] = split_str(line, " ")
-    ready (len(parts) >= 2) {
+    lowkey (len(parts) >= 2) {
         sus func_part tea = parts[1]
         sus paren_pos drip = index_of(func_part, "(")
-        ready (paren_pos > 0) {
+        lowkey (paren_pos > 0) {
             damn substring(func_part, 0, paren_pos)
         }
         damn func_part
@@ -416,14 +416,14 @@ slay count_function_parameters_from_line(line tea) drip {
     sus paren_start drip = index_of(line, "(")
     sus paren_end drip = index_of(line, ")")
     
-    ready (paren_start == -1 || paren_end == -1 || paren_end <= paren_start) {
+    lowkey (paren_start == -1 || paren_end == -1 || paren_end <= paren_start) {
         damn 0
     }
     
     sus params_str tea = substring(line, paren_start + 1, paren_end)
     sus trimmed tea = trim_str(params_str)
     
-    ready (len_str(trimmed) == 0) {
+    lowkey (len_str(trimmed) == 0) {
         damn 0
     }
     
@@ -433,10 +433,10 @@ slay count_function_parameters_from_line(line tea) drip {
 
 slay extract_quoted_string(line tea) tea {
     sus start drip = index_of(line, "\"")
-    ready (start == -1) { damn "" }
+    lowkey (start == -1) { damn "" }
     
     sus end drip = index_of_from(line, "\"", start + 1)
-    ready (end == -1) { damn "" }
+    lowkey (end == -1) { damn "" }
     
     damn substring(line, start + 1, end)
 }
@@ -452,7 +452,7 @@ slay is_factory_pattern(node ASTNode) lit {
 }
 
 slay max_int(a drip, b drip) drip {
-    ready (a > b) { damn a }
+    lowkey (a > b) { damn a }
     damn b
 }
 

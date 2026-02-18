@@ -409,7 +409,7 @@ slay assert_matches_pattern(text tea, pattern tea) {
     
     lowkey (match_result) {
         test_pass("assert_matches_pattern: '" + text + "' matches pattern '" + pattern + "'")
-    } otherwise {
+    } highkey {
         test_fail("assert_matches_pattern: '" + text + "' doesn't match pattern '" + pattern + "'")
     }
 }
@@ -479,7 +479,7 @@ slay strip_whitespace(text tea) tea {
     
     lowkey (start_pos <= end_pos) {
         result = substring(text, start_pos, end_pos - start_pos + 1)
-    } otherwise {
+    } highkey {
         result = ""
     }
     
@@ -498,7 +498,7 @@ slay split_string(text tea, delimiter tea) [tea] {
         lowkey (ch == delimiter) {
             result = append_to_array(result, current)
             current = ""
-        } otherwise {
+        } highkey {
             current = current + ch
         }
         

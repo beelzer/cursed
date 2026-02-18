@@ -335,7 +335,7 @@ slay test_error_handling() {
             when _ -> yikes "invalid_params"
         }
         
-        ready (b == 0) {
+        lowkey (b == 0) {
             yikes "internal_error"  # Division by zero
         }
         

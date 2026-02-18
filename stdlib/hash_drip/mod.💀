@@ -147,7 +147,7 @@ slay sha256_update(ctx sha256_context, data tea) {
         ctx.buffer_size = ctx.buffer_size + 1
         pos = pos + 1
         
-        ready ctx.buffer_size == 64 {
+        lowkey ctx.buffer_size == 64 {
             sha256_process_block(ctx)
             ctx.buffer_size = 0
         }
@@ -163,7 +163,7 @@ slay sha256_finalize(ctx sha256_context) tea {
     ctx.buffer_size = ctx.buffer_size + 1
     
     fr fr If no room for length, process block and start new one
-    ready ctx.buffer_size > 56 {
+    lowkey ctx.buffer_size > 56 {
         bestie ctx.buffer_size < 64 {
             ctx.buffer[ctx.buffer_size] = 0
             ctx.buffer_size = ctx.buffer_size + 1
@@ -304,7 +304,7 @@ slay blake2b_new(size normie) blake2b_context {
 slay blake2b_hash(data tea, size normie) tea {
     fr fr Simplified BLAKE2b using SHA-256 as foundation
     sus rounds normie = size / 32
-    ready rounds < 1 { rounds = 1 }
+    lowkey rounds < 1 { rounds = 1 }
     
     sus result tea = sha256_hash("blake2b_" + tea(size) + "_" + data)
     
@@ -405,7 +405,7 @@ fr fr Utility Functions
 fr fr ================================
 
 slay int_to_hex(value normie) tea {
-    ready value == 0 { damn "00" }
+    lowkey value == 0 { damn "00" }
     
     sus hex_digits tea = "0123456789abcdef"
     sus result tea = ""
@@ -417,7 +417,7 @@ slay int_to_hex(value normie) tea {
         temp = temp / 16
     }
     
-    ready string_length(result) == 1 {
+    lowkey string_length(result) == 1 {
         result = "0" + result
     }
     

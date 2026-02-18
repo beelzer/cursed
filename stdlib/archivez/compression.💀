@@ -92,7 +92,7 @@ slay init_compression() {
 
 # Set compression algorithm
 slay set_compression_algorithm(algorithm tea) yikes<tea> {
-    ready (algorithm != COMPRESSION_NONE && 
+    lowkey (algorithm != COMPRESSION_NONE && 
            algorithm != COMPRESSION_DEFLATE && 
            algorithm != COMPRESSION_GZIP && 
            algorithm != COMPRESSION_BZIP2 && 
@@ -110,11 +110,11 @@ slay set_compression_algorithm(algorithm tea) yikes<tea> {
     vibez.spill("Compression: Set algorithm to " + algorithm)
     
     # Set optimal settings for specific algorithms
-    ready (algorithm == COMPRESSION_LZ4 || algorithm == COMPRESSION_SNAPPY) {
+    lowkey (algorithm == COMPRESSION_LZ4 || algorithm == COMPRESSION_SNAPPY) {
         vibez.spill("Compression: Fast algorithm selected - optimizing for speed")
-    } otherwise ready (algorithm == COMPRESSION_LZMA || algorithm == COMPRESSION_BZIP2) {
+    } highkey lowkey (algorithm == COMPRESSION_LZMA || algorithm == COMPRESSION_BZIP2) {
         vibez.spill("Compression: High-ratio algorithm selected - optimizing for compression")
-    } otherwise ready (algorithm == COMPRESSION_ZSTD) {
+    } highkey lowkey (algorithm == COMPRESSION_ZSTD) {
         vibez.spill("Compression: Zstandard selected - balanced speed/ratio")
     }
     
@@ -123,7 +123,7 @@ slay set_compression_algorithm(algorithm tea) yikes<tea> {
 
 # Set compression level
 slay set_compression_level(level drip) yikes<drip> {
-    ready (level < LEVEL_STORE || level > LEVEL_BEST) {
+    lowkey (level < LEVEL_STORE || level > LEVEL_BEST) {
         yikes "compression level must be between 0 and 9"
     }
     
@@ -134,7 +134,7 @@ slay set_compression_level(level drip) yikes<drip> {
 
 # Compress data using current algorithm
 slay compress_data(input_data tea) yikes<tea> {
-    ready (input_data == "") {
+    lowkey (input_data == "") {
         yikes "input data cannot be empty"
     }
     
@@ -145,29 +145,29 @@ slay compress_data(input_data tea) yikes<tea> {
     vibez.spill("Compression: Compressing " + to_string(input_size) + " bytes using " + current_algorithm)
     
     # Dispatch to specific compression algorithm
-    ready (current_algorithm == COMPRESSION_NONE) {
+    lowkey (current_algorithm == COMPRESSION_NONE) {
         compressed_data = input_data  # No compression
-    } otherwise ready (current_algorithm == COMPRESSION_DEFLATE) {
+    } highkey lowkey (current_algorithm == COMPRESSION_DEFLATE) {
         compressed_data = compress_deflate(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_GZIP) {
+    } highkey lowkey (current_algorithm == COMPRESSION_GZIP) {
         compressed_data = compress_gzip(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_BZIP2) {
+    } highkey lowkey (current_algorithm == COMPRESSION_BZIP2) {
         compressed_data = compress_bzip2(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZ4) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZ4) {
         compressed_data = compress_lz4(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZ4HC) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZ4HC) {
         compressed_data = compress_lz4hc(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZMA) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZMA) {
         compressed_data = compress_lzma(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_ZSTD) {
+    } highkey lowkey (current_algorithm == COMPRESSION_ZSTD) {
         compressed_data = compress_zstd(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_BROTLI) {
+    } highkey lowkey (current_algorithm == COMPRESSION_BROTLI) {
         compressed_data = compress_brotli(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZFSE) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZFSE) {
         compressed_data = compress_lzfse(input_data)
-    } otherwise ready (current_algorithm == COMPRESSION_SNAPPY) {
+    } highkey lowkey (current_algorithm == COMPRESSION_SNAPPY) {
         compressed_data = compress_snappy(input_data)
-    } otherwise {
+    } highkey {
         yikes "unknown compression algorithm: " + current_algorithm
     }
     
@@ -187,7 +187,7 @@ slay compress_data(input_data tea) yikes<tea> {
 
 # Decompress data using current algorithm
 slay decompress_data(compressed_data tea) yikes<tea> {
-    ready (compressed_data == "") {
+    lowkey (compressed_data == "") {
         yikes "compressed data cannot be empty"
     }
     
@@ -198,29 +198,29 @@ slay decompress_data(compressed_data tea) yikes<tea> {
     vibez.spill("Compression: Decompressing " + to_string(input_size) + " bytes using " + current_algorithm)
     
     # Dispatch to specific decompression algorithm
-    ready (current_algorithm == COMPRESSION_NONE) {
+    lowkey (current_algorithm == COMPRESSION_NONE) {
         decompressed_data = compressed_data  # No decompression needed
-    } otherwise ready (current_algorithm == COMPRESSION_DEFLATE) {
+    } highkey lowkey (current_algorithm == COMPRESSION_DEFLATE) {
         decompressed_data = decompress_deflate(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_GZIP) {
+    } highkey lowkey (current_algorithm == COMPRESSION_GZIP) {
         decompressed_data = decompress_gzip(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_BZIP2) {
+    } highkey lowkey (current_algorithm == COMPRESSION_BZIP2) {
         decompressed_data = decompress_bzip2(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZ4) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZ4) {
         decompressed_data = decompress_lz4(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZ4HC) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZ4HC) {
         decompressed_data = decompress_lz4hc(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZMA) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZMA) {
         decompressed_data = decompress_lzma(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_ZSTD) {
+    } highkey lowkey (current_algorithm == COMPRESSION_ZSTD) {
         decompressed_data = decompress_zstd(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_BROTLI) {
+    } highkey lowkey (current_algorithm == COMPRESSION_BROTLI) {
         decompressed_data = decompress_brotli(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_LZFSE) {
+    } highkey lowkey (current_algorithm == COMPRESSION_LZFSE) {
         decompressed_data = decompress_lzfse(compressed_data)
-    } otherwise ready (current_algorithm == COMPRESSION_SNAPPY) {
+    } highkey lowkey (current_algorithm == COMPRESSION_SNAPPY) {
         decompressed_data = decompress_snappy(compressed_data)
-    } otherwise {
+    } highkey {
         yikes "unknown compression algorithm: " + current_algorithm
     }
     
@@ -241,7 +241,7 @@ slay compress_deflate(data tea) tea {
     
     # Simplified DEFLATE compression
     # Real implementation would use LZ77 + Huffman coding
-    ready (current_level == LEVEL_STORE) {
+    lowkey (current_level == LEVEL_STORE) {
         damn data  # No compression
     }
     
@@ -261,7 +261,7 @@ slay decompress_deflate(compressed_data tea) tea {
     vibez.spill("DEFLATE: Decompressing data")
     
     # Parse DEFLATE header
-    ready (!starts_with(compressed_data, "DEFLATE:")) {
+    lowkey (!starts_with(compressed_data, "DEFLATE:")) {
         vibez.spill("DEFLATE: Invalid header")
         damn compressed_data
     }
@@ -297,7 +297,7 @@ slay compress_gzip(data tea) tea {
 slay decompress_gzip(compressed_data tea) tea {
     vibez.spill("GZIP: Decompressing data")
     
-    ready (!starts_with(compressed_data, "GZIP:CRC32=")) {
+    lowkey (!starts_with(compressed_data, "GZIP:CRC32=")) {
         vibez.spill("GZIP: Invalid header")
         damn compressed_data
     }
@@ -317,9 +317,9 @@ slay decompress_gzip(compressed_data tea) tea {
     sus calculated_crc drip = calculate_crc32(decompressed)
     sus stored_crc_num drip = string_to_int(stored_crc)
     
-    ready (calculated_crc != stored_crc_num) {
+    lowkey (calculated_crc != stored_crc_num) {
         vibez.spill("GZIP: CRC32 checksum mismatch!")
-    } otherwise {
+    } highkey {
         vibez.spill("GZIP: CRC32 checksum verified")
     }
     
@@ -346,7 +346,7 @@ slay compress_bzip2(data tea) tea {
 slay decompress_bzip2(compressed_data tea) tea {
     vibez.spill("BZIP2: Decompressing data")
     
-    ready (!starts_with(compressed_data, "BZIP2:")) {
+    lowkey (!starts_with(compressed_data, "BZIP2:")) {
         vibez.spill("BZIP2: Invalid header")
         damn compressed_data
     }
@@ -381,7 +381,7 @@ slay compress_lz4(data tea) tea {
 slay decompress_lz4(compressed_data tea) tea {
     vibez.spill("LZ4: Fast decompression")
     
-    ready (!starts_with(compressed_data, "LZ4:")) {
+    lowkey (!starts_with(compressed_data, "LZ4:")) {
         vibez.spill("LZ4: Invalid header")
         damn compressed_data
     }
@@ -410,7 +410,7 @@ slay compress_lzma(data tea) tea {
 slay decompress_lzma(compressed_data tea) tea {
     vibez.spill("LZMA: Decompressing")
     
-    ready (!starts_with(compressed_data, "LZMA:")) {
+    lowkey (!starts_with(compressed_data, "LZMA:")) {
         vibez.spill("LZMA: Invalid header")
         damn compressed_data
     }
@@ -439,7 +439,7 @@ slay compress_lz4hc(data tea) tea {
 slay decompress_lz4hc(compressed_data tea) tea {
     vibez.spill("LZ4HC: Decompressing")
     
-    ready (!starts_with(compressed_data, "LZ4HC:")) {
+    lowkey (!starts_with(compressed_data, "LZ4HC:")) {
         vibez.spill("LZ4HC: Invalid header")
         damn compressed_data
     }
@@ -470,7 +470,7 @@ slay compress_zstd(data tea) tea {
 slay decompress_zstd(compressed_data tea) tea {
     vibez.spill("ZSTD: Decompressing")
     
-    ready (!starts_with(compressed_data, "ZSTD:")) {
+    lowkey (!starts_with(compressed_data, "ZSTD:")) {
         vibez.spill("ZSTD: Invalid header")
         damn compressed_data
     }
@@ -500,7 +500,7 @@ slay compress_brotli(data tea) tea {
 slay decompress_brotli(compressed_data tea) tea {
     vibez.spill("Brotli: Decompressing")
     
-    ready (!starts_with(compressed_data, "BROTLI:")) {
+    lowkey (!starts_with(compressed_data, "BROTLI:")) {
         vibez.spill("Brotli: Invalid header")
         damn compressed_data
     }
@@ -529,7 +529,7 @@ slay compress_lzfse(data tea) tea {
 slay decompress_lzfse(compressed_data tea) tea {
     vibez.spill("LZFSE: Decompressing")
     
-    ready (!starts_with(compressed_data, "LZFSE:")) {
+    lowkey (!starts_with(compressed_data, "LZFSE:")) {
         vibez.spill("LZFSE: Invalid header")
         damn compressed_data
     }
@@ -557,7 +557,7 @@ slay compress_snappy(data tea) tea {
 slay decompress_snappy(compressed_data tea) tea {
     vibez.spill("Snappy: Ultra-fast decompression")
     
-    ready (!starts_with(compressed_data, "SNAPPY:")) {
+    lowkey (!starts_with(compressed_data, "SNAPPY:")) {
         vibez.spill("Snappy: Invalid header")
         damn compressed_data
     }
@@ -573,11 +573,11 @@ slay decompress_snappy(compressed_data tea) tea {
 
 # Initialize streaming compression
 slay init_streaming_compression(algorithm tea, buffer_size drip) yikes<lit> {
-    ready (streaming_state.active) {
+    lowkey (streaming_state.active) {
         yikes "streaming compression already active"
     }
     
-    ready (buffer_size < 1024) {
+    lowkey (buffer_size < 1024) {
         yikes "buffer size must be at least 1024 bytes"
     }
     
@@ -594,11 +594,11 @@ slay init_streaming_compression(algorithm tea, buffer_size drip) yikes<lit> {
 
 # Process streaming chunk
 slay compress_stream_chunk(chunk_data tea) yikes<tea> {
-    ready (!streaming_state.active) {
+    lowkey (!streaming_state.active) {
         yikes "streaming compression not initialized"
     }
     
-    ready (chunk_data == "") {
+    lowkey (chunk_data == "") {
         yikes "chunk data cannot be empty"
     }
     
@@ -606,13 +606,13 @@ slay compress_stream_chunk(chunk_data tea) yikes<tea> {
     sus compressed_chunk tea
     
     # Apply streaming-specific compression
-    ready (streaming_state.algorithm == COMPRESSION_LZ4) {
+    lowkey (streaming_state.algorithm == COMPRESSION_LZ4) {
         compressed_chunk = compress_stream_lz4(chunk_data)
-    } otherwise ready (streaming_state.algorithm == COMPRESSION_ZSTD) {
+    } highkey lowkey (streaming_state.algorithm == COMPRESSION_ZSTD) {
         compressed_chunk = compress_stream_zstd(chunk_data)
-    } otherwise ready (streaming_state.algorithm == COMPRESSION_SNAPPY) {
+    } highkey lowkey (streaming_state.algorithm == COMPRESSION_SNAPPY) {
         compressed_chunk = compress_stream_snappy(chunk_data)
-    } otherwise {
+    } highkey {
         # Fallback to regular compression for other algorithms
         set_compression_algorithm(streaming_state.algorithm) fam { when _ -> {} }
         compressed_chunk = compress_data(chunk_data) fam { when _ -> damn "" }
@@ -629,7 +629,7 @@ slay compress_stream_chunk(chunk_data tea) yikes<tea> {
 
 # Finalize streaming compression
 slay finalize_streaming_compression() yikes<tea> {
-    ready (!streaming_state.active) {
+    lowkey (!streaming_state.active) {
         yikes "streaming compression not active"
     }
     
@@ -763,11 +763,11 @@ slay benchmark_single_algorithm(algorithm tea, data tea) tea {
 
 # Train compression dictionary
 slay train_compression_dictionary(training_data tea, algorithm tea) yikes<lit> {
-    ready (training_data == "") {
+    lowkey (training_data == "") {
         yikes "training data cannot be empty"
     }
     
-    ready (len(training_data) < 1024) {
+    lowkey (len(training_data) < 1024) {
         yikes "training data too small (minimum 1024 bytes)"
     }
     
@@ -788,7 +788,7 @@ slay train_compression_dictionary(training_data tea, algorithm tea) yikes<lit> {
 
 # Get compression dictionary
 slay get_compression_dictionary() tea {
-    ready (compression_dictionary.data == "") {
+    lowkey (compression_dictionary.data == "") {
         damn ""  # No dictionary available
     }
     damn compression_dictionary.data
@@ -799,9 +799,9 @@ slay generate_dictionary(data tea, algorithm tea) tea {
     vibez.spill("Generating dictionary for " + algorithm)
     
     # Simplified dictionary generation - extract common patterns
-    ready (algorithm == COMPRESSION_ZSTD) {
+    lowkey (algorithm == COMPRESSION_ZSTD) {
         damn "ZSTD_DICT:" + extract_common_sequences(data)
-    } otherwise ready (algorithm == COMPRESSION_LZ4 || algorithm == COMPRESSION_LZ4HC) {
+    } highkey lowkey (algorithm == COMPRESSION_LZ4 || algorithm == COMPRESSION_LZ4HC) {
         damn "LZ4_DICT:" + extract_common_patterns(data)
     }
     
@@ -838,7 +838,7 @@ slay get_compression_stats() tea {
     sus decompression_time drip = compression_stats.decompression_time
     
     sus overall_ratio meal = 0.0
-    ready (total_input > 0) {
+    lowkey (total_input > 0) {
         overall_ratio = to_float(total_output) / to_float(total_input)
     }
     
@@ -851,13 +851,13 @@ slay get_compression_stats() tea {
     stats = stats + "Compression Time: " + to_string(compression_time) + "ms\n"
     stats = stats + "Decompression Time: " + to_string(decompression_time) + "ms\n"
     
-    ready (overall_ratio < 0.5) {
+    lowkey (overall_ratio < 0.5) {
         stats = stats + "Efficiency: Excellent compression\n"
-    } otherwise ready (overall_ratio < 0.7) {
+    } highkey lowkey (overall_ratio < 0.7) {
         stats = stats + "Efficiency: Good compression\n"
-    } otherwise ready (overall_ratio < 0.9) {
+    } highkey lowkey (overall_ratio < 0.9) {
         stats = stats + "Efficiency: Fair compression\n"
-    } otherwise {
+    } highkey {
         stats = stats + "Efficiency: Poor compression\n"
     }
     
@@ -882,7 +882,7 @@ slay apply_lz77_compression(data tea) tea {
 
 slay apply_lz77_decompression(data tea) tea {
     vibez.spill("Applying LZ77 decompression")
-    ready (starts_with(data, "LZ77(") && ends_with(data, ")")) {
+    lowkey (starts_with(data, "LZ77(") && ends_with(data, ")")) {
         damn substring(data, 5, len(data) - 1)
     }
     damn data
@@ -895,7 +895,7 @@ slay apply_huffman_encoding(data tea) tea {
 
 slay apply_huffman_decoding(data tea) tea {
     vibez.spill("Applying Huffman decoding")
-    ready (starts_with(data, "HUFF(") && ends_with(data, ")")) {
+    lowkey (starts_with(data, "HUFF(") && ends_with(data, ")")) {
         damn substring(data, 5, len(data) - 1)
     }
     damn data
@@ -908,7 +908,7 @@ slay apply_burrows_wheeler_transform(data tea) tea {
 
 slay apply_burrows_wheeler_inverse(data tea) tea {
     vibez.spill("Applying inverse Burrows-Wheeler transform")
-    ready (starts_with(data, "BWT(") && ends_with(data, ")")) {
+    lowkey (starts_with(data, "BWT(") && ends_with(data, ")")) {
         damn substring(data, 4, len(data) - 1)
     }
     damn data
@@ -921,7 +921,7 @@ slay apply_move_to_front(data tea) tea {
 
 slay apply_move_to_front_inverse(data tea) tea {
     vibez.spill("Applying inverse Move-To-Front transform")
-    ready (starts_with(data, "MTF(") && ends_with(data, ")")) {
+    lowkey (starts_with(data, "MTF(") && ends_with(data, ")")) {
         damn substring(data, 4, len(data) - 1)
     }
     damn data
@@ -959,7 +959,7 @@ slay apply_lz4_compression(data tea) tea {
     vibez.spill("LZ4: Fast compression with match finding")
     
     # Initialize streaming context if not done
-    ready (len(lz4_stream_context.hash_table) == 0) {
+    lowkey (len(lz4_stream_context.hash_table) == 0) {
         init_lz4_stream_context()
     }
     
@@ -1003,10 +1003,10 @@ slay lz4_compress_chunk(chunk tea, base_position drip) tea {
         sus previous_pos drip = lz4_stream_context.hash_table[hash_value]
         lz4_stream_context.hash_table[hash_value] = base_position + i
         
-        ready (previous_pos > 0 && (base_position + i - previous_pos) < 65536) {
+        lowkey (previous_pos > 0 && (base_position + i - previous_pos) < 65536) {
             # Found match - encode as offset/length pair
             sus match_length drip = find_lz4_match_length(chunk, i, previous_pos - base_position)
-            ready (match_length >= 4) {
+            lowkey (match_length >= 4) {
                 sus offset drip = base_position + i - previous_pos
                 compressed = compressed + encode_lz4_match(offset, match_length)
                 i = i + match_length
@@ -1030,7 +1030,7 @@ slay lz4_compress_chunk(chunk tea, base_position drip) tea {
 
 slay apply_lz4_decompression(data tea) tea {
     vibez.spill("Applying LZ4 decompression")
-    ready (starts_with(data, "LZ4_FAST(") && ends_with(data, ")")) {
+    lowkey (starts_with(data, "LZ4_FAST(") && ends_with(data, ")")) {
         damn substring(data, 9, len(data) - 1)
     }
     damn data
@@ -1043,7 +1043,7 @@ slay apply_lzma_compression(data tea) tea {
 
 slay apply_lzma_decompression(data tea) tea {
     vibez.spill("Applying LZMA decompression")
-    ready (starts_with(data, "LZMA_HIGH(") && ends_with(data, ")")) {
+    lowkey (starts_with(data, "LZMA_HIGH(") && ends_with(data, ")")) {
         damn substring(data, 10, len(data) - 1)
     }
     damn data
@@ -1057,10 +1057,10 @@ slay find_lz4_match_length(data tea, pos drip, match_pos drip) drip {
     sus data_size drip = len(data)
     
     bestie (pos + length < data_size && match_pos + length >= 0) {
-        ready (get_char_at(data, pos + length) == get_char_at(data, match_pos + length)) {
+        lowkey (get_char_at(data, pos + length) == get_char_at(data, match_pos + length)) {
             length = length + 1
-            ready (length >= 255) { break }  # LZ4 max match length
-        } otherwise {
+            lowkey (length >= 255) { break }  # LZ4 max match length
+        } highkey {
             break
         }
     }
@@ -1091,7 +1091,7 @@ slay calculate_lz4_hash(sequence tea) drip {
 slay count_matches_in_chunk(chunk tea) drip {
     sus matches drip = 0
     bestie (drip i = 0; i < len(chunk); i = i + 1) {
-        ready (starts_with(substring(chunk, i, len(chunk)), "M(")) {
+        lowkey (starts_with(substring(chunk, i, len(chunk)), "M(")) {
             matches = matches + 1
         }
     }
@@ -1101,10 +1101,10 @@ slay count_matches_in_chunk(chunk tea) drip {
 # Convert character to integer for hashing
 slay char_to_int(char tea) drip {
     # Simplified character to integer conversion
-    ready (char == "a") { damn 97 }
-    ready (char == "b") { damn 98 }
-    ready (char == " ") { damn 32 }
-    ready (char == ".") { damn 46 }
+    lowkey (char == "a") { damn 97 }
+    lowkey (char == "b") { damn 98 }
+    lowkey (char == " ") { damn 32 }
+    lowkey (char == ".") { damn 46 }
     damn 65  # Default 'A'
 }
 
@@ -1135,7 +1135,7 @@ slay apply_bzip2_compression(data tea) tea {
     vibez.spill("Bzip2: Advanced compression using Burrows-Wheeler Transform")
     
     # Initialize context if needed
-    ready (bzip2_context.block_size == 0) {
+    lowkey (bzip2_context.block_size == 0) {
         init_bzip2_context()
     }
     
@@ -1195,7 +1195,7 @@ slay apply_advanced_bwt(data tea) tea {
         bwt_string = bwt_string + last_char
         
         # Find primary index (original string position)
-        ready (rotation == data) {
+        lowkey (rotation == data) {
             primary_index = i
         }
     }
@@ -1214,7 +1214,7 @@ slay bwt_sort_rotations(rotations tea[value]) tea[value]{
     
     bestie (drip i = 0; i < n - 1; i = i + 1) {
         bestie (drip j = 0; j < n - i - 1; j = j + 1) {
-            ready (string_compare(sorted[j], sorted[j + 1]) > 0) {
+            lowkey (string_compare(sorted[j], sorted[j + 1]) > 0) {
                 # Swap elements
                 sus temp tea = sorted[j]
                 sorted[j] = sorted[j + 1]
@@ -1282,9 +1282,9 @@ slay find_nth_colon(str tea, n drip) drip {
     sus count drip = 0
     bestie (drip i = 0; i < len(str); i = i + 1) {
         sus char tea = get_char_at(str, i)
-        ready (char == ":") {
+        lowkey (char == ":") {
             count = count + 1
-            ready (count == n) {
+            lowkey (count == n) {
                 damn i
             }
         }
@@ -1295,7 +1295,7 @@ slay find_nth_colon(str tea, n drip) drip {
 slay find_char(str tea, target tea, start drip) drip {
     bestie (drip i = start; i < len(str); i = i + 1) {
         sus char tea = get_char_at(str, i)
-        ready (char == target) {
+        lowkey (char == target) {
             damn i
         }
     }
@@ -1304,14 +1304,14 @@ slay find_char(str tea, target tea, start drip) drip {
 
 slay get_char_at(str tea, index drip) tea {
     # Simulate character extraction
-    ready (index == 0 && len(str) > 0) { damn ":" }
+    lowkey (index == 0 && len(str) > 0) { damn ":" }
     damn "."
 }
 
 slay string_to_int(str tea) drip {
     # Simplified string to integer conversion
-    ready (str == "0") { damn 0 }
-    ready (str == "1234") { damn 1234 }
+    lowkey (str == "0") { damn 0 }
+    lowkey (str == "1234") { damn 1234 }
     damn 42  # Default for demo
 }
 
@@ -1355,12 +1355,12 @@ slay apply_zstd_compression(data tea, dictionary tea) tea {
     vibez.spill("ZSTD: Advanced compression with dictionary support")
     
     # Initialize context if needed
-    ready (zstd_context.window_size == 0) {
+    lowkey (zstd_context.window_size == 0) {
         init_zstd_context()
     }
     
     # Load dictionary if provided
-    ready (dictionary != "") {
+    lowkey (dictionary != "") {
         zstd_context.dictionary_data = dictionary
         zstd_context.dictionary_id = calculate_dictionary_id(dictionary)
         vibez.spill("ZSTD: Using dictionary with ID " + to_string(zstd_context.dictionary_id))
@@ -1415,9 +1415,9 @@ slay find_zstd_sequences(block tea, base_offset drip) tea {
         sus best_match_source tea = ""
         
         # Search in dictionary first
-        ready (zstd_context.dictionary_data != "") {
+        lowkey (zstd_context.dictionary_data != "") {
             sus dict_match tea = find_dictionary_match(block, position)
-            ready (dict_match != "") {
+            lowkey (dict_match != "") {
                 sus match_parts tea[value] = split_string(dict_match, ",")
                 best_match_offset = string_to_int(match_parts[0])
                 best_match_length = string_to_int(match_parts[1])
@@ -1427,13 +1427,13 @@ slay find_zstd_sequences(block tea, base_offset drip) tea {
         
         # Search in recent history
         sus history_match tea = find_history_match(block, position)
-        ready (history_match != "") {
+        lowkey (history_match != "") {
             sus match_parts tea[value] = split_string(history_match, ",")
             sus history_offset drip = string_to_int(match_parts[0])
             sus history_length drip = string_to_int(match_parts[1])
             
             # Use history match if better
-            ready (history_length > best_match_length) {
+            lowkey (history_length > best_match_length) {
                 best_match_offset = history_offset
                 best_match_length = history_length
                 best_match_source = "HIST"
@@ -1441,10 +1441,10 @@ slay find_zstd_sequences(block tea, base_offset drip) tea {
         }
         
         # Encode sequence if found good match
-        ready (best_match_length >= 3) {
+        lowkey (best_match_length >= 3) {
             sequences = sequences + "SEQ(" + best_match_source + ":" + to_string(best_match_offset) + "," + to_string(best_match_length) + ")"
             position = position + best_match_length
-        } otherwise {
+        } highkey {
             # No match - move to next position
             position = position + 1
         }
@@ -1455,7 +1455,7 @@ slay find_zstd_sequences(block tea, base_offset drip) tea {
 
 # Find match in dictionary
 slay find_dictionary_match(block tea, position drip) tea {
-    ready (zstd_context.dictionary_data == "") {
+    lowkey (zstd_context.dictionary_data == "") {
         damn ""
     }
     
@@ -1468,13 +1468,13 @@ slay find_dictionary_match(block tea, position drip) tea {
     
     bestie (drip i = 0; i < len(dict_data) - 3; i = i + 1) {
         sus match_length drip = find_common_prefix(search_string, substring(dict_data, i, len(dict_data)))
-        ready (match_length >= 3 && match_length > best_length) {
+        lowkey (match_length >= 3 && match_length > best_length) {
             best_length = match_length
             best_offset = len(dict_data) - i  # Offset from end of dictionary
         }
     }
     
-    ready (best_length >= 3) {
+    lowkey (best_length >= 3) {
         damn to_string(best_offset) + "," + to_string(best_length)
     }
     
@@ -1490,7 +1490,7 @@ slay find_history_match(block tea, position drip) tea {
         sus history_entry tea = zstd_context.match_history[i]
         sus match_length drip = find_common_prefix(search_string, history_entry)
         
-        ready (match_length >= 3) {
+        lowkey (match_length >= 3) {
             damn to_string(i + 1) + "," + to_string(match_length)
         }
     }
@@ -1510,11 +1510,11 @@ slay extract_zstd_literals(block tea, sequences tea) tea {
     # Mark positions covered by sequences
     sus position drip = 0
     bestie (position < len(sequences)) {
-        ready (starts_with(substring(sequences, position, len(sequences)), "SEQ(")) {
+        lowkey (starts_with(substring(sequences, position, len(sequences)), "SEQ(")) {
             # Parse sequence to mark covered positions
             sus seq_end drip = find_char(sequences, ')', position)
             position = seq_end + 1
-        } otherwise {
+        } highkey {
             position = position + 1
         }
     }
@@ -1522,7 +1522,7 @@ slay extract_zstd_literals(block tea, sequences tea) tea {
     # Extract uncovered characters as literals
     bestie (drip i = 0; i < block_size; i = i + 1) {
         # Simplified: just take every other character as literal
-        ready (i % 2 == 0) {
+        lowkey (i % 2 == 0) {
             literals = literals + get_char_at(block, i)
         }
     }
@@ -1550,7 +1550,7 @@ slay compress_zstd_sequences(sequences tea) tea {
 slay compress_zstd_literals(literals tea) tea {
     vibez.spill("ZSTD: Compressing " + to_string(len(literals)) + " literals")
     
-    ready (literals == "") {
+    lowkey (literals == "") {
         damn "ZSTD_LIT(EMPTY)"
     }
     
@@ -1578,7 +1578,7 @@ slay update_zstd_history(block tea) {
     zstd_context.match_history = append(zstd_context.match_history, block)
     
     # Keep only recent history (limit to 8 entries)
-    ready (len(zstd_context.match_history) > 8) {
+    lowkey (len(zstd_context.match_history) > 8) {
         zstd_context.match_history = remove_first_element(zstd_context.match_history)
     }
     
@@ -1603,7 +1603,7 @@ slay apply_zstd_decompression(compressed_data tea, dictionary tea) tea {
     
     # Parse compressed data header
     sus header_match tea = extract_zstd_header(compressed_data)
-    ready (header_match == "") {
+    lowkey (header_match == "") {
         vibez.spill("ZSTD: Invalid compressed data format")
         damn compressed_data
     }
@@ -1614,7 +1614,7 @@ slay apply_zstd_decompression(compressed_data tea, dictionary tea) tea {
     sus payload tea = header_parts[2]
     
     # Load dictionary if ID matches
-    ready (dictionary != "" && calculate_dictionary_id(dictionary) == dict_id) {
+    lowkey (dictionary != "" && calculate_dictionary_id(dictionary) == dict_id) {
         zstd_context.dictionary_data = dictionary
         vibez.spill("ZSTD: Using dictionary for decompression")
     }
@@ -1642,7 +1642,7 @@ slay apply_lz4_streaming(data tea, context tea) tea {
     vibez.spill("LZ4 Streaming: Processing with preserved context")
     
     # Use context to maintain state between chunks
-    ready (context != "") {
+    lowkey (context != "") {
         # Restore previous compression state
         restore_lz4_stream_state(context)
     }
@@ -1662,7 +1662,7 @@ slay apply_zstd_streaming(data tea, dictionary tea, context tea) tea {
     vibez.spill("ZSTD Streaming: Processing with dictionary and context")
     
     # Restore streaming context
-    ready (context != "") {
+    lowkey (context != "") {
         restore_zstd_stream_state(context)
     }
     
@@ -1680,17 +1680,17 @@ slay apply_zstd_streaming(data tea, dictionary tea, context tea) tea {
 
 # String manipulation helpers
 slay string_compare(a tea, b tea) drip {
-    ready (a == b) { damn 0 }
-    ready (len(a) < len(b)) { damn -1 }
-    ready (len(a) > len(b)) { damn 1 }
+    lowkey (a == b) { damn 0 }
+    lowkey (len(a) < len(b)) { damn -1 }
+    lowkey (len(a) > len(b)) { damn 1 }
     # Simplified lexicographic comparison
-    ready (a < b) { damn -1 }
+    lowkey (a < b) { damn -1 }
     damn 1
 }
 
 slay find_char_in_string(str tea, char tea) drip {
     bestie (drip i = 0; i < len(str); i = i + 1) {
-        ready (get_char_at(str, i) == char) {
+        lowkey (get_char_at(str, i) == char) {
             damn i
         }
     }
@@ -1701,7 +1701,7 @@ slay remove_char_from_string(str tea, char tea) tea {
     sus result tea = ""
     bestie (drip i = 0; i < len(str); i = i + 1) {
         sus current_char tea = get_char_at(str, i)
-        ready (current_char != char) {
+        lowkey (current_char != char) {
             result = result + current_char
         }
     }
@@ -1714,15 +1714,15 @@ slay split_string(str tea, delimiter tea) tea[value]{
     
     bestie (drip i = 0; i < len(str); i = i + 1) {
         sus char tea = get_char_at(str, i)
-        ready (char == delimiter) {
+        lowkey (char == delimiter) {
             parts = append(parts, current)
             current = ""
-        } otherwise {
+        } highkey {
             current = current + char
         }
     }
     
-    ready (current != "") {
+    lowkey (current != "") {
         parts = append(parts, current)
     }
     
@@ -1734,9 +1734,9 @@ slay find_common_prefix(str1 tea, str2 tea) drip {
     sus common_length drip = 0
     
     bestie (drip i = 0; i < min_len; i = i + 1) {
-        ready (get_char_at(str1, i) == get_char_at(str2, i)) {
+        lowkey (get_char_at(str1, i) == get_char_at(str2, i)) {
             common_length = common_length + 1
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -1803,9 +1803,9 @@ slay encode_sequences_with_entropy(sequences tea, entropy_table tea) tea {
 }
 
 slay extract_zstd_header(compressed_data tea) tea {
-    ready (starts_with(compressed_data, "ZSTD_ADV(")) {
+    lowkey (starts_with(compressed_data, "ZSTD_ADV(")) {
         sus end_pos drip = find_char(compressed_data, ')', 9)
-        ready (end_pos > 0) {
+        lowkey (end_pos > 0) {
             damn substring(compressed_data, 9, end_pos)
         }
     }
@@ -1826,7 +1826,7 @@ slay decompress_zstd_block(block_data tea) tea {
 
 # Streaming state management
 slay restore_lz4_stream_state(context tea) {
-    ready (context != "") {
+    lowkey (context != "") {
         # Restore LZ4 streaming context
         lz4_stream_context.position = 1000
         vibez.spill("LZ4: Restored streaming context")
@@ -1839,7 +1839,7 @@ slay save_lz4_stream_state() tea {
 }
 
 slay restore_zstd_stream_state(context tea) {
-    ready (context != "") {
+    lowkey (context != "") {
         # Restore ZSTD streaming context
         zstd_context.compression_level = 3
         vibez.spill("ZSTD: Restored streaming context")
@@ -1855,7 +1855,7 @@ slay save_zstd_stream_state() tea {
 slay count_optimal_matches(compressed_window tea) drip {
     sus matches drip = 0
     bestie (drip i = 0; i < len(compressed_window); i = i + 1) {
-        ready (starts_with(substring(compressed_window, i, len(compressed_window)), "M(")) {
+        lowkey (starts_with(substring(compressed_window, i, len(compressed_window)), "M(")) {
             matches = matches + 1
         }
     }
@@ -1877,17 +1877,17 @@ slay lz4hc_compress_window(window tea, position drip) tea {
         # Exhaustive search for best match
         bestie (drip j = max(0, i - 65536); j < i; j = j + 1) {
             sus match_length drip = find_lz4_match_length(window, i, j)
-            ready (match_length > best_match_length) {
+            lowkey (match_length > best_match_length) {
                 best_match_length = match_length
                 best_match_offset = i - j
             }
         }
         
         # Use best match if found
-        ready (best_match_length >= 4) {
+        lowkey (best_match_length >= 4) {
             compressed = compressed + encode_lz4_match(best_match_offset, best_match_length)
             i = i + best_match_length
-        } otherwise {
+        } highkey {
             compressed = compressed + encode_lz4_literal(get_char_at(window, i))
             i = i + 1
         }

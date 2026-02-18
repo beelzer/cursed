@@ -154,23 +154,23 @@ slay parse_dtd(dtd_content tea) yikes<DTDDefinition> {
     
     bestie (sus line tea in lines) {
         sus trimmed tea = stringz.trim(line)
-        ready (trimmed == "" || stringz.starts_with(trimmed, "<!--")) {
+        lowkey (trimmed == "" || stringz.starts_with(trimmed, "<!--")) {
             continue
         }
         
-        ready (stringz.starts_with(trimmed, "<!ELEMENT")) {
+        lowkey (stringz.starts_with(trimmed, "<!ELEMENT")) {
             parse_dtd_element(trimmed, dtd) fam {
                 when err -> yikes "Failed to parse DTD element: " + err
             }
-        } otherwise ready (stringz.starts_with(trimmed, "<!ATTLIST")) {
+        } highkey lowkey (stringz.starts_with(trimmed, "<!ATTLIST")) {
             parse_dtd_attlist(trimmed, dtd) fam {
                 when err -> yikes "Failed to parse DTD attribute list: " + err
             }
-        } otherwise ready (stringz.starts_with(trimmed, "<!ENTITY")) {
+        } highkey lowkey (stringz.starts_with(trimmed, "<!ENTITY")) {
             parse_dtd_entity(trimmed, dtd) fam {
                 when err -> yikes "Failed to parse DTD entity: " + err
             }
-        } otherwise ready (stringz.starts_with(trimmed, "<!NOTATION")) {
+        } highkey lowkey (stringz.starts_with(trimmed, "<!NOTATION")) {
             parse_dtd_notation(trimmed, dtd) fam {
                 when err -> yikes "Failed to parse DTD notation: " + err
             }
@@ -185,7 +185,7 @@ slay parse_dtd_element(declaration tea, dtd sus DTDDefinition) yikes<tea> {
     # Extract element name and content model
     # <!ELEMENT element-name content-model>
     sus parts tea[value] = stringz.split(declaration, " ")
-    ready (parts.len() < 3) {
+    lowkey (parts.len() < 3) {
         yikes "Invalid DTD element declaration: " + declaration
     }
     
@@ -210,7 +210,7 @@ slay parse_dtd_element(declaration tea, dtd sus DTDDefinition) yikes<tea> {
 slay parse_dtd_attlist(declaration tea, dtd sus DTDDefinition) yikes<tea> {
     # <!ATTLIST element-name attribute-definitions>
     sus parts tea[value] = stringz.split(declaration, " ")
-    ready (parts.len() < 3) {
+    lowkey (parts.len() < 3) {
         yikes "Invalid DTD attribute list declaration: " + declaration
     }
     
@@ -233,25 +233,25 @@ slay parse_dtd_entity(declaration tea, dtd sus DTDDefinition) yikes<tea> {
     # <!ENTITY % entity-name "entity-value">
     
     sus is_parameter lit = stringz.contains(declaration, "<!ENTITY %")
-    sus start_pos drip = ready (is_parameter) {
+    sus start_pos drip = lowkey (is_parameter) {
         damn stringz.index_of(declaration, "%") + 1
-    } otherwise {
+    } highkey {
         damn stringz.index_of(declaration, "ENTITY") + 6
     }
     
     sus content tea = stringz.trim(stringz.substring(declaration, start_pos, stringz.last_index_of(declaration, ">") - start_pos))
     sus parts tea[value] = stringz.split(content, " ")
     
-    ready (parts.len() < 2) {
+    lowkey (parts.len() < 2) {
         yikes "Invalid DTD entity declaration: " + declaration
     }
     
     sus entity_name tea = parts[0]
     sus entity_value tea = extract_quoted_value(stringz.join(arrayz.slice(parts, 1), " "))
     
-    ready (is_parameter) {
+    lowkey (is_parameter) {
         dtd.parameter_entities[entity_name] = entity_value
-    } otherwise {
+    } highkey {
         dtd.entities[entity_name] = entity_value
     }
     
@@ -269,7 +269,7 @@ slay parse_xsd(xsd_content tea) yikes<XSDSchema> {
         when err -> yikes "Failed to parse XSD as XML: " + err
     }
     
-    ready (doc.root == cap || doc.root.name != "schema") {
+    lowkey (doc.root == cap || doc.root.name != "schema") {
         yikes "Invalid XSD: root element must be 'schema'"
     }
     
@@ -286,30 +286,30 @@ slay parse_xsd(xsd_content tea) yikes<XSDSchema> {
     
     # Parse namespace declarations
     bestie (sus attr XmlAttribute in doc.root.attributes) {
-        ready (stringz.starts_with(attr.name, "xmlns:")) {
+        lowkey (stringz.starts_with(attr.name, "xmlns:")) {
             sus prefix tea = stringz.substring(attr.name, 6)
             schema.namespaces[prefix] = attr.value
-        } otherwise ready (attr.name == "xmlns") {
+        } highkey lowkey (attr.name == "xmlns") {
             schema.namespaces[""] = attr.value
         }
     }
     
     # Parse schema elements
     bestie (sus child XmlNode in doc.root.children) {
-        ready (child.node_type == XmlNodeType.Element) {
-            ready (child.name == "element") {
+        lowkey (child.node_type == XmlNodeType.Element) {
+            lowkey (child.name == "element") {
                 parse_xsd_element(child, schema) fam {
                     when err -> yikes "Failed to parse XSD element: " + err
                 }
-            } otherwise ready (child.name == "complexType" || child.name == "simpleType") {
+            } highkey lowkey (child.name == "complexType" || child.name == "simpleType") {
                 parse_xsd_type(child, schema) fam {
                     when err -> yikes "Failed to parse XSD type: " + err
                 }
-            } otherwise ready (child.name == "group") {
+            } highkey lowkey (child.name == "group") {
                 parse_xsd_group(child, schema) fam {
                     when err -> yikes "Failed to parse XSD group: " + err
                 }
-            } otherwise ready (child.name == "attributeGroup") {
+            } highkey lowkey (child.name == "attributeGroup") {
                 parse_xsd_attribute_group(child, schema) fam {
                     when err -> yikes "Failed to parse XSD attribute group: " + err
                 }
@@ -342,12 +342,12 @@ slay parse_xsd_element(element_node XmlNode, schema sus XSDSchema) yikes<tea> {
     
     # Parse inline type definitions
     bestie (sus child XmlNode in element_node.children) {
-        ready (child.node_type == XmlNodeType.Element) {
-            ready (child.name == "complexType") {
+        lowkey (child.node_type == XmlNodeType.Element) {
+            lowkey (child.name == "complexType") {
                 element.complex_type = parse_xsd_complex_type(child, schema) fam {
                     when err -> yikes err
                 }
-            } otherwise ready (child.name == "simpleType") {
+            } highkey lowkey (child.name == "simpleType") {
                 element.simple_type = parse_xsd_simple_type(child, schema) fam {
                     when err -> yikes err
                 }
@@ -371,14 +371,14 @@ slay validate_against_dtd(doc XmlDocument, dtd DTDDefinition) ValidationResult {
         warnings: []
     }
     
-    ready (doc.root == cap) {
+    lowkey (doc.root == cap) {
         result.valid = nah
         result.errors = arrayz.append(result.errors, "Document has no root element")
         damn result
     }
     
     # Validate root element exists in DTD
-    ready (!(doc.root.name in dtd.elements)) {
+    lowkey (!(doc.root.name in dtd.elements)) {
         result.valid = nah
         result.errors = arrayz.append(result.errors, "Root element '" + doc.root.name + "' not declared in DTD")
         damn result
@@ -392,12 +392,12 @@ slay validate_against_dtd(doc XmlDocument, dtd DTDDefinition) ValidationResult {
 
 # Validate element against DTD recursively
 slay validate_element_against_dtd(element XmlNode, dtd DTDDefinition, result sus ValidationResult) {
-    ready (element.node_type != XmlNodeType.Element) {
+    lowkey (element.node_type != XmlNodeType.Element) {
         damn
     }
     
     # Check if element is declared
-    ready (!(element.name in dtd.elements)) {
+    lowkey (!(element.name in dtd.elements)) {
         result.valid = nah
         result.errors = arrayz.append(result.errors, "Element '" + element.name + "' not declared in DTD")
         damn
@@ -406,26 +406,26 @@ slay validate_element_against_dtd(element XmlNode, dtd DTDDefinition, result sus
     sus dtd_element DTDElement = dtd.elements[element.name]
     
     # Validate content model
-    ready (dtd_element.content_type == "EMPTY") {
-        ready (element.children.len() > 0 || element.value != "") {
+    lowkey (dtd_element.content_type == "EMPTY") {
+        lowkey (element.children.len() > 0 || element.value != "") {
             result.valid = nah
             result.errors = arrayz.append(result.errors, "Element '" + element.name + "' should be empty")
         }
-    } otherwise ready (dtd_element.content_type == "PCDATA") {
+    } highkey lowkey (dtd_element.content_type == "PCDATA") {
         # Check for text-only content
         bestie (sus child XmlNode in element.children) {
-            ready (child.node_type == XmlNodeType.Element) {
+            lowkey (child.node_type == XmlNodeType.Element) {
                 result.valid = nah
                 result.errors = arrayz.append(result.errors, "Element '" + element.name + "' should contain only text")
             }
         }
-    } otherwise ready (dtd_element.content_type == "ELEMENT") {
+    } highkey lowkey (dtd_element.content_type == "ELEMENT") {
         # Validate child elements match content model
         validate_content_model(element, dtd_element, result)
     }
     
     # Validate attributes
-    ready (element.name in dtd.attributes) {
+    lowkey (element.name in dtd.attributes) {
         sus required_attrs DTDAttribute[value] = dtd.attributes[element.name]
         validate_attributes_against_dtd(element, required_attrs, result)
     }
@@ -444,14 +444,14 @@ slay validate_against_xsd(doc XmlDocument, schema XSDSchema) ValidationResult {
         warnings: []
     }
     
-    ready (doc.root == cap) {
+    lowkey (doc.root == cap) {
         result.valid = nah
         result.errors = arrayz.append(result.errors, "Document has no root element")
         damn result
     }
     
     # Find root element in schema
-    ready (!(doc.root.name in schema.elements)) {
+    lowkey (!(doc.root.name in schema.elements)) {
         result.valid = nah
         result.errors = arrayz.append(result.errors, "Root element '" + doc.root.name + "' not declared in schema")
         damn result
@@ -465,12 +465,12 @@ slay validate_against_xsd(doc XmlDocument, schema XSDSchema) ValidationResult {
 
 # Validate element against XSD recursively
 slay validate_element_against_xsd(element XmlNode, schema XSDSchema, result sus ValidationResult) {
-    ready (element.node_type != XmlNodeType.Element) {
+    lowkey (element.node_type != XmlNodeType.Element) {
         damn
     }
     
     # Find element declaration
-    ready (!(element.name in schema.elements)) {
+    lowkey (!(element.name in schema.elements)) {
         result.valid = nah
         result.errors = arrayz.append(result.errors, "Element '" + element.name + "' not declared in schema")
         damn
@@ -479,19 +479,19 @@ slay validate_element_against_xsd(element XmlNode, schema XSDSchema, result sus 
     sus xsd_element XSDElement = schema.elements[element.name]
     
     # Validate type
-    ready (xsd_element.type_name != "") {
+    lowkey (xsd_element.type_name != "") {
         # Validate against named type
-        ready (xsd_element.type_name in schema.types) {
+        lowkey (xsd_element.type_name in schema.types) {
             sus xsd_type XSDType = schema.types[xsd_element.type_name]
             validate_element_against_type(element, xsd_type, schema, result)
-        } otherwise {
+        } highkey {
             # Check built-in types
             validate_element_against_builtin_type(element, xsd_element.type_name, result)
         }
-    } otherwise ready (xsd_element.complex_type != cap) {
+    } highkey lowkey (xsd_element.complex_type != cap) {
         # Validate against inline complex type
         validate_element_against_complex_type(element, xsd_element.complex_type, schema, result)
-    } otherwise ready (xsd_element.simple_type != cap) {
+    } highkey lowkey (xsd_element.simple_type != cap) {
         # Validate against inline simple type
         validate_element_against_simple_type(element, xsd_element.simple_type, result)
     }
@@ -508,13 +508,13 @@ slay validate_element_against_xsd(element XmlNode, schema XSDSchema, result sus 
 
 # Determine DTD content type from content model
 slay determine_content_type(content_model tea) tea {
-    ready (content_model == "EMPTY") {
+    lowkey (content_model == "EMPTY") {
         damn "EMPTY"
     }
-    ready (content_model == "ANY") {
+    lowkey (content_model == "ANY") {
         damn "ANY"  
     }
-    ready (stringz.contains(content_model, "#PCDATA")) {
+    lowkey (stringz.contains(content_model, "#PCDATA")) {
         damn "PCDATA"
     }
     damn "ELEMENT"
@@ -522,11 +522,11 @@ slay determine_content_type(content_model tea) tea {
 
 # Extract child elements from DTD content model
 slay extract_child_elements(content_model tea) tea[value]{
-    ready (content_model == "EMPTY" || content_model == "ANY") {
+    lowkey (content_model == "EMPTY" || content_model == "ANY") {
         damn []
     }
     
-    ready (stringz.contains(content_model, "#PCDATA")) {
+    lowkey (stringz.contains(content_model, "#PCDATA")) {
         damn []  # Mixed content, handle separately
     }
     
@@ -542,7 +542,7 @@ slay extract_child_elements(content_model tea) tea[value]{
     sus parts tea[value] = stringz.split(cleaned, ",")
     bestie (sus part tea in parts) {
         sus trimmed tea = stringz.trim(part)
-        ready (trimmed != "" && !stringz.contains(trimmed, "|")) {
+        lowkey (trimmed != "" && !stringz.contains(trimmed, "|")) {
             elements = arrayz.append(elements, trimmed)
         }
     }
@@ -557,11 +557,11 @@ slay extract_quoted_value(text tea) tea {
     
     bestie (sus i drip = 0; i < text.len(); i++) {
         sus char tea = stringz.char_at(text, i)
-        ready (char == "\"" || char == "'") {
-            ready (start == -1) {
+        lowkey (char == "\"" || char == "'") {
+            lowkey (start == -1) {
                 start = i + 1
                 quote_char = char
-            } otherwise ready (char == quote_char) {
+            } highkey lowkey (char == quote_char) {
                 damn stringz.substring(text, start, i - start)
             }
         }
@@ -572,7 +572,7 @@ slay extract_quoted_value(text tea) tea {
 
 # Parse occurs value (minOccurs/maxOccurs)
 slay parse_occurs(occurs_str tea) drip {
-    ready (occurs_str == "") {
+    lowkey (occurs_str == "") {
         damn 1
     }
     damn stringz.to_int(occurs_str) fam { when _ -> damn 1 }
@@ -580,7 +580,7 @@ slay parse_occurs(occurs_str tea) drip {
 
 # Parse maxOccurs value (handle "unbounded")
 slay parse_max_occurs(max_occurs_str tea) drip {
-    ready (max_occurs_str == "unbounded") {
+    lowkey (max_occurs_str == "unbounded") {
         damn -1
     }
     damn parse_occurs(max_occurs_str)

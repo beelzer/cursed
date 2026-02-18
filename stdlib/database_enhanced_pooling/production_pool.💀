@@ -211,7 +211,7 @@ slay calculate_exponential_backoff_ns(attempt drip, base_ns drip, multiplier tea
     
     fr fr Cap at 30 seconds maximum
     sus max_backoff_ns drip = 30000000000
-    ready (mathz.greater_than(backoff_time_ns, max_backoff_ns)) {
+    lowkey (mathz.greater_than(backoff_time_ns, max_backoff_ns)) {
         damn max_backoff_ns
     }
     damn backoff_time_ns
@@ -245,15 +245,15 @@ slay create_production_pool_config(pool_name tea, database_driver tea) Productio
 }
 
 slay get_validation_query(database_driver tea) tea {
-    ready (stringz.equals(database_driver, "postgresql")) {
+    lowkey (stringz.equals(database_driver, "postgresql")) {
         damn "SELECT 1"
-    } otherwise ready (stringz.equals(database_driver, "mysql")) {
+    } highkey lowkey (stringz.equals(database_driver, "mysql")) {
         damn "SELECT 1"
-    } otherwise ready (stringz.equals(database_driver, "sqlite")) {
+    } highkey lowkey (stringz.equals(database_driver, "sqlite")) {
         damn "SELECT 1"
-    } otherwise ready (stringz.equals(database_driver, "sqlserver")) {
+    } highkey lowkey (stringz.equals(database_driver, "sqlserver")) {
         damn "SELECT 1"
-    } otherwise ready (stringz.equals(database_driver, "oracle")) {
+    } highkey lowkey (stringz.equals(database_driver, "oracle")) {
         damn "SELECT 1 FROM DUAL"
     }
     damn "SELECT 1"  fr fr Default fallback
@@ -285,13 +285,13 @@ slay create_production_database_connection(config ProductionConnectionConfig, co
     connection.is_connected = connection_result
     connection.is_healthy = connection_result
     
-    ready (!connection_result) {
+    lowkey (!connection_result) {
         connection.last_error = "Failed to establish database connection"
         connection.error_count = 1
     }
     
     fr fr Initialize SSL information if applicable
-    ready (stringz.equals(config.ssl_mode, "require") || stringz.equals(config.ssl_mode, "prefer")) {
+    lowkey (stringz.equals(config.ssl_mode, "require") || stringz.equals(config.ssl_mode, "prefer")) {
         connection.ssl_connection_info = initialize_ssl_info(connection)
     }
     
@@ -305,13 +305,13 @@ slay create_production_database_connection(config ProductionConnectionConfig, co
 slay establish_database_connection(connection ProductionDatabaseConnection, config ProductionConnectionConfig) lit {
     sus start_time_ns drip = get_monotonic_time_ns()
     
-    ready (stringz.equals(connection.database_driver, "postgresql")) {
+    lowkey (stringz.equals(connection.database_driver, "postgresql")) {
         damn establish_postgresql_connection(connection, config)
-    } otherwise ready (stringz.equals(connection.database_driver, "mysql")) {
+    } highkey lowkey (stringz.equals(connection.database_driver, "mysql")) {
         damn establish_mysql_connection(connection, config)
-    } otherwise ready (stringz.equals(connection.database_driver, "sqlite")) {
+    } highkey lowkey (stringz.equals(connection.database_driver, "sqlite")) {
         damn establish_sqlite_connection(connection, config)
-    } otherwise ready (stringz.equals(connection.database_driver, "sqlserver")) {
+    } highkey lowkey (stringz.equals(connection.database_driver, "sqlserver")) {
         damn establish_sqlserver_connection(connection, config)
     }
     
@@ -327,14 +327,14 @@ slay establish_postgresql_connection(connection ProductionDatabaseConnection, co
     
     fr fr Parse connection string for PostgreSQL
     sus parsed_conn tea = parse_postgresql_connection_string(connection.connection_string)
-    ready (stringz.is_empty(parsed_conn)) {
+    lowkey (stringz.is_empty(parsed_conn)) {
         connection.last_error = "Invalid PostgreSQL connection string"
         damn cringe
     }
     
     fr fr Simulate PostgreSQL connection protocol
     sus connection_success lit = simulate_postgresql_protocol(connection, parsed_conn)
-    ready (connection_success) {
+    lowkey (connection_success) {
         connection.connection_handle = "pg_handle_" + connection.connection_id
         vibez.spill("✅ PostgreSQL connection established")
         damn based
@@ -349,14 +349,14 @@ slay establish_mysql_connection(connection ProductionDatabaseConnection, config 
     
     fr fr Parse connection string for MySQL
     sus parsed_conn tea = parse_mysql_connection_string(connection.connection_string)
-    ready (stringz.is_empty(parsed_conn)) {
+    lowkey (stringz.is_empty(parsed_conn)) {
         connection.last_error = "Invalid MySQL connection string"
         damn cringe
     }
     
     fr fr Simulate MySQL connection protocol
     sus connection_success lit = simulate_mysql_protocol(connection, parsed_conn)
-    ready (connection_success) {
+    lowkey (connection_success) {
         connection.connection_handle = "mysql_handle_" + connection.connection_id
         vibez.spill("✅ MySQL connection established")
         damn based
@@ -371,14 +371,14 @@ slay establish_sqlite_connection(connection ProductionDatabaseConnection, config
     
     fr fr SQLite is file-based, so we just need to verify file access
     sus file_path tea = extract_sqlite_file_path(connection.connection_string)
-    ready (stringz.is_empty(file_path)) {
+    lowkey (stringz.is_empty(file_path)) {
         connection.last_error = "Invalid SQLite connection string"
         damn cringe
     }
     
     fr fr Simulate SQLite file opening
     sus file_success lit = simulate_sqlite_file_access(file_path)
-    ready (file_success) {
+    lowkey (file_success) {
         connection.connection_handle = "sqlite_handle_" + connection.connection_id
         vibez.spill("✅ SQLite connection established")
         damn based
@@ -393,14 +393,14 @@ slay establish_sqlserver_connection(connection ProductionDatabaseConnection, con
     
     fr fr Parse connection string for SQL Server
     sus parsed_conn tea = parse_sqlserver_connection_string(connection.connection_string)
-    ready (stringz.is_empty(parsed_conn)) {
+    lowkey (stringz.is_empty(parsed_conn)) {
         connection.last_error = "Invalid SQL Server connection string"
         damn cringe
     }
     
     fr fr Simulate SQL Server connection protocol
     sus connection_success lit = simulate_sqlserver_protocol(connection, parsed_conn)
-    ready (connection_success) {
+    lowkey (connection_success) {
         connection.connection_handle = "sqlserver_handle_" + connection.connection_id
         vibez.spill("✅ SQL Server connection established")
         damn based
@@ -416,7 +416,7 @@ slay perform_production_health_check(connection ProductionDatabaseConnection) li
     sus start_time_ns drip = get_monotonic_time_ns()
     connection.last_health_check_ns = get_current_time_ns()
     
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         connection.is_healthy = cringe
         connection.error_count = connection.error_count + 1
         damn cringe
@@ -427,14 +427,14 @@ slay perform_production_health_check(connection ProductionDatabaseConnection) li
     sus connection_age_ns drip = mathz.subtract(current_time_ns, connection.created_at_ns)
     sus max_lifetime_ns drip = 3600000000000  fr fr 1 hour in nanoseconds
     
-    ready (mathz.greater_than(connection_age_ns, max_lifetime_ns)) {
+    lowkey (mathz.greater_than(connection_age_ns, max_lifetime_ns)) {
         vibez.spill("⏰ Connection exceeded max lifetime: " + connection.connection_id)
         connection.is_healthy = cringe
         damn cringe
     }
     
     fr fr Check error rate threshold
-    ready (mathz.greater_than(connection.error_count, 10)) {
+    lowkey (mathz.greater_than(connection.error_count, 10)) {
         vibez.spill("❌ Connection has excessive errors: " + connection.connection_id)
         connection.is_healthy = cringe
         damn cringe
@@ -451,13 +451,13 @@ slay perform_production_health_check(connection ProductionDatabaseConnection) li
         mathz.add(connection.performance_metrics.query_count, 1)
     connection.performance_metrics.last_performance_update_ns = current_time_ns
     
-    ready (health_query_result) {
+    lowkey (health_query_result) {
         connection.is_healthy = based
         connection.error_count = 0  fr fr Reset error count on successful health check
         vibez.spill("💚 Health check passed for connection: " + connection.connection_id +
                     " (duration: " + format_nanoseconds_as_ms(check_duration_ns) + "ms)")
         damn based
-    } otherwise {
+    } highkey {
         connection.is_healthy = cringe
         connection.error_count = connection.error_count + 1
         connection.last_error = "Health check query failed"
@@ -467,13 +467,13 @@ slay perform_production_health_check(connection ProductionDatabaseConnection) li
 }
 
 slay execute_health_check_query(connection ProductionDatabaseConnection) lit {
-    ready (stringz.equals(connection.database_driver, "postgresql")) {
+    lowkey (stringz.equals(connection.database_driver, "postgresql")) {
         damn execute_postgresql_health_query(connection)
-    } otherwise ready (stringz.equals(connection.database_driver, "mysql")) {
+    } highkey lowkey (stringz.equals(connection.database_driver, "mysql")) {
         damn execute_mysql_health_query(connection)
-    } otherwise ready (stringz.equals(connection.database_driver, "sqlite")) {
+    } highkey lowkey (stringz.equals(connection.database_driver, "sqlite")) {
         damn execute_sqlite_health_query(connection)
-    } otherwise ready (stringz.equals(connection.database_driver, "sqlserver")) {
+    } highkey lowkey (stringz.equals(connection.database_driver, "sqlserver")) {
         damn execute_sqlserver_health_query(connection)
     }
     
@@ -497,7 +497,7 @@ slay create_production_query_cache(max_size drip, ttl_ns drip) ConnectionCache {
 
 slay cache_prepared_statement(cache ConnectionCache, statement_key tea, statement_id tea, sql_query tea) lit {
     fr fr Check if cache is full
-    ready (mathz.greater_equal(array_length_cached_statements(cache.prepared_statement_cache), cache.cache_size_limit)) {
+    lowkey (mathz.greater_equal(array_length_cached_statements(cache.prepared_statement_cache), cache.cache_size_limit)) {
         evict_oldest_prepared_statement(cache)
     }
     
@@ -524,10 +524,10 @@ slay lookup_cached_prepared_statement(cache ConnectionCache, statement_key tea) 
     bestie (mathz.less_than(i, array_length_cached_statements(cache.prepared_statement_cache))) {
         sus cached_stmt CachedPreparedStatement = cache.prepared_statement_cache[i]
         
-        ready (stringz.equals(cached_stmt.statement_key, statement_key)) {
+        lowkey (stringz.equals(cached_stmt.statement_key, statement_key)) {
             fr fr Check if cache entry is still valid
             sus cache_age_ns drip = mathz.subtract(current_time_ns, cached_stmt.created_at_ns)
-            ready (mathz.less_than(cache_age_ns, cache.cache_ttl_ns)) {
+            lowkey (mathz.less_than(cache_age_ns, cache.cache_ttl_ns)) {
                 fr fr Update usage statistics
                 cached_stmt.last_used_at_ns = current_time_ns
                 cached_stmt.usage_count = mathz.add(cached_stmt.usage_count, 1)
@@ -535,7 +535,7 @@ slay lookup_cached_prepared_statement(cache ConnectionCache, statement_key tea) 
                 
                 vibez.spill("🎯 Cache hit for prepared statement: " + statement_key)
                 damn cached_stmt.statement_id
-            } otherwise {
+            } highkey {
                 fr fr Cache entry expired, remove it
                 remove_cached_prepared_statement(cache, statement_key)
             }
@@ -556,7 +556,7 @@ slay evict_oldest_prepared_statement(cache ConnectionCache) lit {
     sus i drip = 0
     bestie (mathz.less_than(i, array_length_cached_statements(cache.prepared_statement_cache))) {
         sus cached_stmt CachedPreparedStatement = cache.prepared_statement_cache[i]
-        ready (mathz.less_than(cached_stmt.last_used_at_ns, oldest_time_ns)) {
+        lowkey (mathz.less_than(cached_stmt.last_used_at_ns, oldest_time_ns)) {
             oldest_time_ns = cached_stmt.last_used_at_ns
             oldest_index = i
         }
@@ -611,7 +611,7 @@ slay create_production_connection_pool(pool_id tea, config ProductionConnectionC
     preload_production_minimum_connections(pool)
     
     fr fr Start background monitoring if enabled
-    ready (config.enable_monitoring) {
+    lowkey (config.enable_monitoring) {
         start_production_health_monitor(pool)
     }
     
@@ -629,14 +629,14 @@ slay preload_production_minimum_connections(pool ProductionConnectionPool) lit {
         sus connection_string tea = "postgresql://localhost:5432/" + pool.config.pool_name
         sus connection ProductionDatabaseConnection = create_production_database_connection(pool.config, connection_string)
         
-        ready (connection.is_connected) {
+        lowkey (connection.is_connected) {
             pool.idle_connections[array_length_production_connections(pool.idle_connections)] = connection
             pool.pool_statistics.total_created_connections = mathz.add(pool.pool_statistics.total_created_connections, 1)
             pool.pool_statistics.current_idle_connections = mathz.add(pool.pool_statistics.current_idle_connections, 1)
             successful_connections = mathz.add(successful_connections, 1)
             
             vibez.spill("✅ Pre-loaded connection: " + connection.connection_id)
-        } otherwise {
+        } highkey {
             vibez.spill("⚠️ Failed to pre-create connection " + format_number_as_string(mathz.add(i, 1)))
             vibez.spill("   Error: " + connection.last_error)
         }
@@ -669,20 +669,20 @@ slay format_nanoseconds_as_ms(nanoseconds drip) tea {
 
 slay format_number_as_string(number drip) tea {
     fr fr Enhanced number formatting for production debugging
-    ready (mathz.equals(number, 0)) { damn "0" }
-    ready (mathz.equals(number, 1)) { damn "1" }
-    ready (mathz.equals(number, 2)) { damn "2" }
-    ready (mathz.equals(number, 3)) { damn "3" }
-    ready (mathz.equals(number, 4)) { damn "4" }
-    ready (mathz.equals(number, 5)) { damn "5" }
-    ready (mathz.less_than(number, 10)) { damn "single_digit" }
-    ready (mathz.less_than(number, 100)) { damn "double_digit" }
-    ready (mathz.less_than(number, 1000)) { damn "triple_digit" }
+    lowkey (mathz.equals(number, 0)) { damn "0" }
+    lowkey (mathz.equals(number, 1)) { damn "1" }
+    lowkey (mathz.equals(number, 2)) { damn "2" }
+    lowkey (mathz.equals(number, 3)) { damn "3" }
+    lowkey (mathz.equals(number, 4)) { damn "4" }
+    lowkey (mathz.equals(number, 5)) { damn "5" }
+    lowkey (mathz.less_than(number, 10)) { damn "single_digit" }
+    lowkey (mathz.less_than(number, 100)) { damn "double_digit" }
+    lowkey (mathz.less_than(number, 1000)) { damn "triple_digit" }
     damn "large_number"
 }
 
 slay format_boolean_as_string(value lit) tea {
-    ready (value) { damn "true" }
+    lowkey (value) { damn "true" }
     damn "false"
 }
 
@@ -714,7 +714,7 @@ slay simulate_postgresql_protocol(connection ProductionDatabaseConnection, parse
     
     fr fr 90% success rate for realistic behavior
     sus random_val drip = mathz.modulo(get_current_time_ns(), 100)
-    ready (mathz.less_than(random_val, 90)) {
+    lowkey (mathz.less_than(random_val, 90)) {
         connection.ssl_connection_info.ssl_enabled = based
         connection.ssl_connection_info.ssl_version = "TLSv1.3"
         connection.ssl_connection_info.cipher_suite = "TLS_AES_256_GCM_SHA384"
@@ -731,7 +731,7 @@ slay simulate_mysql_protocol(connection ProductionDatabaseConnection, parsed_con
     sleep_precise_ns(75000000)  fr fr 75ms authentication time
     
     sus random_val drip = mathz.modulo(get_current_time_ns(), 100)
-    ready (mathz.less_than(random_val, 85)) {
+    lowkey (mathz.less_than(random_val, 85)) {
         damn based
     }
     
@@ -761,28 +761,28 @@ slay simulate_sqlserver_protocol(connection ProductionDatabaseConnection, parsed
 fr fr ===== CONNECTION STRING PARSING =====
 
 slay parse_postgresql_connection_string(conn_string tea) tea {
-    ready (stringz.contains(conn_string, "postgresql://")) {
+    lowkey (stringz.contains(conn_string, "postgresql://")) {
         damn "parsed_postgresql"
     }
     damn ""
 }
 
 slay parse_mysql_connection_string(conn_string tea) tea {
-    ready (stringz.contains(conn_string, "mysql://")) {
+    lowkey (stringz.contains(conn_string, "mysql://")) {
         damn "parsed_mysql"
     }
     damn ""
 }
 
 slay extract_sqlite_file_path(conn_string tea) tea {
-    ready (stringz.contains(conn_string, "sqlite://")) {
+    lowkey (stringz.contains(conn_string, "sqlite://")) {
         damn "/tmp/cursed.db"  fr fr Simplified path extraction
     }
     damn ""
 }
 
 slay parse_sqlserver_connection_string(conn_string tea) tea {
-    ready (stringz.contains(conn_string, "sqlserver://")) {
+    lowkey (stringz.contains(conn_string, "sqlserver://")) {
         damn "parsed_sqlserver"
     }
     damn ""
@@ -890,9 +890,9 @@ slay perform_production_pool_health_check(pool ProductionConnectionPool) lit {
         sus connection ProductionDatabaseConnection = pool.idle_connections[i]
         sus is_healthy lit = perform_production_health_check(connection)
         
-        ready (is_healthy) {
+        lowkey (is_healthy) {
             healthy_count = mathz.add(healthy_count, 1)
-        } otherwise {
+        } highkey {
             unhealthy_count = mathz.add(unhealthy_count, 1)
             vibez.spill("⚠️ Marking unhealthy idle connection for removal: " + connection.connection_id)
         }
@@ -907,11 +907,11 @@ slay perform_production_pool_health_check(pool ProductionConnectionPool) lit {
         sus connection ProductionDatabaseConnection = pool.active_connections[i]
         
         fr fr Only check basic health indicators for active connections
-        ready (connection.is_connected && 
+        lowkey (connection.is_connected && 
                mathz.less_than(connection.error_count, 5) &&
                connection.is_healthy) {
             healthy_count = mathz.add(healthy_count, 1)
-        } otherwise {
+        } highkey {
             unhealthy_count = mathz.add(unhealthy_count, 1)
         }
         

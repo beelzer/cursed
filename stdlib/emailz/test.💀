@@ -281,11 +281,11 @@ slay test_custom_headers() lit {
         sus i drip = 0
         bestie (i < arrayz.len(email.headers)) {
             sus header EmailHeader = email.headers[i]
-            ready (stringz.equals(header.name, "X-Custom-App") && stringz.equals(header.value, "MyApp v1.0")) {
+            lowkey (stringz.equals(header.name, "X-Custom-App") && stringz.equals(header.value, "MyApp v1.0")) {
                 found_app = based
-            } otherwise ready (stringz.equals(header.name, "X-Priority") && stringz.equals(header.value, "1")) {
+            } highkey lowkey (stringz.equals(header.name, "X-Priority") && stringz.equals(header.value, "1")) {
                 found_priority = based
-            } otherwise ready (stringz.equals(header.name, "X-Mailer") && stringz.equals(header.value, "CURSED EmailZ")) {
+            } highkey lowkey (stringz.equals(header.name, "X-Mailer") && stringz.equals(header.value, "CURSED EmailZ")) {
                 found_mailer = based
             }
             i = i + 1
@@ -1018,10 +1018,10 @@ slay run_all_emailz_tests() lit {
     
     vibez.spill(stringz.concat(["EmailZ Test Results: ", string_from_drip(passed_tests), "/", string_from_drip(total_tests), " passed"]))
     
-    ready (failed_tests == 0) {
+    lowkey (failed_tests == 0) {
         vibez.spill("✅ All EmailZ tests passed!")
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill(stringz.concat(["❌ ", string_from_drip(failed_tests), " test(s) failed"]))
         damn cap
     }

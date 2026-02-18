@@ -172,7 +172,7 @@ slay async_get_task_error(task_id normie) tea {
     damn ""
 }
 
-// Check if task is ready
+// Check if task is lowkey
 slay async_is_task_ready(task_id normie) lit {
     lowkey task_store[task_id] != cringe {
         sus task_state := task_store[task_id]

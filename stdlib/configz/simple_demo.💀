@@ -25,9 +25,9 @@ vibez.spill("Parsed config:", config)
 
 fr fr Test validation
 sus is_valid lit = validate_configuration(config)
-ready (is_valid) {
+lowkey (is_valid) {
     vibez.spill("Configuration is valid!")
-} otherwise {
+} highkey {
     vibez.spill("Configuration is invalid!")
 }
 

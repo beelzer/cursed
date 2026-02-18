@@ -111,12 +111,12 @@ sus thread_local_context *GoroutineExecutionContext = 0
 
 fr fr Initialize the global goroutine registry
 slay init_goroutine_registry() lit {
-    ready global_goroutine_registry != 0 {
+    lowkey global_goroutine_registry != 0 {
         damn based  fr fr Already initialized
     }
     
     sus registry *GoroutineRegistry = memory.allocate(GoroutineRegistry)
-    ready registry == 0 {
+    lowkey registry == 0 {
         damn cap  fr fr Allocation failed
     }
     
@@ -132,7 +132,7 @@ slay init_goroutine_registry() lit {
     
     fr fr Create mutex for thread-safe registry access
     registry.registry_mutex = os_primitives.create_os_mutex(os_primitives.MUTEX_NORMAL)
-    ready registry.registry_mutex == 0 {
+    lowkey registry.registry_mutex == 0 {
         memory.free(registry)
         damn cap
     }
@@ -147,7 +147,7 @@ slay init_goroutine_registry() lit {
 
 fr fr Shutdown goroutine registry and cleanup
 slay shutdown_goroutine_registry() {
-    ready global_goroutine_registry == 0 {
+    lowkey global_goroutine_registry == 0 {
         damn  fr fr Not initialized
     }
     
@@ -162,11 +162,11 @@ slay shutdown_goroutine_registry() {
     cleanup_all_goroutines(registry)
     
     fr fr Free registry resources
-    ready registry.registry_mutex != 0 {
+    lowkey registry.registry_mutex != 0 {
         memory.free(registry.registry_mutex)
     }
     
-    ready registry.goroutines_map != 0 {
+    lowkey registry.goroutines_map != 0 {
         destroy_goroutine_hashmap(registry.goroutines_map)
     }
     
@@ -176,8 +176,8 @@ slay shutdown_goroutine_registry() {
 
 fr fr Generate unique goroutine ID with atomic increment
 slay allocate_goroutine_id() thicc {
-    ready global_goroutine_registry == 0 {
-        ready init_goroutine_registry() == cap {
+    lowkey global_goroutine_registry == 0 {
+        lowkey init_goroutine_registry() == cap {
             damn 0  fr fr Failed to initialize
         }
     }
@@ -188,7 +188,7 @@ slay allocate_goroutine_id() thicc {
 
 fr fr Register new goroutine in tracking system
 slay register_goroutine(context *GoroutineExecutionContext) lit {
-    ready context == 0 || global_goroutine_registry == 0 {
+    lowkey context == 0 || global_goroutine_registry == 0 {
         damn cap
     }
     
@@ -199,7 +199,7 @@ slay register_goroutine(context *GoroutineExecutionContext) lit {
     
     fr fr Add to goroutines map
     sus success lit = hashmap_insert(registry.goroutines_map, context.metadata.id, context)
-    ready success {
+    lowkey success {
         atomic_drip.atomic_add_i64(&registry.total_goroutines, 1, atomic_drip.RELEASE)
         atomic_drip.atomic_add_i64(&registry.active_goroutines, 1, atomic_drip.RELEASE)
     }
@@ -210,7 +210,7 @@ slay register_goroutine(context *GoroutineExecutionContext) lit {
 
 fr fr Unregister goroutine when it completes
 slay unregister_goroutine(goroutine_id thicc) lit {
-    ready global_goroutine_registry == 0 {
+    lowkey global_goroutine_registry == 0 {
         damn cap
     }
     
@@ -221,7 +221,7 @@ slay unregister_goroutine(goroutine_id thicc) lit {
     
     fr fr Remove from goroutines map and cleanup context
     sus context *GoroutineExecutionContext = hashmap_remove(registry.goroutines_map, goroutine_id)
-    ready context != 0 {
+    lowkey context != 0 {
         cleanup_goroutine_context(context)
         atomic_drip.atomic_sub_i64(&registry.active_goroutines, 1, atomic_drip.RELEASE)
     }
@@ -241,7 +241,7 @@ slay set_current_goroutine(goroutine_id thicc, context *GoroutineExecutionContex
     thread_local_context = context
     
     fr fr Update thread-local storage structure
-    ready context != 0 {
+    lowkey context != 0 {
         context.local_storage.current_goroutine_id = goroutine_id
         context.local_storage.execution_context = context
         context.local_storage.stack_bottom = context.stack_memory
@@ -262,7 +262,7 @@ slay get_current_goroutine_context() *GoroutineExecutionContext {
 
 fr fr Get current goroutine metadata
 slay get_current_goroutine_metadata() *GoroutineMetadata {
-    ready thread_local_context == 0 {
+    lowkey thread_local_context == 0 {
         damn 0
     }
     damn &thread_local_context.metadata
@@ -281,7 +281,7 @@ fr fr Create complete goroutine execution context
 slay create_goroutine_context_full(parent_id thicc, stack_size normie, priority normie, 
                                   function_name tea, spawn_location tea) *GoroutineExecutionContext {
     sus context *GoroutineExecutionContext = memory.allocate(GoroutineExecutionContext)
-    ready context == 0 {
+    lowkey context == 0 {
         damn 0
     }
     
@@ -307,7 +307,7 @@ slay create_goroutine_context_full(parent_id thicc, stack_size normie, priority 
     context.metadata.debug_info = 0
     
     fr fr Allocate stack memory with guard pages
-    ready allocate_goroutine_stack_with_guards(context, stack_size) == cap {
+    lowkey allocate_goroutine_stack_with_guards(context, stack_size) == cap {
         memory.free(context)
         damn 0
     }
@@ -315,25 +315,25 @@ slay create_goroutine_context_full(parent_id thicc, stack_size normie, priority 
     fr fr Initialize CPU register storage
     context.cpu_registers = memory.allocate_array(thicc, 64)  fr fr General purpose registers
     context.fpu_registers = memory.allocate_array(thicc, 32)  fr fr FPU/SIMD registers
-    ready context.cpu_registers == 0 || context.fpu_registers == 0 {
+    lowkey context.cpu_registers == 0 || context.fpu_registers == 0 {
         cleanup_goroutine_context(context)
         damn 0
     }
     
     fr fr Initialize defer function stack
     context.defer_functions = memory.allocate_array(thicc, 32)  fr fr Max 32 defer levels
-    ready context.defer_functions == 0 {
+    lowkey context.defer_functions == 0 {
         cleanup_goroutine_context(context)
         damn 0
     }
     
     fr fr Initialize profiling data if profiling enabled
-    ready global_goroutine_registry != 0 && global_goroutine_registry.performance_profiler != 0 {
+    lowkey global_goroutine_registry != 0 && global_goroutine_registry.performance_profiler != 0 {
         context.profiling_data = create_goroutine_profile_data()
     }
     
     fr fr Register in global registry
-    ready register_goroutine(context) == cap {
+    lowkey register_goroutine(context) == cap {
         cleanup_goroutine_context(context)
         damn 0
     }
@@ -343,7 +343,7 @@ slay create_goroutine_context_full(parent_id thicc, stack_size normie, priority 
 
 fr fr Allocate stack with guard pages for overflow/underflow detection
 slay allocate_goroutine_stack_with_guards(context *GoroutineExecutionContext, stack_size normie) lit {
-    ready context == 0 || stack_size < 4096 {
+    lowkey context == 0 || stack_size < 4096 {
         damn cap
     }
     
@@ -353,7 +353,7 @@ slay allocate_goroutine_stack_with_guards(context *GoroutineExecutionContext, st
     
     fr fr Allocate aligned memory for stack
     context.stack_memory = os_primitives.allocate_aligned_memory(total_size, page_size)
-    ready context.stack_memory == 0 {
+    lowkey context.stack_memory == 0 {
         damn cap
     }
     
@@ -362,12 +362,12 @@ slay allocate_goroutine_stack_with_guards(context *GoroutineExecutionContext, st
     context.stack_guard_top = context.stack_memory + page_size + stack_size
     
     fr fr Make guard pages non-accessible (would use mprotect in real implementation)
-    ready protect_memory_page(context.stack_guard_bottom, page_size, PROT_NONE) == cap {
+    lowkey protect_memory_page(context.stack_guard_bottom, page_size, PROT_NONE) == cap {
         os_primitives.free_aligned_memory(context.stack_memory)
         damn cap
     }
     
-    ready protect_memory_page(context.stack_guard_top, page_size, PROT_NONE) == cap {
+    lowkey protect_memory_page(context.stack_guard_top, page_size, PROT_NONE) == cap {
         os_primitives.free_aligned_memory(context.stack_memory)
         damn cap
     }
@@ -396,7 +396,7 @@ sus GOROUTINE_TERMINATED normie = 9      fr fr Forcibly terminated
 
 fr fr Update goroutine state with timestamp
 slay update_goroutine_state(goroutine_id thicc, new_state normie) lit {
-    ready global_goroutine_registry == 0 {
+    lowkey global_goroutine_registry == 0 {
         damn cap
     }
     
@@ -404,19 +404,19 @@ slay update_goroutine_state(goroutine_id thicc, new_state normie) lit {
     os_primitives.lock_os_mutex(registry.registry_mutex)
     
     sus context *GoroutineExecutionContext = hashmap_get(registry.goroutines_map, goroutine_id)
-    ready context != 0 {
+    lowkey context != 0 {
         sus old_state normie = context.metadata.state
         context.metadata.state = new_state
         
         fr fr Update timing information based on state transition
         sus current_time thicc = os_primitives.get_real_time_ns()
-        ready old_state == GOROUTINE_RUNNING {
+        lowkey old_state == GOROUTINE_RUNNING {
             fr fr Was running, add to total run time
             context.metadata.total_run_time = context.metadata.total_run_time + 
                 (current_time - context.metadata.last_scheduled_time)
         }
         
-        ready new_state == GOROUTINE_RUNNING {
+        lowkey new_state == GOROUTINE_RUNNING {
             fr fr Now running, record schedule time
             context.metadata.last_scheduled_time = current_time
             context.metadata.context_switches = context.metadata.context_switches + 1
@@ -429,12 +429,12 @@ slay update_goroutine_state(goroutine_id thicc, new_state normie) lit {
 
 fr fr Record goroutine blocking on channel
 slay record_goroutine_blocked_on_channel(goroutine_id thicc, channel_id thicc) lit {
-    ready update_goroutine_state(goroutine_id, GOROUTINE_BLOCKED_CHANNEL) == cap {
+    lowkey update_goroutine_state(goroutine_id, GOROUTINE_BLOCKED_CHANNEL) == cap {
         damn cap
     }
     
     sus context *GoroutineExecutionContext = get_goroutine_context(goroutine_id)
-    ready context != 0 {
+    lowkey context != 0 {
         context.metadata.waiting_on_channel = channel_id
         damn based
     }
@@ -443,12 +443,12 @@ slay record_goroutine_blocked_on_channel(goroutine_id thicc, channel_id thicc) l
 
 fr fr Record goroutine blocking on mutex
 slay record_goroutine_blocked_on_mutex(goroutine_id thicc, mutex_addr thicc) lit {
-    ready update_goroutine_state(goroutine_id, GOROUTINE_BLOCKED_MUTEX) == cap {
+    lowkey update_goroutine_state(goroutine_id, GOROUTINE_BLOCKED_MUTEX) == cap {
         damn cap
     }
     
     sus context *GoroutineExecutionContext = get_goroutine_context(goroutine_id)
-    ready context != 0 {
+    lowkey context != 0 {
         context.metadata.waiting_on_mutex = mutex_addr
         damn based
     }
@@ -458,7 +458,7 @@ slay record_goroutine_blocked_on_mutex(goroutine_id thicc, mutex_addr thicc) lit
 fr fr Record goroutine voluntary yield
 slay record_goroutine_yield(goroutine_id thicc) lit {
     sus context *GoroutineExecutionContext = get_goroutine_context(goroutine_id)
-    ready context != 0 {
+    lowkey context != 0 {
         context.metadata.yield_count = context.metadata.yield_count + 1
         damn update_goroutine_state(goroutine_id, GOROUTINE_YIELDED)
     }
@@ -472,7 +472,7 @@ fr fr ==========================================================================
 fr fr Create profiling data for goroutine
 slay create_goroutine_profile_data() *GoroutineProfileData {
     sus profile *GoroutineProfileData = memory.allocate(GoroutineProfileData)
-    ready profile == 0 {
+    lowkey profile == 0 {
         damn 0
     }
     
@@ -495,7 +495,7 @@ slay create_goroutine_profile_data() *GoroutineProfileData {
 fr fr Record execution sample for profiling
 slay record_execution_sample(goroutine_id thicc, instruction_pointer thicc, execution_time thicc) {
     sus context *GoroutineExecutionContext = get_goroutine_context(goroutine_id)
-    ready context == 0 || context.profiling_data == 0 {
+    lowkey context == 0 || context.profiling_data == 0 {
         damn  fr fr No profiling data
     }
     
@@ -509,13 +509,13 @@ slay record_execution_sample(goroutine_id thicc, instruction_pointer thicc, exec
 fr fr Record memory allocation for goroutine
 slay record_memory_allocation(goroutine_id thicc, bytes_allocated normie) {
     sus context *GoroutineExecutionContext = get_goroutine_context(goroutine_id)
-    ready context != 0 {
+    lowkey context != 0 {
         context.metadata.memory_allocations = context.metadata.memory_allocations + 1
         context.metadata.memory_allocated_bytes = context.metadata.memory_allocated_bytes + bytes_allocated
         
         fr fr Update stack usage if allocation is on stack
         sus current_stack_ptr thicc = get_current_stack_pointer()
-        ready current_stack_ptr > context.stack_memory && 
+        lowkey current_stack_ptr > context.stack_memory && 
               current_stack_ptr < (context.stack_memory + context.metadata.stack_size) {
             context.metadata.stack_used = context.stack_memory + context.metadata.stack_size - current_stack_ptr
         }
@@ -540,12 +540,12 @@ struct GoroutineDebugInfo {
 fr fr Get debug information for goroutine
 slay get_goroutine_debug_info(goroutine_id thicc) *GoroutineDebugInfo {
     sus context *GoroutineExecutionContext = get_goroutine_context(goroutine_id)
-    ready context == 0 {
+    lowkey context == 0 {
         damn 0
     }
     
     sus debug_info *GoroutineDebugInfo = memory.allocate(GoroutineDebugInfo)
-    ready debug_info == 0 {
+    lowkey debug_info == 0 {
         damn 0
     }
     
@@ -569,7 +569,7 @@ slay get_goroutine_debug_info(goroutine_id thicc) *GoroutineDebugInfo {
 
 fr fr Get all active goroutines for debugging
 slay get_all_active_goroutines() thicc[value]{
-    ready global_goroutine_registry == 0 {
+    lowkey global_goroutine_registry == 0 {
         damn 0
     }
     
@@ -577,7 +577,7 @@ slay get_all_active_goroutines() thicc[value]{
     sus active_count normie = atomic_drip.atomic_load_i64(&registry.active_goroutines, atomic_drip.ACQUIRE)
     
     sus goroutine_ids thicc[value] = memory.allocate_array(thicc, active_count)
-    ready goroutine_ids == 0 {
+    lowkey goroutine_ids == 0 {
         damn 0
     }
     
@@ -592,7 +592,7 @@ slay get_all_active_goroutines() thicc[value]{
 fr fr Print goroutine stack trace for debugging
 slay print_goroutine_stack_trace(goroutine_id thicc) {
     sus debug_info *GoroutineDebugInfo = get_goroutine_debug_info(goroutine_id)
-    ready debug_info == 0 {
+    lowkey debug_info == 0 {
         vibez.spill("Cannot get debug info for goroutine", goroutine_id)
         damn
     }
@@ -603,7 +603,7 @@ slay print_goroutine_stack_trace(goroutine_id thicc) {
     vibez.spill("Created at:", debug_info.metadata.spawn_location)
     vibez.spill("Runtime:", debug_info.metadata.total_run_time, "ns")
     
-    ready debug_info.call_stack != 0 {
+    lowkey debug_info.call_stack != 0 {
         vibez.spill("Call Stack:")
         sus i normie = 0
         bestie i < array_length(debug_info.call_stack) {
@@ -612,7 +612,7 @@ slay print_goroutine_stack_trace(goroutine_id thicc) {
         }
     }
     
-    ready debug_info.blocking_info != 0 {
+    lowkey debug_info.blocking_info != 0 {
         vibez.spill("Blocked on:", debug_info.blocking_info)
     }
     
@@ -625,7 +625,7 @@ fr fr ==========================================================================
 
 fr fr Get goroutine context by ID
 slay get_goroutine_context(goroutine_id thicc) *GoroutineExecutionContext {
-    ready global_goroutine_registry == 0 {
+    lowkey global_goroutine_registry == 0 {
         damn 0
     }
     
@@ -639,40 +639,40 @@ slay get_goroutine_context(goroutine_id thicc) *GoroutineExecutionContext {
 
 fr fr Cleanup goroutine context and free resources
 slay cleanup_goroutine_context(context *GoroutineExecutionContext) {
-    ready context == 0 {
+    lowkey context == 0 {
         damn
     }
     
     fr fr Free stack memory including guard pages
-    ready context.stack_memory != 0 {
+    lowkey context.stack_memory != 0 {
         fr fr Actual stack memory is offset by one page (guard page)
         sus actual_stack_base thicc = context.stack_memory - 4096
         os_primitives.free_aligned_memory(actual_stack_base)
     }
     
     fr fr Free register storage
-    ready context.cpu_registers != 0 {
+    lowkey context.cpu_registers != 0 {
         memory.free(context.cpu_registers)
     }
-    ready context.fpu_registers != 0 {
+    lowkey context.fpu_registers != 0 {
         memory.free(context.fpu_registers)
     }
     
     fr fr Free defer function stack
-    ready context.defer_functions != 0 {
+    lowkey context.defer_functions != 0 {
         memory.free(context.defer_functions)
     }
     
     fr fr Free profiling data
-    ready context.profiling_data != 0 {
+    lowkey context.profiling_data != 0 {
         cleanup_goroutine_profile_data(context.profiling_data)
     }
     
     fr fr Free string copies
-    ready context.metadata.spawn_location != 0 {
+    lowkey context.metadata.spawn_location != 0 {
         memory.free(context.metadata.spawn_location)
     }
-    ready context.metadata.function_name != 0 {
+    lowkey context.metadata.function_name != 0 {
         memory.free(context.metadata.function_name)
     }
     
@@ -681,23 +681,23 @@ slay cleanup_goroutine_context(context *GoroutineExecutionContext) {
 
 fr fr Convert goroutine state to string for debugging
 slay goroutine_state_string(state normie) tea {
-    ready state == GOROUTINE_READY { damn "READY" }
-    ready state == GOROUTINE_RUNNING { damn "RUNNING" }
-    ready state == GOROUTINE_BLOCKED_CHANNEL { damn "BLOCKED_CHANNEL" }
-    ready state == GOROUTINE_BLOCKED_MUTEX { damn "BLOCKED_MUTEX" }
-    ready state == GOROUTINE_BLOCKED_IO { damn "BLOCKED_IO" }
-    ready state == GOROUTINE_YIELDED { damn "YIELDED" }
-    ready state == GOROUTINE_SLEEPING { damn "SLEEPING" }
-    ready state == GOROUTINE_COMPLETED { damn "COMPLETED" }
-    ready state == GOROUTINE_PANICKED { damn "PANICKED" }
-    ready state == GOROUTINE_TERMINATED { damn "TERMINATED" }
+    lowkey state == GOROUTINE_READY { damn "READY" }
+    lowkey state == GOROUTINE_RUNNING { damn "RUNNING" }
+    lowkey state == GOROUTINE_BLOCKED_CHANNEL { damn "BLOCKED_CHANNEL" }
+    lowkey state == GOROUTINE_BLOCKED_MUTEX { damn "BLOCKED_MUTEX" }
+    lowkey state == GOROUTINE_BLOCKED_IO { damn "BLOCKED_IO" }
+    lowkey state == GOROUTINE_YIELDED { damn "YIELDED" }
+    lowkey state == GOROUTINE_SLEEPING { damn "SLEEPING" }
+    lowkey state == GOROUTINE_COMPLETED { damn "COMPLETED" }
+    lowkey state == GOROUTINE_PANICKED { damn "PANICKED" }
+    lowkey state == GOROUTINE_TERMINATED { damn "TERMINATED" }
     damn "UNKNOWN"
 }
 
 fr fr Register main goroutine (called during initialization)
 slay register_main_goroutine() {
     sus main_context *GoroutineExecutionContext = memory.allocate(GoroutineExecutionContext)
-    ready main_context == 0 {
+    lowkey main_context == 0 {
         damn
     }
     
@@ -720,7 +720,7 @@ slay register_main_goroutine() {
 
 fr fr Get total number of active goroutines (REAL implementation)
 slay get_active_goroutine_count() normie {
-    ready global_goroutine_registry == 0 {
+    lowkey global_goroutine_registry == 0 {
         damn 1  fr fr At least main goroutine
     }
     
@@ -729,20 +729,20 @@ slay get_active_goroutine_count() normie {
 
 fr fr Enable goroutine debugging mode
 slay enable_goroutine_debugging() {
-    ready global_goroutine_registry != 0 {
+    lowkey global_goroutine_registry != 0 {
         global_goroutine_registry.debug_mode = based
     }
 }
 
 fr fr Copy string helper function
 slay copy_string(source tea) tea {
-    ready source == 0 {
+    lowkey source == 0 {
         damn 0
     }
     
     sus len normie = string_length(source)
     sus copy tea = memory.allocate(len + 1)
-    ready copy != 0 {
+    lowkey copy != 0 {
         memory_copy(copy, source, len)
         copy[len] = 0  fr fr Null terminator
     }
@@ -791,10 +791,10 @@ slay build_goroutine_tree(goroutine_id thicc) thicc[value]{
 }
 
 slay describe_blocking_reason(context *GoroutineExecutionContext) tea {
-    ready context.metadata.state == GOROUTINE_BLOCKED_CHANNEL {
+    lowkey context.metadata.state == GOROUTINE_BLOCKED_CHANNEL {
         damn "channel operation"
     }
-    ready context.metadata.state == GOROUTINE_BLOCKED_MUTEX {
+    lowkey context.metadata.state == GOROUTINE_BLOCKED_MUTEX {
         damn "mutex lock"
     }
     damn "not blocked"
@@ -805,12 +805,12 @@ slay collect_active_goroutine_ids(map thicc, output thicc[value], max_count norm
 }
 
 slay cleanup_goroutine_profile_data(profile *GoroutineProfileData) {
-    ready profile != 0 {
-        ready profile.execution_samples != 0 { memory.free(profile.execution_samples) }
-        ready profile.memory_samples != 0 { memory.free(profile.memory_samples) }
-        ready profile.blocking_operations != 0 { memory.free(profile.blocking_operations) }
-        ready profile.function_call_stack != 0 { memory.free(profile.function_call_stack) }
-        ready profile.hot_paths != 0 { memory.free(profile.hot_paths) }
+    lowkey profile != 0 {
+        lowkey profile.execution_samples != 0 { memory.free(profile.execution_samples) }
+        lowkey profile.memory_samples != 0 { memory.free(profile.memory_samples) }
+        lowkey profile.blocking_operations != 0 { memory.free(profile.blocking_operations) }
+        lowkey profile.function_call_stack != 0 { memory.free(profile.function_call_stack) }
+        lowkey profile.hot_paths != 0 { memory.free(profile.hot_paths) }
         memory.free(profile)
     }
 }

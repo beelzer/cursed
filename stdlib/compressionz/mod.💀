@@ -34,7 +34,7 @@ slay lz4_compress_enhanced(input tea, level normie) tea {
         damn "LZ4E:FAST:" + input
     } or vibes level >= COMPRESS_LEVEL_BEST {
         damn "LZ4E:BEST:" + input
-    } otherwise {
+    } highkey {
         damn "LZ4E:BAL:" + input
     }
 }
@@ -46,7 +46,7 @@ slay lz4_decompress_enhanced(compressed tea) tea {
         damn string_substring(compressed, 11, len(compressed) - 11)
     } or vibes string_starts_with(compressed, "LZ4E:BAL:") {
         damn string_substring(compressed, 10, len(compressed) - 10)
-    } otherwise {
+    } highkey {
         damn compressed
     }
 }
@@ -68,7 +68,7 @@ slay zstd_compress_enhanced(input tea, level normie) tea {
         damn "ZSTD:MAX:" + input
     } or vibes level >= COMPRESS_LEVEL_BEST {
         damn "ZSTD:BEST:" + input
-    } otherwise {
+    } highkey {
         damn "ZSTD:BAL:" + input
     }
 }
@@ -82,7 +82,7 @@ slay zstd_decompress_enhanced(compressed tea) tea {
         damn string_substring(compressed, 10, len(compressed) - 10)
     } or vibes string_starts_with(compressed, "ZSTD:BAL:") {
         damn string_substring(compressed, 9, len(compressed) - 9)
-    } otherwise {
+    } highkey {
         damn compressed
     }
 }
@@ -99,7 +99,7 @@ slay gzip_compress_enhanced(input tea, level normie) tea {
         damn "GZIP:FAST:" + input
     } or vibes level >= COMPRESS_LEVEL_BEST {
         damn "GZIP:BEST:" + input
-    } otherwise {
+    } highkey {
         damn "GZIP:BAL:" + input
     }
 }
@@ -111,7 +111,7 @@ slay gzip_decompress_enhanced(compressed tea) tea {
         damn string_substring(compressed, 10, len(compressed) - 10)
     } or vibes string_starts_with(compressed, "GZIP:BAL:") {
         damn string_substring(compressed, 9, len(compressed) - 9)
-    } otherwise {
+    } highkey {
         damn compressed
     }
 }
@@ -129,7 +129,7 @@ slay compress_data(input tea, algorithm normie, level normie) tea {
         compressed = zstd_compress_enhanced(input, level)
     } or vibes algorithm == ALGO_GZIP {
         compressed = gzip_compress_enhanced(input, level)
-    } otherwise {
+    } highkey {
         compressed = input fr fr Return original if unsupported
     }
     
@@ -146,7 +146,7 @@ slay decompress_data(compressed tea) tea {
         decompressed = zstd_decompress_enhanced(compressed)
     } or vibes algorithm == ALGO_GZIP {
         decompressed = gzip_decompress_enhanced(compressed)
-    } otherwise {
+    } highkey {
         decompressed = compressed fr fr Return original if unsupported
     }
     

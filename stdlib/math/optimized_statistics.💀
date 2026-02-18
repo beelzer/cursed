@@ -5,15 +5,15 @@ yeet "vibez"
 
 fr fr QuickSelect for O(n) median (average case)
 slay quickselect_median(arr meal[value], left drip, right drip, k drip) meal {
-    ready (left == right) {
+    lowkey (left == right) {
         damn arr[left]
     }
     
     sus pivot_index drip = partition_array(arr, left, right)
     
-    ready (k == pivot_index) {
+    lowkey (k == pivot_index) {
         damn arr[k]
-    } else ready (k < pivot_index) {
+    } else lowkey (k < pivot_index) {
         damn quickselect_median(arr, left, pivot_index - 1, k)
     } else {
         damn quickselect_median(arr, pivot_index + 1, right, k)
@@ -26,7 +26,7 @@ slay partition_array(arr meal[value], left drip, right drip) drip {
     sus j drip = left
     
     periodt (j < right) {
-        ready (arr[j] <= pivot) {
+        lowkey (arr[j] <= pivot) {
             i = i + 1
             arr = swap_elements(arr, i, j)
         }
@@ -49,7 +49,7 @@ slay merge_sort_median(arr meal[value]) meal {
     sus sorted_arr meal[value] = merge_sort(arr, 0, arr.len - 1)
     sus n drip = sorted_arr.len
     
-    ready (n % 2 == 0) {
+    lowkey (n % 2 == 0) {
         damn (sorted_arr[n/2 - 1] + sorted_arr[n/2]) / 2.0
     } else {
         damn sorted_arr[n/2]
@@ -57,7 +57,7 @@ slay merge_sort_median(arr meal[value]) meal {
 }
 
 slay merge_sort(arr meal[value], left drip, right drip) meal[value]{
-    ready (left >= right) {
+    lowkey (left >= right) {
         damn arr
     }
     
@@ -94,7 +94,7 @@ slay merge_arrays(arr meal[value], left drip, mid drip, right drip) meal[value]{
     sus k drip = left
     
     periodt (i < left_size && j < right_size) {
-        ready (left_arr[i] <= right_arr[j]) {
+        lowkey (left_arr[i] <= right_arr[j]) {
             arr[k] = left_arr[i]
             i = i + 1
         } else {
@@ -123,11 +123,11 @@ slay merge_arrays(arr meal[value], left drip, mid drip, right drip) meal[value]{
 fr fr Optimized median function with O(n) average, O(n log n) worst case
 slay optimized_median(values meal[value]) meal {
     sus len drip = values.len
-    ready (len == 0) {
+    lowkey (len == 0) {
         damn 0.0
     }
     
-    ready (len == 1) {
+    lowkey (len == 1) {
         damn values[0]
     }
     
@@ -140,7 +140,7 @@ slay optimized_median(values meal[value]) meal {
     }
     
     fr fr Use QuickSelect for O(n) average performance
-    ready (len % 2 == 0) {
+    lowkey (len % 2 == 0) {
         sus median1 meal = quickselect_median(arr_copy, 0, len - 1, len/2 - 1)
         sus median2 meal = quickselect_median(arr_copy, 0, len - 1, len/2)
         damn (median1 + median2) / 2.0
@@ -151,7 +151,7 @@ slay optimized_median(values meal[value]) meal {
 
 fr fr O(n log n) QuickSort for array sorting
 slay optimized_quicksort(arr meal[value], low drip, high drip) meal[value]{
-    ready (low < high) {
+    lowkey (low < high) {
         sus pivot_index drip = partition_array(arr, low, high)
         arr = optimized_quicksort(arr, low, pivot_index - 1)
         arr = optimized_quicksort(arr, pivot_index + 1, high)
@@ -160,7 +160,7 @@ slay optimized_quicksort(arr meal[value], low drip, high drip) meal[value]{
 }
 
 slay optimized_sort_array(arr meal[value]) meal[value]{
-    ready (arr.len <= 1) {
+    lowkey (arr.len <= 1) {
         damn arr
     }
     damn optimized_quicksort(arr, 0, arr.len - 1)
@@ -168,7 +168,7 @@ slay optimized_sort_array(arr meal[value]) meal[value]{
 
 fr fr Optimized percentile calculation
 slay optimized_percentile(values meal[value], percentile meal) meal {
-    ready (values.len == 0) {
+    lowkey (values.len == 0) {
         damn 0.0
     }
     
@@ -177,7 +177,7 @@ slay optimized_percentile(values meal[value], percentile meal) meal {
     sus lower_index drip = index.(drip)
     sus upper_index drip = lower_index + 1
     
-    ready (upper_index >= sorted.len) {
+    lowkey (upper_index >= sorted.len) {
         damn sorted[sorted.len - 1]
     }
     

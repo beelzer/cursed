@@ -13,7 +13,7 @@ slay hex_to_bigint(hex_string tea) drip[value]{
     fr fr Convert hex string to big integer
     sus cleaned_hex tea = stringz.to_lower(stringz.replace(hex_string, " ", ""))
     
-    ready stringz.starts_with(cleaned_hex, "0x") {
+    lowkey stringz.starts_with(cleaned_hex, "0x") {
         cleaned_hex = stringz.substring(cleaned_hex, 2, stringz.length(cleaned_hex) - 2)
     }
     
@@ -40,7 +40,7 @@ slay bigint_to_hex(bigint drip[value]) tea {
     fr fr Convert big integer to hex string
     sus normalized drip[value] = normalize_bigint(bigint)
     
-    ready len(normalized) == 0 {
+    lowkey len(normalized) == 0 {
         damn "0"
     }
     
@@ -51,11 +51,11 @@ slay bigint_to_hex(bigint drip[value]) tea {
     bestie i := len(normalized) - 1; i >= 0; i -= 1 {
         sus word_hex tea = int_to_hex_padded(normalized[i], 8)
         
-        ready !started {
+        lowkey !started {
             # Skip leading zeros in most significant word
             word_hex = stringz.ltrim(word_hex, "0")
-            ready word_hex == "" {
-                ready i == 0 {
+            lowkey word_hex == "" {
+                lowkey i == 0 {
                     damn "0"
                 }
                 continue
@@ -66,7 +66,7 @@ slay bigint_to_hex(bigint drip[value]) tea {
         result = result + word_hex
     }
     
-    ready result == "" {
+    lowkey result == "" {
         damn "0"
     }
     
@@ -75,7 +75,7 @@ slay bigint_to_hex(bigint drip[value]) tea {
 
 slay bytes_to_bigint(bytes drip[value]) drip[value]{
     fr fr Convert byte array to big integer (big-endian)
-    ready len(bytes) == 0 {
+    lowkey len(bytes) == 0 {
         damn []
     }
     
@@ -88,14 +88,14 @@ slay bytes_to_bigint(bytes drip[value]) drip[value]{
         current_word = current_word | (bytes[i] << bit_count)
         bit_count = bit_count + 8
         
-        ready bit_count == 32 {
+        lowkey bit_count == 32 {
             result = append(result, current_word)
             current_word = 0
             bit_count = 0
         }
     }
     
-    ready bit_count > 0 {
+    lowkey bit_count > 0 {
         result = append(result, current_word)
     }
     
@@ -135,10 +135,10 @@ slay add_bigint(a drip[value], b drip[value]) drip[value]{
         sus a_val drip = 0
         sus b_val drip = 0
         
-        ready i < len(a) {
+        lowkey i < len(a) {
             a_val = a[i]
         }
-        ready i < len(b) {
+        lowkey i < len(b) {
             b_val = b[i]
         }
         
@@ -152,7 +152,7 @@ slay add_bigint(a drip[value], b drip[value]) drip[value]{
 
 slay subtract_bigint(a drip[value], b drip[value]) drip[value]{
     fr fr Subtract b from a (assumes a >= b)
-    ready compare_bigint(a, b) < 0 {
+    lowkey compare_bigint(a, b) < 0 {
         vibez.spill("ERROR: Cannot subtract larger number from smaller")
         damn []
     }
@@ -164,16 +164,16 @@ slay subtract_bigint(a drip[value], b drip[value]) drip[value]{
         sus a_val drip = a[i]
         sus b_val drip = 0
         
-        ready i < len(b) {
+        lowkey i < len(b) {
             b_val = b[i]
         }
         
         sus diff drip = a_val - b_val - borrow
         
-        ready diff < 0 {
+        lowkey diff < 0 {
             diff = diff + 0x100000000  # 2^32
             borrow = 1
-        } otherwise {
+        } highkey {
             borrow = 0
         }
         
@@ -185,7 +185,7 @@ slay subtract_bigint(a drip[value], b drip[value]) drip[value]{
 
 slay multiply_bigint(a drip[value], b drip[value]) drip[value]{
     fr fr Multiply two big integers
-    ready len(a) == 0 || len(b) == 0 {
+    lowkey len(a) == 0 || len(b) == 0 {
         damn []
     }
     
@@ -200,7 +200,7 @@ slay multiply_bigint(a drip[value], b drip[value]) drip[value]{
             carry = product >> 32
         }
         
-        ready carry > 0 {
+        lowkey carry > 0 {
             result[i + len(b)] = carry
         }
     }
@@ -210,16 +210,16 @@ slay multiply_bigint(a drip[value], b drip[value]) drip[value]{
 
 slay divide_bigint(dividend drip[value], divisor drip[value]) drip[value]{
     fr fr Divide two big integers (returns quotient)
-    ready len(divisor) == 0 || is_zero(divisor) {
+    lowkey len(divisor) == 0 || is_zero(divisor) {
         vibez.spill("ERROR: Division by zero")
         damn []
     }
     
-    ready compare_bigint(dividend, divisor) < 0 {
+    lowkey compare_bigint(dividend, divisor) < 0 {
         damn []  # Quotient is 0
     }
     
-    ready compare_bigint(dividend, divisor) == 0 {
+    lowkey compare_bigint(dividend, divisor) == 0 {
         damn [1]  # Quotient is 1
     }
     
@@ -235,7 +235,7 @@ slay divide_bigint(dividend drip[value], divisor drip[value]) drip[value]{
     bestie bit_diff >= 0 {
         sus shifted_divisor drip[value] = left_shift_bigint(divisor, bit_diff)
         
-        ready compare_bigint(remainder, shifted_divisor) >= 0 {
+        lowkey compare_bigint(remainder, shifted_divisor) >= 0 {
             remainder = subtract_bigint(remainder, shifted_divisor)
             quotient = set_bit_bigint(quotient, bit_diff)
         }
@@ -250,12 +250,12 @@ slay divide_bigint(dividend drip[value], divisor drip[value]) drip[value]{
 
 slay mod_bigint(a drip[value], m drip[value]) drip[value]{
     fr fr Compute a mod m
-    ready len(m) == 0 || is_zero(m) {
+    lowkey len(m) == 0 || is_zero(m) {
         vibez.spill("ERROR: Modulus cannot be zero")
         damn []
     }
     
-    ready compare_bigint(a, m) < 0 {
+    lowkey compare_bigint(a, m) < 0 {
         damn normalize_bigint(a)
     }
     
@@ -275,14 +275,14 @@ slay mod_add(a drip[value], b drip[value], m drip[value]) drip[value]{
 
 slay mod_sub(a drip[value], b drip[value], m drip[value]) drip[value]{
     fr fr Compute (a - b) mod m
-    ready compare_bigint(a, b) >= 0 {
+    lowkey compare_bigint(a, b) >= 0 {
         sus diff drip[value] = subtract_bigint(a, b)
         damn mod_bigint(diff, m)
-    } otherwise {
+    } highkey {
         # a < b, so (a - b) mod m = m - ((b - a) mod m)
         sus diff drip[value] = subtract_bigint(b, a)
         sus mod_diff drip[value] = mod_bigint(diff, m)
-        ready is_zero(mod_diff) {
+        lowkey is_zero(mod_diff) {
             damn []
         }
         damn subtract_bigint(m, mod_diff)
@@ -297,7 +297,7 @@ slay mod_mult(a drip[value], b drip[value], m drip[value]) drip[value]{
 
 slay mod_exp(base drip[value], exponent drip[value], modulus drip[value]) drip[value]{
     fr fr Modular exponentiation using binary method
-    ready is_zero(exponent) {
+    lowkey is_zero(exponent) {
         damn [1]
     }
     
@@ -306,7 +306,7 @@ slay mod_exp(base drip[value], exponent drip[value], modulus drip[value]) drip[v
     sus exp_copy drip[value] = copy_bigint(exponent)
     
     bestie !is_zero(exp_copy) {
-        ready is_odd(exp_copy) {
+        lowkey is_odd(exp_copy) {
             result = mod_mult(result, base_mod, modulus)
         }
         
@@ -322,7 +322,7 @@ slay mod_inverse(a drip[value], m drip[value]) drip[value]{
     sus original_a drip[value] = normalize_bigint(a)
     sus original_m drip[value] = normalize_bigint(m)
     
-    ready is_zero(original_a) {
+    lowkey is_zero(original_a) {
         vibez.spill("ERROR: Cannot find inverse of zero")
         damn []
     }
@@ -345,11 +345,11 @@ slay mod_inverse(a drip[value], m drip[value]) drip[value]{
         sus temp_s drip[value] = copy_bigint(s)
         sus qs_product drip[value] = multiply_bigint(quotient, s)
         
-        ready len(old_s) == 0 {  # old_s is 0
+        lowkey len(old_s) == 0 {  # old_s is 0
             s = negate_bigint(qs_product, original_m)
-        } otherwise ready compare_bigint(old_s, qs_product) >= 0 {
+        } highkey lowkey compare_bigint(old_s, qs_product) >= 0 {
             s = subtract_bigint(old_s, qs_product)
-        } otherwise {
+        } highkey {
             sus diff drip[value] = subtract_bigint(qs_product, old_s)
             s = subtract_bigint(original_m, mod_bigint(diff, original_m))
         }
@@ -357,13 +357,13 @@ slay mod_inverse(a drip[value], m drip[value]) drip[value]{
         old_s = temp_s
     }
     
-    ready !is_one(old_r) {
+    lowkey !is_one(old_r) {
         vibez.spill("ERROR: Modular inverse does not exist")
         damn []
     }
     
     # Ensure positive result
-    ready len(old_s) == 0 {
+    lowkey len(old_s) == 0 {
         damn []
     }
     
@@ -374,7 +374,7 @@ slay mod_inverse(a drip[value], m drip[value]) drip[value]{
 
 slay left_shift_bigint(a drip[value], shift drip) drip[value]{
     fr fr Left shift big integer by shift bits
-    ready shift == 0 {
+    lowkey shift == 0 {
         damn normalize_bigint(a)
     }
     
@@ -383,12 +383,12 @@ slay left_shift_bigint(a drip[value], shift drip) drip[value]{
     
     sus result drip[value] = make_array(len(a) + word_shift + 1, 0)
     
-    ready bit_shift == 0 {
+    lowkey bit_shift == 0 {
         # Simple word shift
         bestie i := 0; i < len(a); i++ {
             result[i + word_shift] = a[i]
         }
-    } otherwise {
+    } highkey {
         # Shift with bit operations
         sus carry drip = 0
         bestie i := 0; i < len(a); i++ {
@@ -397,7 +397,7 @@ slay left_shift_bigint(a drip[value], shift drip) drip[value]{
             carry = a[i] >> (32 - bit_shift)
         }
         
-        ready carry > 0 {
+        lowkey carry > 0 {
             result[len(a) + word_shift] = carry
         }
     }
@@ -407,30 +407,30 @@ slay left_shift_bigint(a drip[value], shift drip) drip[value]{
 
 slay right_shift_bigint(a drip[value], shift drip) drip[value]{
     fr fr Right shift big integer by shift bits
-    ready shift == 0 {
+    lowkey shift == 0 {
         damn normalize_bigint(a)
     }
     
     sus word_shift drip = shift / 32
     sus bit_shift drip = shift % 32
     
-    ready word_shift >= len(a) {
+    lowkey word_shift >= len(a) {
         damn []  # Result is 0
     }
     
     sus result drip[value] = make_array(len(a) - word_shift, 0)
     
-    ready bit_shift == 0 {
+    lowkey bit_shift == 0 {
         # Simple word shift
         bestie i := 0; i < len(result); i++ {
             result[i] = a[i + word_shift]
         }
-    } otherwise {
+    } highkey {
         # Shift with bit operations
         bestie i := 0; i < len(result); i++ {
             sus shifted drip = a[i + word_shift] >> bit_shift
             
-            ready i + word_shift + 1 < len(a) {
+            lowkey i + word_shift + 1 < len(a) {
                 shifted = shifted | ((a[i + word_shift + 1] & ((1 << bit_shift) - 1)) << (32 - bit_shift))
             }
             
@@ -471,19 +471,19 @@ slay compare_bigint(a drip[value], b drip[value]) drip {
     sus norm_a drip[value] = normalize_bigint(a)
     sus norm_b drip[value] = normalize_bigint(b)
     
-    ready len(norm_a) < len(norm_b) {
+    lowkey len(norm_a) < len(norm_b) {
         damn -1
     }
-    ready len(norm_a) > len(norm_b) {
+    lowkey len(norm_a) > len(norm_b) {
         damn 1
     }
     
     # Same length, compare from most significant word
     bestie i := len(norm_a) - 1; i >= 0; i -= 1 {
-        ready norm_a[i] < norm_b[i] {
+        lowkey norm_a[i] < norm_b[i] {
             damn -1
         }
-        ready norm_a[i] > norm_b[i] {
+        lowkey norm_a[i] > norm_b[i] {
             damn 1
         }
     }
@@ -502,19 +502,19 @@ slay is_one(a drip[value]) lit {
 }
 
 slay is_odd(a drip[value]) lit {
-    ready len(a) == 0 {
+    lowkey len(a) == 0 {
         damn cringe
     }
     damn (a[0] & 1) == 1
 }
 
 slay bytes_equal(a drip[value], b drip[value]) lit {
-    ready len(a) != len(b) {
+    lowkey len(a) != len(b) {
         damn cringe
     }
     
     bestie i := 0; i < len(a); i++ {
-        ready a[i] != b[i] {
+        lowkey a[i] != b[i] {
             damn cringe
         }
     }
@@ -526,19 +526,19 @@ slay bytes_equal(a drip[value], b drip[value]) lit {
 
 slay normalize_bigint(a drip[value]) drip[value]{
     fr fr Remove leading zero words
-    ready len(a) == 0 {
+    lowkey len(a) == 0 {
         damn []
     }
     
     sus last_nonzero drip = -1
     bestie i := len(a) - 1; i >= 0; i -= 1 {
-        ready a[i] != 0 {
+        lowkey a[i] != 0 {
             last_nonzero = i
             break
         }
     }
     
-    ready last_nonzero == -1 {
+    lowkey last_nonzero == -1 {
         damn []  # All zeros
     }
     
@@ -560,7 +560,7 @@ slay copy_bigint(a drip[value]) drip[value]{
 
 slay negate_bigint(a drip[value], modulus drip[value]) drip[value]{
     fr fr Compute modulus - a
-    ready is_zero(a) {
+    lowkey is_zero(a) {
         damn []
     }
     damn subtract_bigint(modulus, a)
@@ -570,7 +570,7 @@ slay bit_length(a drip[value]) drip {
     fr fr Return bit length of big integer
     sus normalized drip[value] = normalize_bigint(a)
     
-    ready len(normalized) == 0 {
+    lowkey len(normalized) == 0 {
         damn 0
     }
     
@@ -587,7 +587,7 @@ slay bit_length(a drip[value]) drip {
 }
 
 slay int_to_bigint(value drip) drip[value]{
-    ready value == 0 {
+    lowkey value == 0 {
         damn []
     }
     damn [value]
@@ -595,7 +595,7 @@ slay int_to_bigint(value drip) drip[value]{
 
 slay bigint_to_int(a drip[value]) drip {
     sus normalized drip[value] = normalize_bigint(a)
-    ready len(normalized) == 0 {
+    lowkey len(normalized) == 0 {
         damn 0
     }
     damn normalized[0]
@@ -612,7 +612,7 @@ slay hex_string_to_int(hex tea) drip {
         sus char tea = stringz.char_at(hex, i)
         sus digit drip = hex_char_to_digit(char)
         
-        ready digit < 0 {
+        lowkey digit < 0 {
             vibez.spill("ERROR: Invalid hex character:", char)
             damn 0
         }
@@ -624,13 +624,13 @@ slay hex_string_to_int(hex tea) drip {
 }
 
 slay hex_char_to_digit(c tea) drip {
-    ready c >= "0" && c <= "9" {
+    lowkey c >= "0" && c <= "9" {
         damn stringz.char_code(c) - stringz.char_code("0")
     }
-    ready c >= "a" && c <= "f" {
+    lowkey c >= "a" && c <= "f" {
         damn stringz.char_code(c) - stringz.char_code("a") + 10
     }
-    ready c >= "A" && c <= "F" {
+    lowkey c >= "A" && c <= "F" {
         damn stringz.char_code(c) - stringz.char_code("A") + 10
     }
     damn -1

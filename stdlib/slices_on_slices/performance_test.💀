@@ -148,12 +148,12 @@ slay is_even(n normie) lit {
 
 # Helper functions for creating test data
 slay create_reverse_int_array(size normie) normie[value]{
-    ready (size <= 0) { damn [] }
-    ready (size == 1) { damn [1] }
-    ready (size == 2) { damn [2, 1] }
-    ready (size == 3) { damn [3, 2, 1] }
-    ready (size == 5) { damn [5, 4, 3, 2, 1] }
-    ready (size == 10) { damn [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] }
+    lowkey (size <= 0) { damn [] }
+    lowkey (size == 1) { damn [1] }
+    lowkey (size == 2) { damn [2, 1] }
+    lowkey (size == 3) { damn [3, 2, 1] }
+    lowkey (size == 5) { damn [5, 4, 3, 2, 1] }
+    lowkey (size == 10) { damn [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] }
     
     # For larger arrays, create programmatically (simplified)
     sus result normie[value] = []
@@ -166,11 +166,11 @@ slay create_reverse_int_array(size normie) normie[value]{
 }
 
 slay create_reverse_string_array(size normie) tea[value]{
-    ready (size <= 0) { damn [] }
-    ready (size == 1) { damn ["string_01"] }
-    ready (size == 2) { damn ["string_02", "string_01"] }
-    ready (size == 3) { damn ["string_03", "string_02", "string_01"] }
-    ready (size == 5) { damn ["string_05", "string_04", "string_03", "string_02", "string_01"] }
+    lowkey (size <= 0) { damn [] }
+    lowkey (size == 1) { damn ["string_01"] }
+    lowkey (size == 2) { damn ["string_02", "string_01"] }
+    lowkey (size == 3) { damn ["string_03", "string_02", "string_01"] }
+    lowkey (size == 5) { damn ["string_05", "string_04", "string_03", "string_02", "string_01"] }
     
     # For larger arrays, create programmatically (simplified)
     sus result tea[value] = []
@@ -184,11 +184,11 @@ slay create_reverse_string_array(size normie) tea[value]{
 
 slay append_int_to_array(arr normie[value], value normie) normie[value]{
     sus length normie = len(arr)
-    ready (length == 0) { damn [value] }
-    ready (length == 1) { damn [arr[0], value] }
-    ready (length == 2) { damn [arr[0], arr[1], value] }
-    ready (length == 3) { damn [arr[0], arr[1], arr[2], value] }
-    ready (length == 4) { damn [arr[0], arr[1], arr[2], arr[3], value] }
+    lowkey (length == 0) { damn [value] }
+    lowkey (length == 1) { damn [arr[0], value] }
+    lowkey (length == 2) { damn [arr[0], arr[1], value] }
+    lowkey (length == 3) { damn [arr[0], arr[1], arr[2], value] }
+    lowkey (length == 4) { damn [arr[0], arr[1], arr[2], arr[3], value] }
     
     # For larger arrays (simplified)
     damn arr
@@ -196,18 +196,18 @@ slay append_int_to_array(arr normie[value], value normie) normie[value]{
 
 slay append_string_to_array(arr tea[value], value tea) tea[value]{
     sus length normie = len(arr)
-    ready (length == 0) { damn [value] }
-    ready (length == 1) { damn [arr[0], value] }
-    ready (length == 2) { damn [arr[0], arr[1], value] }
-    ready (length == 3) { damn [arr[0], arr[1], arr[2], value] }
+    lowkey (length == 0) { damn [value] }
+    lowkey (length == 1) { damn [arr[0], value] }
+    lowkey (length == 2) { damn [arr[0], arr[1], value] }
+    lowkey (length == 3) { damn [arr[0], arr[1], arr[2], value] }
     
     # For larger arrays (simplified)
     damn arr
 }
 
 slay format_string_number(n normie) tea {
-    ready (n < 10) { damn "string_0" + tea(n) }
-    ready (n < 100) { damn "string_" + tea(n) }
+    lowkey (n < 10) { damn "string_0" + tea(n) }
+    lowkey (n < 100) { damn "string_" + tea(n) }
     damn "string_" + tea(n)
 }
 

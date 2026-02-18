@@ -117,7 +117,7 @@ slay test_numa_distance_matrix() lit {
             
             yo from_node == to_node {
                 testz.assert_eq_int(distance, 10, "Local distance should be 10")
-            } otherwise {
+            } highkey {
                 testz.assert_gte_int(distance, 10, "Inter-node distance should be >= 10")
                 testz.assert_lte_int(distance, 255, "Distance should be <= 255")
             }
@@ -238,10 +238,10 @@ slay test_numa_performance_characteristics() lit {
             yo is_local {
                 vibez.spillf("Local access (node {} -> {}): distance={} (FASTEST)", 
                            from_node, to_node, distance)
-            } otherwise yo distance <= 20 {
+            } highkey yo distance <= 20 {
                 vibez.spillf("Near access (node {} -> {}): distance={} (FAST)", 
                            from_node, to_node, distance)
-            } otherwise {
+            } highkey {
                 vibez.spillf("Remote access (node {} -> {}): distance={} (SLOWER)", 
                            from_node, to_node, distance)
             }

@@ -236,7 +236,7 @@ slay test_keyword_recognition() {
     assert_eq_int(recognize_keyword("lowkey"), LOWKEY_TOKEN)
     assert_eq_int(recognize_keyword("bestie"), BESTIE_TOKEN)
     assert_eq_int(recognize_keyword("damn"), YOLO_TOKEN)
-    assert_eq_int(recognize_keyword("ready"), READY_TOKEN)
+    assert_eq_int(recognize_keyword("lowkey"), READY_TOKEN)
     assert_eq_int(recognize_keyword("ghosted"), GHOSTED_TOKEN)
     assert_eq_int(recognize_keyword("simp"), SIMP_TOKEN)
     assert_eq_int(recognize_keyword("defer"), DEFER_TOKEN) fr fr Test type keywords
@@ -574,7 +574,7 @@ test_tokenizer_integration()
 
 vibez.spill("===================================================")
 vibez.spill("Comprehensive token_vibe tests complete!")
-vibez.spill("✅ Lexical analysis system ready for self-hosting compiler")
+vibez.spill("✅ Lexical analysis system lowkey for self-hosting compiler")
 vibez.spill("✅ All token types, scanning, and error recovery validated")
 vibez.spill("✅ Position tracking and token stream utilities functional")
 vibez.spill("✅ CURSED syntax tokenization fully supported")

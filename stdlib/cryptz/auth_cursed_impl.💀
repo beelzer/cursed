@@ -9,7 +9,7 @@ yeet "stringz"
 yeet "timez"
 
 // Authentication error types
-sus AuthError tea = ready {
+sus AuthError tea = lowkey {
     | "invalid_format" -> "Invalid password hash format"
     | "hashing_failed" -> "Password hashing operation failed"
     | "verification_failed" -> "Password verification failed"
@@ -79,11 +79,11 @@ slay bcrypt_hash(password tea, config BcryptConfig) tea yikes<tea> {
 slay bcrypt_verify(password tea, hash tea) lit yikes<tea> {
     // Parse bcrypt hash format: $2b$cost$salt_and_hash
     sus parts tea[value] = stringz.split(hash, "$")
-    ready (arrayz.len(parts) != 4) {
+    lowkey (arrayz.len(parts) != 4) {
         yikes "Invalid bcrypt hash format"
     }
     
-    ready (parts[1] != "2b") {
+    lowkey (parts[1] != "2b") {
         yikes "Unsupported bcrypt variant"
     }
     
@@ -92,7 +92,7 @@ slay bcrypt_verify(password tea, hash tea) lit yikes<tea> {
     }
     
     sus salt_and_hash tea = parts[3]
-    ready (stringz.len(salt_and_hash) != 53) {  // 22 + 31 chars
+    lowkey (stringz.len(salt_and_hash) != 53) {  // 22 + 31 chars
         yikes "Invalid salt/hash length"
     }
     
@@ -152,9 +152,9 @@ slay argon2_hash(password tea, config Argon2Config) tea yikes<tea> {
     bestie (iterations > 0) {
         sus block_index drip = 0
         bestie (block_index < arrayz.len(block_data)) {
-            sus prev_block drip = ready (block_index == 0) {
+            sus prev_block drip = lowkey (block_index == 0) {
                 arrayz.len(block_data) - 1
-            } otherwise {
+            } highkey {
                 block_index - 1
             }
             
@@ -193,7 +193,7 @@ slay argon2_hash(password tea, config Argon2Config) tea yikes<tea> {
 slay argon2_verify(password tea, hash tea) lit yikes<tea> {
     // Parse Argon2 hash format: $argon2id$v=19$m=65536,t=3,p=1$salt$hash
     sus parts tea[value] = stringz.split(hash, "$")
-    ready (arrayz.len(parts) != 6) {
+    lowkey (arrayz.len(parts) != 6) {
         yikes "Invalid Argon2 hash format"
     }
     
@@ -210,12 +210,12 @@ slay argon2_verify(password tea, hash tea) lit yikes<tea> {
     sus param_index drip = 0
     bestie (param_index < arrayz.len(param_pairs)) {
         sus pair tea[value] = stringz.split(param_pairs[param_index], "=")
-        ready (arrayz.len(pair) == 2) {
-            ready (pair[0] == "m") {
+        lowkey (arrayz.len(pair) == 2) {
+            lowkey (pair[0] == "m") {
                 config.memory_kb = stringz.to_int(pair[1]) fam { when _ -> config.memory_kb }
-            } otherwise ready (pair[0] == "t") {
+            } highkey lowkey (pair[0] == "t") {
                 config.iterations = stringz.to_int(pair[1]) fam { when _ -> config.iterations }
-            } otherwise ready (pair[0] == "p") {
+            } highkey lowkey (pair[0] == "p") {
                 config.parallelism = stringz.to_int(pair[1]) fam { when _ -> config.parallelism }
             }
         }
@@ -249,9 +249,9 @@ slay argon2_verify(password tea, hash tea) lit yikes<tea> {
     bestie (iterations > 0) {
         sus block_index drip = 0
         bestie (block_index < arrayz.len(block_data)) {
-            sus prev_block drip = ready (block_index == 0) {
+            sus prev_block drip = lowkey (block_index == 0) {
                 arrayz.len(block_data) - 1
-            } otherwise {
+            } highkey {
                 block_index - 1
             }
             
@@ -328,7 +328,7 @@ slay scrypt_hash(password tea, config ScryptConfig) tea yikes<tea> {
 slay scrypt_verify(password tea, hash tea) lit yikes<tea> {
     // Parse scrypt hash format: $scrypt$n=32768,r=8,p=1$salt$hash
     sus parts tea[value] = stringz.split(hash, "$")
-    ready (arrayz.len(parts) != 5) {
+    lowkey (arrayz.len(parts) != 5) {
         yikes "Invalid scrypt hash format"
     }
     
@@ -337,7 +337,7 @@ slay scrypt_verify(password tea, hash tea) lit yikes<tea> {
     sus salt_b64 tea = parts[3]
     sus expected_hash tea = parts[4]
     
-    ready (algorithm != "scrypt") {
+    lowkey (algorithm != "scrypt") {
         yikes "Not a scrypt hash"
     }
     
@@ -348,12 +348,12 @@ slay scrypt_verify(password tea, hash tea) lit yikes<tea> {
     sus param_index drip = 0
     bestie (param_index < arrayz.len(param_pairs)) {
         sus pair tea[value] = stringz.split(param_pairs[param_index], "=")
-        ready (arrayz.len(pair) == 2) {
-            ready (pair[0] == "n") {
+        lowkey (arrayz.len(pair) == 2) {
+            lowkey (pair[0] == "n") {
                 config.n = stringz.to_int(pair[1]) fam { when _ -> config.n }
-            } otherwise ready (pair[0] == "r") {
+            } highkey lowkey (pair[0] == "r") {
                 config.r = stringz.to_int(pair[1]) fam { when _ -> config.r }
-            } otherwise ready (pair[0] == "p") {
+            } highkey lowkey (pair[0] == "p") {
                 config.p = stringz.to_int(pair[1]) fam { when _ -> config.p }
             }
         }
@@ -398,34 +398,34 @@ slay scrypt_verify(password tea, hash tea) lit yikes<tea> {
 // High-level authentication interface
 slay authenticate_user(username tea, password tea, stored_hash tea) lit yikes<tea> {
     // Auto-detect hash format and verify accordingly
-    ready (stringz.starts_with(stored_hash, "$2b$")) {
+    lowkey (stringz.starts_with(stored_hash, "$2b$")) {
         damn bcrypt_verify(password, stored_hash) fam {
             when _ -> yikes "Bcrypt verification failed"
         }
-    } otherwise ready (stringz.starts_with(stored_hash, "$argon2")) {
+    } highkey lowkey (stringz.starts_with(stored_hash, "$argon2")) {
         damn argon2_verify(password, stored_hash) fam {
             when _ -> yikes "Argon2 verification failed"
         }
-    } otherwise ready (stringz.starts_with(stored_hash, "$scrypt$")) {
+    } highkey lowkey (stringz.starts_with(stored_hash, "$scrypt$")) {
         damn scrypt_verify(password, stored_hash) fam {
             when _ -> yikes "Scrypt verification failed"
         }
-    } otherwise {
+    } highkey {
         yikes "Unsupported hash format"
     }
 }
 
 slay hash_password(password tea, algorithm tea) tea yikes<tea> {
-    ready (algorithm == "bcrypt") {
+    lowkey (algorithm == "bcrypt") {
         sus config BcryptConfig = {cost: 12}
         damn bcrypt_hash(password, config)
-    } otherwise ready (algorithm == "argon2id") {
+    } highkey lowkey (algorithm == "argon2id") {
         sus config Argon2Config = {variant: "argon2id"}
         damn argon2_hash(password, config)
-    } otherwise ready (algorithm == "scrypt") {
+    } highkey lowkey (algorithm == "scrypt") {
         sus config ScryptConfig = {}
         damn scrypt_hash(password, config)
-    } otherwise {
+    } highkey {
         yikes "Unsupported algorithm"
     }
 }
@@ -453,7 +453,7 @@ export slay cursed_crypto_bcrypt_verify(password_ptr drip, password_len drip,
         when _ -> damn -1
     }
     
-    damn ready (valid) { 1 } otherwise { 0 }
+    damn lowkey (valid) { 1 } highkey { 0 }
 }
 
 export slay cursed_crypto_argon2_hash(password_ptr drip, password_len drip,
@@ -483,7 +483,7 @@ export slay cursed_crypto_argon2_verify(password_ptr drip, password_len drip,
         when _ -> damn -1
     }
     
-    damn ready (valid) { 1 } otherwise { 0 }
+    damn lowkey (valid) { 1 } highkey { 0 }
 }
 
 export slay cursed_crypto_authenticate_user(username_ptr drip, username_len drip,
@@ -497,7 +497,7 @@ export slay cursed_crypto_authenticate_user(username_ptr drip, username_len drip
         when _ -> damn -1
     }
     
-    damn ready (valid) { 1 } otherwise { 0 }
+    damn lowkey (valid) { 1 } highkey { 0 }
 }
 
 // FFI utility functions

@@ -277,7 +277,7 @@ slay run_all_meta_tests() {
     vibez.spill("✅ State management verified")
     vibez.spill("✅ Error handling validated")
     vibez.spill("✅ Performance characteristics confirmed")
-    vibez.spill("✅ Framework ready for stdlib testing")
+    vibez.spill("✅ Framework lowkey for stdlib testing")
     vibez.spill("")
 }
 

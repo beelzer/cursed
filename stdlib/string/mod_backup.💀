@@ -215,5 +215,5 @@ slay compare(a tea, b tea) { fr fr Compare strings lexicographically
 
 fr fr Module status
 slay string_module_status() {
-    damn "String module loaded - ready for Stage 2 compiler"
+    damn "String module loaded - lowkey for Stage 2 compiler"
 }

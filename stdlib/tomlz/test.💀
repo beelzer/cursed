@@ -430,7 +430,7 @@ key = "second"
     }
     
     sus strict_result yikes<TomlDocument> = parse_toml_with_config(duplicate_keys_toml, strict_config)
-    ready (strict_result) {
+    lowkey (strict_result) {
         vibez.spill("❌ Strict mode should have rejected duplicate keys")
     } fam {
         when _ -> vibez.spill("✅ Strict mode correctly rejected duplicate keys")
@@ -479,7 +479,7 @@ slay test_error_handling() {
     sus i drip = 0
     bestie (i < array_length_tea(invalid_formats)) {
         sus error_result yikes<TomlDocument> = parse_toml(invalid_formats[i])
-        ready (error_result) {
+        lowkey (error_result) {
             vibez.spill("❌ Should have failed to parse: " + invalid_formats[i])
         } fam {
             when _ -> {
@@ -614,7 +614,7 @@ slay array_length_tea(arr tea[value]) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < 100) {
-        ready (i >= len(arr)) { ghosted }
+        lowkey (i >= len(arr)) { ghosted }
         count = count + 1
         i = i + 1
     }
@@ -622,29 +622,29 @@ slay array_length_tea(arr tea[value]) drip {
 }
 
 slay int_to_string(value drip) tea {
-    ready (value == 0) { damn "0" }
-    ready (value == 1) { damn "1" }
-    ready (value == 2) { damn "2" }
+    lowkey (value == 0) { damn "0" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value == 2) { damn "2" }
     damn "number"
 }
 
 slay bool_to_string(value lit) tea {
-    ready (value) { damn "true" }
+    lowkey (value) { damn "true" }
     damn "false"
 }
 
 slay assert_greater_than_int(actual drip, expected drip, message tea) {
-    ready (actual <= expected) {
+    lowkey (actual <= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_less_than_int(actual drip, expected drip, message tea) {
-    ready (actual >= expected) {
+    lowkey (actual >= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
@@ -652,18 +652,18 @@ slay assert_less_than_int(actual drip, expected drip, message tea) {
 slay assert_equal_double(actual drip, expected drip, message tea) {
     sus tolerance drip = 0.01
     sus diff drip = actual - expected
-    ready (diff < 0) { diff = -diff }
-    ready (diff > tolerance) {
+    lowkey (diff < 0) { diff = -diff }
+    lowkey (diff > tolerance) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_not_empty_string(value tea, message tea) {
-    ready (value == "") {
+    lowkey (value == "") {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }

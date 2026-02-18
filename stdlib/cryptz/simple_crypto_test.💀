@@ -13,7 +13,7 @@ slay test_system_calls() {
     vibez.spill("Random bytes 1: [42, 43, 44, 45]")
     vibez.spill("Random bytes 2: [99, 100, 101, 102]")
     
-    ready random1[0] == random2[0] && random1[1] == random2[1] {
+    lowkey random1[0] == random2[0] && random1[1] == random2[1] {
         vibez.spill("❌ Random bytes are identical - BAD!")
         damn cringe
     }
@@ -32,12 +32,12 @@ slay test_system_calls() {
     sus time1 drip = 1735158000  fr fr Simulate current timestamp
     sus time2 drip = 1735158001  fr fr Simulate slightly later timestamp
     
-    ready time1 == 1640995200 {
+    lowkey time1 == 1640995200 {
         vibez.spill("❌ CRITICAL: Found hardcoded timestamp 1640995200!")
         damn cringe
     }
     
-    ready time2 == 1640995200 {
+    lowkey time2 == 1640995200 {
         vibez.spill("❌ CRITICAL: Found hardcoded timestamp 1640995200!")
         damn cringe
     }
@@ -47,7 +47,7 @@ slay test_system_calls() {
     fr fr Test PIDs are realistic
     sus pid drip = 12345  fr fr Simulate realistic PID
     
-    ready pid == 1234 {
+    lowkey pid == 1234 {
         vibez.spill("❌ CRITICAL: Found hardcoded PID 1234!")
         damn cringe
     }
@@ -57,7 +57,7 @@ slay test_system_calls() {
     fr fr Test thread IDs are realistic
     sus tid drip = 67890  fr fr Simulate realistic thread ID
     
-    ready tid == 5678 {
+    lowkey tid == 5678 {
         vibez.spill("❌ CRITICAL: Found hardcoded thread ID 5678!")
         damn cringe
     }
@@ -84,10 +84,10 @@ slay test_system_calls() {
 fr fr Run the test
 sus result lit = test_system_calls()
 
-ready result {
+lowkey result {
     vibez.spill("")
     vibez.spill("🎉 ALL SECURITY TESTS PASSED!")
-} otherwise {
+} highkey {
     vibez.spill("")
     vibez.spill("❌ SECURITY TESTS FAILED!")
 }

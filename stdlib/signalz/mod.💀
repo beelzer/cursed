@@ -596,7 +596,7 @@ slay send_signal_with_response(comm *ProcessComm, signal_num normie) normie {
     fr fr Wait for response with timeout
     sus timeout_channel dm<lit> = create_timeout_channel(comm.timeout_ms)
     
-    ready {
+    lowkey {
         mood response := dm_recv(comm.response_channel):
             damn response
         mood dm_recv(timeout_channel):
@@ -610,7 +610,7 @@ slay respond_to_signal(comm *ProcessComm, response normie) lit {
         damn cap
     }
     
-    ready {
+    lowkey {
         mood dm_send(comm.response_channel, response):
             damn based
         basic:

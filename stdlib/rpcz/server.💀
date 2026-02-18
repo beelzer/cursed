@@ -107,14 +107,14 @@ slay check_rate_limit(server &RpcServer, client_ip tea) yikes<lit> {
     # Clean old requests outside time window
     sus filtered_requests drip[value] = []
     bestie (timestamp in limiter.requests) {
-        ready (now - timestamp < limiter.window_ms) {
+        lowkey (now - timestamp < limiter.window_ms) {
             filtered_requests = append(filtered_requests, timestamp)
         }
     }
     limiter.requests = filtered_requests
     
     # Check if rate limit exceeded
-    ready (len(limiter.requests) >= limiter.limit) {
+    lowkey (len(limiter.requests) >= limiter.limit) {
         yikes "Rate limit exceeded"
     }
     
@@ -126,7 +126,7 @@ slay check_rate_limit(server &RpcServer, client_ip tea) yikes<lit> {
 # Handle HTTP request
 slay handle_http_request(server &RpcServer, request networkz.HttpRequest) yikes<networkz.HttpResponse> {
     # Check connection limit
-    ready (server.active_connections >= server.config.max_connections) {
+    lowkey (server.active_connections >= server.config.max_connections) {
         damn networkz.create_http_response(503, "Service Unavailable", "Server busy")
     }
     
@@ -146,16 +146,16 @@ slay handle_http_request(server &RpcServer, request networkz.HttpRequest) yikes<
     }
     
     # Validate request method and path
-    ready (request.method != "POST") {
+    lowkey (request.method != "POST") {
         damn networkz.create_http_response(405, "Method Not Allowed", "Only POST method supported")
     }
     
-    ready (request.path != server.config.path) {
+    lowkey (request.path != server.config.path) {
         damn networkz.create_http_response(404, "Not Found", "RPC endpoint not found")
     }
     
     # Check authentication if required
-    ready (server.config.auth_required) {
+    lowkey (server.config.auth_required) {
         sus auth_header tea = networkz.get_header(request, "Authorization") fam {
             when _ -> damn networkz.create_http_response(401, "Unauthorized", "Authentication required")
         }
@@ -177,7 +177,7 @@ slay handle_http_request(server &RpcServer, request networkz.HttpRequest) yikes<
     sus headers map<tea, tea> = make_map()
     headers["Content-Type"] = "application/json"
     
-    ready (server.config.enable_cors) {
+    lowkey (server.config.enable_cors) {
         headers["Access-Control-Allow-Origin"] = "*"
         headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -189,7 +189,7 @@ slay handle_http_request(server &RpcServer, request networkz.HttpRequest) yikes<
 # Process RPC request body
 slay process_rpc_request_body(server &RpcServer, body tea) yikes<tea> {
     # Handle batch requests (array) vs single requests (object)
-    ready (stringz.starts_with(stringz.trim(body), "[")) {
+    lowkey (stringz.starts_with(stringz.trim(body), "[")) {
         damn process_batch_request(&server.registry, body)
     }
     
@@ -209,7 +209,7 @@ slay process_rpc_request_body(server &RpcServer, body tea) yikes<tea> {
     }
     
     # Skip response for notifications
-    ready (is_notification(request)) {
+    lowkey (is_notification(request)) {
         damn ""
     }
     
@@ -226,7 +226,7 @@ slay create_error_response_json(code drip, message tea, data tea, id tea) tea {
 
 # Start RPC server
 slay start_server(server &RpcServer) yikes<tea> {
-    ready (server.is_running) {
+    lowkey (server.is_running) {
         yikes "Server is already running"
     }
     
@@ -238,7 +238,7 @@ slay start_server(server &RpcServer) yikes<tea> {
     })
     
     # Handle OPTIONS requests for CORS preflight
-    ready (server.config.enable_cors) {
+    lowkey (server.config.enable_cors) {
         networkz.set_handler(server.http_server, "OPTIONS", slay(request networkz.HttpRequest) yikes<networkz.HttpResponse> {
             sus headers map<tea, tea> = make_map()
             headers["Access-Control-Allow-Origin"] = "*"
@@ -261,7 +261,7 @@ slay start_server(server &RpcServer) yikes<tea> {
 
 # Stop RPC server
 slay stop_server(server &RpcServer) yikes<tea> {
-    ready (!server.is_running) {
+    lowkey (!server.is_running) {
         yikes "Server is not running"
     }
     

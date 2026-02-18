@@ -738,7 +738,7 @@ slay register_redis_driver() lit {
 fr fr Utility functions
 
 slay get_driver_name(driver_type DatabaseDriverType) tea {
-    ready driver_type {
+    lowkey driver_type {
         DRIVER_POSTGRES -> damn "PostgreSQL"
         DRIVER_MYSQL -> damn "MySQL"
         DRIVER_SQLITE -> damn "SQLite"
@@ -899,7 +899,7 @@ slay postgres_health_check(connection_id tea) lit {
 }
 
 slay postgres_format_value(value tea, data_type tea) tea {
-    ready data_type {
+    lowkey data_type {
         "text" -> {
             sus escaped tea = stringz.replace(value, "'", "''")
             damn "'" + escaped + "'"
@@ -955,12 +955,12 @@ slay mysql_health_check(connection_id tea) lit {
 }
 
 slay mysql_format_value(value tea, data_type tea) tea {
-    ready data_type {
+    lowkey data_type {
         "varchar" -> {
             sus escaped tea = stringz.replace(value, "'", "\\'")
             damn "'" + escaped + "'"
         }
-        "boolean" -> damn ready value == "true" { based -> "1", basic -> "0" }
+        "boolean" -> damn lowkey value == "true" { based -> "1", basic -> "0" }
         "int" -> damn value
         basic -> damn "'" + value + "'"
     }
@@ -1009,12 +1009,12 @@ slay sqlite_health_check(connection_id tea) lit {
 }
 
 slay sqlite_format_value(value tea, data_type tea) tea {
-    ready data_type {
+    lowkey data_type {
         "TEXT" -> {
             sus escaped tea = stringz.replace(value, "'", "''")
             damn "'" + escaped + "'"
         }
-        "boolean" -> damn ready value == "true" { based -> "1", basic -> "0" }
+        "boolean" -> damn lowkey value == "true" { based -> "1", basic -> "0" }
         "INTEGER" -> damn value
         basic -> damn "'" + value + "'"
     }
@@ -1063,7 +1063,7 @@ slay mongodb_health_check(connection_id tea) lit {
 }
 
 slay mongodb_format_value(value tea, data_type tea) tea {
-    ready data_type {
+    lowkey data_type {
         "string" -> damn "\"" + value + "\""
         "ObjectId" -> damn "ObjectId(\"" + value + "\")"
         "number" -> damn value
@@ -1157,7 +1157,7 @@ slay create_new_connection(pool ConnectionPool) tea {
 }
 
 slay format_connection_string(config DatabaseDriverConfig) tea {
-    ready config.driver_type {
+    lowkey config.driver_type {
         DRIVER_POSTGRES -> damn stringz.format("postgresql://{}:{}@{}:{}/{}",
             config.username, config.password, config.host, config.port, config.database)
         DRIVER_MYSQL -> damn stringz.format("mysql://{}:{}@{}:{}/{}",
@@ -1208,7 +1208,7 @@ slay wait_for_available_connection(pool ConnectionPool) tea {
 }
 
 slay format_begin_transaction_sql(driver_type DatabaseDriverType, isolation_level tea, read_only lit) tea {
-    ready driver_type {
+    lowkey driver_type {
         DRIVER_POSTGRES -> {
             sus sql tea = "BEGIN"
             yikes isolation_level != "" {
@@ -1226,7 +1226,7 @@ slay format_begin_transaction_sql(driver_type DatabaseDriverType, isolation_leve
 }
 
 slay format_savepoint_sql(driver_type DatabaseDriverType, savepoint_name tea) tea {
-    ready driver_type {
+    lowkey driver_type {
         DRIVER_POSTGRES -> damn "SAVEPOINT " + savepoint_name
         DRIVER_MYSQL -> damn "SAVEPOINT " + savepoint_name
         DRIVER_SQLITE -> damn "SAVEPOINT " + savepoint_name

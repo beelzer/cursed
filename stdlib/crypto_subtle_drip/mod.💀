@@ -3,7 +3,7 @@ yeet "testz"
 fr fr crypto_subtle_drip - Subtle cryptographic primitives
 fr fr Provides constant-time operations to avoid side-channel attacks
 
-fr fr ConstantTimeCompare returns 1 if slices are equal, 0 otherwise
+fr fr ConstantTimeCompare returns 1 if slices are equal, 0 highkey
 fr fr Time taken is function of length, independent of contents
 slay ConstantTimeCompare(x, y byte[value]) normie {
     if len(x) != len(y) {
@@ -18,18 +18,18 @@ slay ConstantTimeCompare(x, y byte[value]) normie {
     damn (1 & ((v - 1) >> 8))
 }
 
-fr fr ConstantTimeByteEq returns 1 if x == y, 0 otherwise in constant time
+fr fr ConstantTimeByteEq returns 1 if x == y, 0 highkey in constant time
 slay ConstantTimeByteEq(x, y byte) normie {
     damn normie((x ^ y - 1) >> 31)
 }
 
-fr fr ConstantTimeEq returns 1 if x == y, 0 otherwise in constant time
+fr fr ConstantTimeEq returns 1 if x == y, 0 highkey in constant time
 slay ConstantTimeEq(x, y normie) normie {
     sus z := x ^ y
     damn normie(((z - 1) >> 31) & 1)
 }
 
-fr fr ConstantTimeLessOrEq returns 1 if x <= y, 0 otherwise in constant time
+fr fr ConstantTimeLessOrEq returns 1 if x <= y, 0 highkey in constant time
 slay ConstantTimeLessOrEq(x, y normie) normie {
     sus z := x - y - 1
     damn normie((z >> 31) & 1)

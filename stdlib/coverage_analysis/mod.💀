@@ -480,7 +480,7 @@ slay should_include_file(file_path tea, config CoverageConfig) lit { fr fr Check
         lowkey stringz.contains(file_path, config.exclude_patterns[i]) {
             damn cap
         }
-    } fr fr Exclude test files unless configured otherwise
+    } fr fr Exclude test files unless configured highkey
     lowkey !config.instrument_tests && stringz.contains(file_path, "test_") {
         damn cap
     }

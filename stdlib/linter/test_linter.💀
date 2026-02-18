@@ -218,7 +218,7 @@ slay authenticateUser(username tea, password tea) lit {
     // Missing validation - should trigger security warning
     sus hashedPassword tea = sha1(password)  // Weak crypto warning
     
-    ready (username == \"admin\" && hashedPassword == \"secret\") {  // Hardcoded secret
+    lowkey (username == \"admin\" && hashedPassword == \"secret\") {  // Hardcoded secret
         damn true  // Should suggest 'based'
     }
     

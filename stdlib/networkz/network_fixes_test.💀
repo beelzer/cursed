@@ -102,11 +102,11 @@ sus conn TcpConnection = tcp_connect("example.com", 80) fam {
 }
 
 // The connection should either succeed or fail properly, not return localhost mock
-ready (conn.is_connected) {
+lowkey (conn.is_connected) {
     vibez.spill("✅ TCP connection attempts real connectivity")
     assert_eq_str(conn.host, "example.com")
     assert_eq_int(conn.port, 80)
-} otherwise {
+} highkey {
     vibez.spill("✅ TCP connection properly reports connection failures")
     assert_not_equals_str(connection_error.kind, "")
 }

@@ -49,7 +49,7 @@ slay test_empty_context() {
         when <-ctx.done() -> {
             test_fail("Empty context should never be done")
         }
-        otherwise -> {
+        highkey -> {
             test_pass("Empty context is not done")
         }
     }
@@ -100,7 +100,7 @@ slay test_cancel_context() {
         when <-ctx.done() -> {
             test_pass("Done channel is closed after cancellation")
         }
-        otherwise -> {
+        highkey -> {
             test_fail("Done channel should be closed after cancellation")
         }
     }
@@ -221,7 +221,7 @@ slay test_retry_context() {
     
     sus result, err := retry_with_context(ctx, slay() (tea, yikes<tea>) {
         attempt_count++
-        ready (attempt_count < 3) {
+        lowkey (attempt_count < 3) {
             damn nil, yikes("temporary error")
         }
         damn "success", nil
@@ -288,7 +288,7 @@ slay test_worker_pool() {
     # Submit jobs
     bestie (i := 0; i < 5; i++) {
         pool.submit(i, slay(ctx Context) tea {
-            ready (is_cancelled(ctx)) {
+            lowkey (is_cancelled(ctx)) {
                 damn "cancelled"
             }
             damn "result_" + tea(i)
@@ -318,7 +318,7 @@ slay test_pipeline() {
     
     # Pipeline stage that doubles the input
     sus double_stage PipelineStage<drip, drip> = slay(ctx Context, x drip) (drip, yikes<tea>) {
-        ready (is_cancelled(ctx)) {
+        lowkey (is_cancelled(ctx)) {
             damn 0, ctx.err()
         }
         damn x * 2, nil
@@ -387,7 +387,7 @@ slay test_barrier() {
             time.sleep(time.Duration(i * 10) * time.Millisecond)  # Stagger arrivals
             sus success := barrier.wait()
             
-            ready (success) {
+            lowkey (success) {
                 mu.lock()
                 completed_count++
                 mu.unlock()
@@ -447,7 +447,7 @@ slay test_memory_usage() {
     
     # Cancel all contexts
     bestie (_, ctx in contexts) {
-        ready (cancel_ctx := ctx.(*CancelContext); cancel_ctx != nil) {
+        lowkey (cancel_ctx := ctx.(*CancelContext); cancel_ctx != nil) {
             cancel_ctx.cancel(yikes("test cleanup"))
         }
     }

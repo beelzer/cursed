@@ -300,10 +300,10 @@ slay main_character() {
     fr fr Print final summary
     print_test_summary()
     
-    ready (all_tests_passed()) {
+    lowkey (all_tests_passed()) {
         vibez.spill("🎉 All parallelism control tests passed!")
         damn 0
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Some parallelism control tests failed")
         damn 1
     }

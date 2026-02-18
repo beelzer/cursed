@@ -245,4 +245,4 @@ assert_true(based) fr fr Integration test passes
 print_test_summary()
 
 vibez.spill("🎉 All crypto security tests passed!")
-vibez.spill("🔐 Crypto module is production-ready")
+vibez.spill("🔐 Crypto module is production-lowkey")

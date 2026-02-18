@@ -93,12 +93,12 @@ slay execute_http_request(request HttpRequest) HttpResponse {
     sus start_time drip = timez.current_time_ms()
     
     # Validate URL format
-    ready (!is_valid_url(request.url)) {
+    lowkey (!is_valid_url(request.url)) {
         damn create_error_response(400, "Invalid URL format")
     }
     
     # Validate method
-    ready (!is_valid_method(request.method)) {
+    lowkey (!is_valid_method(request.method)) {
         damn create_error_response(400, "Invalid HTTP method")
     }
     
@@ -157,13 +157,13 @@ slay execute_http_request(request HttpRequest) HttpResponse {
 slay parse_http_response(raw_response tea, response_time drip) HttpResponse {
     # Extract status line
     sus lines tea[value] = stringz.split(raw_response, "\n")
-    ready (arrayz.len(lines) < 1) {
+    lowkey (arrayz.len(lines) < 1) {
         damn create_error_response(0, "Empty response")
     }
     
     sus status_line tea = lines[0]
     sus status_parts tea[value] = stringz.split(status_line, " ")
-    ready (arrayz.len(status_parts) < 3) {
+    lowkey (arrayz.len(status_parts) < 3) {
         damn create_error_response(0, "Invalid status line")
     }
     
@@ -175,12 +175,12 @@ slay parse_http_response(raw_response tea, response_time drip) HttpResponse {
     sus header_end_index drip = 1
     bestie (header_end_index < arrayz.len(lines)) {
         sus line tea = stringz.trim(lines[header_end_index])
-        ready (line == "") {
+        lowkey (line == "") {
             break  # End of headers
         }
         
         sus header_parts tea[value] = stringz.split_n(line, ":", 2)
-        ready (arrayz.len(header_parts) == 2) {
+        lowkey (arrayz.len(header_parts) == 2) {
             sus name tea = stringz.trim(stringz.to_lowercase(header_parts[0]))
             sus value tea = stringz.trim(header_parts[1])
             headers[name] = value
@@ -191,7 +191,7 @@ slay parse_http_response(raw_response tea, response_time drip) HttpResponse {
     
     # Extract body
     sus body tea = ""
-    ready (header_end_index + 1 < arrayz.len(lines)) {
+    lowkey (header_end_index + 1 < arrayz.len(lines)) {
         sus body_lines tea[value] = arrayz.slice(lines, header_end_index + 1, arrayz.len(lines))
         body = stringz.join(body_lines, "\n")
     }
@@ -200,10 +200,10 @@ slay parse_http_response(raw_response tea, response_time drip) HttpResponse {
     sus content_length drip = 0
     sus content_type tea = "text/plain"
     
-    ready (headers["content-length"] != "") {
+    lowkey (headers["content-length"] != "") {
         content_length = stringz.parse_int(headers["content-length"])
     }
-    ready (headers["content-type"] != "") {
+    lowkey (headers["content-type"] != "") {
         content_type = headers["content-type"]
     }
     
@@ -222,17 +222,17 @@ slay parse_http_response(raw_response tea, response_time drip) HttpResponse {
 # Set default headers for request
 slay set_default_headers(request HttpRequest) HttpRequest {
     # Set Accept header if not present
-    ready (request.headers["Accept"] == "") {
+    lowkey (request.headers["Accept"] == "") {
         request.headers["Accept"] = "application/json, text/plain, */*"
     }
     
     # Set Connection header
-    ready (request.headers["Connection"] == "") {
+    lowkey (request.headers["Connection"] == "") {
         request.headers["Connection"] = "keep-alive"
     }
     
     # Set Accept-Encoding for compression
-    ready (request.headers["Accept-Encoding"] == "") {
+    lowkey (request.headers["Accept-Encoding"] == "") {
         request.headers["Accept-Encoding"] = "gzip, deflate"
     }
     
@@ -271,7 +271,7 @@ slay is_server_error(response HttpResponse) lit {
 # Check if error is retryable
 slay is_retryable_error(response HttpResponse) lit {
     # Server errors and specific client errors are retryable
-    ready (is_server_error(response)) {
+    lowkey (is_server_error(response)) {
         damn based
     }
     
@@ -287,12 +287,12 @@ slay is_retryable_error(response HttpResponse) lit {
 # Extract retry-after header value
 slay get_retry_after_seconds(response HttpResponse) drip {
     sus retry_after tea = response.headers["retry-after"]
-    ready (retry_after == "") {
+    lowkey (retry_after == "") {
         damn 0
     }
     
     # Parse retry-after value (seconds or HTTP date)
-    ready (stringz.is_numeric(retry_after)) {
+    lowkey (stringz.is_numeric(retry_after)) {
         damn stringz.parse_int(retry_after)
     }
     
@@ -302,16 +302,16 @@ slay get_retry_after_seconds(response HttpResponse) drip {
 
 # URL validation
 slay is_valid_url(url tea) lit {
-    ready (url == "") {
+    lowkey (url == "") {
         damn cap
     }
     
-    ready (!stringz.starts_with(url, "http://") && !stringz.starts_with(url, "https://")) {
+    lowkey (!stringz.starts_with(url, "http://") && !stringz.starts_with(url, "https://")) {
         damn cap
     }
     
     # Basic validation - contains domain
-    ready (!stringz.contains(url, ".")) {
+    lowkey (!stringz.contains(url, ".")) {
         damn cap
     }
     
@@ -323,7 +323,7 @@ slay is_valid_method(method tea) lit {
     sus valid_methods tea[value] = ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
     
     bestie (sus i drip = 0; i < arrayz.len(valid_methods); i = i + 1) {
-        ready (method == valid_methods[i]) {
+        lowkey (method == valid_methods[i]) {
             damn based
         }
     }
@@ -339,9 +339,9 @@ slay url_encode(input tea) tea {
         sus ch tea = stringz.char_at(input, i)
         
         # URL-safe characters don't need encoding
-        ready (stringz.is_alphanumeric(ch) || ch == "-" || ch == "_" || ch == "." || ch == "~") {
+        lowkey (stringz.is_alphanumeric(ch) || ch == "-" || ch == "_" || ch == "." || ch == "~") {
             result = result + ch
-        } otherwise {
+        } highkey {
             # Encode special characters
             sus encoded tea = "%" + stringz.to_hex_upper(stringz.char_code(ch))
             result = result + encoded
@@ -364,7 +364,7 @@ slay build_query_string(params map<tea, tea>) tea {
         parts = arrayz.append(parts, part)
     }
     
-    ready (arrayz.len(parts) == 0) {
+    lowkey (arrayz.len(parts) == 0) {
         damn ""
     }
     
@@ -388,19 +388,19 @@ slay download_file(url tea, local_path tea, progress_callback slay(drip, drip)) 
     
     sus response HttpResponse = execute_http_request(request)
     
-    ready (!is_http_success(response)) {
+    lowkey (!is_http_success(response)) {
         vibez.spill("Download failed:", response.status_code, response.status_text)
         damn cap
     }
     
     # Write response body to file
-    ready (!filez.write_file(local_path, response.body)) {
+    lowkey (!filez.write_file(local_path, response.body)) {
         vibez.spill("Failed to write downloaded file to:", local_path)
         damn cap
     }
     
     # Call progress callback if provided
-    ready (progress_callback != null) {
+    lowkey (progress_callback != null) {
         progress_callback(response.content_length, response.content_length)
     }
     

@@ -31,9 +31,9 @@ slay generate_test_labels(num_samples normie, num_classes normie) meal[value]{
 }
 
 slay test_assert_ml(condition lit, test_name tea) cringe {
-    ready (condition) {
+    lowkey (condition) {
         vibez.spill("✓ ", test_name, " PASSED")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ ", test_name, " FAILED")
     }
 }
@@ -206,7 +206,7 @@ slay test_kmeans_clustering() cringe {
     sus i normie = 0
     sus valid_assignments lit = based
     bestie i < len(assignments) {
-        ready (assignments[i] < 0 || assignments[i] >= k) {
+        lowkey (assignments[i] < 0 || assignments[i] >= k) {
             valid_assignments = cringe
             ghosted
         }
@@ -447,7 +447,7 @@ slay test_anomaly_detection() cringe {
     sus all_scores_valid lit = based
     sus i normie = 0
     bestie i < len(anomaly_scores) {
-        ready (anomaly_scores[i] < 0.0 || anomaly_scores[i] > 1.0) {
+        lowkey (anomaly_scores[i] < 0.0 || anomaly_scores[i] > 1.0) {
             all_scores_valid = cringe
             ghosted
         }
@@ -480,7 +480,7 @@ slay test_feature_selection() cringe {
     sus all_mi_valid lit = based
     sus i normie = 0
     bestie i < len(mi_scores) {
-        ready (mi_scores[i] < 0.0) {
+        lowkey (mi_scores[i] < 0.0) {
             all_mi_valid = cringe
             ghosted
         }

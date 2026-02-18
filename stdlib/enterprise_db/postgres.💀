@@ -62,7 +62,7 @@ squad Connection {
             when err -> yikes "authentication failed: " + err
         }
         
-        // Wait for ready for query
+        // Wait for lowkey for query
         wait_for_ready() fam {
             when err -> yikes "connection setup failed: " + err
         }
@@ -347,7 +347,7 @@ squad Pool {
             }
             default -> {
                 // No available connections, try to create new one
-                ready (self.total_connections < self.config.max_connections) {
+                lowkey (self.total_connections < self.config.max_connections) {
                     sus conn Connection = create_connection(self.conn_config) fam {
                         when err -> yikes "failed to create connection: " + err
                     }
@@ -355,7 +355,7 @@ squad Pool {
                     self.active_connections += 1
                     self.metrics.connections_created += 1
                     damn conn
-                } otherwise {
+                } highkey {
                     // Wait for available connection with timeout
                     select {
                         conn := <-self.available_connections -> {
@@ -377,16 +377,16 @@ squad Pool {
         self.active_connections -= 1
         
         // Check if connection is still healthy
-        ready (is_connection_healthy(conn)) {
+        lowkey (is_connection_healthy(conn)) {
             self.available_connections <- conn
-        } otherwise {
+        } highkey {
             // Connection is unhealthy, close it and create new one if needed
             conn.close()
             self.total_connections -= 1
             self.metrics.connections_closed += 1
             
             // Create replacement connection if below minimum
-            ready (self.total_connections < self.config.min_connections) {
+            lowkey (self.total_connections < self.config.min_connections) {
                 go {
                     sus new_conn Connection = create_connection(self.conn_config) fam {
                         when err -> {

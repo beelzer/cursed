@@ -47,7 +47,7 @@ assert_eq_int(mutable_var, 150)
 
 // Test conditional operations without arrays
 sus condition_test drip = 0
-ready (single_int > 40) {
+lowkey (single_int > 40) {
     condition_test = 1
 }
 assert_eq_int(condition_test, 1)
@@ -69,8 +69,8 @@ assert_eq_int(loop_sum, 15) // 1+2+3+4+5
 
 // Test nested conditional logic
 sus nested_test drip = 0
-ready (single_int > 30) {
-    ready (single_string == "hello") {
+lowkey (single_int > 30) {
+    lowkey (single_string == "hello") {
         nested_test = 999
     }
 }
@@ -102,9 +102,9 @@ assert_eq_string(trimmed, "spaces")
 
 // Test simple error handling
 sus error_test drip = 0
-ready (single_int != 0) {
+lowkey (single_int != 0) {
     error_test = single_int / 2
-} otherwise {
+} highkey {
     error_test = -1
 }
 assert_eq_int(error_test, 21)

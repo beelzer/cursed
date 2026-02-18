@@ -119,7 +119,7 @@ slay drawz_clear_canvas(canvas Canvas, color Color) lit {
 }
 
 slay drawz_set_pixel(canvas Canvas, x normie, y normie, color Color) lit {
-    ready (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+    lowkey (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
         sus index normie = y * canvas.width + x
         sus rgba normie = (color.a << 24) | (color.r << 16) | (color.g << 8) | color.b
         canvas.pixels[index] = rgba
@@ -130,7 +130,7 @@ slay drawz_set_pixel(canvas Canvas, x normie, y normie, color Color) lit {
 
 slay drawz_get_pixel(canvas Canvas, x normie, y normie) Color {
     sus color Color
-    ready (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+    lowkey (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
         sus index normie = y * canvas.width + x
         sus rgba normie = canvas.pixels[index]
         
@@ -153,21 +153,21 @@ slay drawz_draw_line(canvas Canvas, start Point2D, end Point2D) lit {
     
     sus dx normie = mathz.abs_normie(x1 - x0)
     sus dy normie = mathz.abs_normie(y1 - y0)
-    sus sx normie = ready (x0 < x1) 1 otherwise -1
-    sus sy normie = ready (y0 < y1) 1 otherwise -1
+    sus sx normie = lowkey (x0 < x1) 1 highkey -1
+    sus sy normie = lowkey (y0 < y1) 1 highkey -1
     sus err normie = dx - dy
     
     bestie (true) {
         drawz_set_pixel(canvas, x0, y0, canvas.stroke_color)
         
-        ready (x0 == x1 && y0 == y1) break
+        lowkey (x0 == x1 && y0 == y1) break
         
         sus e2 normie = 2 * err
-        ready (e2 > -dy) {
+        lowkey (e2 > -dy) {
             err = err - dy
             x0 = x0 + sx
         }
-        ready (e2 < dx) {
+        lowkey (e2 < dx) {
             err = err + dx
             y0 = y0 + sy
         }
@@ -185,7 +185,7 @@ slay drawz_draw_thick_line(canvas Canvas, start Point2D, end Point2D, thickness 
     sus dy drip = end.y - start.y
     sus length drip = mathz.sqrt(dx * dx + dy * dy)
     
-    ready (length == 0.0) {
+    lowkey (length == 0.0) {
         damn false
     }
     
@@ -214,7 +214,7 @@ slay drawz_draw_thick_line(canvas Canvas, start Point2D, end Point2D, thickness 
 fr fr ===== RECTANGLE DRAWING =====
 
 slay drawz_draw_rect(canvas Canvas, rect Rect2D, mode normie) lit {
-    ready (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
         fr fr Fill rectangle
         sus y normie = rect.y
         bestie (y < rect.y + rect.height) {
@@ -227,7 +227,7 @@ slay drawz_draw_rect(canvas Canvas, rect Rect2D, mode normie) lit {
         }
     }
     
-    ready (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
         fr fr Draw rectangle outline
         sus top_left Point2D = {x: rect.x, y: rect.y}
         sus top_right Point2D = {x: rect.x + rect.width - 1, y: rect.y}
@@ -245,13 +245,13 @@ slay drawz_draw_rect(canvas Canvas, rect Rect2D, mode normie) lit {
 
 slay drawz_draw_rounded_rect(canvas Canvas, rect Rect2D, radius drip, mode normie) lit {
     fr fr Draw rounded rectangle using circles at corners
-    ready (radius <= 0.0) {
+    lowkey (radius <= 0.0) {
         damn drawz_draw_rect(canvas, rect, mode)
     }
     
     fr fr Clamp radius to half of smaller dimension
     sus max_radius drip = mathz.min(rect.width, rect.height) / 2.0
-    ready (radius > max_radius) {
+    lowkey (radius > max_radius) {
         radius = max_radius
     }
     
@@ -273,7 +273,7 @@ slay drawz_draw_rounded_rect(canvas Canvas, rect Rect2D, radius drip, mode normi
         radius: radius
     }
     
-    ready (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
         fr fr Fill corner circles
         drawz_draw_circle(canvas, top_left, DRAW_MODE_FILL)
         drawz_draw_circle(canvas, top_right, DRAW_MODE_FILL)
@@ -306,7 +306,7 @@ slay drawz_draw_rounded_rect(canvas Canvas, rect Rect2D, radius drip, mode normi
         drawz_draw_rect(canvas, side_rect2, DRAW_MODE_FILL)
     }
     
-    ready (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
         fr fr Draw corner arcs and straight lines
         drawz_draw_arc(canvas, top_left, 180.0, 270.0)
         drawz_draw_arc(canvas, top_right, 270.0, 360.0)
@@ -347,7 +347,7 @@ slay drawz_draw_circle(canvas Canvas, circle Circle2D, mode normie) lit {
     sus d normie = 3 - 2 * r
     
     bestie (y >= x) {
-        ready (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
+        lowkey (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
             drawz_set_pixel(canvas, cx + x, cy + y, canvas.stroke_color)
             drawz_set_pixel(canvas, cx - x, cy + y, canvas.stroke_color)
             drawz_set_pixel(canvas, cx + x, cy - y, canvas.stroke_color)
@@ -358,7 +358,7 @@ slay drawz_draw_circle(canvas Canvas, circle Circle2D, mode normie) lit {
             drawz_set_pixel(canvas, cx - y, cy - x, canvas.stroke_color)
         }
         
-        ready (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
+        lowkey (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
             fr fr Draw horizontal lines to fill circle
             sus line_y1 normie = cy + y
             sus line_y2 normie = cy - y
@@ -372,7 +372,7 @@ slay drawz_draw_circle(canvas Canvas, circle Circle2D, mode normie) lit {
                 line_x = line_x + 1
             }
             
-            ready (x != y) {
+            lowkey (x != y) {
                 line_x = cx - x
                 bestie (line_x <= cx + x) {
                     drawz_set_pixel(canvas, line_x, line_y3, canvas.fill_color)
@@ -382,10 +382,10 @@ slay drawz_draw_circle(canvas Canvas, circle Circle2D, mode normie) lit {
             }
         }
         
-        ready (d > 0) {
+        lowkey (d > 0) {
             y = y - 1
             d = d + 4 * (x - y) + 10
-        } otherwise {
+        } highkey {
             d = d + 4 * x + 6
         }
         x = x + 1
@@ -452,11 +452,11 @@ slay drawz_draw_bezier_curve(canvas Canvas, curve BezierCurve) lit {
 fr fr ===== POLYGON DRAWING =====
 
 slay drawz_draw_polygon(canvas Canvas, points Point2D[100], num_points normie, mode normie) lit {
-    ready (num_points < 3) {
+    lowkey (num_points < 3) {
         damn false
     }
     
-    ready (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
         fr fr Draw polygon outline
         sus i normie = 0
         bestie (i < num_points) {
@@ -466,7 +466,7 @@ slay drawz_draw_polygon(canvas Canvas, points Point2D[100], num_points normie, m
         }
     }
     
-    ready (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
         fr fr Fill polygon using scanline algorithm
         fr fr Find min and max y coordinates
         sus min_y normie = points[0].y
@@ -474,8 +474,8 @@ slay drawz_draw_polygon(canvas Canvas, points Point2D[100], num_points normie, m
         
         sus i normie = 1
         bestie (i < num_points) {
-            ready (points[i].y < min_y) min_y = points[i].y
-            ready (points[i].y > max_y) max_y = points[i].y
+            lowkey (points[i].y < min_y) min_y = points[i].y
+            lowkey (points[i].y > max_y) max_y = points[i].y
             i = i + 1
         }
         
@@ -492,8 +492,8 @@ slay drawz_draw_polygon(canvas Canvas, points Point2D[100], num_points normie, m
                 sus p1 Point2D = points[i]
                 sus p2 Point2D = points[next_i]
                 
-                ready (p1.y != p2.y) {
-                    ready ((p1.y <= y && y < p2.y) || (p2.y <= y && y < p1.y)) {
+                lowkey (p1.y != p2.y) {
+                    lowkey ((p1.y <= y && y < p2.y) || (p2.y <= y && y < p1.y)) {
                         sus x_intersect drip = p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y)
                         intersections[intersection_count] = x_intersect
                         intersection_count = intersection_count + 1
@@ -507,7 +507,7 @@ slay drawz_draw_polygon(canvas Canvas, points Point2D[100], num_points normie, m
             bestie (j < intersection_count - 1) {
                 sus k normie = 0
                 bestie (k < intersection_count - 1 - j) {
-                    ready (intersections[k] > intersections[k + 1]) {
+                    lowkey (intersections[k] > intersections[k + 1]) {
                         sus temp drip = intersections[k]
                         intersections[k] = intersections[k + 1]
                         intersections[k + 1] = temp
@@ -520,7 +520,7 @@ slay drawz_draw_polygon(canvas Canvas, points Point2D[100], num_points normie, m
             fr fr Fill between pairs of intersections
             i = 0
             bestie (i < intersection_count) {
-                ready (i + 1 < intersection_count) {
+                lowkey (i + 1 < intersection_count) {
                     sus x_start normie = intersections[i]
                     sus x_end normie = intersections[i + 1]
                     sus x normie = x_start
@@ -602,27 +602,27 @@ slay drawz_hsv_to_rgb(h drip, s drip, v drip) Color {
     sus g drip = 0.0
     sus b drip = 0.0
     
-    ready (h >= 0.0 && h < 60.0) {
+    lowkey (h >= 0.0 && h < 60.0) {
         r = c
         g = x
         b = 0.0
-    } otherwise ready (h >= 60.0 && h < 120.0) {
+    } highkey lowkey (h >= 60.0 && h < 120.0) {
         r = x
         g = c
         b = 0.0
-    } otherwise ready (h >= 120.0 && h < 180.0) {
+    } highkey lowkey (h >= 120.0 && h < 180.0) {
         r = 0.0
         g = c
         b = x
-    } otherwise ready (h >= 180.0 && h < 240.0) {
+    } highkey lowkey (h >= 180.0 && h < 240.0) {
         r = 0.0
         g = x
         b = c
-    } otherwise ready (h >= 240.0 && h < 300.0) {
+    } highkey lowkey (h >= 240.0 && h < 300.0) {
         r = x
         g = 0.0
         b = c
-    } otherwise {
+    } highkey {
         r = c
         g = 0.0
         b = x
@@ -646,7 +646,7 @@ slay drawz_save_canvas_to_ppm(canvas Canvas, filename tea) lit {
     sus header tea = "P3\n" + canvas.width + " " + canvas.height + "\n255\n"
     sus success lit = filez.write_file(filename, header)
     
-    ready (!success) {
+    lowkey (!success) {
         damn false
     }
     
@@ -700,9 +700,9 @@ slay drawz_draw_gradient_rect(canvas Canvas, rect Rect2D, start_color Color, end
         sus x normie = rect.x
         bestie (x < rect.x + rect.width) {
             sus t drip
-            ready (vertical) {
+            lowkey (vertical) {
                 t = (y - rect.y) / rect.height
-            } otherwise {
+            } highkey {
                 t = (x - rect.x) / rect.width
             }
             
@@ -726,7 +726,7 @@ slay drawz_draw_checkered_pattern(canvas Canvas, rect Rect2D, color1 Color, colo
             sus check_y normie = (y - rect.y) / square_size
             sus use_color1 lit = ((check_x + check_y) % 2) == 0
             
-            sus color Color = ready (use_color1) color1 otherwise color2
+            sus color Color = lowkey (use_color1) color1 highkey color2
             drawz_set_pixel(canvas, x, y, color)
             x = x + 1
         }

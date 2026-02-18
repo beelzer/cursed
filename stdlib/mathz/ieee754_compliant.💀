@@ -67,17 +67,17 @@ slay is_finite(value tea) lit {
 fr fr ===== FLOATING POINT ARITHMETIC WITH IEEE 754 COMPLIANCE =====
 
 slay float_add(a tea, b tea) tea {
-    ready (is_nan(a) || is_nan(b)) {
+    lowkey (is_nan(a) || is_nan(b)) {
         damn NaN()
     }
-    ready (is_positive_infinity(a)) {
-        ready (is_negative_infinity(b)) {
+    lowkey (is_positive_infinity(a)) {
+        lowkey (is_negative_infinity(b)) {
             damn NaN()  fr fr +∞ + (-∞) = NaN
         }
         damn POSITIVE_INFINITY()
     }
-    ready (is_negative_infinity(a)) {
-        ready (is_positive_infinity(b)) {
+    lowkey (is_negative_infinity(a)) {
+        lowkey (is_positive_infinity(b)) {
             damn NaN()  fr fr -∞ + (+∞) = NaN
         }
         damn NEGATIVE_INFINITY()
@@ -88,17 +88,17 @@ slay float_add(a tea, b tea) tea {
 }
 
 slay float_subtract(a tea, b tea) tea {
-    ready (is_nan(a) || is_nan(b)) {
+    lowkey (is_nan(a) || is_nan(b)) {
         damn NaN()
     }
-    ready (is_positive_infinity(a)) {
-        ready (is_positive_infinity(b)) {
+    lowkey (is_positive_infinity(a)) {
+        lowkey (is_positive_infinity(b)) {
             damn NaN()  fr fr +∞ - (+∞) = NaN
         }
         damn POSITIVE_INFINITY()
     }
-    ready (is_negative_infinity(a)) {
-        ready (is_negative_infinity(b)) {
+    lowkey (is_negative_infinity(a)) {
+        lowkey (is_negative_infinity(b)) {
             damn NaN()  fr fr -∞ - (-∞) = NaN
         }
         damn NEGATIVE_INFINITY()
@@ -108,27 +108,27 @@ slay float_subtract(a tea, b tea) tea {
 }
 
 slay float_multiply(a tea, b tea) tea {
-    ready (is_nan(a) || is_nan(b)) {
+    lowkey (is_nan(a) || is_nan(b)) {
         damn NaN()
     }
-    ready (is_infinity(a)) {
-        ready (runtime_float_is_zero(b)) {
+    lowkey (is_infinity(a)) {
+        lowkey (runtime_float_is_zero(b)) {
             damn NaN()  fr fr ∞ × 0 = NaN
         }
-        ready (runtime_float_is_negative(b)) {
-            ready (is_positive_infinity(a)) {
+        lowkey (runtime_float_is_negative(b)) {
+            lowkey (is_positive_infinity(a)) {
                 damn NEGATIVE_INFINITY()
             }
             damn POSITIVE_INFINITY()
         }
         damn a
     }
-    ready (is_infinity(b)) {
-        ready (runtime_float_is_zero(a)) {
+    lowkey (is_infinity(b)) {
+        lowkey (runtime_float_is_zero(a)) {
             damn NaN()  fr fr 0 × ∞ = NaN
         }
-        ready (runtime_float_is_negative(a)) {
-            ready (is_positive_infinity(b)) {
+        lowkey (runtime_float_is_negative(a)) {
+            lowkey (is_positive_infinity(b)) {
                 damn NEGATIVE_INFINITY()
             }
             damn POSITIVE_INFINITY()
@@ -140,24 +140,24 @@ slay float_multiply(a tea, b tea) tea {
 }
 
 slay float_divide(a tea, b tea) tea {
-    ready (is_nan(a) || is_nan(b)) {
+    lowkey (is_nan(a) || is_nan(b)) {
         damn NaN()
     }
-    ready (runtime_float_is_zero(b)) {
-        ready (runtime_float_is_zero(a)) {
+    lowkey (runtime_float_is_zero(b)) {
+        lowkey (runtime_float_is_zero(a)) {
             damn NaN()  fr fr 0/0 = NaN
         }
-        ready (runtime_float_is_negative(a)) {
+        lowkey (runtime_float_is_negative(a)) {
             damn NEGATIVE_INFINITY()
         }
         damn POSITIVE_INFINITY()
     }
-    ready (is_infinity(a)) {
-        ready (is_infinity(b)) {
+    lowkey (is_infinity(a)) {
+        lowkey (is_infinity(b)) {
             damn NaN()  fr fr ∞/∞ = NaN
         }
-        ready (runtime_float_is_negative(b)) {
-            ready (is_positive_infinity(a)) {
+        lowkey (runtime_float_is_negative(b)) {
+            lowkey (is_positive_infinity(a)) {
                 damn NEGATIVE_INFINITY()
             }
             damn POSITIVE_INFINITY()
@@ -171,10 +171,10 @@ slay float_divide(a tea, b tea) tea {
 fr fr ===== ADVANCED TRANSCENDENTAL FUNCTIONS =====
 
 slay sin_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn NaN()  fr fr sin(±∞) = NaN
     }
     
@@ -193,9 +193,9 @@ slay sin_precise(x tea) tea {
         term = float_multiply(term, x_squared)
         term = float_divide(term, runtime_float_multiply_int(runtime_int_multiply(2 * i, 2 * i + 1)))
         
-        ready (i % 2 == 1) {
+        lowkey (i % 2 == 1) {
             result = float_subtract(result, term)
-        } otherwise {
+        } highkey {
             result = float_add(result, term)
         }
         i = i + 1
@@ -205,10 +205,10 @@ slay sin_precise(x tea) tea {
 }
 
 slay cos_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn NaN()  fr fr cos(±∞) = NaN
     }
     
@@ -224,9 +224,9 @@ slay cos_precise(x tea) tea {
         term = float_multiply(term, x_squared)
         term = float_divide(term, runtime_factorial(2 * i))
         
-        ready (i % 2 == 1) {
+        lowkey (i % 2 == 1) {
             result = float_subtract(result, term)
-        } otherwise {
+        } highkey {
             result = float_add(result, term)
         }
         i = i + 1
@@ -239,8 +239,8 @@ slay tan_precise(x tea) tea {
     sus sin_val tea = sin_precise(x)
     sus cos_val tea = cos_precise(x)
     
-    ready (runtime_float_is_zero(cos_val)) {
-        ready (runtime_float_is_positive(sin_val)) {
+    lowkey (runtime_float_is_zero(cos_val)) {
+        lowkey (runtime_float_is_positive(sin_val)) {
             damn POSITIVE_INFINITY()
         }
         damn NEGATIVE_INFINITY()
@@ -252,21 +252,21 @@ slay tan_precise(x tea) tea {
 fr fr ===== EXPONENTIAL AND LOGARITHMIC FUNCTIONS =====
 
 slay exp_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn POSITIVE_INFINITY()
     }
-    ready (is_negative_infinity(x)) {
+    lowkey (is_negative_infinity(x)) {
         damn "0.0"
     }
     
     fr fr Handle large values to prevent overflow
-    ready (runtime_float_greater_than(x, "700.0")) {
+    lowkey (runtime_float_greater_than(x, "700.0")) {
         damn POSITIVE_INFINITY()
     }
-    ready (runtime_float_less_than(x, "-700.0")) {
+    lowkey (runtime_float_less_than(x, "-700.0")) {
         damn "0.0"
     }
     
@@ -281,7 +281,7 @@ slay exp_precise(x tea) tea {
         result = float_add(result, term)
         
         fr fr Early termination if term becomes negligible
-        ready (runtime_float_less_than(runtime_float_abs(term), "1e-15")) {
+        lowkey (runtime_float_less_than(runtime_float_abs(term), "1e-15")) {
             damn result
         }
         i = i + 1
@@ -291,19 +291,19 @@ slay exp_precise(x tea) tea {
 }
 
 slay ln_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_less_than_or_equal(x, "0.0")) {
-        ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(x, "0.0")) {
+        lowkey (runtime_float_equal(x, "0.0")) {
             damn NEGATIVE_INFINITY()
         }
         damn NaN()  fr fr ln(negative) = NaN
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn POSITIVE_INFINITY()
     }
-    ready (runtime_float_equal(x, "1.0")) {
+    lowkey (runtime_float_equal(x, "1.0")) {
         damn "0.0"
     }
     
@@ -313,9 +313,9 @@ slay ln_precise(x tea) tea {
     sus y tea = "0.0"  fr fr Initial guess
     
     fr fr Better initial guess based on magnitude
-    ready (runtime_float_greater_than(x, "1.0")) {
+    lowkey (runtime_float_greater_than(x, "1.0")) {
         y = "1.0"
-    } otherwise {
+    } highkey {
         y = "-1.0"
     }
     
@@ -326,7 +326,7 @@ slay ln_precise(x tea) tea {
         y = float_add(y, delta)
         
         fr fr Check convergence
-        ready (runtime_float_less_than(runtime_float_abs(delta), "1e-15")) {
+        lowkey (runtime_float_less_than(runtime_float_abs(delta), "1e-15")) {
             damn y
         }
         i = i + 1
@@ -336,8 +336,8 @@ slay ln_precise(x tea) tea {
 }
 
 slay log10_precise(x tea) tea {
-    ready (runtime_float_less_than_or_equal(x, "0.0")) {
-        ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(x, "0.0")) {
+        lowkey (runtime_float_equal(x, "0.0")) {
             damn NEGATIVE_INFINITY()
         }
         damn NaN()
@@ -349,8 +349,8 @@ slay log10_precise(x tea) tea {
 }
 
 slay log2_precise(x tea) tea {
-    ready (runtime_float_less_than_or_equal(x, "0.0")) {
-        ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(x, "0.0")) {
+        lowkey (runtime_float_equal(x, "0.0")) {
             damn NEGATIVE_INFINITY()
         }
         damn NaN()
@@ -364,42 +364,42 @@ slay log2_precise(x tea) tea {
 fr fr ===== POWER AND ROOT FUNCTIONS =====
 
 slay pow_precise(base tea, exponent tea) tea {
-    ready (is_nan(base) || is_nan(exponent)) {
+    lowkey (is_nan(base) || is_nan(exponent)) {
         damn NaN()
     }
     
     fr fr Special cases for base
-    ready (runtime_float_equal(base, "0.0")) {
-        ready (runtime_float_equal(exponent, "0.0")) {
+    lowkey (runtime_float_equal(base, "0.0")) {
+        lowkey (runtime_float_equal(exponent, "0.0")) {
             damn "1.0"  fr fr 0^0 = 1 by convention
         }
-        ready (runtime_float_less_than(exponent, "0.0")) {
+        lowkey (runtime_float_less_than(exponent, "0.0")) {
             damn POSITIVE_INFINITY()
         }
         damn "0.0"
     }
     
-    ready (runtime_float_equal(base, "1.0")) {
+    lowkey (runtime_float_equal(base, "1.0")) {
         damn "1.0"  fr fr 1^x = 1
     }
     
-    ready (runtime_float_equal(exponent, "0.0")) {
+    lowkey (runtime_float_equal(exponent, "0.0")) {
         damn "1.0"  fr fr x^0 = 1
     }
     
-    ready (runtime_float_equal(exponent, "1.0")) {
+    lowkey (runtime_float_equal(exponent, "1.0")) {
         damn base  fr fr x^1 = x
     }
     
     fr fr Handle negative base with fractional exponent
-    ready (runtime_float_less_than(base, "0.0")) {
-        ready (!runtime_float_is_integer(exponent)) {
+    lowkey (runtime_float_less_than(base, "0.0")) {
+        lowkey (!runtime_float_is_integer(exponent)) {
             damn NaN()  fr fr (-x)^(non-integer) = NaN
         }
     }
     
     fr fr Use exp(ln(base) * exponent) for general case
-    ready (runtime_float_greater_than(base, "0.0")) {
+    lowkey (runtime_float_greater_than(base, "0.0")) {
         sus ln_base tea = ln_precise(base)
         sus product tea = float_multiply(ln_base, exponent)
         damn exp_precise(product)
@@ -411,23 +411,23 @@ slay pow_precise(base tea, exponent tea) tea {
     sus product tea = float_multiply(ln_abs_base, exponent)
     sus result tea = exp_precise(product)
     
-    ready (runtime_float_is_odd_integer(exponent)) {
+    lowkey (runtime_float_is_odd_integer(exponent)) {
         damn runtime_float_negate(result)
     }
     damn result
 }
 
 slay sqrt_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_less_than(x, "0.0")) {
+    lowkey (runtime_float_less_than(x, "0.0")) {
         damn NaN()  fr fr √(negative) = NaN
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn "0.0"
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn POSITIVE_INFINITY()
     }
     
@@ -435,21 +435,21 @@ slay sqrt_precise(x tea) tea {
 }
 
 slay cbrt_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn "0.0"
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn POSITIVE_INFINITY()
     }
-    ready (is_negative_infinity(x)) {
+    lowkey (is_negative_infinity(x)) {
         damn NEGATIVE_INFINITY()
     }
     
     fr fr Cube root is defined for negative numbers
-    ready (runtime_float_less_than(x, "0.0")) {
+    lowkey (runtime_float_less_than(x, "0.0")) {
         sus abs_result tea = pow_precise(runtime_float_abs(x), runtime_float_divide("1.0", "3.0"))
         damn runtime_float_negate(abs_result)
     }
@@ -460,10 +460,10 @@ slay cbrt_precise(x tea) tea {
 fr fr ===== HYPERBOLIC FUNCTIONS =====
 
 slay sinh_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn x  fr fr sinh(±∞) = ±∞
     }
     
@@ -475,10 +475,10 @@ slay sinh_precise(x tea) tea {
 }
 
 slay cosh_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn POSITIVE_INFINITY()  fr fr cosh(±∞) = +∞
     }
     
@@ -490,13 +490,13 @@ slay cosh_precise(x tea) tea {
 }
 
 slay tanh_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn "1.0"
     }
-    ready (is_negative_infinity(x)) {
+    lowkey (is_negative_infinity(x)) {
         damn "-1.0"
     }
     
@@ -509,24 +509,24 @@ slay tanh_precise(x tea) tea {
 fr fr ===== INVERSE TRIGONOMETRIC FUNCTIONS =====
 
 slay asin_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_less_than(x, "-1.0") || runtime_float_greater_than(x, "1.0")) {
+    lowkey (runtime_float_less_than(x, "-1.0") || runtime_float_greater_than(x, "1.0")) {
         damn NaN()  fr fr asin domain is [-1, 1]
     }
-    ready (runtime_float_equal(x, "1.0")) {
+    lowkey (runtime_float_equal(x, "1.0")) {
         damn runtime_float_divide(PI_PRECISE(), "2.0")  fr fr π/2
     }
-    ready (runtime_float_equal(x, "-1.0")) {
+    lowkey (runtime_float_equal(x, "-1.0")) {
         damn runtime_float_negate(runtime_float_divide(PI_PRECISE(), "2.0"))  fr fr -π/2
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn "0.0"
     }
     
-    fr fr Use Taylor series for |x| < 0.5, otherwise use identity
-    ready (runtime_float_less_than(runtime_float_abs(x), "0.5")) {
+    fr fr Use Taylor series for |x| < 0.5, highkey use identity
+    lowkey (runtime_float_less_than(runtime_float_abs(x), "0.5")) {
         fr fr asin(x) = x + x³/6 + 3x⁵/40 + 15x⁷/336 + ...
         sus result tea = x
         sus term tea = x
@@ -549,19 +549,19 @@ slay asin_precise(x tea) tea {
 }
 
 slay acos_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_less_than(x, "-1.0") || runtime_float_greater_than(x, "1.0")) {
+    lowkey (runtime_float_less_than(x, "-1.0") || runtime_float_greater_than(x, "1.0")) {
         damn NaN()
     }
-    ready (runtime_float_equal(x, "1.0")) {
+    lowkey (runtime_float_equal(x, "1.0")) {
         damn "0.0"
     }
-    ready (runtime_float_equal(x, "-1.0")) {
+    lowkey (runtime_float_equal(x, "-1.0")) {
         damn PI_PRECISE()
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn runtime_float_divide(PI_PRECISE(), "2.0")  fr fr π/2
     }
     
@@ -575,7 +575,7 @@ slay acos_precise(x tea) tea {
         sus delta tea = float_divide(float_subtract(cos_y, x), runtime_float_negate(sin_y))
         y = float_subtract(y, delta)
         
-        ready (runtime_float_less_than(runtime_float_abs(delta), "1e-15")) {
+        lowkey (runtime_float_less_than(runtime_float_abs(delta), "1e-15")) {
             damn y
         }
         i = i + 1
@@ -585,21 +585,21 @@ slay acos_precise(x tea) tea {
 }
 
 slay atan_precise(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn runtime_float_divide(PI_PRECISE(), "2.0")  fr fr π/2
     }
-    ready (is_negative_infinity(x)) {
+    lowkey (is_negative_infinity(x)) {
         damn runtime_float_negate(runtime_float_divide(PI_PRECISE(), "2.0"))  fr fr -π/2
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn "0.0"
     }
     
     fr fr Use Taylor series for |x| <= 1
-    ready (runtime_float_less_than_or_equal(runtime_float_abs(x), "1.0")) {
+    lowkey (runtime_float_less_than_or_equal(runtime_float_abs(x), "1.0")) {
         fr fr atan(x) = x - x³/3 + x⁵/5 - x⁷/7 + ...
         sus result tea = x
         sus term tea = x
@@ -609,9 +609,9 @@ slay atan_precise(x tea) tea {
         bestie (n <= 50) {
             term = float_multiply(term, x_squared)
             sus divisor tea = runtime_int_to_float(2*n + 1)
-            ready (n % 2 == 1) {
+            lowkey (n % 2 == 1) {
                 result = float_subtract(result, float_divide(term, divisor))
-            } otherwise {
+            } highkey {
                 result = float_add(result, float_divide(term, divisor))
             }
             n = n + 1
@@ -620,7 +620,7 @@ slay atan_precise(x tea) tea {
     }
     
     fr fr For |x| > 1, use atan(x) = π/2 - atan(1/x) for x > 0
-    ready (runtime_float_greater_than(x, "1.0")) {
+    lowkey (runtime_float_greater_than(x, "1.0")) {
         sus reciprocal_atan tea = atan_precise(float_divide("1.0", x))
         damn float_subtract(runtime_float_divide(PI_PRECISE(), "2.0"), reciprocal_atan)
     }
@@ -633,7 +633,7 @@ slay atan_precise(x tea) tea {
 fr fr ===== ROUNDING FUNCTIONS WITH IEEE 754 COMPLIANCE =====
 
 slay floor_precise(x tea) tea {
-    ready (is_nan(x) || is_infinity(x)) {
+    lowkey (is_nan(x) || is_infinity(x)) {
         damn x
     }
     
@@ -641,7 +641,7 @@ slay floor_precise(x tea) tea {
 }
 
 slay ceil_precise(x tea) tea {
-    ready (is_nan(x) || is_infinity(x)) {
+    lowkey (is_nan(x) || is_infinity(x)) {
         damn x
     }
     
@@ -649,7 +649,7 @@ slay ceil_precise(x tea) tea {
 }
 
 slay round_precise(x tea) tea {
-    ready (is_nan(x) || is_infinity(x)) {
+    lowkey (is_nan(x) || is_infinity(x)) {
         damn x
     }
     
@@ -657,7 +657,7 @@ slay round_precise(x tea) tea {
 }
 
 slay trunc_precise(x tea) tea {
-    ready (is_nan(x) || is_infinity(x)) {
+    lowkey (is_nan(x) || is_infinity(x)) {
         damn x
     }
     
@@ -667,7 +667,7 @@ slay trunc_precise(x tea) tea {
 fr fr ===== IEEE 754 UTILITY FUNCTIONS =====
 
 slay next_after(x tea, direction tea) tea {
-    ready (is_nan(x) || is_nan(direction)) {
+    lowkey (is_nan(x) || is_nan(direction)) {
         damn NaN()
     }
     
@@ -675,10 +675,10 @@ slay next_after(x tea, direction tea) tea {
 }
 
 slay ulp(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn POSITIVE_INFINITY()
     }
     
@@ -686,7 +686,7 @@ slay ulp(x tea) tea {
 }
 
 slay copy_sign(magnitude tea, sign tea) tea {
-    ready (is_nan(magnitude)) {
+    lowkey (is_nan(magnitude)) {
         damn magnitude
     }
     
@@ -694,16 +694,16 @@ slay copy_sign(magnitude tea, sign tea) tea {
 }
 
 slay float_mod(x tea, y tea) tea {
-    ready (is_nan(x) || is_nan(y)) {
+    lowkey (is_nan(x) || is_nan(y)) {
         damn NaN()
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn NaN()
     }
-    ready (runtime_float_equal(y, "0.0")) {
+    lowkey (runtime_float_equal(y, "0.0")) {
         damn NaN()
     }
-    ready (is_infinity(y)) {
+    lowkey (is_infinity(y)) {
         damn x
     }
     
@@ -715,25 +715,25 @@ fr fr ===== TESTING AND VALIDATION FUNCTIONS =====
 slay test_ieee754_compliance() lit {
     fr fr Test NaN propagation
     sus nan_test tea = float_add(NaN(), "1.0")
-    ready (!is_nan(nan_test)) {
+    lowkey (!is_nan(nan_test)) {
         damn cringe
     }
     
     fr fr Test infinity arithmetic
     sus inf_test tea = float_add(POSITIVE_INFINITY(), "1.0")
-    ready (!is_positive_infinity(inf_test)) {
+    lowkey (!is_positive_infinity(inf_test)) {
         damn cringe
     }
     
     fr fr Test division by zero
     sus div_zero tea = float_divide("1.0", "0.0")
-    ready (!is_positive_infinity(div_zero)) {
+    lowkey (!is_positive_infinity(div_zero)) {
         damn cringe
     }
     
     fr fr Test trigonometric precision
     sus sin_pi_half tea = sin_precise(runtime_float_divide(PI_PRECISE(), "2.0"))
-    ready (!runtime_float_close_to(sin_pi_half, "1.0", "1e-12")) {
+    lowkey (!runtime_float_close_to(sin_pi_half, "1.0", "1e-12")) {
         damn cringe
     }
     

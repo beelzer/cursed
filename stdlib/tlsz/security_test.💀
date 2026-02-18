@@ -23,9 +23,9 @@ sus has_base64_data lit = nocap
 
 bestie i := 0; i < len(lines); i++ {
     sus line tea = lines[i]
-    ready !stringz.contains(line, "-----") && len(line) > 0 {
+    lowkey !stringz.contains(line, "-----") && len(line) > 0 {
         # Check if line contains valid base64 characters
-        ready is_valid_base64_line(line) {
+        lowkey is_valid_base64_line(line) {
             has_base64_data = based
             break
         }
@@ -90,12 +90,12 @@ sus has_weak_cipher lit = nocap
 bestie i := 0; i < len(secure_ciphers); i++ {
     sus cipher tea = secure_ciphers[i]
     bestie j := 0; j < len(weak_ciphers); j++ {
-        ready stringz.contains(cipher, weak_ciphers[j]) {
+        lowkey stringz.contains(cipher, weak_ciphers[j]) {
             has_weak_cipher = based
             break
         }
     }
-    ready has_weak_cipher {
+    lowkey has_weak_cipher {
         break
     }
 }
@@ -107,9 +107,9 @@ fr fr Test 7: Certificate chain validation
 sus cert_chain tea[value] = [cert_pem, cert_pem2]
 sus chain_valid lit = validate_certificate_chain(cert_chain)
 
-ready chain_valid {
+lowkey chain_valid {
     vibez.spill("✓ Certificate chain validation implemented")
-} otherwise {
+} highkey {
     vibez.spill("⚠ Certificate chain validation needs improvement")
 }
 
@@ -121,7 +121,7 @@ sus has_weak_version lit = nocap
 
 bestie i := 0; i < len(supported_versions); i++ {
     sus version tea = supported_versions[i]
-    ready version == "TLS1.0" || version == "TLS1.1" || stringz.contains(version, "SSL") {
+    lowkey version == "TLS1.0" || version == "TLS1.1" || stringz.contains(version, "SSL") {
         has_weak_version = based
         break
     }

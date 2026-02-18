@@ -128,13 +128,13 @@ fr fr ===== CORE AUDIO LOADING =====
 slay audioz_load_from_file(filepath tea) AudioData {
     sus format tea = audioz_detect_format_from_file(filepath)
     sus raw_data tea = filez_read_binary(filepath)
-    ready (stringz_is_empty(raw_data)) {
+    lowkey (stringz_is_empty(raw_data)) {
         vibez.spill("Error: Could not read audio file:", filepath)
         damn audioz_create_empty_audio()
     }
     
     sus audio AudioData = audioz_decode_format(raw_data, format)
-    ready (audio.frame_count == 0) {
+    lowkey (audio.frame_count == 0) {
         vibez.spill("Error: Could not decode audio:", filepath)
         damn audioz_create_empty_audio()
     }
@@ -143,7 +143,7 @@ slay audioz_load_from_file(filepath tea) AudioData {
 }
 
 slay audioz_load_from_memory(data tea, format tea) AudioData {
-    ready (stringz_is_empty(data)) {
+    lowkey (stringz_is_empty(data)) {
         damn audioz_create_empty_audio()
     }
     damn audioz_decode_format(data, format)
@@ -152,7 +152,7 @@ slay audioz_load_from_memory(data tea, format tea) AudioData {
 slay audioz_save_to_file(audio AudioData, filepath tea, quality normie) lit {
     sus format tea = audioz_detect_format_from_file(filepath)
     sus encoded_data tea = audioz_encode_format(audio, format, quality)
-    ready (stringz_is_empty(encoded_data)) {
+    lowkey (stringz_is_empty(encoded_data)) {
         damn false
     }
     damn filez_write_binary(filepath, encoded_data)
@@ -168,49 +168,49 @@ slay audioz_detect_format_from_file(filepath tea) tea {
     sus extension tea = filez_get_extension(filepath)
     sus lower_ext tea = stringz_to_lower(extension)
     
-    ready (stringz_equals(lower_ext, "wav")) {
+    lowkey (stringz_equals(lower_ext, "wav")) {
         damn "WAV"
-    } otherwise (stringz_equals(lower_ext, "mp3")) {
+    } highkey (stringz_equals(lower_ext, "mp3")) {
         damn "MP3"
-    } otherwise (stringz_equals(lower_ext, "flac")) {
+    } highkey (stringz_equals(lower_ext, "flac")) {
         damn "FLAC"
-    } otherwise (stringz_equals(lower_ext, "ogg")) {
+    } highkey (stringz_equals(lower_ext, "ogg")) {
         damn "OGG"
-    } otherwise (stringz_equals(lower_ext, "aac")) {
+    } highkey (stringz_equals(lower_ext, "aac")) {
         damn "AAC"
-    } otherwise (stringz_equals(lower_ext, "m4a")) {
+    } highkey (stringz_equals(lower_ext, "m4a")) {
         damn "M4A"
-    } otherwise (stringz_equals(lower_ext, "wma")) {
+    } highkey (stringz_equals(lower_ext, "wma")) {
         damn "WMA"
     }
     damn "UNKNOWN"
 }
 
 slay audioz_detect_format_from_signature(data tea) tea {
-    ready (stringz_length(data) < 12) {
+    lowkey (stringz_length(data) < 12) {
         damn "UNKNOWN"
     }
     
     sus header tea = stringz_substring(data, 0, 12)
     
-    ready (stringz_starts_with(header, WAV_SIGNATURE)) {
+    lowkey (stringz_starts_with(header, WAV_SIGNATURE)) {
         sus format_header tea = stringz_substring(data, 8, 4)
-        ready (stringz_equals(format_header, WAV_FORMAT)) {
+        lowkey (stringz_equals(format_header, WAV_FORMAT)) {
             damn "WAV"
         }
-    } otherwise (stringz_starts_with(header, MP3_SIGNATURE)) {
+    } highkey (stringz_starts_with(header, MP3_SIGNATURE)) {
         damn "MP3"
-    } otherwise (stringz_starts_with(header, FLAC_SIGNATURE)) {
+    } highkey (stringz_starts_with(header, FLAC_SIGNATURE)) {
         damn "FLAC"
-    } otherwise (stringz_starts_with(header, OGG_SIGNATURE)) {
+    } highkey (stringz_starts_with(header, OGG_SIGNATURE)) {
         damn "OGG"
-    } otherwise (stringz_starts_with(header, M4A_SIGNATURE)) {
+    } highkey (stringz_starts_with(header, M4A_SIGNATURE)) {
         damn "M4A"
     }
     
     fr fr Check for MP3 frame sync
     sus frame_sync normie = audioz_read_uint16_be(data, 0)
-    ready ((frame_sync & 0xFFE0) == MP3_FRAME_SYNC) {
+    lowkey ((frame_sync & 0xFFE0) == MP3_FRAME_SYNC) {
         damn "MP3"
     }
     
@@ -223,19 +223,19 @@ slay audioz_decode_format(data tea, format tea) AudioData {
     sus audio AudioData
     audio.format = format
     
-    ready (stringz_equals(format, "WAV")) {
+    lowkey (stringz_equals(format, "WAV")) {
         audio = audioz_decode_wav(data)
-    } otherwise (stringz_equals(format, "MP3")) {
+    } highkey (stringz_equals(format, "MP3")) {
         audio = audioz_decode_mp3(data)
-    } otherwise (stringz_equals(format, "FLAC")) {
+    } highkey (stringz_equals(format, "FLAC")) {
         audio = audioz_decode_flac(data)
-    } otherwise (stringz_equals(format, "OGG")) {
+    } highkey (stringz_equals(format, "OGG")) {
         audio = audioz_decode_ogg(data)
-    } otherwise (stringz_equals(format, "AAC")) {
+    } highkey (stringz_equals(format, "AAC")) {
         audio = audioz_decode_aac(data)
-    } otherwise (stringz_equals(format, "M4A")) {
+    } highkey (stringz_equals(format, "M4A")) {
         audio = audioz_decode_m4a(data)
-    } otherwise {
+    } highkey {
         vibez.spill("Error: Unsupported format:", format)
         audio = audioz_create_empty_audio()
     }
@@ -248,14 +248,14 @@ slay audioz_decode_wav(data tea) AudioData {
     audio.format = "WAV"
     
     fr fr WAV header validation
-    ready (stringz_length(data) < 44) {
+    lowkey (stringz_length(data) < 44) {
         damn audioz_create_empty_audio()
     }
     
     sus riff_header tea = stringz_substring(data, 0, 4)
     sus wave_header tea = stringz_substring(data, 8, 4)
     
-    ready (!stringz_equals(riff_header, "RIFF") || !stringz_equals(wave_header, "WAVE")) {
+    lowkey (!stringz_equals(riff_header, "RIFF") || !stringz_equals(wave_header, "WAVE")) {
         damn audioz_create_empty_audio()
     }
     
@@ -285,7 +285,7 @@ slay audioz_decode_mp3(data tea) AudioData {
     
     fr fr Parse MP3 header
     sus frame_header normie = audioz_find_mp3_frame(data, 0)
-    ready (frame_header == -1) {
+    lowkey (frame_header == -1) {
         damn audioz_create_empty_audio()
     }
     
@@ -308,7 +308,7 @@ slay audioz_decode_flac(data tea) AudioData {
     audio.format = "FLAC"
     
     fr fr FLAC header validation
-    ready (!stringz_starts_with(data, FLAC_SIGNATURE)) {
+    lowkey (!stringz_starts_with(data, FLAC_SIGNATURE)) {
         damn audioz_create_empty_audio()
     }
     
@@ -388,17 +388,17 @@ slay audioz_decode_m4a(data tea) AudioData {
 fr fr ===== FORMAT ENCODERS =====
 
 slay audioz_encode_format(audio AudioData, format tea, quality normie) tea {
-    ready (stringz_equals(format, "WAV")) {
+    lowkey (stringz_equals(format, "WAV")) {
         damn audioz_encode_wav(audio)
-    } otherwise (stringz_equals(format, "MP3")) {
+    } highkey (stringz_equals(format, "MP3")) {
         damn audioz_encode_mp3(audio, quality)
-    } otherwise (stringz_equals(format, "FLAC")) {
+    } highkey (stringz_equals(format, "FLAC")) {
         damn audioz_encode_flac(audio, quality)
-    } otherwise (stringz_equals(format, "OGG")) {
+    } highkey (stringz_equals(format, "OGG")) {
         damn audioz_encode_ogg(audio, quality)
-    } otherwise (stringz_equals(format, "AAC")) {
+    } highkey (stringz_equals(format, "AAC")) {
         damn audioz_encode_aac(audio, quality)
-    } otherwise (stringz_equals(format, "M4A")) {
+    } highkey (stringz_equals(format, "M4A")) {
         damn audioz_encode_m4a(audio, quality)
     }
     
@@ -437,16 +437,16 @@ slay audioz_convert_channels(audio AudioData, new_channels normie) AudioData {
     converted = audio
     converted.channels = new_channels
     
-    ready (audio.channels == 1 && new_channels == 2) {
+    lowkey (audio.channels == 1 && new_channels == 2) {
         fr fr Mono to stereo
         converted.samples = audioz_mono_to_stereo(audio.samples, audio.frame_count)
-    } otherwise (audio.channels == 2 && new_channels == 1) {
+    } highkey (audio.channels == 2 && new_channels == 1) {
         fr fr Stereo to mono
         converted.samples = audioz_stereo_to_mono(audio.samples, audio.frame_count)
-    } otherwise (audio.channels > 2 && new_channels == 2) {
+    } highkey (audio.channels > 2 && new_channels == 2) {
         fr fr Multichannel to stereo
         converted.samples = audioz_multichannel_to_stereo(audio.samples, audio.frame_count, audio.channels)
-    } otherwise {
+    } highkey {
         converted.samples = audioz_generic_channel_conversion(audio.samples, audio.frame_count, audio.channels, new_channels)
     }
     
@@ -460,9 +460,9 @@ slay audioz_trim(audio AudioData, start_time drip, end_time drip) AudioData {
     sus start_frame normie = mathz_float_to_int(start_time * mathz_int_to_float(audio.sample_rate))
     sus end_frame normie = mathz_float_to_int(end_time * mathz_int_to_float(audio.sample_rate))
     
-    ready (start_frame < 0) { start_frame = 0 }
-    ready (end_frame > audio.frame_count) { end_frame = audio.frame_count }
-    ready (start_frame >= end_frame) { damn audioz_create_empty_audio() }
+    lowkey (start_frame < 0) { start_frame = 0 }
+    lowkey (end_frame > audio.frame_count) { end_frame = audio.frame_count }
+    lowkey (start_frame >= end_frame) { damn audioz_create_empty_audio() }
     
     trimmed.frame_count = end_frame - start_frame
     trimmed.duration = mathz_int_to_float(trimmed.frame_count) / mathz_int_to_float(audio.sample_rate)
@@ -472,7 +472,7 @@ slay audioz_trim(audio AudioData, start_time drip, end_time drip) AudioData {
 }
 
 slay audioz_concatenate(audio1 AudioData, audio2 AudioData) AudioData {
-    ready (audio1.sample_rate != audio2.sample_rate || audio1.channels != audio2.channels || audio1.bit_depth != audio2.bit_depth) {
+    lowkey (audio1.sample_rate != audio2.sample_rate || audio1.channels != audio2.channels || audio1.bit_depth != audio2.bit_depth) {
         vibez.spill("Error: Audio properties must match for concatenation")
         damn audio1
     }
@@ -487,7 +487,7 @@ slay audioz_concatenate(audio1 AudioData, audio2 AudioData) AudioData {
 }
 
 slay audioz_mix(audio1 AudioData, audio2 AudioData, mix_ratio drip) AudioData {
-    ready (audio1.sample_rate != audio2.sample_rate || audio1.channels != audio2.channels) {
+    lowkey (audio1.sample_rate != audio2.sample_rate || audio1.channels != audio2.channels) {
         vibez.spill("Error: Audio properties must match for mixing")
         damn audio1
     }
@@ -509,46 +509,46 @@ slay audioz_apply_effect(audio AudioData, effect AudioEffect) AudioData {
     sus processed AudioData
     processed = audio
     
-    ready (!effect.enabled) {
+    lowkey (!effect.enabled) {
         damn audio
     }
     
-    ready (effect.effect_type == EFFECT_REVERB) {
+    lowkey (effect.effect_type == EFFECT_REVERB) {
         processed.samples = audioz_apply_reverb(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_ECHO) {
+    } highkey (effect.effect_type == EFFECT_ECHO) {
         processed.samples = audioz_apply_echo(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_CHORUS) {
+    } highkey (effect.effect_type == EFFECT_CHORUS) {
         processed.samples = audioz_apply_chorus(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_FLANGER) {
+    } highkey (effect.effect_type == EFFECT_FLANGER) {
         processed.samples = audioz_apply_flanger(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_PHASER) {
+    } highkey (effect.effect_type == EFFECT_PHASER) {
         processed.samples = audioz_apply_phaser(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_DISTORTION) {
+    } highkey (effect.effect_type == EFFECT_DISTORTION) {
         processed.samples = audioz_apply_distortion(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_COMPRESSOR) {
+    } highkey (effect.effect_type == EFFECT_COMPRESSOR) {
         processed.samples = audioz_apply_compressor(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_LIMITER) {
+    } highkey (effect.effect_type == EFFECT_LIMITER) {
         processed.samples = audioz_apply_limiter(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_EQ) {
+    } highkey (effect.effect_type == EFFECT_EQ) {
         processed.samples = audioz_apply_eq(audio.samples, audio.frame_count, audio.channels, audio.sample_rate, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_NOISE_GATE) {
+    } highkey (effect.effect_type == EFFECT_NOISE_GATE) {
         processed.samples = audioz_apply_noise_gate(audio.samples, audio.frame_count, audio.channels, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_PITCH_SHIFT) {
+    } highkey (effect.effect_type == EFFECT_PITCH_SHIFT) {
         processed.samples = audioz_apply_pitch_shift(audio.samples, audio.frame_count, audio.channels, audio.sample_rate, effect.parameters)
-    } otherwise (effect.effect_type == EFFECT_TIME_STRETCH) {
+    } highkey (effect.effect_type == EFFECT_TIME_STRETCH) {
         processed = audioz_apply_time_stretch(audio, effect.parameters[0])
-    } otherwise (effect.effect_type == EFFECT_NORMALIZE) {
+    } highkey (effect.effect_type == EFFECT_NORMALIZE) {
         processed.samples = audioz_normalize_audio(audio.samples, audio.frame_count, audio.channels)
-    } otherwise (effect.effect_type == EFFECT_FADE_IN) {
+    } highkey (effect.effect_type == EFFECT_FADE_IN) {
         processed.samples = audioz_apply_fade_in(audio.samples, audio.frame_count, audio.channels, effect.parameters[0])
-    } otherwise (effect.effect_type == EFFECT_FADE_OUT) {
+    } highkey (effect.effect_type == EFFECT_FADE_OUT) {
         processed.samples = audioz_apply_fade_out(audio.samples, audio.frame_count, audio.channels, effect.parameters[0])
-    } otherwise {
+    } highkey {
         vibez.spill("Unknown effect type:", effect.effect_type)
     }
     
     fr fr Apply wet/dry mix
-    ready (effect.wet_mix < 1.0) {
+    lowkey (effect.wet_mix < 1.0) {
         processed.samples = audioz_blend_samples(audio.samples, processed.samples, audio.frame_count, processed.frame_count, audio.channels, effect.wet_mix)
     }
     
@@ -559,7 +559,7 @@ slay audioz_apply_filter(audio AudioData, filter AudioFilter) AudioData {
     sus filtered AudioData
     filtered = audio
     
-    ready (!filter.enabled) {
+    lowkey (!filter.enabled) {
         damn audio
     }
     
@@ -815,7 +815,7 @@ slay audioz_process_filter(samples tea, frames normie, channels normie, sample_r
 fr fr BINARY DATA READING FUNCTIONS =====
 
 slay audioz_read_uint32_be(data tea, offset normie) normie { 
-    ready (offset + 4 > stringz_length(data)) { damn 0 }
+    lowkey (offset + 4 > stringz_length(data)) { damn 0 }
     sus byte0 normie = stringz_char_at(data, offset)
     sus byte1 normie = stringz_char_at(data, offset + 1)
     sus byte2 normie = stringz_char_at(data, offset + 2)
@@ -824,7 +824,7 @@ slay audioz_read_uint32_be(data tea, offset normie) normie {
 }
 
 slay audioz_read_uint32_le(data tea, offset normie) normie { 
-    ready (offset + 4 > stringz_length(data)) { damn 0 }
+    lowkey (offset + 4 > stringz_length(data)) { damn 0 }
     sus byte0 normie = stringz_char_at(data, offset)
     sus byte1 normie = stringz_char_at(data, offset + 1)
     sus byte2 normie = stringz_char_at(data, offset + 2)
@@ -833,14 +833,14 @@ slay audioz_read_uint32_le(data tea, offset normie) normie {
 }
 
 slay audioz_read_uint16_be(data tea, offset normie) normie { 
-    ready (offset + 2 > stringz_length(data)) { damn 0 }
+    lowkey (offset + 2 > stringz_length(data)) { damn 0 }
     sus byte0 normie = stringz_char_at(data, offset)
     sus byte1 normie = stringz_char_at(data, offset + 1)
     damn (byte0 << 8) | byte1
 }
 
 slay audioz_read_uint16_le(data tea, offset normie) normie { 
-    ready (offset + 2 > stringz_length(data)) { damn 0 }
+    lowkey (offset + 2 > stringz_length(data)) { damn 0 }
     sus byte0 normie = stringz_char_at(data, offset)
     sus byte1 normie = stringz_char_at(data, offset + 1)
     damn byte0 | (byte1 << 8)
@@ -984,17 +984,17 @@ slay audioz_find_silence_regions(samples tea, frames normie, channels normie, sa
         
         rms_level = mathz_sqrt(sample_sum / mathz_int_to_float(window_size))
         
-        ready (rms_level < threshold) {
+        lowkey (rms_level < threshold) {
             fr fr Below threshold - potential silence
-            ready (!in_silence) {
+            lowkey (!in_silence) {
                 silence_start = i
                 in_silence = true
             }
-        } otherwise {
+        } highkey {
             fr fr Above threshold - not silence
-            ready (in_silence) {
+            lowkey (in_silence) {
                 sus silence_duration normie = i - silence_start
-                ready (silence_duration >= min_silence_duration) {
+                lowkey (silence_duration >= min_silence_duration) {
                     fr fr Record silence region
                     regions[region_count * 2] = mathz_int_to_float(silence_start) / mathz_int_to_float(sample_rate)
                     regions[region_count * 2 + 1] = mathz_int_to_float(i) / mathz_int_to_float(sample_rate)
@@ -1009,9 +1009,9 @@ slay audioz_find_silence_regions(samples tea, frames normie, channels normie, sa
     }
     
     fr fr Handle final silence region
-    ready (in_silence && region_count < 50) {
+    lowkey (in_silence && region_count < 50) {
         sus silence_duration normie = frames - silence_start
-        ready (silence_duration >= min_silence_duration) {
+        lowkey (silence_duration >= min_silence_duration) {
             regions[region_count * 2] = mathz_int_to_float(silence_start) / mathz_int_to_float(sample_rate)
             regions[region_count * 2 + 1] = mathz_int_to_float(frames) / mathz_int_to_float(sample_rate)
             region_count++
@@ -1030,8 +1030,8 @@ slay audioz_synthesize_sine(frequency drip, amplitude drip, frames normie, sampl
         
         fr fr Convert float to 16-bit signed integer
         sus int_sample normie = mathz_float_to_int(sample_value * 32767.0)
-        ready (int_sample > 32767) { int_sample = 32767 }
-        ready (int_sample < -32768) { int_sample = -32768 }
+        lowkey (int_sample > 32767) { int_sample = 32767 }
+        lowkey (int_sample < -32768) { int_sample = -32768 }
         
         fr fr Store as little-endian 16-bit
         audioz_write_sample_to_buffer(samples_buffer, i, int_sample)
@@ -1058,8 +1058,8 @@ slay audioz_synthesize_square(frequency drip, amplitude drip, frames normie, sam
         
         fr fr Convert and clamp
         sus int_sample normie = mathz_float_to_int(sample_value * 32767.0)
-        ready (int_sample > 32767) { int_sample = 32767 }
-        ready (int_sample < -32768) { int_sample = -32768 }
+        lowkey (int_sample > 32767) { int_sample = 32767 }
+        lowkey (int_sample < -32768) { int_sample = -32768 }
         
         audioz_write_sample_to_buffer(samples_buffer, i, int_sample)
     }
@@ -1082,8 +1082,8 @@ slay audioz_synthesize_white_noise(amplitude drip, frames normie) tea {
         
         fr fr Convert and clamp
         sus int_sample normie = mathz_float_to_int(sample_value * 32767.0)
-        ready (int_sample > 32767) { int_sample = 32767 }
-        ready (int_sample < -32768) { int_sample = -32768 }
+        lowkey (int_sample > 32767) { int_sample = 32767 }
+        lowkey (int_sample < -32768) { int_sample = -32768 }
         
         audioz_write_sample_to_buffer(samples_buffer, i, int_sample)
     }
@@ -1101,7 +1101,7 @@ fr fr ===== AUDIO PROCESSING HELPER FUNCTIONS =====
 slay audioz_get_sample_at_index(samples tea, index normie, channels normie) drip {
     fr fr Extract sample value from binary data at given index
     sus byte_index normie = index * channels * 2 fr fr 16-bit samples = 2 bytes
-    ready (byte_index + 1 >= stringz_length(samples)) {
+    lowkey (byte_index + 1 >= stringz_length(samples)) {
         damn 0.0
     }
     
@@ -1111,7 +1111,7 @@ slay audioz_get_sample_at_index(samples tea, index normie, channels normie) drip
     sus int_value normie = low_byte + (high_byte * 256)
     
     fr fr Convert to signed 16-bit
-    ready (int_value > 32767) {
+    lowkey (int_value > 32767) {
         int_value -= 65536
     }
     
@@ -1123,13 +1123,13 @@ slay audioz_get_window_coefficient(window_type normie, index normie, size normie
     sus n drip = mathz_int_to_float(index)
     sus N drip = mathz_int_to_float(size)
     
-    ready (window_type == WINDOW_HANN) {
+    lowkey (window_type == WINDOW_HANN) {
         damn 0.5 * (1.0 - mathz_cos(2.0 * mathz_pi() * n / (N - 1.0)))
-    } otherwise (window_type == WINDOW_HAMMING) {
+    } highkey (window_type == WINDOW_HAMMING) {
         damn 0.54 - 0.46 * mathz_cos(2.0 * mathz_pi() * n / (N - 1.0))
-    } otherwise (window_type == WINDOW_BLACKMAN) {
+    } highkey (window_type == WINDOW_BLACKMAN) {
         damn 0.42 - 0.5 * mathz_cos(2.0 * mathz_pi() * n / (N - 1.0)) + 0.08 * mathz_cos(4.0 * mathz_pi() * n / (N - 1.0))
-    } otherwise (window_type == WINDOW_RECTANGULAR) {
+    } highkey (window_type == WINDOW_RECTANGULAR) {
         damn 1.0
     }
     damn 1.0 fr fr Default rectangular window
@@ -1139,7 +1139,7 @@ slay audioz_bit_reverse_fft(complex_data drip[2048], size normie) lit {
     fr fr Bit-reversal permutation for FFT
     bestie (sus i normie = 0; i < size; i++) {
         sus j normie = audioz_reverse_bits(i, mathz_log2(size))
-        ready (i < j) {
+        lowkey (i < j) {
             fr fr Swap complex pairs
             sus temp_real drip = complex_data[i * 2]
             sus temp_imag drip = complex_data[i * 2 + 1]
@@ -1154,7 +1154,7 @@ slay audioz_bit_reverse_fft(complex_data drip[2048], size normie) lit {
 slay audioz_reverse_bits(value normie, num_bits normie) normie {
     sus result normie = 0
     bestie (sus i normie = 0; i < num_bits; i++) {
-        ready ((value & (1 << i)) != 0) {
+        lowkey ((value & (1 << i)) != 0) {
             result |= (1 << (num_bits - 1 - i))
         }
     }
@@ -1189,7 +1189,7 @@ slay audioz_apply_reverb(samples tea, frames normie, channels normie, params dri
         fr fr Simple multi-tap delay reverb
         bestie (sus tap normie = 0; tap < 4; tap++) {
             sus delay_index normie = i - delay_lengths[tap]
-            ready (delay_index >= 0) {
+            lowkey (delay_index >= 0) {
                 sus delayed_sample drip = audioz_get_sample_at_index(samples, delay_index, channels)
                 reverb_sample += delayed_sample * feedback * (1.0 / mathz_int_to_float(tap + 1))
             }
@@ -1197,8 +1197,8 @@ slay audioz_apply_reverb(samples tea, frames normie, channels normie, params dri
         
         sus output_sample drip = input_sample + (reverb_sample * mix_level)
         sus int_sample normie = mathz_float_to_int(output_sample * 32767.0)
-        ready (int_sample > 32767) { int_sample = 32767 }
-        ready (int_sample < -32768) { int_sample = -32768 }
+        lowkey (int_sample > 32767) { int_sample = 32767 }
+        lowkey (int_sample < -32768) { int_sample = -32768 }
         
         audioz_write_sample_to_buffer(reverb_buffer, i, int_sample)
     }
@@ -1218,14 +1218,14 @@ slay audioz_apply_echo(samples tea, frames normie, channels normie, params drip[
         sus echo_sample drip = 0.0
         
         sus delay_index normie = i - delay_samples
-        ready (delay_index >= 0) {
+        lowkey (delay_index >= 0) {
             echo_sample = audioz_get_sample_at_index(samples, delay_index, channels)
         }
         
         sus output_sample drip = input_sample + (echo_sample * feedback * mix_level)
         sus int_sample normie = mathz_float_to_int(output_sample * 32767.0)
-        ready (int_sample > 32767) { int_sample = 32767 }
-        ready (int_sample < -32768) { int_sample = -32768 }
+        lowkey (int_sample > 32767) { int_sample = 32767 }
+        lowkey (int_sample < -32768) { int_sample = -32768 }
         
         audioz_write_sample_to_buffer(echo_buffer, i, int_sample)
     }
@@ -1251,15 +1251,15 @@ slay audioz_apply_compressor(samples tea, frames normie, channels normie, params
         sus abs_sample drip = mathz_abs(input_sample)
         
         fr fr Envelope follower
-        ready (abs_sample > envelope) {
+        lowkey (abs_sample > envelope) {
             envelope = abs_sample + (envelope - abs_sample) * attack_coeff
-        } otherwise {
+        } highkey {
             envelope = abs_sample + (envelope - abs_sample) * release_coeff
         }
         
         fr fr Calculate gain reduction
         sus gain_reduction drip = 1.0
-        ready (envelope > threshold) {
+        lowkey (envelope > threshold) {
             sus over_threshold drip = envelope - threshold
             sus compressed drip = over_threshold / ratio
             gain_reduction = (threshold + compressed) / envelope
@@ -1267,8 +1267,8 @@ slay audioz_apply_compressor(samples tea, frames normie, channels normie, params
         
         sus output_sample drip = input_sample * gain_reduction * makeup_gain
         sus int_sample normie = mathz_float_to_int(output_sample * 32767.0)
-        ready (int_sample > 32767) { int_sample = 32767 }
-        ready (int_sample < -32768) { int_sample = -32768 }
+        lowkey (int_sample > 32767) { int_sample = 32767 }
+        lowkey (int_sample < -32768) { int_sample = -32768 }
         
         audioz_write_sample_to_buffer(comp_buffer, i, int_sample)
     }

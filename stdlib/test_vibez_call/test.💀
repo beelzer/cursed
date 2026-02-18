@@ -31,7 +31,7 @@ slay get_test_number() drip {
 vibez.spill("Function result:", get_test_number())
 
 // Test spill in conditional context
-ready (based) {
+lowkey (based) {
     vibez.spill("Conditional spill works")
 }
 
@@ -83,9 +83,9 @@ vibez.spill("Array values:", test_values[0], test_values[1], test_values[2])
 
 // Test error handling with spill
 sus error_test drip = 0
-ready (error_test == 0) {
+lowkey (error_test == 0) {
     vibez.spill("Error condition handled")
-} otherwise {
+} highkey {
     vibez.spill("Should not reach here")
 }
 

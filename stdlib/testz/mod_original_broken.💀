@@ -16,7 +16,7 @@ slay assert_true(condition lit) lit {
     lowkey (condition == based) {
         vibez.spill("✅ PASS: assert_true")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_true")
         fail_test_count = fail_test_count + 1
     }
@@ -27,7 +27,7 @@ slay assert_false(condition lit) lit {
     lowkey (condition == cringe) {
         vibez.spill("✅ PASS: assert_false")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_false")
         fail_test_count = fail_test_count + 1
     }
@@ -38,7 +38,7 @@ slay assert_eq_int(actual drip, expected drip) lit {
     lowkey (actual == expected) {
         vibez.spill("✅ PASS: assert_eq_int")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_eq_int - Expected:", expected, "Got:", actual)
         fail_test_count = fail_test_count + 1
     }
@@ -49,7 +49,7 @@ slay assert_eq_string(actual tea, expected tea) lit {
     lowkey (actual == expected) {
         vibez.spill("✅ PASS: assert_eq_string")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_eq_string - Expected:", expected, "Got:", actual)
         fail_test_count = fail_test_count + 1
     }
@@ -82,7 +82,7 @@ slay print_test_summary() lit {
     
     lowkey (fail_test_count == 0) {
         vibez.spill("🎉 All tests passed!")
-    } otherwise {
+    } highkey {
         vibez.spill("Some tests failed")
     }
     
@@ -107,7 +107,7 @@ slay property_test_start(name tea, iterations drip) lit {
 slay property_assert(condition lit, input_description tea) lit {
     lowkey (condition == based) {
         property_pass_count = property_pass_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Property violation with input:", input_description)
         property_fail_count = property_fail_count + 1
     }
@@ -228,7 +228,7 @@ slay test_property_custom(property_name tea, test_function tea, iterations drip)
     
     sus i drip = 0
     periodt (i < iterations) {
-        ready (test_function == "test_addition_commutative") {
+        lowkey (test_function == "test_addition_commutative") {
             sus a drip = random_int(1, 100)
             sus b drip = random_int(1, 100)
             sus description tea = "a=" + json_number_to_string(a) + ", b=" + json_number_to_string(b)
@@ -238,7 +238,7 @@ slay test_property_custom(property_name tea, test_function tea, iterations drip)
             sus result2 drip = b + a
             property_assert(result1 == result2, description)
             
-        } otherwise ready (test_function == "test_string_concat_length") {
+        } highkey lowkey (test_function == "test_string_concat_length") {
             sus str1 tea = random_string(random_int(1, 10))
             sus str2 tea = random_string(random_int(1, 10))
             sus description tea = "str1=\"" + str1 + "\", str2=\"" + str2 + "\""
@@ -249,7 +249,7 @@ slay test_property_custom(property_name tea, test_function tea, iterations drip)
             sus actual_length drip = string_length(combined)
             property_assert(actual_length == expected_length, description)
             
-        } otherwise ready (test_function == "test_list_reverse_twice") {
+        } highkey lowkey (test_function == "test_list_reverse_twice") {
             sus list_size drip = random_int(1, 5)
             sus test_list drip[value] = random_list_int(list_size, 1, 10)
             sus description tea = "list=[" + format_list_int(test_list) + "]"
@@ -269,11 +269,11 @@ slay shrink_int(value drip) drip[value]{
     fr fr Generate smaller values for shrinking
     sus shrunk drip[value] = []
     
-    ready (value > 0) {
+    lowkey (value > 0) {
         shrunk = append_to_list_int(shrunk, 0)
         shrunk = append_to_list_int(shrunk, value / 2)
         shrunk = append_to_list_int(shrunk, value - 1)
-    } otherwise ready (value < 0) {
+    } highkey lowkey (value < 0) {
         shrunk = append_to_list_int(shrunk, 0)
         shrunk = append_to_list_int(shrunk, value / 2)
         shrunk = append_to_list_int(shrunk, value + 1)
@@ -287,9 +287,9 @@ slay shrink_string(value tea) tea[value]{
     sus shrunk tea[value] = []
     sus length drip = string_length(value)
     
-    ready (length > 0) {
+    lowkey (length > 0) {
         shrunk = append_to_list_string(shrunk, "")  fr fr Empty string
-        ready (length > 1) {
+        lowkey (length > 1) {
             shrunk = append_to_list_string(shrunk, substring(value, 0, length / 2))
             shrunk = append_to_list_string(shrunk, substring(value, 1, length - 1))
         }
@@ -305,7 +305,7 @@ slay test_invariant(invariant_name tea, setup_function tea, iterations drip) {
     
     sus i drip = 0
     periodt (i < iterations) {
-        ready (setup_function == "test_list_operations") {
+        lowkey (setup_function == "test_list_operations") {
             sus list drip[value] = random_list_int(random_int(1, 10), 1, 100)
             sus description tea = "list=[" + format_list_int(list) + "]"
             
@@ -317,7 +317,7 @@ slay test_invariant(invariant_name tea, setup_function tea, iterations drip) {
             
             property_assert(original_length == final_length, description)
             
-        } otherwise ready (setup_function == "test_string_operations") {
+        } highkey lowkey (setup_function == "test_string_operations") {
             sus str tea = random_string(random_int(1, 20))
             sus description tea = "string=\"" + str + "\""
             
@@ -335,39 +335,39 @@ slay test_invariant(invariant_name tea, setup_function tea, iterations drip) {
 fr fr ===== UTILITY FUNCTIONS =====
 
 slay append_to_list_int(list drip[value], item drip) drip[value]{
-    ready (len(list) == 0) { damn [item] }
-    ready (len(list) == 1) { damn [list[0], item] }
-    ready (len(list) == 2) { damn [list[0], list[1], item] }
-    ready (len(list) == 3) { damn [list[0], list[1], list[2], item] }
-    ready (len(list) == 4) { damn [list[0], list[1], list[2], list[3], item] }
+    lowkey (len(list) == 0) { damn [item] }
+    lowkey (len(list) == 1) { damn [list[0], item] }
+    lowkey (len(list) == 2) { damn [list[0], list[1], item] }
+    lowkey (len(list) == 3) { damn [list[0], list[1], list[2], item] }
+    lowkey (len(list) == 4) { damn [list[0], list[1], list[2], list[3], item] }
     damn list  fr fr Return original if full
 }
 
 slay append_to_list_string(list tea[value], item tea) tea[value]{
-    ready (len(list) == 0) { damn [item] }
-    ready (len(list) == 1) { damn [list[0], item] }
-    ready (len(list) == 2) { damn [list[0], list[1], item] }
-    ready (len(list) == 3) { damn [list[0], list[1], list[2], item] }
-    ready (len(list) == 4) { damn [list[0], list[1], list[2], list[3], item] }
+    lowkey (len(list) == 0) { damn [item] }
+    lowkey (len(list) == 1) { damn [list[0], item] }
+    lowkey (len(list) == 2) { damn [list[0], list[1], item] }
+    lowkey (len(list) == 3) { damn [list[0], list[1], list[2], item] }
+    lowkey (len(list) == 4) { damn [list[0], list[1], list[2], list[3], item] }
     damn list  fr fr Return original if full
 }
 
 slay reverse_list_int(list drip[value]) drip[value]{
     sus length drip = len(list)
-    ready (length == 0) { damn [] }
-    ready (length == 1) { damn [list[0]] }
-    ready (length == 2) { damn [list[1], list[0]] }
-    ready (length == 3) { damn [list[2], list[1], list[0]] }
-    ready (length == 4) { damn [list[3], list[2], list[1], list[0]] }
+    lowkey (length == 0) { damn [] }
+    lowkey (length == 1) { damn [list[0]] }
+    lowkey (length == 2) { damn [list[1], list[0]] }
+    lowkey (length == 3) { damn [list[2], list[1], list[0]] }
+    lowkey (length == 4) { damn [list[3], list[2], list[1], list[0]] }
     damn list  fr fr Return original if too long for demo
 }
 
 slay remove_last_int(list drip[value]) drip[value]{
     sus length drip = len(list)
-    ready (length <= 1) { damn [] }
-    ready (length == 2) { damn [list[0]] }
-    ready (length == 3) { damn [list[0], list[1]] }
-    ready (length == 4) { damn [list[0], list[1], list[2]] }
+    lowkey (length <= 1) { damn [] }
+    lowkey (length == 2) { damn [list[0]] }
+    lowkey (length == 3) { damn [list[0], list[1]] }
+    lowkey (length == 4) { damn [list[0], list[1], list[2]] }
     damn list  fr fr Return original if too long for demo
 }
 
@@ -375,13 +375,13 @@ slay lists_equal_int(list1 drip[value], list2 drip[value]) lit {
     sus len1 drip = len(list1)
     sus len2 drip = len(list2)
     
-    ready (len1 != len2) {
+    lowkey (len1 != len2) {
         damn cringe
     }
     
     sus i drip = 0
     periodt (i < len1) {
-        ready (list1[i] != list2[i]) {
+        lowkey (list1[i] != list2[i]) {
             damn cringe
         }
         i = i + 1
@@ -392,19 +392,19 @@ slay lists_equal_int(list1 drip[value], list2 drip[value]) lit {
 
 slay format_list_int(list drip[value]) tea {
     sus length drip = len(list)
-    ready (length == 0) { damn "" }
-    ready (length == 1) { damn json_number_to_string(list[0]) }
-    ready (length == 2) { damn json_number_to_string(list[0]) + ", " + json_number_to_string(list[1]) }
-    ready (length == 3) { damn json_number_to_string(list[0]) + ", " + json_number_to_string(list[1]) + ", " + json_number_to_string(list[2]) }
+    lowkey (length == 0) { damn "" }
+    lowkey (length == 1) { damn json_number_to_string(list[0]) }
+    lowkey (length == 2) { damn json_number_to_string(list[0]) + ", " + json_number_to_string(list[1]) }
+    lowkey (length == 3) { damn json_number_to_string(list[0]) + ", " + json_number_to_string(list[1]) + ", " + json_number_to_string(list[2]) }
     damn "..."  fr fr Too many items
 }
 
 slay json_number_to_string(num drip) tea {
-    ready (num == 0) { damn "0" }
-    ready (num == 1) { damn "1" }
-    ready (num == 2) { damn "2" }
-    ready (num == 42) { damn "42" }
-    ready (num == 100) { damn "100" }
+    lowkey (num == 0) { damn "0" }
+    lowkey (num == 1) { damn "1" }
+    lowkey (num == 2) { damn "2" }
+    lowkey (num == 42) { damn "42" }
+    lowkey (num == 100) { damn "100" }
     damn "?"  fr fr Unknown number
 }
 
@@ -416,9 +416,9 @@ slay print_property_test_summary() lit {
     vibez.spill("Property checks passed:", property_pass_count)
     vibez.spill("Property violations:", property_fail_count)
     
-    ready (property_fail_count == 0) {
+    lowkey (property_fail_count == 0) {
         vibez.spill("🎉 All properties hold!")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️ Some properties were violated")
     }
     

@@ -23,7 +23,7 @@ slay demo_basic_audio_operations() lit {
     vibez.print_success("Resampled to 48kHz")
     
     // Convert to stereo if mono
-    ready (audio.channels == 1) {
+    lowkey (audio.channels == 1) {
         sus stereo audioz.AudioData = audioz_convert_channels(audio, audioz.CHANNELS_STEREO)
         vibez.print_success("Converted mono to stereo")
         audio = stereo
@@ -350,10 +350,10 @@ slay main_character() normie {
     vibez.print_header("CURSED AudioZ Professional Audio Processing Demo")
     
     // Check GPU acceleration availability
-    ready (audioz_is_gpu_available()) {
+    lowkey (audioz_is_gpu_available()) {
         vibez.print_success("GPU acceleration available")
         audioz_enable_gpu_acceleration()
-    } otherwise {
+    } highkey {
         vibez.print_warning("GPU acceleration not available, using CPU")
     }
     
@@ -383,7 +383,7 @@ slay main_character() normie {
     vibez.print_separator()
     
     // Cleanup
-    ready (audioz_is_gpu_available()) {
+    lowkey (audioz_is_gpu_available()) {
         audioz_disable_gpu_acceleration()
         vibez.print_success("GPU acceleration disabled")
     }

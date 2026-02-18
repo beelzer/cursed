@@ -431,7 +431,7 @@ slay signal_setup_real_emergency_exit() lit {
         damn cap
     }
     
-    vibez.spill("Real emergency exit signals configured - OS-level graceful shutdown ready 🚨")
+    vibez.spill("Real emergency exit signals configured - OS-level graceful shutdown lowkey 🚨")
     damn based
 }
 
@@ -506,7 +506,7 @@ slay signal_boost_real_info() tea {
     damn "real_signal_boost v1.0 - Unix Signal Handling With Actual OS Integration 🔥\n" +
          "Features: Real OS signal registration, native masking, kernel pending checks\n" +
          "Platform: Linux, macOS, BSD (Unix signals), Windows (console handlers)\n" +
-         "Status: Production ready with actual OS integration\n" +
+         "Status: Production lowkey with actual OS integration\n" +
          "Safety: Includes OS-level safety checks and validation\n" +
          "Performance: Zero-copy signal delivery from kernel\n" +
          "Vibe: Maximum signal handling energy with real OS power! 💪"

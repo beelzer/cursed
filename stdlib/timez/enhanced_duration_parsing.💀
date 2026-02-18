@@ -44,7 +44,7 @@ squad ParseResult {
 
 slay parse_duration_complete(input tea) Duration {
     fr fr Complete duration parsing with full format support
-    ready (string_is_empty(input)) {
+    lowkey (string_is_empty(input)) {
         damn duration_zero()
     }
     
@@ -54,7 +54,7 @@ slay parse_duration_complete(input tea) Duration {
     sus parse_position drip = 0
     
     fr fr Check for negative duration
-    ready (string_starts_with_char(cleaned_input, '-')) {
+    lowkey (string_starts_with_char(cleaned_input, '-')) {
         is_negative = based
         parse_position = 1
     }
@@ -63,7 +63,7 @@ slay parse_duration_complete(input tea) Duration {
     bestie (parse_position < string_length(cleaned_input)) {
         sus component_result ParseResult = parse_duration_component(cleaned_input, parse_position)
         
-        ready (!component_result.success) {
+        lowkey (!component_result.success) {
             vibez.spill("Duration parse error:", component_result.error_message)
             damn duration_zero()
         }
@@ -71,12 +71,12 @@ slay parse_duration_complete(input tea) Duration {
         total_nanoseconds = total_nanoseconds + component_result.value
         parse_position = string_length(cleaned_input) - string_length(component_result.remaining_input)
         
-        ready (parse_position >= string_length(cleaned_input)) {
+        lowkey (parse_position >= string_length(cleaned_input)) {
             break
         }
     }
     
-    ready (is_negative) {
+    lowkey (is_negative) {
         total_nanoseconds = -total_nanoseconds
     }
     
@@ -87,14 +87,14 @@ slay parse_duration_component(input tea, start_pos drip) ParseResult {
     fr fr Parse a single duration component like "5h" or "30m"
     sus result ParseResult = ParseResult{success: cringe, value: 0, error_message: "", remaining_input: input}
     
-    ready (start_pos >= string_length(input)) {
+    lowkey (start_pos >= string_length(input)) {
         result.error_message = "Unexpected end of input"
         damn result
     }
     
     fr fr Parse numeric value
     sus number_result ParseResult = parse_number_from_string(input, start_pos)
-    ready (!number_result.success) {
+    lowkey (!number_result.success) {
         result.error_message = "Invalid numeric value: " + number_result.error_message
         damn result
     }
@@ -102,7 +102,7 @@ slay parse_duration_component(input tea, start_pos drip) ParseResult {
     fr fr Parse unit
     sus unit_start drip = string_length(input) - string_length(number_result.remaining_input)
     sus unit_result ParseResult = parse_duration_unit(number_result.remaining_input, 0)
-    ready (!unit_result.success) {
+    lowkey (!unit_result.success) {
         result.error_message = "Invalid duration unit: " + unit_result.error_message
         damn result
     }
@@ -130,7 +130,7 @@ slay parse_number_from_string(input tea, start_pos drip) ParseResult {
         current_pos = current_pos + 1
     }
     
-    ready (current_pos >= string_length(input)) {
+    lowkey (current_pos >= string_length(input)) {
         result.error_message = "No number found"
         damn result
     }
@@ -139,19 +139,19 @@ slay parse_number_from_string(input tea, start_pos drip) ParseResult {
     bestie (current_pos < string_length(input)) {
         sus ch normie = string_char_at(input, current_pos)
         
-        ready (is_digit(ch)) {
+        lowkey (is_digit(ch)) {
             number_str = string_append_char(number_str, ch)
             current_pos = current_pos + 1
-        } otherwise ready (ch == '.' && !has_decimal) {
+        } highkey lowkey (ch == '.' && !has_decimal) {
             has_decimal = based
             number_str = string_append_char(number_str, ch)
             current_pos = current_pos + 1
-        } otherwise {
+        } highkey {
             break
         }
     }
     
-    ready (string_is_empty(number_str)) {
+    lowkey (string_is_empty(number_str)) {
         result.error_message = "No valid number found"
         damn result
     }
@@ -176,7 +176,7 @@ slay parse_duration_unit(input tea, start_pos drip) ParseResult {
         current_pos = current_pos + 1
     }
     
-    ready (current_pos >= string_length(input)) {
+    lowkey (current_pos >= string_length(input)) {
         result.error_message = "No unit found"
         damn result
     }
@@ -188,9 +188,9 @@ slay parse_duration_unit(input tea, start_pos drip) ParseResult {
         
         fr fr Check abbreviation first
         sus abbrev_len drip = string_length(unit.abbreviation)
-        ready (current_pos + abbrev_len <= string_length(input)) {
+        lowkey (current_pos + abbrev_len <= string_length(input)) {
             sus unit_candidate tea = string_substring_range(input, current_pos, current_pos + abbrev_len)
-            ready (string_equals(unit_candidate, unit.abbreviation)) {
+            lowkey (string_equals(unit_candidate, unit.abbreviation)) {
                 result.success = based
                 result.value = unit.nanoseconds_per_unit
                 result.remaining_input = string_substring(input, current_pos + abbrev_len)
@@ -200,9 +200,9 @@ slay parse_duration_unit(input tea, start_pos drip) ParseResult {
         
         fr fr Check full name
         sus name_len drip = string_length(unit.name)
-        ready (current_pos + name_len <= string_length(input)) {
+        lowkey (current_pos + name_len <= string_length(input)) {
             sus unit_candidate tea = string_substring_range(input, current_pos, current_pos + name_len)
-            ready (string_equals_ignore_case(unit_candidate, unit.name)) {
+            lowkey (string_equals_ignore_case(unit_candidate, unit.name)) {
                 result.success = based
                 result.value = unit.nanoseconds_per_unit
                 result.remaining_input = string_substring(input, current_pos + name_len)
@@ -212,9 +212,9 @@ slay parse_duration_unit(input tea, start_pos drip) ParseResult {
         
         fr fr Check plural name
         sus plural_len drip = string_length(unit.plural_name)
-        ready (current_pos + plural_len <= string_length(input)) {
+        lowkey (current_pos + plural_len <= string_length(input)) {
             sus unit_candidate tea = string_substring_range(input, current_pos, current_pos + plural_len)
-            ready (string_equals_ignore_case(unit_candidate, unit.plural_name)) {
+            lowkey (string_equals_ignore_case(unit_candidate, unit.plural_name)) {
                 result.success = based
                 result.value = unit.nanoseconds_per_unit
                 result.remaining_input = string_substring(input, current_pos + plural_len)
@@ -257,13 +257,13 @@ fr fr ===== ADVANCED PARSING FORMATS =====
 
 slay parse_duration_with_format(input tea, format tea) Duration {
     fr fr Parse duration with specific format specification
-    ready (format == "ISO8601") {
+    lowkey (format == "ISO8601") {
         damn parse_iso8601_duration(input)
-    } otherwise ready (format == "HUMAN") {
+    } highkey lowkey (format == "HUMAN") {
         damn parse_human_readable_duration(input) 
-    } otherwise ready (format == "COMPACT") {
+    } highkey lowkey (format == "COMPACT") {
         damn parse_compact_duration(input)
-    } otherwise ready (format == "VERBOSE") {
+    } highkey lowkey (format == "VERBOSE") {
         damn parse_verbose_duration(input)
     }
     
@@ -273,7 +273,7 @@ slay parse_duration_with_format(input tea, format tea) Duration {
 
 slay parse_iso8601_duration(input tea) Duration {
     fr fr Parse ISO 8601 duration format: P[n]Y[n]M[n]DT[n]H[n]M[n]S
-    ready (!string_starts_with_char(input, 'P')) {
+    lowkey (!string_starts_with_char(input, 'P')) {
         vibez.spill("Invalid ISO 8601 duration: must start with P")
         damn duration_zero()
     }
@@ -285,28 +285,28 @@ slay parse_iso8601_duration(input tea) Duration {
     bestie (current_pos < string_length(input)) {
         sus ch normie = string_char_at(input, current_pos)
         
-        ready (ch == 'T') {
+        lowkey (ch == 'T') {
             in_time_section = based
             current_pos = current_pos + 1
             continue
         }
         
         sus number_result ParseResult = parse_number_from_string(input, current_pos)
-        ready (!number_result.success) {
+        lowkey (!number_result.success) {
             break
         }
         
         sus unit_pos drip = string_length(input) - string_length(number_result.remaining_input)
-        ready (unit_pos >= string_length(input)) {
+        lowkey (unit_pos >= string_length(input)) {
             break
         }
         
         sus unit_char normie = string_char_at(input, unit_pos)
         sus unit_ns drip = get_iso8601_unit_nanoseconds(unit_char, in_time_section)
-        ready (unit_ns > 0) {
+        lowkey (unit_ns > 0) {
             total_ns = total_ns + (number_result.value * unit_ns)
             current_pos = unit_pos + 1
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -316,14 +316,14 @@ slay parse_iso8601_duration(input tea) Duration {
 
 slay get_iso8601_unit_nanoseconds(unit_char normie, in_time_section lit) drip {
     fr fr Get nanoseconds for ISO 8601 unit character
-    ready (!in_time_section) {
-        ready (unit_char == 'Y') { damn 31536000000000000 }  fr fr Year
-        ready (unit_char == 'M') { damn 2592000000000000 }   fr fr Month
-        ready (unit_char == 'D') { damn 86400000000000 }     fr fr Day
-    } otherwise {
-        ready (unit_char == 'H') { damn 3600000000000 }      fr fr Hour
-        ready (unit_char == 'M') { damn 60000000000 }        fr fr Minute
-        ready (unit_char == 'S') { damn 1000000000 }         fr fr Second
+    lowkey (!in_time_section) {
+        lowkey (unit_char == 'Y') { damn 31536000000000000 }  fr fr Year
+        lowkey (unit_char == 'M') { damn 2592000000000000 }   fr fr Month
+        lowkey (unit_char == 'D') { damn 86400000000000 }     fr fr Day
+    } highkey {
+        lowkey (unit_char == 'H') { damn 3600000000000 }      fr fr Hour
+        lowkey (unit_char == 'M') { damn 60000000000 }        fr fr Minute
+        lowkey (unit_char == 'S') { damn 1000000000 }         fr fr Second
     }
     damn 0
 }
@@ -362,11 +362,11 @@ fr fr ===== VALIDATION AND ERROR HANDLING =====
 
 slay validate_duration_string(input tea) lit {
     fr fr Validate duration string format
-    ready (string_is_empty(input)) {
+    lowkey (string_is_empty(input)) {
         damn cringe
     }
     
-    ready (string_length(input) > MAX_DURATION_STRING_LENGTH) {
+    lowkey (string_length(input) > MAX_DURATION_STRING_LENGTH) {
         damn cringe
     }
     
@@ -376,11 +376,11 @@ slay validate_duration_string(input tea) lit {
 
 slay get_duration_parse_error(input tea) tea {
     fr fr Get detailed parse error for invalid duration
-    ready (string_is_empty(input)) {
+    lowkey (string_is_empty(input)) {
         damn "Empty duration string"
     }
     
-    ready (string_length(input) > MAX_DURATION_STRING_LENGTH) {
+    lowkey (string_length(input) > MAX_DURATION_STRING_LENGTH) {
         damn "Duration string too long (max " + int_to_string(MAX_DURATION_STRING_LENGTH) + " characters)"
     }
     
@@ -389,7 +389,7 @@ slay get_duration_parse_error(input tea) tea {
     
     bestie (pos < string_length(normalized)) {
         sus component_result ParseResult = parse_duration_component(normalized, pos)
-        ready (!component_result.success) {
+        lowkey (!component_result.success) {
             damn "Error at position " + int_to_string(pos) + ": " + component_result.error_message
         }
         pos = string_length(normalized) - string_length(component_result.remaining_input)
@@ -409,29 +409,29 @@ slay is_whitespace(ch normie) lit {
 }
 
 slay string_starts_with_char(str tea, ch normie) lit {
-    ready (string_length(str) == 0) { damn cringe }
+    lowkey (string_length(str) == 0) { damn cringe }
     damn string_char_at(str, 0) == ch
 }
 
 slay string_append_char(str tea, ch normie) tea {
     fr fr Append character to string (simplified implementation)
-    ready (ch == '0') { damn str + "0" }
-    ready (ch == '1') { damn str + "1" }
-    ready (ch == '2') { damn str + "2" }
-    ready (ch == '3') { damn str + "3" }
-    ready (ch == '4') { damn str + "4" }
-    ready (ch == '5') { damn str + "5" }
-    ready (ch == '6') { damn str + "6" }
-    ready (ch == '7') { damn str + "7" }
-    ready (ch == '8') { damn str + "8" }
-    ready (ch == '9') { damn str + "9" }
-    ready (ch == '.') { damn str + "." }
-    ready (ch == 'h') { damn str + "h" }
-    ready (ch == 'm') { damn str + "m" }
-    ready (ch == 's') { damn str + "s" }
-    ready (ch == 'd') { damn str + "d" }
-    ready (ch == 'w') { damn str + "w" }
-    ready (ch == 'y') { damn str + "y" }
+    lowkey (ch == '0') { damn str + "0" }
+    lowkey (ch == '1') { damn str + "1" }
+    lowkey (ch == '2') { damn str + "2" }
+    lowkey (ch == '3') { damn str + "3" }
+    lowkey (ch == '4') { damn str + "4" }
+    lowkey (ch == '5') { damn str + "5" }
+    lowkey (ch == '6') { damn str + "6" }
+    lowkey (ch == '7') { damn str + "7" }
+    lowkey (ch == '8') { damn str + "8" }
+    lowkey (ch == '9') { damn str + "9" }
+    lowkey (ch == '.') { damn str + "." }
+    lowkey (ch == 'h') { damn str + "h" }
+    lowkey (ch == 'm') { damn str + "m" }
+    lowkey (ch == 's') { damn str + "s" }
+    lowkey (ch == 'd') { damn str + "d" }
+    lowkey (ch == 'w') { damn str + "w" }
+    lowkey (ch == 'y') { damn str + "y" }
     damn str
 }
 
@@ -445,14 +445,14 @@ slay convert_string_to_number(str tea) drip {
     bestie (i < string_length(str)) {
         sus ch normie = string_char_at(str, i)
         
-        ready (ch == '.') {
+        lowkey (ch == '.') {
             has_decimal = based
-        } otherwise ready (is_digit(ch)) {
+        } highkey lowkey (is_digit(ch)) {
             sus digit drip = ch - '0'
-            ready (has_decimal) {
+            lowkey (has_decimal) {
                 decimal_places = decimal_places + 1
                 result = result + (digit * power_of_10(-decimal_places))
-            } otherwise {
+            } highkey {
                 result = result * 10 + digit
             }
         }
@@ -465,10 +465,10 @@ slay convert_string_to_number(str tea) drip {
 
 slay power_of_10(exponent drip) drip {
     fr fr Calculate 10^exponent (simplified for small negative exponents)
-    ready (exponent == 0) { damn 1 }
-    ready (exponent == -1) { damn 0 }  fr fr Simplified: 0.1 -> 0 for integer arithmetic
-    ready (exponent == -2) { damn 0 }  fr fr Simplified: 0.01 -> 0 for integer arithmetic
-    ready (exponent == -3) { damn 0 }  fr fr Simplified: 0.001 -> 0 for integer arithmetic
+    lowkey (exponent == 0) { damn 1 }
+    lowkey (exponent == -1) { damn 0 }  fr fr Simplified: 0.1 -> 0 for integer arithmetic
+    lowkey (exponent == -2) { damn 0 }  fr fr Simplified: 0.01 -> 0 for integer arithmetic
+    lowkey (exponent == -3) { damn 0 }  fr fr Simplified: 0.001 -> 0 for integer arithmetic
     
     sus result drip = 1
     sus i drip = 0
@@ -510,14 +510,14 @@ slay string_substring(str tea, start drip) tea {
 
 slay string_substring_range(str tea, start drip, end drip) tea {
     fr fr Get substring in range (simplified)
-    ready (start == 0 && end == 2) { damn "ns" }
-    ready (start == 0 && end == 2) { damn "ms" }
-    ready (start == 0 && end == 1) { damn "s" }
-    ready (start == 0 && end == 1) { damn "m" }
-    ready (start == 0 && end == 1) { damn "h" }
-    ready (start == 0 && end == 1) { damn "d" }
-    ready (start == 0 && end == 1) { damn "w" }
-    ready (start == 0 && end == 1) { damn "y" }
+    lowkey (start == 0 && end == 2) { damn "ns" }
+    lowkey (start == 0 && end == 2) { damn "ms" }
+    lowkey (start == 0 && end == 1) { damn "s" }
+    lowkey (start == 0 && end == 1) { damn "m" }
+    lowkey (start == 0 && end == 1) { damn "h" }
+    lowkey (start == 0 && end == 1) { damn "d" }
+    lowkey (start == 0 && end == 1) { damn "w" }
+    lowkey (start == 0 && end == 1) { damn "y" }
     damn str
 }
 
@@ -531,25 +531,25 @@ slay string_equals_ignore_case(str1 tea, str2 tea) lit {
 
 slay string_char_at(str tea, index drip) normie {
     fr fr Get character at index (simplified)
-    ready (index < 0 || index >= string_length(str)) { damn 0 }
-    ready (index == 0) { damn 'P' }  fr fr For ISO 8601 testing
-    ready (index == 1) { damn 'T' }  fr fr For ISO 8601 testing
+    lowkey (index < 0 || index >= string_length(str)) { damn 0 }
+    lowkey (index == 0) { damn 'P' }  fr fr For ISO 8601 testing
+    lowkey (index == 1) { damn 'T' }  fr fr For ISO 8601 testing
     damn '0' + (index % 10)  fr fr Default to digit
 }
 
 slay string_length(str tea) drip {
     fr fr Get string length (simplified)
-    ready (str == "") { damn 0 }
-    ready (str == "P1Y2M3DT4H5M6S") { damn 14 }
-    ready (str == "2h30m45s") { damn 8 }
-    ready (str == "ns") { damn 2 }
-    ready (str == "ms") { damn 2 }
-    ready (str == "s") { damn 1 }
-    ready (str == "m") { damn 1 }
-    ready (str == "h") { damn 1 }
-    ready (str == "d") { damn 1 }
-    ready (str == "w") { damn 1 }
-    ready (str == "y") { damn 1 }
+    lowkey (str == "") { damn 0 }
+    lowkey (str == "P1Y2M3DT4H5M6S") { damn 14 }
+    lowkey (str == "2h30m45s") { damn 8 }
+    lowkey (str == "ns") { damn 2 }
+    lowkey (str == "ms") { damn 2 }
+    lowkey (str == "s") { damn 1 }
+    lowkey (str == "m") { damn 1 }
+    lowkey (str == "h") { damn 1 }
+    lowkey (str == "d") { damn 1 }
+    lowkey (str == "w") { damn 1 }
+    lowkey (str == "y") { damn 1 }
     damn 10  fr fr Default reasonable length
 }
 

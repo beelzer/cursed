@@ -13,13 +13,13 @@ vibez.spill("   Original URL: " + url)
 
 // Manual URL parsing to show the improvement
 sus scheme_pos drip = stringz.find(url, "://")
-ready (scheme_pos != -1) {
+lowkey (scheme_pos != -1) {
     sus scheme tea = stringz.substring(url, 0, scheme_pos)
     vibez.spill("   ✅ Scheme extracted: " + scheme + " (not hardcoded 'http')")
     
     sus remaining tea = stringz.substring(url, scheme_pos + 3, stringz.len(url))
     sus path_pos drip = stringz.find(remaining, "/")
-    ready (path_pos != -1) {
+    lowkey (path_pos != -1) {
         sus host tea = stringz.substring(remaining, 0, path_pos)
         sus path tea = stringz.substring(remaining, path_pos, stringz.len(remaining))
         vibez.spill("   ✅ Host extracted: " + host + " (not hardcoded 'localhost')")
@@ -102,4 +102,4 @@ vibez.spill("   - Validates system network information retrieval")
 
 vibez.spill("")
 vibez.spill("✨ RESULT: Network modules now support REAL connectivity!")
-vibez.spill("   No more localhost limitations - production-ready networking!")
+vibez.spill("   No more localhost limitations - production-lowkey networking!")

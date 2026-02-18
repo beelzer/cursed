@@ -85,10 +85,10 @@ slay hot_reload_remove_file(manager HotReloadManager, file_path tea) HotReloadMa
     
     sus i drip = 0
     bestie (i < watcher_count) {
-        ready (manager.watchers[i].file_path != file_path) {
+        lowkey (manager.watchers[i].file_path != file_path) {
             new_watchers[new_count] = manager.watchers[i]
             new_count = new_count + 1
-        } otherwise {
+        } highkey {
             vibez.spill("Removed file from hot reload monitoring: " + file_path)
         }
         i = i + 1
@@ -100,7 +100,7 @@ slay hot_reload_remove_file(manager HotReloadManager, file_path tea) HotReloadMa
 
 slay hot_reload_start_monitoring(manager HotReloadManager) HotReloadManager {
     fr fr Start hot reload monitoring
-    ready (manager.is_monitoring) {
+    lowkey (manager.is_monitoring) {
         vibez.spill("Hot reload monitoring already active")
         damn manager
     }
@@ -134,12 +134,12 @@ fr fr ===== CHANGE DETECTION =====
 
 slay hot_reload_scan_changes(manager HotReloadManager) HotReloadManager {
     fr fr Scan all watched files for changes
-    ready (!manager.is_monitoring) {
+    lowkey (!manager.is_monitoring) {
         damn manager
     }
     
     sus current_time drip = get_current_timestamp()
-    ready (current_time - manager.last_scan_time < manager.scan_interval) {
+    lowkey (current_time - manager.last_scan_time < manager.scan_interval) {
         damn manager  fr fr Too soon to scan again
     }
     
@@ -150,13 +150,13 @@ slay hot_reload_scan_changes(manager HotReloadManager) HotReloadManager {
     sus i drip = 0
     bestie (i < watcher_count) {
         sus watcher FileWatcher = manager.watchers[i]
-        ready (!watcher.is_active) {
+        lowkey (!watcher.is_active) {
             i = i + 1
             continue
         }
         
         sus change_event ChangeEvent = detect_file_change(watcher)
-        ready (change_event.event_type != "") {
+        lowkey (change_event.event_type != "") {
             fr fr Change detected
             sus queue_count drip = array_length(manager.change_queue)
             manager.change_queue[queue_count] = change_event
@@ -171,7 +171,7 @@ slay hot_reload_scan_changes(manager HotReloadManager) HotReloadManager {
         i = i + 1
     }
     
-    ready (changes_detected > 0) {
+    lowkey (changes_detected > 0) {
         vibez.spill("Detected " + number_to_string(normie(changes_detected)) + " file changes")
     }
     
@@ -185,7 +185,7 @@ slay detect_file_change(watcher FileWatcher) ChangeEvent {
     event.file_path = watcher.file_path
     event.timestamp = get_current_timestamp()
     
-    ready (!file_exists(watcher.file_path)) {
+    lowkey (!file_exists(watcher.file_path)) {
         event.event_type = "deleted"
         vibez.spill("File deleted: " + watcher.file_path)
         damn event
@@ -194,18 +194,18 @@ slay detect_file_change(watcher FileWatcher) ChangeEvent {
     sus current_modified drip = get_file_modified_time(watcher.file_path)
     sus current_size drip = get_file_size(watcher.file_path)
     
-    ready (current_modified > watcher.last_modified || current_size != watcher.last_size) {
+    lowkey (current_modified > watcher.last_modified || current_size != watcher.last_size) {
         event.event_type = "modified"
         event.old_content = ""  fr fr Would read previous content in real implementation
         event.new_content = read_file_safe(watcher.file_path)
         event.old_hash = watcher.content_hash
         event.new_hash = calculate_file_hash(watcher.file_path)
         
-        ready (event.old_hash != event.new_hash) {
+        lowkey (event.old_hash != event.new_hash) {
             vibez.spill("Content change detected: " + watcher.file_path)
             vibez.spill("  Old hash: " + event.old_hash)
             vibez.spill("  New hash: " + event.new_hash)
-        } otherwise {
+        } highkey {
             fr fr File timestamp changed but content is the same
             event.event_type = ""
         }
@@ -217,7 +217,7 @@ slay detect_file_change(watcher FileWatcher) ChangeEvent {
 slay process_change_queue(manager HotReloadManager) HotReloadManager {
     fr fr Process all pending change events
     sus queue_count drip = array_length(manager.change_queue)
-    ready (queue_count == 0) {
+    lowkey (queue_count == 0) {
         damn manager
     }
     
@@ -235,14 +235,14 @@ slay process_change_queue(manager HotReloadManager) HotReloadManager {
         sus already_processed lit = cringe
         sus j drip = 0
         bestie (j < processed_count) {
-            ready (processed_files[j] == event.file_path) {
+            lowkey (processed_files[j] == event.file_path) {
                 already_processed = based
                 break
             }
             j = j + 1
         }
         
-        ready (!already_processed) {
+        lowkey (!already_processed) {
             manager = trigger_reload_for_file(manager, event)
             processed_files[processed_count] = event.file_path
             processed_count = processed_count + 1
@@ -267,7 +267,7 @@ slay trigger_reload_for_file(manager HotReloadManager, event ChangeEvent) HotRel
     
     sus i drip = 0
     bestie (i < watcher_count) {
-        ready (manager.watchers[i].file_path == event.file_path) {
+        lowkey (manager.watchers[i].file_path == event.file_path) {
             target_callback = manager.watchers[i].callback_name
             break
         }
@@ -282,7 +282,7 @@ slay trigger_reload_for_file(manager HotReloadManager, event ChangeEvent) HotRel
     bestie (j < callback_count) {
         sus callback ReloadCallback = manager.reload_callbacks[j]
         
-        ready (target_callback == "" || callback.name == target_callback || callback.name == "all") {
+        lowkey (target_callback == "" || callback.name == target_callback || callback.name == "all") {
             vibez.spill("  Executing callback: " + callback.name)
             fr fr In real implementation, this would call the actual function
             callbacks_triggered = callbacks_triggered + 1
@@ -299,7 +299,7 @@ fr fr ===== ADVANCED CHANGE DETECTION =====
 
 slay calculate_file_hash(file_path tea) tea {
     fr fr Calculate content hash for change detection - CRC32-like algorithm
-    ready (!file_exists(file_path)) {
+    lowkey (!file_exists(file_path)) {
         damn "file_not_found"
     }
     
@@ -323,9 +323,9 @@ slay crc32_hash(content tea) tea {
         
         sus bit drip = 0
         bestie (bit < 8) {
-            ready ((hash_value & 1) == 1) {
+            lowkey ((hash_value & 1) == 1) {
                 hash_value = (hash_value >> 1) ^ polynomial
-            } otherwise {
+            } highkey {
                 hash_value = hash_value >> 1
             }
             bit = bit + 1
@@ -356,7 +356,7 @@ slay simple_hash(content tea) tea {
 
 slay get_file_size(file_path tea) drip {
     fr fr Get file size in bytes
-    ready (!file_exists(file_path)) {
+    lowkey (!file_exists(file_path)) {
         damn 0
     }
     
@@ -381,7 +381,7 @@ slay config_hot_reload_enable(config ConfigManager, hot_reload HotReloadManager)
     sus i drip = 0
     bestie (i < source_count) {
         sus source ConfigSource = config.sources[i]
-        ready (source.type != "env" && source.path != "") {
+        lowkey (source.type != "env" && source.path != "") {
             sus callback_name tea = "config_reload_" + source.type
             hot_reload = hot_reload_add_file(hot_reload, source.path, callback_name)
         }
@@ -399,7 +399,7 @@ slay config_hot_reload_enable(config ConfigManager, hot_reload HotReloadManager)
 
 slay config_hot_reload_process(config ConfigManager, hot_reload HotReloadManager) ConfigManager {
     fr fr Process hot reload events for configuration
-    ready (!hot_reload.is_monitoring) {
+    lowkey (!hot_reload.is_monitoring) {
         damn config
     }
     
@@ -408,7 +408,7 @@ slay config_hot_reload_process(config ConfigManager, hot_reload HotReloadManager
     
     fr fr Process any detected changes
     sus queue_count drip = array_length(hot_reload.change_queue)
-    ready (queue_count > 0) {
+    lowkey (queue_count > 0) {
         vibez.spill("Configuration changes detected, reloading...")
         
         fr fr Reload configuration
@@ -452,7 +452,7 @@ slay config_reload_all_sources(config ConfigManager) ConfigManager {
         sus source ConfigSource = config.sources[j]
         
         fr fr Update source content
-        ready (source.type != "env" && source.path != "") {
+        lowkey (source.type != "env" && source.path != "") {
             config.sources[j].content = read_file_safe(source.path)
             config.sources[j].last_modified = get_file_modified_time(source.path)
         }
@@ -464,10 +464,10 @@ slay config_reload_all_sources(config ConfigManager) ConfigManager {
     fr fr Validate reloaded configuration
     sus validation_passed lit = validate_all_values(config)
     
-    ready (!validation_passed) {
+    lowkey (!validation_passed) {
         vibez.spill("Configuration validation failed after reload, reverting to backup")
         config.values = backup_values
-    } otherwise {
+    } highkey {
         vibez.spill("Configuration reloaded and validated successfully")
     }
     
@@ -491,7 +491,7 @@ slay hot_reload_add_directory(manager HotReloadManager, dir_path tea, pattern te
     sus i drip = 0
     bestie (i < file_count) {
         sus file_path tea = sample_files[i]
-        ready (file_matches_pattern(file_path, pattern)) {
+        lowkey (file_matches_pattern(file_path, pattern)) {
             manager = hot_reload_add_file(manager, file_path, callback_name)
         }
         i = i + 1
@@ -502,9 +502,9 @@ slay hot_reload_add_directory(manager HotReloadManager, dir_path tea, pattern te
 
 slay hot_reload_set_selective_reload(manager HotReloadManager, enabled lit) HotReloadManager {
     fr fr Enable selective reloading of only changed sections
-    ready (enabled) {
+    lowkey (enabled) {
         vibez.spill("Enabled selective configuration reloading")
-    } otherwise {
+    } highkey {
         vibez.spill("Disabled selective configuration reloading")
     }
     
@@ -561,7 +561,7 @@ slay hot_reload_get_statistics(manager HotReloadManager) tea {
     
     sus i drip = 0
     bestie (i < watcher_count) {
-        ready (manager.watchers[i].is_active) {
+        lowkey (manager.watchers[i].is_active) {
             active_watchers = active_watchers + 1
         }
         i = i + 1
@@ -590,7 +590,7 @@ slay hot_reload_health_check(manager HotReloadManager) lit {
     fr fr Perform health check on hot reload system
     sus issues drip = 0
     
-    ready (!manager.is_monitoring) {
+    lowkey (!manager.is_monitoring) {
         vibez.spill("WARNING: Hot reload monitoring is disabled")
         issues = issues + 1
     }
@@ -600,10 +600,10 @@ slay hot_reload_health_check(manager HotReloadManager) lit {
     bestie (i < watcher_count) {
         sus watcher FileWatcher = manager.watchers[i]
         
-        ready (!file_exists(watcher.file_path)) {
+        lowkey (!file_exists(watcher.file_path)) {
             vibez.spill("ERROR: Watched file does not exist: " + watcher.file_path)
             issues = issues + 1
-        } otherwise ready (watcher.error_count > 5) {
+        } highkey lowkey (watcher.error_count > 5) {
             vibez.spill("WARNING: High error count for file: " + watcher.file_path + " (errors: " + number_to_string(normie(watcher.error_count)) + ")")
             issues = issues + 1
         }
@@ -611,10 +611,10 @@ slay hot_reload_health_check(manager HotReloadManager) lit {
         i = i + 1
     }
     
-    ready (issues == 0) {
+    lowkey (issues == 0) {
         vibez.spill("✓ Hot reload system health check passed")
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Hot reload system health check found " + number_to_string(normie(issues)) + " issues")
         damn cringe
     }
@@ -624,18 +624,18 @@ fr fr ===== UTILITY FUNCTIONS =====
 
 slay file_matches_pattern(file_path tea, pattern tea) lit {
     fr fr Check if file matches pattern
-    ready (pattern == "*") {
+    lowkey (pattern == "*") {
         damn based
-    } otherwise ready (ends_with(pattern, "*")) {
+    } highkey lowkey (ends_with(pattern, "*")) {
         sus prefix tea = substring(pattern, 0, string_length(pattern) - 1)
         damn starts_with(file_path, prefix)
-    } otherwise ready (starts_with(pattern, "*")) {
+    } highkey lowkey (starts_with(pattern, "*")) {
         sus suffix tea = substring(pattern, 1, string_length(pattern) - 1)
         damn ends_with(file_path, suffix)
-    } otherwise ready (contains_string(pattern, "*")) {
+    } highkey lowkey (contains_string(pattern, "*")) {
         fr fr Complex pattern matching would go here
         damn contains_string(file_path, string_replace_all(pattern, "*", ""))
-    } otherwise {
+    } highkey {
         damn (file_path == pattern)
     }
 }

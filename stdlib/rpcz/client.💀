@@ -88,7 +88,7 @@ slay call_method(client &RpcClient, method tea, params tea) yikes<tea> {
     sus response RpcResponse = execute_request(client, rpc_request)
     
     # Check for errors
-    ready (response.error != "") {
+    lowkey (response.error != "") {
         yikes "RPC error: " + response.error
     }
     
@@ -117,9 +117,9 @@ slay call_method_async(client &RpcClient, method tea, params tea) yikes<chan<tea
             }
         }
         
-        ready (response.error != "") {
+        lowkey (response.error != "") {
             result_chan <- "ERROR: " + response.error
-        } otherwise {
+        } highkey {
             result_chan <- response.result
         }
     }
@@ -156,7 +156,7 @@ slay execute_request(client &RpcClient, rpc_request RpcRequest) yikes<RpcRespons
                 last_error = error
                 
                 # Wait before retry (except last attempt)
-                ready (attempt < client.config.max_retries) {
+                lowkey (attempt < client.config.max_retries) {
                     timez.sleep_ms(client.config.retry_delay_ms * (attempt + 1))
                 }
                 continue
@@ -184,7 +184,7 @@ slay execute_single_request(client &RpcClient, rpc_request RpcRequest) yikes<Rpc
     networkz.set_header(http_request, "User-Agent", client.config.user_agent)
     
     # Add authentication if configured
-    ready (client.config.auth_token != "") {
+    lowkey (client.config.auth_token != "") {
         networkz.set_header(http_request, "Authorization", "Bearer " + client.config.auth_token)
     }
     
@@ -194,7 +194,7 @@ slay execute_single_request(client &RpcClient, rpc_request RpcRequest) yikes<Rpc
     }
     
     # Check HTTP status
-    ready (http_response.status_code != 200) {
+    lowkey (http_response.status_code != 200) {
         yikes "HTTP error: " + string_from_int(http_response.status_code) + " " + http_response.status_text
     }
     
@@ -225,7 +225,7 @@ slay parse_rpc_response(json_data tea) yikes<RpcResponse> {
         when _ -> yikes "Missing jsonrpc field"
     }
     
-    ready (response.jsonrpc != "2.0") {
+    lowkey (response.jsonrpc != "2.0") {
         yikes "Invalid JSON-RPC version"
     }
     
@@ -249,13 +249,13 @@ slay parse_rpc_response(json_data tea) yikes<RpcResponse> {
 # Make batch RPC call
 slay call_batch(client &RpcClient, requests RpcRequest[value]) yikes<RpcResponse[value]> {
     # Validate batch requests
-    ready (len(requests) == 0) {
+    lowkey (len(requests) == 0) {
         yikes "Batch cannot be empty"
     }
     
     # Ensure all requests have IDs (except notifications)
     bestie (request in requests) {
-        ready (request.id == "" && request.method != "") {
+        lowkey (request.id == "" && request.method != "") {
             # Generate ID for non-notification requests
             request.id = generate_request_id(client)
         }
@@ -273,7 +273,7 @@ slay call_batch(client &RpcClient, requests RpcRequest[value]) yikes<RpcResponse
     networkz.set_header(http_request, "Content-Type", "application/json")
     networkz.set_header(http_request, "User-Agent", client.config.user_agent)
     
-    ready (client.config.auth_token != "") {
+    lowkey (client.config.auth_token != "") {
         networkz.set_header(http_request, "Authorization", "Bearer " + client.config.auth_token)
     }
     
@@ -282,7 +282,7 @@ slay call_batch(client &RpcClient, requests RpcRequest[value]) yikes<RpcResponse
         when _ -> yikes "Batch HTTP request failed"
     }
     
-    ready (http_response.status_code != 200) {
+    lowkey (http_response.status_code != 200) {
         yikes "Batch HTTP error: " + string_from_int(http_response.status_code)
     }
     
@@ -355,10 +355,10 @@ slay get_client_stats(client &RpcClient) tea {
 slay get_pooled_connection(client &RpcClient) yikes<networkz.Connection> {
     # Try to get existing connection
     select {
-        ready connection := <-client.connection_pool -> {
+        lowkey connection := <-client.connection_pool -> {
             damn connection
         }
-        ready after timez.after(100) -> {
+        lowkey after timez.after(100) -> {
             # Create new connection if pool is empty
             damn networkz.create_connection(client.config.endpoint)
         }
@@ -368,8 +368,8 @@ slay get_pooled_connection(client &RpcClient) yikes<networkz.Connection> {
 slay return_pooled_connection(client &RpcClient, conn networkz.Connection) {
     # Return connection to pool if not full
     select {
-        ready client.connection_pool <- conn -> {}
-        ready -> {
+        lowkey client.connection_pool <- conn -> {}
+        lowkey -> {
             # Pool is full, close connection
             networkz.close_connection(conn)
         }

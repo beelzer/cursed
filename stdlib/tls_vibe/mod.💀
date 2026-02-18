@@ -76,12 +76,12 @@ fr fr ===== TLS VERSION VALIDATION =====
 
 slay is_tls_version_secure(version tea) lit {
     fr fr Check if TLS version is secure (1.2 or higher)
-    ready (version == TLS_VERSION_1_3) { damn based }
-    ready (version == TLS_VERSION_1_2) { damn based }
-    ready (version == "TLSv1.1") { damn cringe }  fr fr Deprecated
-    ready (version == "TLSv1.0") { damn cringe }  fr fr Deprecated  
-    ready (version == "SSLv3") { damn cringe }    fr fr Insecure
-    ready (version == "SSLv2") { damn cringe }    fr fr Insecure
+    lowkey (version == TLS_VERSION_1_3) { damn based }
+    lowkey (version == TLS_VERSION_1_2) { damn based }
+    lowkey (version == "TLSv1.1") { damn cringe }  fr fr Deprecated
+    lowkey (version == "TLSv1.0") { damn cringe }  fr fr Deprecated  
+    lowkey (version == "SSLv3") { damn cringe }    fr fr Insecure
+    lowkey (version == "SSLv2") { damn cringe }    fr fr Insecure
     damn cringe
 }
 
@@ -99,19 +99,19 @@ fr fr ===== CIPHER SUITE VALIDATION =====
 
 slay is_cipher_suite_secure(cipher tea) lit {
     fr fr Check if cipher suite is secure (AEAD with PFS)
-    ready (cipher == CIPHER_AES_256_GCM_SHA384) { damn based }
-    ready (cipher == CIPHER_CHACHA20_POLY1305) { damn based }
-    ready (cipher == CIPHER_ECDHE_RSA_AES_256_GCM) { damn based }
-    ready (cipher == CIPHER_ECDHE_RSA_CHACHA20) { damn based }
+    lowkey (cipher == CIPHER_AES_256_GCM_SHA384) { damn based }
+    lowkey (cipher == CIPHER_CHACHA20_POLY1305) { damn based }
+    lowkey (cipher == CIPHER_ECDHE_RSA_AES_256_GCM) { damn based }
+    lowkey (cipher == CIPHER_ECDHE_RSA_CHACHA20) { damn based }
     
     fr fr Known insecure ciphers
-    ready (contains_substring(cipher, "DES")) { damn cringe }
-    ready (contains_substring(cipher, "RC4")) { damn cringe }
-    ready (contains_substring(cipher, "MD5")) { damn cringe }
-    ready (contains_substring(cipher, "SHA1")) { damn cringe }
-    ready (contains_substring(cipher, "NULL")) { damn cringe }
-    ready (contains_substring(cipher, "EXPORT")) { damn cringe }
-    ready (contains_substring(cipher, "ANON")) { damn cringe }
+    lowkey (contains_substring(cipher, "DES")) { damn cringe }
+    lowkey (contains_substring(cipher, "RC4")) { damn cringe }
+    lowkey (contains_substring(cipher, "MD5")) { damn cringe }
+    lowkey (contains_substring(cipher, "SHA1")) { damn cringe }
+    lowkey (contains_substring(cipher, "NULL")) { damn cringe }
+    lowkey (contains_substring(cipher, "EXPORT")) { damn cringe }
+    lowkey (contains_substring(cipher, "ANON")) { damn cringe }
     
     fr fr Default to insecure for unknown ciphers
     damn cringe
@@ -119,10 +119,10 @@ slay is_cipher_suite_secure(cipher tea) lit {
 
 slay provides_perfect_forward_secrecy(cipher tea) lit {
     fr fr Check if cipher suite provides Perfect Forward Secrecy
-    ready (contains_substring(cipher, "ECDHE")) { damn based }
-    ready (contains_substring(cipher, "DHE")) { damn based }
-    ready (cipher == CIPHER_AES_256_GCM_SHA384) { damn based }  fr fr TLS 1.3 ciphers have PFS
-    ready (cipher == CIPHER_CHACHA20_POLY1305) { damn based }   fr fr TLS 1.3 ciphers have PFS
+    lowkey (contains_substring(cipher, "ECDHE")) { damn based }
+    lowkey (contains_substring(cipher, "DHE")) { damn based }
+    lowkey (cipher == CIPHER_AES_256_GCM_SHA384) { damn based }  fr fr TLS 1.3 ciphers have PFS
+    lowkey (cipher == CIPHER_CHACHA20_POLY1305) { damn based }   fr fr TLS 1.3 ciphers have PFS
     damn cringe
 }
 
@@ -146,8 +146,8 @@ slay is_certificate_expired(not_before drip, not_after drip) lit {
     fr fr Using mock current time for demonstration
     sus current_time drip = 1700000000  fr fr Mock timestamp
     
-    ready (current_time < not_before) { damn based }  fr fr Not yet valid
-    ready (current_time > not_after) { damn based }   fr fr Expired
+    lowkey (current_time < not_before) { damn based }  fr fr Not yet valid
+    lowkey (current_time > not_after) { damn based }   fr fr Expired
     damn cringe  fr fr Valid time range
 }
 
@@ -158,16 +158,16 @@ slay is_certificate_time_valid(not_before drip, not_after drip) lit {
 
 slay validate_hostname_match(certificate_subject tea, hostname tea) lit {
     fr fr Validate if certificate subject matches hostname
-    ready (contains_substring(certificate_subject, hostname)) {
+    lowkey (contains_substring(certificate_subject, hostname)) {
         damn based
     }
     
     fr fr Check for wildcard certificates
-    ready (contains_substring(certificate_subject, "*.")) {
+    lowkey (contains_substring(certificate_subject, "*.")) {
         sus wildcard_start drip = indexOf(certificate_subject, "*.")
-        ready (wildcard_start >= 0) {
+        lowkey (wildcard_start >= 0) {
             sus domain_part tea = substring(certificate_subject, wildcard_start + 2, 50)
-            ready (ends_with(hostname, domain_part)) {
+            lowkey (ends_with(hostname, domain_part)) {
                 damn based
             }
         }
@@ -183,11 +183,11 @@ slay check_certificate_chain_depth(chain_length drip, max_depth drip) lit {
 
 slay has_weak_signature_algorithm(signature_algorithm tea) lit {
     fr fr Check for weak signature algorithms
-    ready (signature_algorithm == "md5WithRSAEncryption") { damn based }
-    ready (signature_algorithm == "sha1WithRSAEncryption") { damn based }
-    ready (signature_algorithm == "md2WithRSAEncryption") { damn based }
-    ready (contains_substring(signature_algorithm, "md5")) { damn based }
-    ready (contains_substring(signature_algorithm, "sha1")) { damn based }
+    lowkey (signature_algorithm == "md5WithRSAEncryption") { damn based }
+    lowkey (signature_algorithm == "sha1WithRSAEncryption") { damn based }
+    lowkey (signature_algorithm == "md2WithRSAEncryption") { damn based }
+    lowkey (contains_substring(signature_algorithm, "md5")) { damn based }
+    lowkey (contains_substring(signature_algorithm, "sha1")) { damn based }
     damn cringe
 }
 
@@ -201,7 +201,7 @@ slay establish_secure_connection(hostname tea, port drip, config tea) tea {
     sus min_tls tea = json_get_string(config, "min_tls_version")
     
     fr fr Validate TLS version
-    ready (!is_tls_version_secure(min_tls)) {
+    lowkey (!is_tls_version_secure(min_tls)) {
         damn create_tls_error("INSECURE_TLS_VERSION", "TLS version " + min_tls + " is not secure")
     }
     
@@ -226,10 +226,10 @@ slay establish_secure_connection(hostname tea, port drip, config tea) tea {
 
 slay negotiate_tls_version(client_min tea, server_max tea) tea {
     fr fr Negotiate TLS version between client and server
-    ready (client_min == TLS_VERSION_1_3 && server_max == TLS_VERSION_1_3) {
+    lowkey (client_min == TLS_VERSION_1_3 && server_max == TLS_VERSION_1_3) {
         damn TLS_VERSION_1_3
     }
-    ready (is_tls_version_secure(client_min)) {
+    lowkey (is_tls_version_secure(client_min)) {
         damn client_min
     }
     damn TLS_VERSION_1_2  fr fr Fallback to minimum secure version
@@ -260,28 +260,28 @@ slay validate_tls_configuration(config tea) tea {
     
     fr fr Check minimum TLS version
     sus min_tls tea = json_get_string(config, "min_tls_version")
-    ready (!is_tls_version_secure(min_tls)) {
+    lowkey (!is_tls_version_secure(min_tls)) {
         warnings[warning_count] = "Insecure minimum TLS version: " + min_tls
         warning_count = warning_count + 1
     }
     
     fr fr Check certificate validation
     sus verify_certs lit = json_get_boolean(config, "verify_certificates")
-    ready (!verify_certs) {
+    lowkey (!verify_certs) {
         warnings[warning_count] = "CRITICAL: Certificate validation disabled"
         warning_count = warning_count + 1
     }
     
     fr fr Check hostname verification
     sus verify_hostname lit = json_get_boolean(config, "verify_hostname")
-    ready (!verify_hostname) {
+    lowkey (!verify_hostname) {
         warnings[warning_count] = "CRITICAL: Hostname verification disabled"
         warning_count = warning_count + 1
     }
     
     fr fr Check self-signed certificates
     sus allow_self_signed lit = json_get_boolean(config, "allow_self_signed")
-    ready (allow_self_signed) {
+    lowkey (allow_self_signed) {
         warnings[warning_count] = "WARNING: Self-signed certificates allowed"
         warning_count = warning_count + 1
     }
@@ -294,7 +294,7 @@ slay validate_tls_configuration(config tea) tea {
     
     sus i drip = 0
     bestie (i < warning_count) {
-        ready (i > 0) {
+        lowkey (i > 0) {
             result = result + ","
         }
         result = result + "\"" + warnings[i] + "\""
@@ -353,7 +353,7 @@ slay secure_https_get(url tea) tea {
     sus path tea = parse_url_path(url)
     
     fr fr Validate URL is HTTPS
-    ready (!starts_with(url, "https://")) {
+    lowkey (!starts_with(url, "https://")) {
         damn create_tls_error("INSECURE_PROTOCOL", "URL must use HTTPS protocol")
     }
     
@@ -361,7 +361,7 @@ slay secure_https_get(url tea) tea {
     sus connection tea = establish_secure_connection(host, 443, config)
     sus connection_status tea = json_get_string(connection, "status")
     
-    ready (connection_status == "error") {
+    lowkey (connection_status == "error") {
         damn connection
     }
     
@@ -382,14 +382,14 @@ slay secure_https_post(url tea, data tea) tea {
     sus config tea = create_high_security_tls_config()
     sus host tea = parse_url_host(url)
     
-    ready (!starts_with(url, "https://")) {
+    lowkey (!starts_with(url, "https://")) {
         damn create_tls_error("INSECURE_PROTOCOL", "URL must use HTTPS protocol")
     }
     
     sus connection tea = establish_secure_connection(host, 443, config)
     sus connection_status tea = json_get_string(connection, "status")
     
-    ready (connection_status == "error") {
+    lowkey (connection_status == "error") {
         damn connection
     }
     
@@ -431,7 +431,7 @@ slay create_tls_context(config tea, ca_bundle_path tea) tea {
     context_info = context_info + "\"config\":" + config + ","
     context_info = context_info + "\"ca_certificates\":" + ca_info + ","
     context_info = context_info + "\"validation\":" + validation_result + ","
-    context_info = context_info + "\"ready\":" + json_boolean_to_string(json_get_boolean(validation_result, "configuration_valid"))
+    context_info = context_info + "\"lowkey\":" + json_boolean_to_string(json_get_boolean(validation_result, "configuration_valid"))
     context_info = context_info + "}"
     
     damn context_info

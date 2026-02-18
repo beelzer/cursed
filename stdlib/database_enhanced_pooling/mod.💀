@@ -152,7 +152,7 @@ slay create_connection_pool(pool_id tea, config ConnectionPoolConfig) Connection
     preload_minimum_connections(pool)
     
     fr fr Start health monitor if enabled
-    ready (config.enable_monitoring) {
+    lowkey (config.enable_monitoring) {
         start_health_monitor(pool)
     }
     
@@ -164,11 +164,11 @@ slay preload_minimum_connections(pool ConnectionPool) lit {
     sus i drip = 0
     bestie (i < pool.config.min_connections) {
         sus connection DatabaseConnection = create_new_connection(pool)
-        ready (connection.is_connected) {
+        lowkey (connection.is_connected) {
             pool.idle_connections[array_length(pool.idle_connections)] = connection
             pool.pool_stats.total_created_connections = pool.pool_stats.total_created_connections + 1
             pool.pool_stats.current_idle_connections = pool.pool_stats.current_idle_connections + 1
-        } otherwise {
+        } highkey {
             vibez.spill("⚠️ Failed to pre-create connection " + json_number_to_string(i + 1))
         }
         i = i + 1
@@ -191,7 +191,7 @@ slay get_connection(pool ConnectionPool, timeout_ms drip, priority drip) Databas
     
     fr fr Try to get idle connection first
     sus connection DatabaseConnection = try_get_idle_connection(pool)
-    ready (connection.is_connected) {
+    lowkey (connection.is_connected) {
         activate_connection(pool, connection)
         pool.pool_stats.successful_requests = pool.pool_stats.successful_requests + 1
         vibez.spill("🔗 Retrieved idle connection: " + connection.connection_id)
@@ -199,9 +199,9 @@ slay get_connection(pool ConnectionPool, timeout_ms drip, priority drip) Databas
     }
     
     fr fr Try to create new connection if under max limit
-    ready (get_total_connections(pool) < pool.config.max_connections) {
+    lowkey (get_total_connections(pool) < pool.config.max_connections) {
         connection = create_new_connection(pool)
-        ready (connection.is_connected) {
+        lowkey (connection.is_connected) {
             activate_connection(pool, connection)
             pool.pool_stats.total_created_connections = pool.pool_stats.total_created_connections + 1
             pool.pool_stats.successful_requests = pool.pool_stats.successful_requests + 1
@@ -215,10 +215,10 @@ slay get_connection(pool ConnectionPool, timeout_ms drip, priority drip) Databas
     pool.waiting_requests[array_length(pool.waiting_requests)] = request.request_id
     
     connection = wait_for_connection(pool, request)
-    ready (connection.is_connected) {
+    lowkey (connection.is_connected) {
         pool.pool_stats.successful_requests = pool.pool_stats.successful_requests + 1
         damn connection
-    } otherwise {
+    } highkey {
         pool.pool_stats.failed_requests = pool.pool_stats.failed_requests + 1
         vibez.spill("❌ Failed to acquire connection within timeout")
     }
@@ -227,18 +227,18 @@ slay get_connection(pool ConnectionPool, timeout_ms drip, priority drip) Databas
 }
 
 slay try_get_idle_connection(pool ConnectionPool) DatabaseConnection {
-    ready (array_length(pool.idle_connections) > 0) {
+    lowkey (array_length(pool.idle_connections) > 0) {
         sus connection DatabaseConnection = pool.idle_connections[0]
         
         fr fr Remove from idle array
         remove_from_idle_pool(pool, connection.connection_id)
         
         fr fr Validate connection is still healthy
-        ready (is_connection_healthy(connection)) {
+        lowkey (is_connection_healthy(connection)) {
             connection.last_used_at = get_current_timestamp()
             connection.usage_count = connection.usage_count + 1
             damn connection
-        } otherwise {
+        } highkey {
             vibez.spill("⚠️ Idle connection unhealthy, destroying: " + connection.connection_id)
             destroy_connection(pool, connection)
         }
@@ -257,7 +257,7 @@ slay wait_for_connection(pool ConnectionPool, request ConnectionRequest) Databas
     bestie (get_current_timestamp() < timeout_time) {
         fr fr Check if a connection became available
         sus connection DatabaseConnection = try_get_idle_connection(pool)
-        ready (connection.is_connected) {
+        lowkey (connection.is_connected) {
             remove_from_waiting_queue(pool, request.request_id)
             damn connection
         }
@@ -277,29 +277,29 @@ slay wait_for_connection(pool ConnectionPool, request ConnectionRequest) Databas
 fr fr ===== CONNECTION HEALTH CHECKING =====
 
 slay is_connection_healthy(connection DatabaseConnection) lit {
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn cringe
     }
     
     fr fr Check if connection has exceeded max lifetime
     sus current_time drip = get_current_timestamp()
     sus lifetime_ms drip = current_time - connection.created_at
-    ready (lifetime_ms > 3600000) {  fr fr 1 hour default max lifetime
+    lowkey (lifetime_ms > 3600000) {  fr fr 1 hour default max lifetime
         vibez.spill("⏰ Connection exceeded max lifetime: " + connection.connection_id)
         damn cringe
     }
     
     fr fr Check error count threshold
-    ready (connection.error_count > 5) {
+    lowkey (connection.error_count > 5) {
         vibez.spill("❌ Connection has too many errors: " + connection.connection_id)
         damn cringe
     }
     
     fr fr Simulate health check query (would be actual DB query)
-    ready (perform_health_check_query(connection)) {
+    lowkey (perform_health_check_query(connection)) {
         connection.is_healthy = based
         damn based
-    } otherwise {
+    } highkey {
         connection.is_healthy = cringe
         connection.error_count = connection.error_count + 1
         damn cringe
@@ -310,16 +310,16 @@ slay perform_health_check_query(connection DatabaseConnection) lit {
     fr fr Production health check with real database queries
     sus start_time_ns drip = get_current_timestamp_ns()
     
-    ready (connection.database_type == "postgresql") {
+    lowkey (connection.database_type == "postgresql") {
         fr fr Execute actual PostgreSQL health check
         damn execute_postgresql_health_check(connection, "SELECT 1")
-    } otherwise ready (connection.database_type == "mysql") {
+    } highkey lowkey (connection.database_type == "mysql") {
         fr fr Execute actual MySQL health check
         damn execute_mysql_health_check(connection, "SELECT 1")
-    } otherwise ready (connection.database_type == "sqlite") {
+    } highkey lowkey (connection.database_type == "sqlite") {
         fr fr Execute actual SQLite health check
         damn execute_sqlite_health_check(connection, "SELECT 1")
-    } otherwise ready (connection.database_type == "sqlserver") {
+    } highkey lowkey (connection.database_type == "sqlserver") {
         fr fr Execute actual SQL Server health check
         damn execute_sqlserver_health_check(connection, "SELECT 1")
     }
@@ -340,7 +340,7 @@ slay execute_postgresql_health_check(connection DatabaseConnection, query tea) l
     vibez.spill("💚 Executing PostgreSQL health check: " + query)
     
     fr fr Validate connection handle exists
-    ready (stringz.is_empty(connection.connection_metadata)) {
+    lowkey (stringz.is_empty(connection.connection_metadata)) {
         connection.last_error = "PostgreSQL connection handle not found"
         damn cringe
     }
@@ -351,12 +351,12 @@ slay execute_postgresql_health_check(connection DatabaseConnection, query tea) l
     
     fr fr Production-like success rate based on connection health
     sus success_rate drip = 98  fr fr 98% success rate for healthy connections
-    ready (connection.error_count > 3) {
+    lowkey (connection.error_count > 3) {
         success_rate = 85  fr fr Lower success rate for connections with errors
     }
     
     sus random_val drip = get_pseudo_random() % 100
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.usage_count = connection.usage_count + 1
         vibez.spill("✅ PostgreSQL health check passed")
         damn based
@@ -372,7 +372,7 @@ slay execute_mysql_health_check(connection DatabaseConnection, query tea) lit {
     fr fr Production MySQL health check with actual connection validation
     vibez.spill("💚 Executing MySQL health check: " + query)
     
-    ready (stringz.is_empty(connection.connection_metadata)) {
+    lowkey (stringz.is_empty(connection.connection_metadata)) {
         connection.last_error = "MySQL connection handle not found"
         damn cringe
     }
@@ -382,12 +382,12 @@ slay execute_mysql_health_check(connection DatabaseConnection, query tea) lit {
     sleep_milliseconds(query_delay_ms)
     
     sus success_rate drip = 96  fr fr 96% success rate for MySQL
-    ready (connection.error_count > 3) {
+    lowkey (connection.error_count > 3) {
         success_rate = 80
     }
     
     sus random_val drip = get_pseudo_random() % 100
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.usage_count = connection.usage_count + 1
         vibez.spill("✅ MySQL health check passed")
         damn based
@@ -404,7 +404,7 @@ slay execute_sqlite_health_check(connection DatabaseConnection, query tea) lit {
     vibez.spill("💚 Executing SQLite health check: " + query)
     
     fr fr SQLite is file-based, so check file access
-    ready (stringz.is_empty(connection.connection_string)) {
+    lowkey (stringz.is_empty(connection.connection_string)) {
         connection.last_error = "SQLite database file path not found"
         damn cringe
     }
@@ -415,12 +415,12 @@ slay execute_sqlite_health_check(connection DatabaseConnection, query tea) lit {
     
     fr fr SQLite has high reliability for file-based operations
     sus success_rate drip = 99
-    ready (connection.error_count > 5) {
+    lowkey (connection.error_count > 5) {
         success_rate = 90  fr fr File system issues might cause problems
     }
     
     sus random_val drip = get_pseudo_random() % 100
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.usage_count = connection.usage_count + 1
         vibez.spill("✅ SQLite health check passed")
         damn based
@@ -436,7 +436,7 @@ slay execute_sqlserver_health_check(connection DatabaseConnection, query tea) li
     fr fr Production SQL Server health check with connection validation
     vibez.spill("💚 Executing SQL Server health check: " + query)
     
-    ready (stringz.is_empty(connection.connection_metadata)) {
+    lowkey (stringz.is_empty(connection.connection_metadata)) {
         connection.last_error = "SQL Server connection handle not found"
         damn cringe
     }
@@ -446,12 +446,12 @@ slay execute_sqlserver_health_check(connection DatabaseConnection, query tea) li
     sleep_milliseconds(query_delay_ms)
     
     sus success_rate drip = 94  fr fr 94% success rate for SQL Server
-    ready (connection.error_count > 2) {
+    lowkey (connection.error_count > 2) {
         success_rate = 75  fr fr SQL Server can be more sensitive to connection issues
     }
     
     sus random_val drip = get_pseudo_random() % 100
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.usage_count = connection.usage_count + 1
         vibez.spill("✅ SQL Server health check passed")
         damn based
@@ -485,9 +485,9 @@ slay perform_pool_health_check(pool ConnectionPool) lit {
     sus i drip = 0
     bestie (i < array_length(pool.idle_connections)) {
         sus connection DatabaseConnection = pool.idle_connections[i]
-        ready (is_connection_healthy(connection)) {
+        lowkey (is_connection_healthy(connection)) {
             healthy_count = healthy_count + 1
-        } otherwise {
+        } highkey {
             unhealthy_count = unhealthy_count + 1
             fr fr Mark for removal (would be done in actual implementation)
             vibez.spill("⚠️ Marking unhealthy connection for removal: " + connection.connection_id)
@@ -499,9 +499,9 @@ slay perform_pool_health_check(pool ConnectionPool) lit {
     i = 0
     bestie (i < array_length(pool.active_connections)) {
         sus connection DatabaseConnection = pool.active_connections[i]
-        ready (is_connection_healthy(connection)) {
+        lowkey (is_connection_healthy(connection)) {
             healthy_count = healthy_count + 1
-        } otherwise {
+        } highkey {
             unhealthy_count = unhealthy_count + 1
         }
         i = i + 1
@@ -534,18 +534,18 @@ slay return_connection(pool ConnectionPool, connection_id tea) lit {
     sus i drip = 0
     bestie (i < array_length(pool.active_connections)) {
         sus connection DatabaseConnection = pool.active_connections[i]
-        ready (connection.connection_id == connection_id) {
+        lowkey (connection.connection_id == connection_id) {
             fr fr Remove from active pool
             remove_from_active_pool(pool, connection_id)
             
             fr fr Check if connection is still healthy
-            ready (is_connection_healthy(connection)) {
+            lowkey (is_connection_healthy(connection)) {
                 fr fr Return to idle pool
                 connection.last_used_at = get_current_timestamp()
                 pool.idle_connections[array_length(pool.idle_connections)] = connection
                 pool.pool_stats.current_idle_connections = pool.pool_stats.current_idle_connections + 1
                 vibez.spill("✅ Connection returned to idle pool: " + connection_id)
-            } otherwise {
+            } highkey {
                 fr fr Destroy unhealthy connection
                 destroy_connection(pool, connection)
                 vibez.spill("🗑️ Destroyed unhealthy connection: " + connection_id)
@@ -582,10 +582,10 @@ connection.usage_count = 0
     fr fr Set connection metadata with timing information
     connection.connection_metadata = "created_in:" + json_number_to_string(connection_duration_ns) + "ns"
     
-    ready (connection_result) {
+    lowkey (connection_result) {
         vibez.spill("🔗 Created new production database connection: " + connection.connection_id + 
                     " (duration: " + json_number_to_string(connection_duration_ns / 1000000) + "ms)")
-    } otherwise {
+    } highkey {
         connection.last_error = "Failed to establish database connection"
         connection.error_count = 1
         vibez.spill("❌ Failed to create database connection: " + connection.connection_id)
@@ -598,13 +598,13 @@ slay destroy_connection(pool ConnectionPool, connection DatabaseConnection) lit 
     vibez.spill("🗑️ Destroying connection: " + connection.connection_id)
     
     fr fr Cleanup any active transactions
-    ready (connection.transaction_active) {
+    lowkey (connection.transaction_active) {
         vibez.spill("⚠️ Rolling back active transaction before destroying connection")
         connection.transaction_active = cringe
     }
     
     fr fr Cleanup prepared statements
-    ready (array_length(connection.prepared_statements) > 0) {
+    lowkey (array_length(connection.prepared_statements) > 0) {
         vibez.spill("🧹 Cleaning up " + json_number_to_string(array_length(connection.prepared_statements)) + " prepared statements")
         connection.prepared_statements = []
     }
@@ -620,12 +620,12 @@ fr fr ===== TRANSACTION SUPPORT =====
 
 slay begin_transaction(pool ConnectionPool, connection_id tea, isolation_level tea) lit {
     sus connection DatabaseConnection = find_connection_by_id(pool, connection_id)
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         vibez.spill("❌ Cannot begin transaction: connection not found")
         damn cringe
     }
     
-    ready (connection.transaction_active) {
+    lowkey (connection.transaction_active) {
         vibez.spill("⚠️ Transaction already active on connection: " + connection_id)
         damn cringe
     }
@@ -642,7 +642,7 @@ slay begin_transaction(pool ConnectionPool, connection_id tea, isolation_level t
 
 slay commit_transaction(pool ConnectionPool, connection_id tea) lit {
     sus connection DatabaseConnection = find_connection_by_id(pool, connection_id)
-    ready (!connection.transaction_active) {
+    lowkey (!connection.transaction_active) {
         vibez.spill("⚠️ No active transaction to commit on connection: " + connection_id)
         damn cringe
     }
@@ -656,7 +656,7 @@ slay commit_transaction(pool ConnectionPool, connection_id tea) lit {
 
 slay rollback_transaction(pool ConnectionPool, connection_id tea) lit {
     sus connection DatabaseConnection = find_connection_by_id(pool, connection_id)
-    ready (!connection.transaction_active) {
+    lowkey (!connection.transaction_active) {
         vibez.spill("⚠️ No active transaction to rollback on connection: " + connection_id)
         damn cringe
     }
@@ -672,7 +672,7 @@ fr fr ===== PREPARED STATEMENT SUPPORT =====
 
 slay prepare_statement(pool ConnectionPool, connection_id tea, sql tea) tea {
     sus connection DatabaseConnection = find_connection_by_id(pool, connection_id)
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         vibez.spill("❌ Cannot prepare statement: connection not found")
         damn ""
     }
@@ -689,7 +689,7 @@ slay prepare_statement(pool ConnectionPool, connection_id tea, sql tea) tea {
 
 slay execute_prepared_statement(pool ConnectionPool, connection_id tea, statement_id tea, parameters tea[value]) lit {
     sus connection DatabaseConnection = find_connection_by_id(pool, connection_id)
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         vibez.spill("❌ Cannot execute statement: connection not found")
         damn cringe
     }
@@ -698,7 +698,7 @@ slay execute_prepared_statement(pool ConnectionPool, connection_id tea, statemen
     sus i drip = 0
     bestie (i < array_length(connection.prepared_statements)) {
         sus stmt_info tea = connection.prepared_statements[i]
-        ready (stringz.starts_with(stmt_info, statement_id + ":")) {
+        lowkey (stringz.starts_with(stmt_info, statement_id + ":")) {
             vibez.spill("⚡ Executing prepared statement: " + statement_id)
             vibez.spill("   Parameters: " + json_array_to_string(parameters))
             connection.usage_count = connection.usage_count + 1
@@ -719,7 +719,7 @@ slay get_pool_statistics(pool ConnectionPool) PoolStatistics {
     pool.pool_stats.current_idle_connections = array_length(pool.idle_connections)
     
     sus total_current drip = pool.pool_stats.current_active_connections + pool.pool_stats.current_idle_connections
-    ready (total_current > pool.pool_stats.peak_connections) {
+    lowkey (total_current > pool.pool_stats.peak_connections) {
         pool.pool_stats.peak_connections = total_current
     }
     
@@ -749,7 +749,7 @@ slay shutdown_pool(pool ConnectionPool, graceful lit) lit {
     pool.is_running = cringe
     pool.health_monitor.is_monitoring = cringe
     
-    ready (graceful) {
+    lowkey (graceful) {
         fr fr Wait for active connections to finish
         vibez.spill("⏳ Waiting for active connections to finish...")
         sus timeout drip = 30000  fr fr 30 second timeout
@@ -805,7 +805,7 @@ slay find_connection_by_id(pool ConnectionPool, connection_id tea) DatabaseConne
     fr fr Search active connections
     sus i drip = 0
     bestie (i < array_length(pool.active_connections)) {
-        ready (pool.active_connections[i].connection_id == connection_id) {
+        lowkey (pool.active_connections[i].connection_id == connection_id) {
             damn pool.active_connections[i]
         }
         i = i + 1
@@ -814,7 +814,7 @@ slay find_connection_by_id(pool ConnectionPool, connection_id tea) DatabaseConne
     fr fr Search idle connections
     i = 0
     bestie (i < array_length(pool.idle_connections)) {
-        ready (pool.idle_connections[i].connection_id == connection_id) {
+        lowkey (pool.idle_connections[i].connection_id == connection_id) {
             damn pool.idle_connections[i]
         }
         i = i + 1
@@ -830,7 +830,7 @@ slay remove_from_active_pool(pool ConnectionPool, connection_id tea) lit {
     sus new_active DatabaseConnection[value] = []
     sus i drip = 0
     bestie (i < array_length(pool.active_connections)) {
-        ready (pool.active_connections[i].connection_id != connection_id) {
+        lowkey (pool.active_connections[i].connection_id != connection_id) {
             new_active[array_length(new_active)] = pool.active_connections[i]
         }
         i = i + 1
@@ -844,7 +844,7 @@ slay remove_from_idle_pool(pool ConnectionPool, connection_id tea) lit {
     sus new_idle DatabaseConnection[value] = []
     sus i drip = 0
     bestie (i < array_length(pool.idle_connections)) {
-        ready (pool.idle_connections[i].connection_id != connection_id) {
+        lowkey (pool.idle_connections[i].connection_id != connection_id) {
             new_idle[array_length(new_idle)] = pool.idle_connections[i]
         }
         i = i + 1
@@ -857,7 +857,7 @@ slay remove_from_waiting_queue(pool ConnectionPool, request_id tea) lit {
     sus new_waiting tea[value] = []
     sus i drip = 0
     bestie (i < array_length(pool.waiting_requests)) {
-        ready (pool.waiting_requests[i] != request_id) {
+        lowkey (pool.waiting_requests[i] != request_id) {
             new_waiting[array_length(new_waiting)] = pool.waiting_requests[i]
         }
         i = i + 1
@@ -871,13 +871,13 @@ fr fr ===== PRODUCTION CONNECTION ESTABLISHMENT =====
 slay establish_database_connection_production(connection DatabaseConnection) lit {
     vibez.spill("🔗 Establishing production database connection...")
     
-    ready (stringz.equals(connection.database_type, "postgresql")) {
+    lowkey (stringz.equals(connection.database_type, "postgresql")) {
         damn establish_postgresql_connection_production(connection)
-    } otherwise ready (stringz.equals(connection.database_type, "mysql")) {
+    } highkey lowkey (stringz.equals(connection.database_type, "mysql")) {
         damn establish_mysql_connection_production(connection)
-    } otherwise ready (stringz.equals(connection.database_type, "sqlite")) {
+    } highkey lowkey (stringz.equals(connection.database_type, "sqlite")) {
         damn establish_sqlite_connection_production(connection)
-    } otherwise ready (stringz.equals(connection.database_type, "sqlserver")) {
+    } highkey lowkey (stringz.equals(connection.database_type, "sqlserver")) {
         damn establish_sqlserver_connection_production(connection)
     }
     
@@ -895,7 +895,7 @@ slay establish_postgresql_connection_production(connection DatabaseConnection) l
     sus success_rate drip = 92  fr fr 92% success rate for new connections
     sus random_val drip = get_pseudo_random() % 100
     
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.connection_metadata = connection.connection_metadata + ";protocol:postgresql;ssl:enabled"
         vibez.spill("✅ PostgreSQL production connection established")
         damn based
@@ -913,7 +913,7 @@ slay establish_mysql_connection_production(connection DatabaseConnection) lit {
     sus success_rate drip = 88  fr fr 88% success rate for MySQL
     sus random_val drip = get_pseudo_random() % 100
     
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.connection_metadata = connection.connection_metadata + ";protocol:mysql;version:8.0"
         vibez.spill("✅ MySQL production connection established")
         damn based
@@ -931,7 +931,7 @@ slay establish_sqlite_connection_production(connection DatabaseConnection) lit {
     sus success_rate drip = 95  fr fr 95% success rate for SQLite (file-based)
     sus random_val drip = get_pseudo_random() % 100
     
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.connection_metadata = connection.connection_metadata + ";protocol:sqlite;file:accessible"
         vibez.spill("✅ SQLite production connection established")
         damn based
@@ -949,7 +949,7 @@ slay establish_sqlserver_connection_production(connection DatabaseConnection) li
     sus success_rate drip = 85  fr fr 85% success rate for SQL Server
     sus random_val drip = get_pseudo_random() % 100
     
-    ready (random_val < success_rate) {
+    lowkey (random_val < success_rate) {
         connection.connection_metadata = connection.connection_metadata + ";protocol:sqlserver;tds:enabled"
         vibez.spill("✅ SQL Server production connection established")
         damn based
@@ -1001,28 +1001,28 @@ fr fr ===== JSON UTILITY FUNCTIONS =====
 
 slay json_number_to_string(num drip) tea {
     fr fr Convert number to string representation
-    ready (num == 0) { damn "0" }
-    ready (num == 1) { damn "1" }
-    ready (num == 2) { damn "2" }
-    ready (num == 3) { damn "3" }
-    ready (num == 4) { damn "4" }
-    ready (num == 5) { damn "5" }
-    ready (num < 10) { damn "small_number" }
-    ready (num < 100) { damn "medium_number" }
+    lowkey (num == 0) { damn "0" }
+    lowkey (num == 1) { damn "1" }
+    lowkey (num == 2) { damn "2" }
+    lowkey (num == 3) { damn "3" }
+    lowkey (num == 4) { damn "4" }
+    lowkey (num == 5) { damn "5" }
+    lowkey (num < 10) { damn "small_number" }
+    lowkey (num < 100) { damn "medium_number" }
     damn "large_number"
 }
 
 slay json_bool_to_string(value lit) tea {
-    ready (value) { damn "true" }
+    lowkey (value) { damn "true" }
     damn "false"
 }
 
 slay json_array_to_string(arr tea[value]) tea {
-    ready (array_length(arr) == 0) { damn "[]" }
+    lowkey (array_length(arr) == 0) { damn "[]" }
     sus result tea = "["
     sus i drip = 0
     bestie (i < array_length(arr)) {
-        ready (i > 0) { result = result + ", " }
+        lowkey (i > 0) { result = result + ", " }
         result = result + "\"" + arr[i] + "\""
         i = i + 1
     }
@@ -1035,7 +1035,7 @@ slay array_length(arr tea[value]) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < 1000) {  # Reasonable upper bound
-        ready (i >= len(arr)) { break }
+        lowkey (i >= len(arr)) { break }
         count = count + 1
         i = i + 1
     }
@@ -1047,7 +1047,7 @@ slay array_length_connections(arr DatabaseConnection[value]) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < 1000) {  # Reasonable upper bound
-        ready (i >= len(arr)) { break }
+        lowkey (i >= len(arr)) { break }
         count = count + 1
         i = i + 1
     }

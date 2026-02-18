@@ -78,10 +78,10 @@ sus get_response HttpResponse = http_get_smart("https://httpbin.org/get") fam {
 }
 
 fr fr In real environment, we'd expect 200 OK
-ready (get_response.status_code == 200) {
+lowkey (get_response.status_code == 200) {
     assert_eq_int(get_response.status_code, 200, "GET request successful")
     assert_not_empty(get_response.body, "GET response has body")
-} otherwise {
+} highkey {
     fr fr Accept network unavailable in test environment
     assert_true(no_cap, "Network test skipped - no connectivity")
 }
@@ -96,10 +96,10 @@ sus post_response HttpResponse = http_post_smart("https://httpbin.org/post",
 }
 
 fr fr Check POST response
-ready (post_response.status_code >= 200 && post_response.status_code < 300) {
+lowkey (post_response.status_code >= 200 && post_response.status_code < 300) {
     assert_true(no_cap, "POST request successful")
     assert_not_empty(post_response.body, "POST response has body")
-} otherwise {
+} highkey {
     fr fr Accept network unavailable in test environment
     assert_true(no_cap, "POST test skipped - no connectivity")
 }

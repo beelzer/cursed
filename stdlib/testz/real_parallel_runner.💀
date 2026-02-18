@@ -149,7 +149,7 @@ slay run_worker(worker RealTestWorker,
                 current_worker.tests_completed = current_worker.tests_completed + 1
                 current_worker.total_runtime = current_worker.total_runtime + result.execution_time
                 
-                ready (!result.success) {
+                lowkey (!result.success) {
                     current_worker.tests_failed = current_worker.tests_failed + 1
                 }
                 
@@ -198,8 +198,8 @@ slay execute_test_task_real(task RealTestTask, worker_id normie) RealTestResult 
             success: test_success,
             execution_time: end_time - start_time,
             assertion_count: get_last_assertion_count(),
-            error_message: ready (test_success) { "" } otherwise { get_last_error_message() },
-            stack_trace: ready (test_success) { "" } otherwise { get_last_stack_trace() },
+            error_message: lowkey (test_success) { "" } highkey { get_last_error_message() },
+            stack_trace: lowkey (test_success) { "" } highkey { get_last_stack_trace() },
             memory_used: memory_after - memory_before
         }
         
@@ -241,18 +241,18 @@ slay execute_actual_test_function(function_name tea) lit {
     record_function_call_for_coverage(function_name)
     
     fr fr Simulate different test outcomes based on function name patterns
-    ready (string_contains(function_name, "fail")) {
+    lowkey (string_contains(function_name, "fail")) {
         set_last_error_message("Test intentionally failed for testing")
         set_last_stack_trace(generate_real_stack_trace())
         damn cringe
     }
     
-    ready (string_contains(function_name, "timeout")) {
+    lowkey (string_contains(function_name, "timeout")) {
         fr fr Simulate long-running test
         sleep_milliseconds(5000)
     }
     
-    ready (string_contains(function_name, "memory")) {
+    lowkey (string_contains(function_name, "memory")) {
         fr fr Simulate memory-intensive test
         allocate_test_memory(1024 * 1024)  fr fr 1MB allocation
     }
@@ -306,16 +306,16 @@ slay run_parallel_test_suite(test_names [tea], worker_count normie) ParallelTest
                 completed = completed + 1
                 total_execution_time = total_execution_time + result.execution_time
                 
-                ready (result.memory_used > peak_memory) {
+                lowkey (result.memory_used > peak_memory) {
                     peak_memory = result.memory_used
                 }
                 
-                ready (!result.success) {
+                lowkey (!result.success) {
                     __execution_metrics.failed_tests = __execution_metrics.failed_tests + 1
                     vibez.spill("❌ Test failed:", result.error_message)
                 }
                 
-                ready (completed % 10 == 0) {
+                lowkey (completed % 10 == 0) {
                     vibez.spill("📊 Progress:", completed, "/", len(test_names), "tests completed")
                 }
             }
@@ -370,13 +370,13 @@ slay analyze_parallel_performance(results ParallelTestResults) {
     vibez.spill("📊 PARALLEL EXECUTION ANALYSIS")
     vibez.spill("═════════════════════════════")
     
-    sus efficiency normie = ready (results.wall_time > 0) { 
+    sus efficiency normie = lowkey (results.wall_time > 0) { 
         (results.cpu_time * 100) / results.wall_time 
-    } otherwise { 0 }
+    } highkey { 0 }
     
-    sus throughput normie = ready (results.wall_time > 0) { 
+    sus throughput normie = lowkey (results.wall_time > 0) { 
         (results.total_tests * 1000) / results.wall_time 
-    } otherwise { 0 }
+    } highkey { 0 }
     
     vibez.spill("Parallelization efficiency:", efficiency, "%")
     vibez.spill("Test throughput:", throughput, "tests/second")
@@ -385,20 +385,20 @@ slay analyze_parallel_performance(results ParallelTestResults) {
     vibez.spill("Memory per test:", results.peak_memory / results.total_tests, "bytes/test")
     
     fr fr Performance recommendations
-    ready (efficiency < 50) {
+    lowkey (efficiency < 50) {
         vibez.spill("⚠️ Low parallelization efficiency")
         vibez.spill("   Consider reducing worker count or optimizing tests")
-    } otherwise ready (efficiency > 80) {
+    } highkey lowkey (efficiency > 80) {
         vibez.spill("✅ Excellent parallelization efficiency")
-    } otherwise {
+    } highkey {
         vibez.spill("👍 Good parallelization efficiency")
     }
     
-    ready (throughput > 100) {
+    lowkey (throughput > 100) {
         vibez.spill("⚡ High test throughput - excellent performance")
-    } otherwise ready (throughput > 50) {
+    } highkey lowkey (throughput > 50) {
         vibez.spill("👍 Good test throughput")
-    } otherwise {
+    } highkey {
         vibez.spill("🐌 Low throughput - consider optimization")
     }
 }
@@ -457,7 +457,7 @@ slay start_tdd_parallel_mode(test_files [tea], source_files [tea]) {
     bestie (based) {
         sus changed_files [tea] = wait_for_file_changes(append_arrays(test_files, source_files))
         
-        ready (len(changed_files) > 0) {
+        lowkey (len(changed_files) > 0) {
             vibez.spill("📝 Files changed:", changed_files)
             vibez.spill("🔄 Re-running tests...")
             
@@ -477,9 +477,9 @@ slay run_tdd_test_cycle(test_files [tea]) {
     sus end_time normie = get_real_timestamp()
     
     fr fr Quick feedback
-    ready (results.failed_tests == 0) {
+    lowkey (results.failed_tests == 0) {
         vibez.spill("✅ All", results.total_tests, "tests passing in", end_time - start_time, "ms")
-    } otherwise {
+    } highkey {
         vibez.spill("❌", results.failed_tests, "of", results.total_tests, "tests failing")
         print_failing_test_summary(results.results)
     }
@@ -491,7 +491,7 @@ slay print_failing_test_summary(results [RealTestResult]) {
     sus i normie = 0
     bestie (i < len(results)) {
         sus result RealTestResult = results[i]
-        ready (!result.success) {
+        lowkey (!result.success) {
             vibez.spill("  -", result.error_message)
         }
         i = i + 1

@@ -70,7 +70,7 @@ slay new_simple_csv_scanner(text tea) CSVScanner {
 
 # Parse CSV header row
 slay parse_header(scanner *CSVScanner) lit {
-    ready (!scan_csv_record(scanner)) {
+    lowkey (!scan_csv_record(scanner)) {
         damn cap
     }
     
@@ -80,7 +80,7 @@ slay parse_header(scanner *CSVScanner) lit {
 
 # Scan next CSV record
 slay scan_csv_record(scanner *CSVScanner) lit {
-    ready (scanner.position >= scanner.length) {
+    lowkey (scanner.position >= scanner.length) {
         scanner.has_more = cap
         damn cap
     }
@@ -90,9 +90,9 @@ slay scan_csv_record(scanner *CSVScanner) lit {
     sus has_quoted lit = cap
     
     # Skip empty lines if configured
-    ready (scanner.options.skip_empty_lines) {
+    lowkey (scanner.options.skip_empty_lines) {
         skip_empty_lines_and_comments(scanner)
-        ready (scanner.position >= scanner.length) {
+        lowkey (scanner.position >= scanner.length) {
             scanner.has_more = cap
             damn cap
         }
@@ -101,40 +101,40 @@ slay scan_csv_record(scanner *CSVScanner) lit {
     # Parse fields until end of record (newline or EOF)
     bestie (scanner.position < scanner.length) {
         sus field tea = parse_csv_field(scanner)
-        ready (scanner.error_message.length > 0) {
+        lowkey (scanner.error_message.length > 0) {
             damn cap  # Error occurred
         }
         
         record_fields = append(record_fields, field)
         
         # Check if field was quoted
-        ready (field_was_quoted(scanner, field)) {
+        lowkey (field_was_quoted(scanner, field)) {
             has_quoted = based
         }
         
         # Check what comes after field
-        ready (scanner.position >= scanner.length) {
+        lowkey (scanner.position >= scanner.length) {
             break  # End of input
         }
         
         sus next_char rune = scanner.text[scanner.position]
         
-        ready (next_char == scanner.options.delimiter) {
+        lowkey (next_char == scanner.options.delimiter) {
             scanner.position += 1  # Skip delimiter
             continue  # Parse next field
-        } otherwise ready (next_char == '\n') {
+        } highkey lowkey (next_char == '\n') {
             scanner.position += 1
             scanner.line_number += 1
             break  # End of record
-        } otherwise ready (next_char == '\r') {
+        } highkey lowkey (next_char == '\r') {
             scanner.position += 1
-            ready (scanner.position < scanner.length && scanner.text[scanner.position] == '\n') {
+            lowkey (scanner.position < scanner.length && scanner.text[scanner.position] == '\n') {
                 scanner.position += 1  # Skip CRLF
             }
             scanner.line_number += 1
             break  # End of record
-        } otherwise {
-            ready (scanner.options.strict_mode) {
+        } highkey {
+            lowkey (scanner.options.strict_mode) {
                 scanner.error_message = "Unexpected character after field"
                 damn cap
             }
@@ -157,25 +157,25 @@ slay scan_csv_record(scanner *CSVScanner) lit {
 
 # Parse a single CSV field
 slay parse_csv_field(scanner *CSVScanner) tea {
-    ready (scanner.position >= scanner.length) {
+    lowkey (scanner.position >= scanner.length) {
         damn ""
     }
     
     # Skip leading whitespace if configured
-    ready (scanner.options.trim_whitespace) {
+    lowkey (scanner.options.trim_whitespace) {
         skip_whitespace(scanner)
     }
     
-    ready (scanner.position >= scanner.length) {
+    lowkey (scanner.position >= scanner.length) {
         damn ""
     }
     
     sus current_char rune = scanner.text[scanner.position]
     
     # Check if field is quoted
-    ready (current_char == scanner.options.quote_char) {
+    lowkey (current_char == scanner.options.quote_char) {
         damn parse_quoted_field(scanner)
-    } otherwise {
+    } highkey {
         damn parse_unquoted_field(scanner)
     }
 }
@@ -188,11 +188,11 @@ slay parse_quoted_field(scanner *CSVScanner) tea {
     bestie (scanner.position < scanner.length) {
         sus current_char rune = scanner.text[scanner.position]
         
-        ready (current_char == scanner.options.quote_char) {
+        lowkey (current_char == scanner.options.quote_char) {
             # Check for escaped quote
-            ready (scanner.position + 1 < scanner.length) {
+            lowkey (scanner.position + 1 < scanner.length) {
                 sus next_char rune = scanner.text[scanner.position + 1]
-                ready (next_char == scanner.options.escape_char) {
+                lowkey (next_char == scanner.options.escape_char) {
                     # Escaped quote - add single quote to field
                     field_value = field_value + char_to_string(scanner.options.quote_char)
                     scanner.position += 2
@@ -203,22 +203,22 @@ slay parse_quoted_field(scanner *CSVScanner) tea {
             # End of quoted field
             scanner.position += 1  # Skip closing quote
             break
-        } otherwise ready (current_char == '\n') {
-            ready (!scanner.options.allow_multiline) {
+        } highkey lowkey (current_char == '\n') {
+            lowkey (!scanner.options.allow_multiline) {
                 scanner.error_message = "Newline in quoted field not allowed"
                 damn ""
             }
             field_value = field_value + char_to_string(current_char)
             scanner.line_number += 1
             scanner.position += 1
-        } otherwise {
+        } highkey {
             field_value = field_value + char_to_string(current_char)
             scanner.position += 1
         }
     }
     
     # Skip trailing whitespace if configured
-    ready (scanner.options.trim_whitespace) {
+    lowkey (scanner.options.trim_whitespace) {
         field_value = trim_whitespace(field_value)
     }
     
@@ -233,14 +233,14 @@ slay parse_unquoted_field(scanner *CSVScanner) tea {
         sus current_char rune = scanner.text[scanner.position]
         
         # Check for field delimiters
-        ready (current_char == scanner.options.delimiter || 
+        lowkey (current_char == scanner.options.delimiter || 
                current_char == '\n' || 
                current_char == '\r') {
             break
         }
         
         # Check for quotes in unquoted field (error in strict mode)
-        ready (current_char == scanner.options.quote_char && scanner.options.strict_mode) {
+        lowkey (current_char == scanner.options.quote_char && scanner.options.strict_mode) {
             scanner.error_message = "Quote character in unquoted field"
             damn ""
         }
@@ -250,7 +250,7 @@ slay parse_unquoted_field(scanner *CSVScanner) tea {
     }
     
     # Trim trailing whitespace if configured
-    ready (scanner.options.trim_whitespace) {
+    lowkey (scanner.options.trim_whitespace) {
         field_value = trim_whitespace(field_value)
     }
     
@@ -261,7 +261,7 @@ slay parse_unquoted_field(scanner *CSVScanner) tea {
 slay skip_whitespace(scanner *CSVScanner) {
     bestie (scanner.position < scanner.length) {
         sus ch rune = scanner.text[scanner.position]
-        ready (ch != ' ' && ch != '\t') {
+        lowkey (ch != ' ' && ch != '\t') {
             break
         }
         scanner.position += 1
@@ -275,23 +275,23 @@ slay skip_empty_lines_and_comments(scanner *CSVScanner) {
         sus line_start drip = scanner.position
         skip_whitespace(scanner)
         
-        ready (scanner.position >= scanner.length) {
+        lowkey (scanner.position >= scanner.length) {
             break
         }
         
         sus ch rune = scanner.text[scanner.position]
         
         # Check for comment line
-        ready (ch == scanner.options.comment_char) {
+        lowkey (ch == scanner.options.comment_char) {
             skip_to_next_line(scanner)
             continue
         }
         
         # Check for empty line
-        ready (ch == '\n' || ch == '\r') {
-            ready (ch == '\r' && scanner.position + 1 < scanner.length && scanner.text[scanner.position + 1] == '\n') {
+        lowkey (ch == '\n' || ch == '\r') {
+            lowkey (ch == '\r' && scanner.position + 1 < scanner.length && scanner.text[scanner.position + 1] == '\n') {
                 scanner.position += 2  # Skip CRLF
-            } otherwise {
+            } highkey {
                 scanner.position += 1  # Skip LF
             }
             scanner.line_number += 1
@@ -310,11 +310,11 @@ slay skip_to_next_line(scanner *CSVScanner) {
         sus ch rune = scanner.text[scanner.position]
         scanner.position += 1
         
-        ready (ch == '\n') {
+        lowkey (ch == '\n') {
             scanner.line_number += 1
             break
-        } otherwise ready (ch == '\r') {
-            ready (scanner.position < scanner.length && scanner.text[scanner.position] == '\n') {
+        } highkey lowkey (ch == '\r') {
+            lowkey (scanner.position < scanner.length && scanner.text[scanner.position] == '\n') {
                 scanner.position += 1  # Skip LF after CR
             }
             scanner.line_number += 1
@@ -356,7 +356,7 @@ slay parse_all_records(scanner *CSVScanner) CSVRecord[value]{
 
 # Parse CSV with header into map-like structure
 slay parse_csv_with_header(scanner *CSVScanner) tea[value][value] {
-    ready (!parse_header(scanner)) {
+    lowkey (!parse_header(scanner)) {
         damn []
     }
     
@@ -375,13 +375,13 @@ slay validate_csv(scanner *CSVScanner) lit {
     sus record_count drip = 0
     
     bestie (scan_csv_record(scanner)) {
-        ready (scanner.error_message.length > 0) {
+        lowkey (scanner.error_message.length > 0) {
             damn cap  # Parse error
         }
         
-        ready (first_record_field_count == -1) {
+        lowkey (first_record_field_count == -1) {
             first_record_field_count = scanner.current_record.field_count
-        } otherwise ready (scanner.current_record.field_count != first_record_field_count) {
+        } highkey lowkey (scanner.current_record.field_count != first_record_field_count) {
             scanner.error_message = "Inconsistent field count across records"
             damn cap
         }
@@ -406,7 +406,7 @@ slay trim_whitespace(text tea) tea {
     # Trim leading whitespace
     bestie (start < text.length) {
         sus ch rune = text[start]
-        ready (ch != ' ' && ch != '\t') {
+        lowkey (ch != ' ' && ch != '\t') {
             break
         }
         start += 1
@@ -415,13 +415,13 @@ slay trim_whitespace(text tea) tea {
     # Trim trailing whitespace
     bestie (end > start) {
         sus ch rune = text[end - 1]
-        ready (ch != ' ' && ch != '\t') {
+        lowkey (ch != ' ' && ch != '\t') {
             break
         }
         end -= 1
     }
     
-    ready (start == 0 && end == text.length) {
+    lowkey (start == 0 && end == text.length) {
         damn text
     }
     
@@ -451,7 +451,7 @@ slay record_to_map(record CSVRecord, header tea[value]) tea[value]{
     
     bestie (sus i drip = 0; i < header.length; i += 1) {
         sus field_value tea = ""
-        ready (i < record.fields.length) {
+        lowkey (i < record.fields.length) {
             field_value = record.fields[i]
         }
         

@@ -167,7 +167,7 @@ module ContainerBuilder {
         }
 
         # Push to registry if specified
-        ready (config.push_registry != "") {
+        lowkey (config.push_registry != "") {
             push_to_registry(image_id, config.tags, config.push_registry) fam {
                 when _ -> vibez.spill("Failed to push to registry: {}", config.push_registry)
             }
@@ -223,7 +223,7 @@ module ContainerBuilder {
         }
 
         # Create manifest list
-        ready (built_images.len() > 1) {
+        lowkey (built_images.len() > 1) {
             create_manifest_list(config.tags[0], built_images) fam {
                 when _ -> vibez.spill("Failed to create manifest list")
             }
@@ -283,7 +283,7 @@ module ContainerBuilder {
             command = stringz.format("{} --label {}={}", command, key, value)
         }
 
-        ready (config.target_stage != "") {
+        lowkey (config.target_stage != "") {
             command = stringz.format("{} --target {}", command, config.target_stage)
         }
 
@@ -839,7 +839,7 @@ module KubernetesDeployment {
             kube_config, deployment_spec
         )
         
-        ready (!deploy_result.success) {
+        lowkey (!deploy_result.success) {
             damn DeploymentResult{
                 success: nah,
                 deployment_id: deployment_id,
@@ -863,17 +863,17 @@ module KubernetesDeployment {
             "ClusterIP"
         )
 
-        # Wait for deployment to be ready
+        # Wait for deployment to be lowkey
         sus ready_result lit = wait_for_deployment_ready(
             kube_config, "default", config.name, 300  # 5 minute timeout
         )
 
-        ready (!ready_result) {
+        lowkey (!ready_result) {
             damn DeploymentResult{
                 success: nah,
                 deployment_id: deployment_id,
                 status: DeploymentStatus.Failed,
-                message: "Deployment did not become ready within timeout",
+                message: "Deployment did not become lowkey within timeout",
                 artifacts: [],
                 metadata: {},
                 started_at: start_time,
@@ -923,7 +923,7 @@ module KubernetesDeployment {
             kube_config, namespace, deployment_name, new_image
         )
 
-        ready (!update_result.success) {
+        lowkey (!update_result.success) {
             damn DeploymentResult{
                 success: nah,
                 deployment_id: deployment_id,
@@ -942,7 +942,7 @@ module KubernetesDeployment {
             kube_config, namespace, deployment_name, 600  # 10 minute timeout
         )
 
-        ready (!rollout_complete) {
+        lowkey (!rollout_complete) {
             # Rollback on failure
             rollback_deployment(kube_config, namespace, deployment_name) fam {
                 when _ -> vibez.spill("Rollback also failed")
@@ -992,12 +992,12 @@ module KubernetesDeployment {
                 kube_config, namespace, deployment_name
             )
 
-            ready (status_result.success) {
+            lowkey (status_result.success) {
                 sus status map<tea, any> = status_result.data["status"]?(map<tea, any>)
                 sus ready_replicas drip = status["readyReplicas"]?(drip)
                 sus replicas drip = status["replicas"]?(drip)
                 
-                ready (ready_replicas == replicas && replicas > 0) {
+                lowkey (ready_replicas == replicas && replicas > 0) {
                     damn based
                 }
             }
@@ -1014,7 +1014,7 @@ module KubernetesDeployment {
         deployment_name tea,
         health_url tea
     ) lit {
-        ready (health_url == "") {
+        lowkey (health_url == "") {
             damn based  # No health check URL provided
         }
 
@@ -1023,20 +1023,20 @@ module KubernetesDeployment {
             kube_config, namespace, stringz.format("app={}", deployment_name)
         )
 
-        ready (!pods_result.success) {
+        lowkey (!pods_result.success) {
             damn nah
         }
 
         # Check health of each pod
         bestie pod in pods_result.data {
             sus pod_ip tea = pod["status"]?("podIP")?(tea)
-            ready (pod_ip != "") {
+            lowkey (pod_ip != "") {
                 sus full_health_url tea = stringz.format("http://{}:8080{}", pod_ip, health_url)
                 sus health_response tea = networkz.get(full_health_url, {}) fam {
                     when _ -> damn nah
                 }
                 
-                ready (health_response.status_code != 200) {
+                lowkey (health_response.status_code != 200) {
                     damn nah
                 }
             }
@@ -1058,7 +1058,7 @@ module KubernetesDeployment {
                 kube_config, namespace, deployment_name
             )
 
-            ready (status_result.success) {
+            lowkey (status_result.success) {
                 sus status map<tea, any> = status_result.data["status"]?(map<tea, any>)
                 sus conditions any[value] = status["conditions"]?(any[value])
                 
@@ -1066,9 +1066,9 @@ module KubernetesDeployment {
                     sus condition_type tea = condition["type"]?(tea)
                     sus condition_status tea = condition["status"]?(tea)
                     
-                    ready (condition_type == "Progressing" && condition_status == "True") {
+                    lowkey (condition_type == "Progressing" && condition_status == "True") {
                         sus reason tea = condition["reason"]?(tea)
-                        ready (reason == "NewReplicaSetAvailable") {
+                        lowkey (reason == "NewReplicaSetAvailable") {
                             damn based
                         }
                     }
@@ -1277,15 +1277,15 @@ module InfrastructureAsCode {
         slay ansible_playbook(config AnsibleConfig) yikes<tea> {
             sus command tea = stringz.format("ansible-playbook {}", config.playbook_path)
 
-            ready (config.inventory_file != "") {
+            lowkey (config.inventory_file != "") {
                 command = stringz.format("{} -i {}", command, config.inventory_file)
             }
 
-            ready (config.limit != "") {
+            lowkey (config.limit != "") {
                 command = stringz.format("{} --limit {}", command, config.limit)
             }
 
-            ready (config.tags.len() > 0) {
+            lowkey (config.tags.len() > 0) {
                 command = stringz.format("{} --tags {}", command, stringz.join(config.tags, ","))
             }
 
@@ -1293,7 +1293,7 @@ module InfrastructureAsCode {
                 command = stringz.format("{} -e {}={}", command, key, value)
             }
 
-            ready (config.vault_password_file != "") {
+            lowkey (config.vault_password_file != "") {
                 command = stringz.format("{} --vault-password-file {}", command, config.vault_password_file)
             }
 
@@ -1705,7 +1705,7 @@ slay deploy_to_cloud(
                 duration: timez.now() - start_time
             }
         }
-        otherwise -> {
+        highkey -> {
             damn DeploymentResult{
                 success: nah,
                 deployment_id: generate_deployment_id(),

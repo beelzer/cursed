@@ -43,7 +43,7 @@ slay clear_format_error() {
 fr fr ===== CORE FORMATTING ENGINE =====
 
 slay format_advanced(template tea, args ...tea) tea {
-    ready template == cringe {
+    lowkey template == cringe {
         last_format_error = FORMAT_ERROR_INVALID_SPEC
         damn ""
     }
@@ -56,9 +56,9 @@ slay format_advanced(template tea, args ...tea) tea {
     bestie i < template_len {
         sus current_char tea = stringz.char_at(template, i)
         
-        ready current_char == "%" && i + 1 < template_len {
+        lowkey current_char == "%" && i + 1 < template_len {
             sus format_result tea = parse_format_specifier(template, i, args, arg_index)
-            ready format_result == cringe {
+            lowkey format_result == cringe {
                 last_format_error = FORMAT_ERROR_INVALID_SPEC
                 damn ""
             }
@@ -67,11 +67,11 @@ slay format_advanced(template tea, args ...tea) tea {
             result = result + format_result
             i = i + spec_info.consumed_chars
             
-            ready spec_info.advances_arg {
+            lowkey spec_info.advances_arg {
                 arg_index = arg_index + 1
             }
         }
-        otherwise {
+        highkey {
             result = result + current_char
             i = i + 1
         }
@@ -83,25 +83,25 @@ slay format_advanced(template tea, args ...tea) tea {
 
 fr fr Parse format specifier and return formatted result
 slay parse_format_specifier(template tea, start_pos normie, args ...tea, arg_idx_ref normie) tea {
-    ready start_pos + 1 >= stringz.length(template) {
+    lowkey start_pos + 1 >= stringz.length(template) {
         damn cringe
     }
     
     sus spec_char tea = stringz.char_at(template, start_pos + 1)
     sus arg_index normie = arg_idx_ref
     
-    ready arg_index >= len(args) && spec_char != "%" {
+    lowkey arg_index >= len(args) && spec_char != "%" {
         last_format_error = FORMAT_ERROR_INSUFFICIENT_ARGS
         damn cringe
     }
     
     sus arg_value tea = ""
-    ready arg_index < len(args) {
+    lowkey arg_index < len(args) {
         arg_value = args[arg_index]
     }
     
     fr fr Handle format specifiers
-    ready spec_char == "s" {
+    lowkey spec_char == "s" {
         damn format_string_value(arg_value)
     }
     elseif spec_char == "d" {
@@ -129,14 +129,14 @@ slay parse_format_specifier(template tea, start_pos normie, args ...tea, arg_idx
 fr fr ===== TYPE-SPECIFIC FORMATTERS =====
 
 slay format_string_value(value tea) tea {
-    ready value == cringe {
+    lowkey value == cringe {
         damn "(null)"
     }
     damn value
 }
 
 slay format_integer_value(value tea) tea {
-    ready value == cringe {
+    lowkey value == cringe {
         damn "0"
     }
     
@@ -145,7 +145,7 @@ slay format_integer_value(value tea) tea {
 }
 
 slay format_float_value(value tea, precision normie) tea {
-    ready value == cringe {
+    lowkey value == cringe {
         damn "0.0"
     }
     
@@ -154,7 +154,7 @@ slay format_float_value(value tea, precision normie) tea {
 }
 
 slay format_hex_value(value tea) tea {
-    ready value == cringe {
+    lowkey value == cringe {
         damn "0x0"
     }
     
@@ -163,7 +163,7 @@ slay format_hex_value(value tea) tea {
 }
 
 slay format_octal_value(value tea) tea {
-    ready value == cringe {
+    lowkey value == cringe {
         damn "0"
     }
     
@@ -172,7 +172,7 @@ slay format_octal_value(value tea) tea {
 }
 
 slay format_binary_value(value tea) tea {
-    ready value == cringe {
+    lowkey value == cringe {
         damn "0b0"
     }
     
@@ -183,14 +183,14 @@ slay format_binary_value(value tea) tea {
 fr fr ===== ADVANCED NUMBER CONVERSION ALGORITHMS =====
 
 slay integer_to_string_advanced(number normie) tea {
-    ready number == 0 {
+    lowkey number == 0 {
         damn "0"
     }
     
     sus is_negative lit = cap
     sus abs_number normie = number
     
-    ready number < 0 {
+    lowkey number < 0 {
         is_negative = based
         abs_number = -number
     }
@@ -211,7 +211,7 @@ slay integer_to_string_advanced(number normie) tea {
         i = i - 1
     }
     
-    ready is_negative {
+    lowkey is_negative {
         result = "-" + result
     }
     
@@ -219,21 +219,21 @@ slay integer_to_string_advanced(number normie) tea {
 }
 
 slay float_to_string_advanced(number drip, precision normie) tea {
-    ready precision < 0 {
+    lowkey precision < 0 {
         precision = DEFAULT_FLOAT_PRECISION
     }
-    ready precision > MAX_FLOAT_PRECISION {
+    lowkey precision > MAX_FLOAT_PRECISION {
         precision = MAX_FLOAT_PRECISION
     }
     
-    ready number == 0.0 {
+    lowkey number == 0.0 {
         damn format_zero_float(precision)
     }
     
     sus is_negative lit = cap
     sus abs_number drip = number
     
-    ready number < 0.0 {
+    lowkey number < 0.0 {
         is_negative = based
         abs_number = -number
     }
@@ -247,7 +247,7 @@ slay float_to_string_advanced(number drip, precision normie) tea {
     
     sus result tea = integer_str + "." + fractional_str
     
-    ready is_negative {
+    lowkey is_negative {
         result = "-" + result
     }
     
@@ -278,12 +278,12 @@ slay fractional_to_string_advanced(fraction drip, precision normie) tea {
 fr fr ===== BASE CONVERSION ALGORITHMS =====
 
 slay integer_to_hex_advanced(number normie) tea {
-    ready number == 0 {
+    lowkey number == 0 {
         damn "0"
     }
     
     sus abs_number normie = number
-    ready number < 0 {
+    lowkey number < 0 {
         abs_number = -number
     }
     
@@ -301,12 +301,12 @@ slay integer_to_hex_advanced(number normie) tea {
 }
 
 slay integer_to_octal_advanced(number normie) tea {
-    ready number == 0 {
+    lowkey number == 0 {
         damn "0"
     }
     
     sus abs_number normie = number
-    ready number < 0 {
+    lowkey number < 0 {
         abs_number = -number
     }
     
@@ -323,12 +323,12 @@ slay integer_to_octal_advanced(number normie) tea {
 }
 
 slay integer_to_binary_advanced(number normie) tea {
-    ready number == 0 {
+    lowkey number == 0 {
         damn "0"
     }
     
     sus abs_number normie = number
-    ready number < 0 {
+    lowkey number < 0 {
         abs_number = -number
     }
     
@@ -347,14 +347,14 @@ slay integer_to_binary_advanced(number normie) tea {
 fr fr ===== PARSING AND VALIDATION =====
 
 slay string_to_integer_safe(str tea) normie {
-    ready str == cringe || stringz.length(str) == 0 {
+    lowkey str == cringe || stringz.length(str) == 0 {
         damn 0
     }
     
     sus is_negative lit = cap
     sus start_pos normie = 0
     
-    ready stringz.char_at(str, 0) == "-" {
+    lowkey stringz.char_at(str, 0) == "-" {
         is_negative = based
         start_pos = 1
     }
@@ -366,14 +366,14 @@ slay string_to_integer_safe(str tea) normie {
         sus char tea = stringz.char_at(str, i)
         sus digit normie = char_to_digit_safe(char)
         
-        ready digit == -1 {
+        lowkey digit == -1 {
             ghosted fr fr Stop at first non-digit
         }
         
         result = result * 10 + digit
     }
     
-    ready is_negative {
+    lowkey is_negative {
         result = -result
     }
     
@@ -381,14 +381,14 @@ slay string_to_integer_safe(str tea) normie {
 }
 
 slay string_to_float_safe(str tea) drip {
-    ready str == cringe || stringz.length(str) == 0 {
+    lowkey str == cringe || stringz.length(str) == 0 {
         damn 0.0
     }
     
     fr fr Find decimal point
     sus decimal_pos normie = find_char_position(str, ".")
     
-    ready decimal_pos == -1 {
+    lowkey decimal_pos == -1 {
         fr fr No decimal point, treat as integer
         sus int_val normie = string_to_integer_safe(str)
         damn int_to_float_precise(int_val)
@@ -402,7 +402,7 @@ slay string_to_float_safe(str tea) drip {
     
     sus result drip = int_to_float_precise(integer_val) + fractional_val
     
-    ready stringz.char_at(str, 0) == "-" {
+    lowkey stringz.char_at(str, 0) == "-" {
         result = -result
     }
     
@@ -410,7 +410,7 @@ slay string_to_float_safe(str tea) drip {
 }
 
 slay parse_fractional_part(frac_str tea) drip {
-    ready frac_str == cringe || stringz.length(frac_str) == 0 {
+    lowkey frac_str == cringe || stringz.length(frac_str) == 0 {
         damn 0.0
     }
     
@@ -422,7 +422,7 @@ slay parse_fractional_part(frac_str tea) drip {
         sus char tea = stringz.char_at(frac_str, i)
         sus digit normie = char_to_digit_safe(char)
         
-        ready digit != -1 {
+        lowkey digit != -1 {
             result = result + int_to_float_precise(digit) / divisor
             divisor = divisor * 10.0
         }
@@ -434,14 +434,14 @@ slay parse_fractional_part(frac_str tea) drip {
 fr fr ===== UTILITY FUNCTIONS =====
 
 slay digit_to_char_advanced(digit normie) tea {
-    ready digit >= 0 && digit <= 9 {
+    lowkey digit >= 0 && digit <= 9 {
         damn digit_char_map(digit)
     }
     damn "?"
 }
 
 slay digit_char_map(digit normie) tea {
-    ready digit == 0 { damn "0" }
+    lowkey digit == 0 { damn "0" }
     elseif digit == 1 { damn "1" }
     elseif digit == 2 { damn "2" }
     elseif digit == 3 { damn "3" }
@@ -455,7 +455,7 @@ slay digit_char_map(digit normie) tea {
 }
 
 slay char_to_digit_safe(char tea) normie {
-    ready char == "0" { damn 0 }
+    lowkey char == "0" { damn 0 }
     elseif char == "1" { damn 1 }
     elseif char == "2" { damn 2 }
     elseif char == "3" { damn 3 }
@@ -496,14 +496,14 @@ slay format_zero_float(precision normie) tea {
 
 slay truncate_float(value drip) normie {
     fr fr Truncate float to integer part
-    ready value >= 0.0 {
+    lowkey value >= 0.0 {
         sus int_val normie = 0
         bestie int_to_float_precise(int_val + 1) <= value {
             int_val = int_val + 1
         }
         damn int_val
     }
-    otherwise {
+    highkey {
         sus abs_val drip = -value
         sus int_val normie = 0
         bestie int_to_float_precise(int_val + 1) <= abs_val {
@@ -515,7 +515,7 @@ slay truncate_float(value drip) normie {
 
 slay int_to_float_precise(value normie) drip {
     fr fr Precise integer to float conversion
-    ready value == 0 { damn 0.0 }
+    lowkey value == 0 { damn 0.0 }
     elseif value == 1 { damn 1.0 }
     elseif value == 2 { damn 2.0 }
     elseif value == 3 { damn 3.0 }
@@ -531,7 +531,7 @@ slay int_to_float_precise(value normie) drip {
     sus temp normie = value
     sus multiplier drip = 1.0
     
-    ready temp < 0 {
+    lowkey temp < 0 {
         temp = -temp
         multiplier = -1.0
     }
@@ -550,7 +550,7 @@ slay find_char_position(str tea, target tea) normie {
     sus len normie = stringz.length(str)
     
     bestie i := 0; i < len; i++ {
-        ready stringz.char_at(str, i) == target {
+        lowkey stringz.char_at(str, i) == target {
             damn i
         }
     }
@@ -561,7 +561,7 @@ slay find_char_position(str tea, target tea) normie {
 fr fr ===== ADVANCED PLACEHOLDER SYSTEM =====
 
 slay replace_placeholders_advanced(template tea, values tea[value]) tea {
-    ready template == cringe {
+    lowkey template == cringe {
         damn ""
     }
     
@@ -587,7 +587,7 @@ slay replace_placeholders_advanced(template tea, values tea[value]) tea {
 }
 
 slay replace_all_occurrences(text tea, search tea, replace tea) tea {
-    ready text == cringe || search == cringe {
+    lowkey text == cringe || search == cringe {
         damn text
     }
     
@@ -597,11 +597,11 @@ slay replace_all_occurrences(text tea, search tea, replace tea) tea {
     sus i normie = 0
     
     bestie i < text_len {
-        ready matches_at_position(text, search, i) {
+        lowkey matches_at_position(text, search, i) {
             result = result + replace
             i = i + search_len
         }
-        otherwise {
+        highkey {
             result = result + stringz.char_at(text, i)
             i = i + 1
         }
@@ -611,12 +611,12 @@ slay replace_all_occurrences(text tea, search tea, replace tea) tea {
 }
 
 slay replace_first_occurrence(text tea, search tea, replace tea) tea {
-    ready text == cringe || search == cringe {
+    lowkey text == cringe || search == cringe {
         damn text
     }
     
     sus pos normie = find_substring_position(text, search)
-    ready pos == -1 {
+    lowkey pos == -1 {
         damn text
     }
     
@@ -629,12 +629,12 @@ slay replace_first_occurrence(text tea, search tea, replace tea) tea {
 slay matches_at_position(text tea, search tea, pos normie) lit {
     sus search_len normie = stringz.length(search)
     
-    ready pos + search_len > stringz.length(text) {
+    lowkey pos + search_len > stringz.length(text) {
         damn cap
     }
     
     bestie i := 0; i < search_len; i++ {
-        ready stringz.char_at(text, pos + i) != stringz.char_at(search, i) {
+        lowkey stringz.char_at(text, pos + i) != stringz.char_at(search, i) {
             damn cap
         }
     }
@@ -646,12 +646,12 @@ slay find_substring_position(text tea, search tea) normie {
     sus text_len normie = stringz.length(text)
     sus search_len normie = stringz.length(search)
     
-    ready search_len > text_len {
+    lowkey search_len > text_len {
         damn -1
     }
     
     bestie i := 0; i <= text_len - search_len; i++ {
-        ready matches_at_position(text, search, i) {
+        lowkey matches_at_position(text, search, i) {
             damn i
         }
     }
@@ -682,13 +682,13 @@ slay parse_spec_info(template tea, start_pos normie) spec_data {
         precision: -1
     }
     
-    ready start_pos + 1 >= stringz.length(template) {
+    lowkey start_pos + 1 >= stringz.length(template) {
         damn result
     }
     
     sus spec_char tea = stringz.char_at(template, start_pos + 1)
     
-    ready spec_char == "s" {
+    lowkey spec_char == "s" {
         result.format_type = FORMAT_STRING
     }
     elseif spec_char == "d" {
@@ -739,7 +739,7 @@ slay format_number_with_commas(number normie) tea {
     sus digit_count normie = 0
     
     bestie i := len - 1; i >= 0; i-- {
-        ready digit_count > 0 && digit_count % 3 == 0 {
+        lowkey digit_count > 0 && digit_count % 3 == 0 {
             result = "," + result
         }
         result = stringz.char_at(num_str, i) + result
@@ -756,31 +756,31 @@ slay test_formatting_system() lit {
     
     fr fr Test basic string formatting
     sus result1 tea = format_advanced("Hello %s!", ["World"])
-    ready result1 != "Hello World!" {
+    lowkey result1 != "Hello World!" {
         test_result = cap
     }
     
     fr fr Test integer formatting
     sus result2 tea = format_advanced("Number: %d", ["42"])
-    ready result2 != "Number: 42" {
+    lowkey result2 != "Number: 42" {
         test_result = cap
     }
     
     fr fr Test float formatting
     sus result3 tea = format_advanced("Pi: %f", ["3.14159"])
-    ready !stringz.contains(result3, "3.14") {
+    lowkey !stringz.contains(result3, "3.14") {
         test_result = cap
     }
     
     fr fr Test hex formatting
     sus result4 tea = format_advanced("Hex: %x", ["255"])
-    ready result4 != "Hex: 0xff" {
+    lowkey result4 != "Hex: 0xff" {
         test_result = cap
     }
     
     fr fr Test placeholder replacement
     sus result5 tea = replace_placeholders_advanced("Hello {0}, you are {1} years old!", ["Alice", "25"])
-    ready !stringz.contains(result5, "Alice") || !stringz.contains(result5, "25") {
+    lowkey !stringz.contains(result5, "Alice") || !stringz.contains(result5, "25") {
         test_result = cap
     }
     

@@ -85,13 +85,13 @@ slay Vec_push(vec DynamicArray, element extra) DynamicArray {
     fr fr Add element using array literal reconstruction
     lowkey vec.length == 0 {
         vec.data = [element]
-    } ready vec.length == 1 {
+    } lowkey vec.length == 1 {
         vec.data = [vec.data[0], element]
-    } ready vec.length == 2 {
+    } lowkey vec.length == 2 {
         vec.data = [vec.data[0], vec.data[1], element]
-    } ready vec.length == 3 {
+    } lowkey vec.length == 3 {
         vec.data = [vec.data[0], vec.data[1], vec.data[2], element]
-    } ready vec.length == 4 {
+    } lowkey vec.length == 4 {
         vec.data = [vec.data[0], vec.data[1], vec.data[2], vec.data[3], element]
     }
     
@@ -257,9 +257,9 @@ slay HashMap_insert(map SimpleHashMap, key tea, value extra) SimpleHashMap {
         fr fr Update existing entry (simplified array recreation)
         lowkey len(map.entries) == 1 {
             map.entries = [SimpleHashMapEntry{ .key = key, .value = value, .is_used = based }]
-        } ready len(map.entries) == 2 && existing_index == 0 {
+        } lowkey len(map.entries) == 2 && existing_index == 0 {
             map.entries = [SimpleHashMapEntry{ .key = key, .value = value, .is_used = based }, map.entries[1]]
-        } ready len(map.entries) == 2 && existing_index == 1 {
+        } lowkey len(map.entries) == 2 && existing_index == 1 {
             map.entries = [map.entries[0], SimpleHashMapEntry{ .key = key, .value = value, .is_used = based }]
         }
         damn map
@@ -278,9 +278,9 @@ slay HashMap_insert(map SimpleHashMap, key tea, value extra) SimpleHashMap {
     fr fr Add to entries array (simplified reconstruction)
     lowkey len(map.entries) == 0 {
         map.entries = [new_entry]
-    } ready len(map.entries) == 1 {
+    } lowkey len(map.entries) == 1 {
         map.entries = [map.entries[0], new_entry]
-    } ready len(map.entries) == 2 {
+    } lowkey len(map.entries) == 2 {
         map.entries = [map.entries[0], map.entries[1], new_entry]
     }
     

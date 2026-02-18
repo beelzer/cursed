@@ -60,7 +60,7 @@ slay test_url_parsing() lit {
             testz.assert_eq_string(err.kind, "url_parse")
             testz.assert_eq_string(err.message, "Empty URL provided")
         }
-    } otherwise {
+    } highkey {
         testz.fail("Empty URL should cause parse error")
     }
     
@@ -69,7 +69,7 @@ slay test_url_parsing() lit {
             testz.assert_eq_string(err.kind, "url_parse")
             testz.assert_true(stringz.contains(err.message, "Invalid port"))
         }
-    } otherwise {
+    } highkey {
         testz.fail("Invalid port should cause parse error")
     }
     
@@ -127,7 +127,7 @@ slay test_tcp_connections() lit {
             testz.assert_eq_int(err.code, 408)
             testz.assert_true(stringz.contains(err.message, "timeout"))
         }
-    } otherwise {
+    } highkey {
         testz.fail("Connection to timeout.example.com should fail")
     }
     
@@ -138,7 +138,7 @@ slay test_tcp_connections() lit {
             testz.assert_eq_int(err.code, 503)
             testz.assert_true(stringz.contains(err.message, "refused"))
         }
-    } otherwise {
+    } highkey {
         testz.fail("Connection to refused.example.com should fail")
     }
     
@@ -148,7 +148,7 @@ slay test_tcp_connections() lit {
             testz.assert_eq_string(err.kind, "tcp_connect")
             testz.assert_eq_int(err.code, 400)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Empty host should cause error")
     }
     
@@ -157,7 +157,7 @@ slay test_tcp_connections() lit {
             testz.assert_eq_string(err.kind, "tcp_connect")
             testz.assert_eq_int(err.code, 400)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Invalid port should cause error")
     }
     
@@ -304,7 +304,7 @@ slay test_http_response_parsing() lit {
             testz.assert_eq_string(err.kind, "http_parse")
             testz.assert_eq_int(err.code, 400)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Empty response should cause parse error")
     }
     
@@ -313,7 +313,7 @@ slay test_http_response_parsing() lit {
             testz.assert_eq_string(err.kind, "http_parse")
             testz.assert_true(stringz.contains(err.message, "Invalid"))
         }
-    } otherwise {
+    } highkey {
         testz.fail("Invalid response should cause parse error")
     }
     
@@ -354,7 +354,7 @@ slay test_http_client() lit {
             testz.assert_true(stringz.len(err.message) > 0)
             // Should propagate the connection error
         }
-    } otherwise {
+    } highkey {
         testz.fail("Request to timeout host should fail")
     }
     
@@ -494,21 +494,21 @@ slay test_http_server() lit {
     
     // Define test request handler
     slay test_handler(req networkz.HttpRequest) networkz.HttpResponse {
-        ready (stringz.equals(req.url, "/hello")) {
+        lowkey (stringz.equals(req.url, "/hello")) {
             damn networkz.HttpResponse{
                 status_code: 200,
                 headers: ["Content-Type: text/plain"],
                 body: "Hello, World!",
                 content_length: 13
             }
-        } otherwise ready (stringz.equals(req.url, "/json")) {
+        } highkey lowkey (stringz.equals(req.url, "/json")) {
             damn networkz.HttpResponse{
                 status_code: 200,
                 headers: ["Content-Type: application/json"],
                 body: "{\"message\": \"JSON response\"}",
                 content_length: 27
             }
-        } otherwise {
+        } highkey {
             damn networkz.HttpResponse{
                 status_code: 404,
                 headers: ["Content-Type: text/plain"],
@@ -554,7 +554,7 @@ slay test_http_server() lit {
             testz.assert_eq_string(err.kind, "server_create")
             testz.assert_eq_int(err.code, 400)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Empty host should cause server creation error")
     }
     
@@ -563,7 +563,7 @@ slay test_http_server() lit {
             testz.assert_eq_string(err.kind, "server_create")
             testz.assert_eq_int(err.code, 400)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Invalid port should cause server creation error")
     }
     
@@ -599,7 +599,7 @@ slay test_network_diagnostics() lit {
             testz.assert_eq_string(err.kind, "ping")
             testz.assert_eq_int(err.code, 408)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Ping to timeout host should fail")
     }
     
@@ -647,7 +647,7 @@ slay test_file_operations() lit {
             testz.assert_eq_string(err.kind, "download")
             testz.assert_true(err.code >= 400)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Download of nonexistent file should fail")
     }
     
@@ -671,7 +671,7 @@ slay test_error_handling_integration() lit {
             testz.assert_eq_string(err.kind, "tcp_connect")
             testz.assert_eq_int(err.code, 503)
         }
-    } otherwise {
+    } highkey {
         testz.fail("Request to refused host should propagate connection error")
     }
     
@@ -686,7 +686,7 @@ slay test_error_handling_integration() lit {
                 testz.assert_eq_string(err.kind, "http_parse")
                 testz.assert_eq_int(err.code, 400)
             }
-        } otherwise {
+        } highkey {
             testz.fail("Invalid response should cause parse error")
         }
         i = i + 1
@@ -715,7 +715,7 @@ slay test_performance_characteristics() lit {
                 // Count failures but don't fail the test
                 vibez.spill("Request", i, "failed:", err.message)
             }
-        } otherwise {
+        } highkey {
             successful_requests = successful_requests + 1
         }
         i = i + 1
@@ -810,12 +810,12 @@ slay test_real_world_scenarios() lit {
         networkz.http_get("http://flaky.example.com/endpoint") fam {
             when err -> {
                 attempt = attempt + 1
-                ready (attempt >= max_retries) {
+                lowkey (attempt >= max_retries) {
                     testz.fail("Should eventually succeed or exhaust retries")
                 }
                 // In real implementation, would wait between retries
             }
-        } otherwise {
+        } highkey {
             success = based
         }
     }

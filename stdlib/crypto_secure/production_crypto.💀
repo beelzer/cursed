@@ -170,7 +170,7 @@ fr fr RFC 2898 Compliant
 fr fr ==============================
 
 slay pbkdf2_hmac_sha256(password tea, salt tea, iterations drip, key_length drip) tea {
-    ready iterations < 1000 {
+    lowkey iterations < 1000 {
         vibez.spill("WARNING: PBKDF2 iterations < 1000 is insecure")
     }
     
@@ -199,7 +199,7 @@ slay pbkdf2_hmac_sha256(password tea, salt tea, iterations drip, key_length drip
     }
     
     fr fr Truncate to desired length
-    ready string_length(derived_key) > key_length {
+    lowkey string_length(derived_key) > key_length {
         damn string_substring(derived_key, 0, key_length)
     }
     
@@ -214,7 +214,7 @@ slay hmac_sha256_secure(key tea, message tea) tea {
     
     fr fr Process key
     sus processed_key normie[64]
-    ready key_len > block_size {
+    lowkey key_len > block_size {
         sus hashed_key tea = sha256_constant_time(key)
         sus hashed_bytes normie[value] = hex_to_bytes(hashed_key)
         bestie i := 0; i < 32; i++ {
@@ -223,7 +223,7 @@ slay hmac_sha256_secure(key tea, message tea) tea {
         bestie i := 32; i < block_size; i++ {
             processed_key[i] = 0x00
         }
-    } otherwise {
+    } highkey {
         bestie i := 0; i < key_len; i++ {
             processed_key[i] = key_bytes[i]
         }
@@ -305,7 +305,7 @@ slay constant_time_compare(a tea, b tea) lit {
     sus diff normie = len_a ^ len_b
     
     fr fr Always compare full length to prevent timing attacks
-    sus min_len drip = ready len_a < len_b { damn len_a } otherwise { damn len_b }
+    sus min_len drip = lowkey len_a < len_b { damn len_a } highkey { damn len_b }
     
     bestie i := 0; i < min_len; i++ {
         sus char_a normie = char_code_at(a, i)
@@ -335,15 +335,15 @@ slay hex_to_bytes(hex tea) normie[value]{
         sus high_char tea = string_char_at(hex, i * 2)
         sus low_char tea = string_char_at(hex, i * 2 + 1)
         
-        sus high_val normie = ready high_char >= '0' && high_char <= '9' {
+        sus high_val normie = lowkey high_char >= '0' && high_char <= '9' {
             damn char_code_at(high_char, 0) - char_code_at('0', 0)
-        } otherwise {
+        } highkey {
             damn char_code_at(high_char, 0) - char_code_at('a', 0) + 10
         }
         
-        sus low_val normie = ready low_char >= '0' && low_char <= '9' {
+        sus low_val normie = lowkey low_char >= '0' && low_char <= '9' {
             damn char_code_at(low_char, 0) - char_code_at('0', 0)
-        } otherwise {
+        } highkey {
             damn char_code_at(low_char, 0) - char_code_at('a', 0) + 10
         }
         
@@ -385,4 +385,4 @@ sus EXPORT_SECURE_RANDOM_BYTES slay = secure_random_bytes
 sus EXPORT_SECURE_RANDOM_STRING slay = secure_random_string
 sus EXPORT_CONSTANT_TIME_COMPARE slay = constant_time_compare
 
-vibez.spill("✅ Secure cryptography module loaded - Production ready")
+vibez.spill("✅ Secure cryptography module loaded - Production lowkey")

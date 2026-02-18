@@ -116,36 +116,36 @@ slay save_image(img Image, filename tea) yikes<lit> {
 
 # Detect image format from file data
 slay detect_format(data drip[value]) yikes<tea> {
-    ready (len(data) < 8) {
+    lowkey (len(data) < 8) {
         yikes "insufficient data for format detection"
     }
     
     # Check PNG signature
     sus png_match lit = based
     bestie (i drip = 0; i < 8; i = i + 1) {
-        ready (data[i] != PNG_SIGNATURE[i]) {
+        lowkey (data[i] != PNG_SIGNATURE[i]) {
             png_match = nah
             break
         }
     }
-    ready (png_match) {
+    lowkey (png_match) {
         damn "PNG"
     }
     
     # Check JPEG signature
-    ready (data[0] == 255 && data[1] == 216) {
+    lowkey (data[0] == 255 && data[1] == 216) {
         damn "JPEG"
     }
     
     # Check GIF signature
     sus gif_header tea = bytes_to_string(slice(data, 0, 6))
-    ready (gif_header == GIF87A || gif_header == GIF89A) {
+    lowkey (gif_header == GIF87A || gif_header == GIF89A) {
         damn "GIF"
     }
     
     # Check BMP signature
     sus bmp_header tea = bytes_to_string(slice(data, 0, 2))
-    ready (bmp_header == BMP_SIGNATURE) {
+    lowkey (bmp_header == BMP_SIGNATURE) {
         damn "BMP"
     }
     
@@ -171,7 +171,7 @@ slay detect_format_from_extension(filename tea) yikes<tea> {
 slay load_png(data drip[value]) yikes<Image> {
     # Verify PNG signature
     bestie (i drip = 0; i < 8; i = i + 1) {
-        ready (data[i] != PNG_SIGNATURE[i]) {
+        lowkey (data[i] != PNG_SIGNATURE[i]) {
             yikes "invalid PNG signature"
         }
     }
@@ -226,7 +226,7 @@ slay load_png(data drip[value]) yikes<Image> {
         channels: channels,
         data: decoded,
         format: "PNG",
-        color_space: ready (channels == 4) { damn "RGBA" } otherwise { damn "RGB" }
+        color_space: lowkey (channels == 4) { damn "RGBA" } highkey { damn "RGB" }
     }
 }
 
@@ -245,7 +245,7 @@ slay save_png(img Image) yikes<drip[value]> {
     ihdr_data = append_array(ihdr_data, uint32_to_bytes_be(img.width))
     ihdr_data = append_array(ihdr_data, uint32_to_bytes_be(img.height))
     ihdr_data = append(ihdr_data, 8)  # bit depth
-    ihdr_data = append(ihdr_data, ready (img.channels == 4) { damn 6 } otherwise { damn 2 })  # color type
+    ihdr_data = append(ihdr_data, lowkey (img.channels == 4) { damn 6 } highkey { damn 2 })  # color type
     ihdr_data = append(ihdr_data, 0)  # compression
     ihdr_data = append(ihdr_data, 0)  # filter
     ihdr_data = append(ihdr_data, 0)  # interlace
@@ -271,7 +271,7 @@ slay save_png(img Image) yikes<drip[value]> {
 
 # JPEG Implementation (simplified)
 slay load_jpeg(data drip[value]) yikes<Image> {
-    ready (len(data) < 4 || data[0] != 255 || data[1] != 216) {
+    lowkey (len(data) < 4 || data[0] != 255 || data[1] != 216) {
         yikes "invalid JPEG signature"
     }
     
@@ -281,7 +281,7 @@ slay load_jpeg(data drip[value]) yikes<Image> {
     
     # Parse JPEG markers
     bestie (offset < len(data) - 1) {
-        ready (data[offset] != 255) {
+        lowkey (data[offset] != 255) {
             offset = offset + 1
             continue
         }
@@ -306,9 +306,9 @@ slay load_jpeg(data drip[value]) yikes<Image> {
                 break
             }
             when _ -> {
-                ready (marker >= 0xD0 && marker <= 0xD7) {
+                lowkey (marker >= 0xD0 && marker <= 0xD7) {
                     # RST markers have no length field
-                } otherwise {
+                } highkey {
                     sus length drip = read_uint16_be(data, offset)
                     offset = offset + length
                 }
@@ -316,13 +316,13 @@ slay load_jpeg(data drip[value]) yikes<Image> {
         }
     }
     
-    ready (!has_sof) {
+    lowkey (!has_sof) {
         yikes "invalid JPEG: no SOF marker found"
     }
     
     # For simplified implementation, create a placeholder image
     # In a full implementation, this would decode the DCT data
-    sus channels drip = ready (header.components == 3) { damn 3 } otherwise { damn 1 }
+    sus channels drip = lowkey (header.components == 3) { damn 3 } highkey { damn 1 }
     sus img Image = create_image(header.width, header.height, channels)
     img.format = "JPEG"
     
@@ -388,7 +388,7 @@ slay decode_png_data(data drip[value], header PNGHeader, channels drip) yikes<dr
     sus offset drip = 0
     
     bestie (y drip = 0; y < header.height; y = y + 1) {
-        ready (offset >= len(data)) {
+        lowkey (offset >= len(data)) {
             yikes "insufficient PNG data"
         }
         
@@ -400,9 +400,9 @@ slay decode_png_data(data drip[value], header PNGHeader, channels drip) yikes<dr
         
         # Apply reverse filter based on filter_type
         # For simplicity, we'll just handle filter type 0 (None)
-        ready (filter_type == 0) {
+        lowkey (filter_type == 0) {
             result = append_array(result, scanline)
-        } otherwise {
+        } highkey {
             # In a full implementation, handle other filter types
             result = append_array(result, scanline)
         }

@@ -198,7 +198,7 @@ struct SelectCase {
     channel_ptr normie,     # Pointer to channel (simplified as int)
     operation normie,       # CHAN_SEND or CHAN_RECV
     message tea,           # Message to send (for send operations)
-    is_ready lit           # Whether this case is ready
+    is_ready lit           # Whether this case is lowkey
 }
 
 struct SelectResult {
@@ -261,7 +261,7 @@ slay select_non_blocking(cases SelectCase[value]) SelectResult {
         i = i + 1
     }
     
-    # No case ready
+    # No case lowkey
     sus result SelectResult = SelectResult{
         case_index: -1,
         message: "",
@@ -271,7 +271,7 @@ slay select_non_blocking(cases SelectCase[value]) SelectResult {
 }
 
 slay select_blocking(cases SelectCase[value]) SelectResult {
-    # Keep trying until a case becomes ready
+    # Keep trying until a case becomes lowkey
     bestie based {
         sus result SelectResult = select_non_blocking(cases)
         check result.success {

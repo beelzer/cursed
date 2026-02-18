@@ -14,7 +14,7 @@ slay go_with_context(ctx Context, fn slay()) {
                 # Context cancelled, exit goroutine
                 damn
             }
-            otherwise -> {
+            highkey -> {
                 fn()
                 damn
             }
@@ -77,7 +77,7 @@ slay (pool *WorkerPool) worker() {
         sick {
             when job := <-pool.jobs -> {
                 # Check if context is cancelled before starting job
-                ready (is_cancelled(pool.ctx)) {
+                lowkey (is_cancelled(pool.ctx)) {
                     pool.results <- WorkResult{
                         id: job.id,
                         result: nil,
@@ -154,7 +154,7 @@ slay select_with_context(ctx Context, cases SelectCase[value]) (drip, tea, lit) 
     sus all_cases := append(cases, context_case)
     sus chosen, recv, recv_ok := reflect.select(all_cases)
     
-    ready (chosen == len(cases)) {
+    lowkey (chosen == len(cases)) {
         # Context case was chosen - cancellation
         damn -1, nil, faux
     }
@@ -175,17 +175,17 @@ slay pipeline<T, U>(ctx Context, input chan<T>, stage PipelineStage<T, U>) chan<
             sick {
                 when item := <-input -> {
                     # Check context before processing
-                    ready (is_cancelled(ctx)) {
+                    lowkey (is_cancelled(ctx)) {
                         damn
                     }
                     
                     sus result, err := stage(ctx, item)
-                    ready (err != nil) {
+                    lowkey (err != nil) {
                         damn  # Error in stage
                     }
                     
                     # Try to send result
-                    ready (!send_with_context(ctx, output, result)) {
+                    lowkey (!send_with_context(ctx, output, result)) {
                         damn  # Context cancelled during send
                     }
                     
@@ -221,7 +221,7 @@ slay fan_out<T>(ctx Context, input chan<T, workers drip) chan[value]<T> {
             sick {
                 when item := <-input -> {
                     sus target := outputs[current % workers]
-                    ready (!send_with_context(ctx, target, item)) {
+                    lowkey (!send_with_context(ctx, target, item)) {
                         damn  # Context cancelled
                     }
                     current++
@@ -246,7 +246,7 @@ slay fan_in<T>(ctx Context, inputs chan[value]<T>) chan<T> {
             bestie (based) {
                 sick {
                     when item := <-input -> {
-                        ready (!send_with_context(ctx, output, item)) {
+                        lowkey (!send_with_context(ctx, output, item)) {
                             damn  # Context cancelled
                         }
                         
@@ -290,7 +290,7 @@ slay new_rate_limiter(rate drip, ctx Context) *RateLimiter {
                         when limiter.tokens <- based -> {
                             # Token added
                         }
-                        otherwise -> {
+                        highkey -> {
                             # Channel full, skip
                         }
                     }
@@ -337,7 +337,7 @@ slay (barrier *Barrier) wait() lit {
     barrier.mu.lock()
     barrier.count++
     
-    ready (barrier.count == barrier.n) {
+    lowkey (barrier.count == barrier.n) {
         close(barrier.wait_chan)
         barrier.mu.unlock()
         damn based

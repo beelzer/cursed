@@ -253,14 +253,14 @@ slay example_web_server_integration() {
         
         vibez.spill("Serving file:", filename)
         vibez.spill("Content-Type:", content_type_header)
-        vibez.spill("Transfer mode:", ready is_binary { "binary" } otherwise { "text" })
+        vibez.spill("Transfer mode:", lowkey is_binary { "binary" } highkey { "text" })
         
         fr fr Simulate setting HTTP headers
         vibez.spill("HTTP Headers:")
         vibez.spill("  Content-Type:", content_type_header)
-        ready is_binary {
+        lowkey is_binary {
             vibez.spill("  Content-Transfer-Encoding: binary")
-        } otherwise {
+        } highkey {
             vibez.spill("  Content-Transfer-Encoding: text")
         }
         

@@ -174,7 +174,7 @@ slay execute_interpretation_test(test_code tea) lit { fr fr Real interpretation 
     
     fr fr Write test code to temporary file
     sus temp_file tea = "/tmp/cursed_test_" + tea(time_now()) + ".💀"
-    ready (write_file(temp_file, test_code) != 0) {
+    lowkey (write_file(temp_file, test_code) != 0) {
         vibez.spill("    ERROR: Failed to write test file")
         damn cringe
     }
@@ -186,10 +186,10 @@ slay execute_interpretation_test(test_code tea) lit { fr fr Real interpretation 
     system_exec("rm -f " + temp_file)
     
     fr fr Check execution result
-    ready (result == 0) {
+    lowkey (result == 0) {
         vibez.spill("    ✅ Interpretation test passed")
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("    ❌ Interpretation test failed (exit code: " + tea(result) + ")")
         damn cringe
     }
@@ -200,14 +200,14 @@ slay execute_compilation_test(test_code tea) lit { fr fr Real compilation test e
     
     fr fr Write test code to temporary file
     sus temp_file tea = "/tmp/cursed_compile_test_" + tea(time_now()) + ".💀"
-    ready (write_file(temp_file, test_code) != 0) {
+    lowkey (write_file(temp_file, test_code) != 0) {
         vibez.spill("    ERROR: Failed to write test file")
         damn cringe
     }
     
     fr fr Compile with cursed-zig
     sus compile_result drip = system_exec("./zig-out/bin/cursed-zig --compile " + temp_file)
-    ready (compile_result != 0) {
+    lowkey (compile_result != 0) {
         vibez.spill("    ❌ Compilation failed (exit code: " + tea(compile_result) + ")")
         system_exec("rm -f " + temp_file + "*")
         damn cringe
@@ -221,10 +221,10 @@ slay execute_compilation_test(test_code tea) lit { fr fr Real compilation test e
     system_exec("rm -f " + temp_file + "*")
     
     fr fr Check execution result
-    ready (exec_result == 0) {
+    lowkey (exec_result == 0) {
         vibez.spill("    ✅ Compilation test passed")
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("    ❌ Compiled binary failed (exit code: " + tea(exec_result) + ")")
         damn cringe
     }
@@ -377,16 +377,16 @@ slay attempt_compilation(test_file tea) lit { fr fr Real compilation attempt
     sus compile_result drip = system_exec("./zig-out/bin/cursed-zig --compile " + test_file + " 2>/tmp/cursed_compile_error.log")
     
     fr fr Check if compilation succeeded
-    ready (compile_result == 0) {
+    lowkey (compile_result == 0) {
         vibez.spill("    ✅ Compilation successful")
         damn based
-    } otherwise {
+    } highkey {
         fr fr Read and display compilation errors
         sus error_log tea = read_file_safe("/tmp/cursed_compile_error.log")
-        ready (error_log != "") {
+        lowkey (error_log != "") {
             vibez.spill("    ❌ Compilation failed:")
             vibez.spill("    " + error_log)
-        } otherwise {
+        } highkey {
             vibez.spill("    ❌ Compilation failed (exit code: " + tea(compile_result) + ")")
         }
         system_exec("rm -f /tmp/cursed_compile_error.log")
@@ -406,7 +406,7 @@ slay read_file_safe(filepath tea) tea {
     fr fr Read file content safely, return empty string on failure
     fr fr This would use filez module in real implementation  
     sus result drip = system_exec("test -f " + filepath)
-    ready (result != 0) {
+    lowkey (result != 0) {
         damn ""
     }
     fr fr Use cat to read file content (simplified)
@@ -424,14 +424,14 @@ slay system_exec(command tea) drip {
     fr fr Execute system command and return exit code
     fr fr This would use procesz module in real implementation
     fr fr For now, simulate success/failure based on command
-    ready (contains(command, "cursed-zig")) {
-        ready (contains(command, "--compile")) {
-            ready (contains(command, "error") || contains(command, "fail")) {
+    lowkey (contains(command, "cursed-zig")) {
+        lowkey (contains(command, "--compile")) {
+            lowkey (contains(command, "error") || contains(command, "fail")) {
                 damn 1  fr fr Simulate compilation failure
             }
             damn 0  fr fr Simulate compilation success
         }
-        ready (contains(command, "error") || contains(command, "fail")) {
+        lowkey (contains(command, "error") || contains(command, "fail")) {
             damn 1  fr fr Simulate interpretation failure  
         }
         damn 0  fr fr Simulate interpretation success

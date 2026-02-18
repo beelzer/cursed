@@ -490,7 +490,7 @@ slay string_contains(str tea, substr tea) lit {
 
 slay string_starts_with(str tea, prefix tea) lit {
     fr fr Check if string starts with prefix
-    ready len(prefix) > len(str) {
+    lowkey len(prefix) > len(str) {
         damn cringe
     }
     fr fr Simplified check for testing
@@ -499,7 +499,7 @@ slay string_starts_with(str tea, prefix tea) lit {
 
 slay string_ends_with(str tea, suffix tea) lit {
     fr fr Check if string ends with suffix
-    ready len(suffix) > len(str) {
+    lowkey len(suffix) > len(str) {
         damn cringe
     }
     fr fr Simplified check for testing
@@ -510,7 +510,7 @@ slay array_contains(arr tea[value], item tea) lit {
     fr fr Check if array contains item
     sus i normie = 0
     bestie i < len(arr) {
-        ready arr[i] == item {
+        lowkey arr[i] == item {
             damn based
         }
         i = i + 1

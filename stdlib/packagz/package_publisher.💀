@@ -82,13 +82,13 @@ slay create_publishing_config(registry_url tea, api_key tea) PublishingConfig {
 
 # Load package manifest from cursed.toml file
 slay load_package_manifest(manifest_path tea) PackageManifest {
-    ready (!filez.file_exists(manifest_path)) {
+    lowkey (!filez.file_exists(manifest_path)) {
         vibez.spill("Package manifest not found:", manifest_path)
         damn PackageManifest { name: "" }
     }
     
     sus manifest_content tea = filez.read_file(manifest_path)
-    ready (manifest_content == "") {
+    lowkey (manifest_content == "") {
         vibez.spill("Failed to read manifest file:", manifest_path)
         damn PackageManifest { name: "" }
     }
@@ -96,7 +96,7 @@ slay load_package_manifest(manifest_path tea) PackageManifest {
     # Parse TOML-like format (simplified implementation)
     sus manifest PackageManifest = parse_package_manifest_toml(manifest_content)
     
-    ready (manifest.name == "") {
+    lowkey (manifest.name == "") {
         vibez.spill("Invalid or incomplete package manifest")
         damn PackageManifest { name: "" }
     }
@@ -133,19 +133,19 @@ slay parse_package_manifest_toml(content tea) PackageManifest {
         sus line tea = stringz.trim(lines[i])
         
         # Skip empty lines and comments
-        ready (line == "" || stringz.starts_with(line, "#")) {
+        lowkey (line == "" || stringz.starts_with(line, "#")) {
             continue
         }
         
         # Section headers
-        ready (stringz.starts_with(line, "[") && stringz.ends_with(line, "]")) {
+        lowkey (stringz.starts_with(line, "[") && stringz.ends_with(line, "]")) {
             current_section = stringz.substring(line, 1, stringz.len(line) - 1)
             continue
         }
         
         # Key-value pairs
         sus eq_pos drip = stringz.index_of(line, "=")
-        ready (eq_pos == -1) {
+        lowkey (eq_pos == -1) {
             continue
         }
         
@@ -153,12 +153,12 @@ slay parse_package_manifest_toml(content tea) PackageManifest {
         sus value tea = stringz.trim(stringz.substring(line, eq_pos + 1, stringz.len(line)))
         
         # Remove quotes
-        ready (stringz.starts_with(value, "\"") && stringz.ends_with(value, "\"")) {
+        lowkey (stringz.starts_with(value, "\"") && stringz.ends_with(value, "\"")) {
             value = stringz.substring(value, 1, stringz.len(value) - 1)
         }
         
         # Parse based on current section and key
-        ready (current_section == "" || current_section == "package") {
+        lowkey (current_section == "" || current_section == "package") {
             match key {
                 "name" -> manifest.name = value
                 "version" -> manifest.version = value
@@ -183,7 +183,7 @@ slay parse_package_manifest_toml(content tea) PackageManifest {
 # Parse TOML array of strings
 slay parse_string_array_toml(value tea) tea[value]{
     # Simple implementation for ["item1", "item2", "item3"] format
-    ready (!stringz.starts_with(value, "[") || !stringz.ends_with(value, "]")) {
+    lowkey (!stringz.starts_with(value, "[") || !stringz.ends_with(value, "]")) {
         damn [value]  # Single value
     }
     
@@ -193,10 +193,10 @@ slay parse_string_array_toml(value tea) tea[value]{
     
     bestie (sus i drip = 0; i < arrayz.len(parts); i = i + 1) {
         sus part tea = stringz.trim(parts[i])
-        ready (stringz.starts_with(part, "\"") && stringz.ends_with(part, "\"")) {
+        lowkey (stringz.starts_with(part, "\"") && stringz.ends_with(part, "\"")) {
             part = stringz.substring(part, 1, stringz.len(part) - 1)
         }
-        ready (part != "") {
+        lowkey (part != "") {
             result = arrayz.append(result, part)
         }
     }
@@ -220,69 +220,69 @@ slay validate_package_for_publishing(package_dir tea, manifest PackageManifest) 
     }
     
     # Check if package directory exists
-    ready (!filez.dir_exists(package_dir)) {
+    lowkey (!filez.dir_exists(package_dir)) {
         result.errors = arrayz.append(result.errors, "Package directory not found: " + package_dir)
         result.is_valid = cap
         damn result
     }
     
     # Validate manifest fields
-    ready (manifest.name == "") {
+    lowkey (manifest.name == "") {
         result.errors = arrayz.append(result.errors, "Package name is required")
         result.is_valid = cap
     }
     
-    ready (manifest.version == "") {
+    lowkey (manifest.version == "") {
         result.errors = arrayz.append(result.errors, "Package version is required")
         result.is_valid = cap
     }
     
-    ready (manifest.description == "") {
+    lowkey (manifest.description == "") {
         result.warnings = arrayz.append(result.warnings, "Package description is missing")
     }
     
-    ready (arrayz.len(manifest.authors) == 0) {
+    lowkey (arrayz.len(manifest.authors) == 0) {
         result.warnings = arrayz.append(result.warnings, "Package authors list is empty")
     }
     
-    ready (manifest.license == "") {
+    lowkey (manifest.license == "") {
         result.warnings = arrayz.append(result.warnings, "Package license is not specified")
     }
     
     # Validate version format
-    ready (!is_valid_semver(manifest.version)) {
+    lowkey (!is_valid_semver(manifest.version)) {
         result.errors = arrayz.append(result.errors, "Invalid semantic version: " + manifest.version)
         result.is_valid = cap
     }
     
     # Validate package name format
-    ready (!is_valid_package_name(manifest.name)) {
+    lowkey (!is_valid_package_name(manifest.name)) {
         result.errors = arrayz.append(result.errors, "Invalid package name: " + manifest.name)
         result.is_valid = cap
     }
     
     # Check for essential files
     sus readme_path tea = package_dir + "/" + manifest.readme
-    ready (filez.file_exists(readme_path)) {
+    lowkey (filez.file_exists(readme_path)) {
         result.has_readme = based
-    } otherwise {
+    } highkey {
         result.warnings = arrayz.append(result.warnings, "README file not found: " + manifest.readme)
     }
     
     sus license_path tea = package_dir + "/LICENSE"
     sus license_txt_path tea = package_dir + "/LICENSE.txt"
-    ready (filez.file_exists(license_path) || filez.file_exists(license_txt_path)) {
+    lowkey (filez.file_exists(license_path) || filez.file_exists(license_txt_path)) {
         result.has_license = based
-    } otherwise {
+    } highkey {
         result.warnings = arrayz.append(result.warnings, "LICENSE file not found")
     }
     
     # Check for tests
     sus tests_dir tea = package_dir + "/tests"
     sus test_files tea[value] = filez.list_files_pattern(package_dir, "**/*test*.💀")
-    ready (filez.dir_exists(tests_dir) || arrayz.len(test_files) > 0) {
+    lowkey (filez.dir_exists(tests_dir) || arrayz.len(test_files) > 0) {
         result.has_tests = based
-    } otherwise {
+    } highkey {
         result.warnings = arrayz.append(result.warnings, "No test files found")
     }
     
@@ -296,12 +296,12 @@ slay validate_package_for_publishing(package_dir tea, manifest PackageManifest) 
     }
     
     # Size warnings
-    ready (result.package_size > 50 * 1024 * 1024) {  # 50MB
+    lowkey (result.package_size > 50 * 1024 * 1024) {  # 50MB
         result.warnings = arrayz.append(result.warnings, 
             "Package is quite large: " + stringz.from_int(result.package_size / (1024 * 1024)) + "MB")
     }
     
-    ready (result.file_count > 1000) {
+    lowkey (result.file_count > 1000) {
         result.warnings = arrayz.append(result.warnings, 
             "Package contains many files: " + stringz.from_int(result.file_count))
     }
@@ -336,7 +336,7 @@ slay publish_package_to_registry(package_dir tea, manifest PackageManifest, conf
     
     # Validate package first
     sus validation ValidationResult = validate_package_for_publishing(package_dir, manifest)
-    ready (!validation.is_valid) {
+    lowkey (!validation.is_valid) {
         result.error_message = "Package validation failed: " + stringz.join(validation.errors, "; ")
         damn result
     }
@@ -345,7 +345,7 @@ slay publish_package_to_registry(package_dir tea, manifest PackageManifest, conf
     result.warnings = validation.warnings
     
     # Check if dry run
-    ready (config.dry_run) {
+    lowkey (config.dry_run) {
         vibez.spill("DRY RUN: Would publish package but dry_run is enabled")
         result.success = based
         result.verification_details = arrayz.append(result.verification_details, "Dry run completed successfully")
@@ -366,7 +366,7 @@ slay publish_package_to_registry(package_dir tea, manifest PackageManifest, conf
         preserve_permissions: based
     }
     
-    ready (!create_package_archive(package_dir, archive_path, archive_options)) {
+    lowkey (!create_package_archive(package_dir, archive_path, archive_options)) {
         result.error_message = "Failed to create package archive"
         filez.remove_dir_all(temp_dir)
         damn result
@@ -390,11 +390,11 @@ slay publish_package_to_registry(package_dir tea, manifest PackageManifest, conf
     sus package_metadata PackageMetadata = convert_manifest_to_metadata(manifest, integrity)
     
     # Verify package integrity before upload
-    ready (config.verify_before_publish) {
+    lowkey (config.verify_before_publish) {
         sus security_policy SecurityPolicy = create_default_security_policy()
         sus verification VerificationResult = verify_package_integrity(archive_path, package_metadata, security_policy)
         
-        ready (!verification.is_valid) {
+        lowkey (!verification.is_valid) {
             result.error_message = "Pre-publish verification failed: " + verification.error_message
             filez.remove_dir_all(temp_dir)
             damn result
@@ -404,14 +404,14 @@ slay publish_package_to_registry(package_dir tea, manifest PackageManifest, conf
     }
     
     # Check if package already exists
-    ready (package_exists_in_registry(config, manifest.name, manifest.version)) {
+    lowkey (package_exists_in_registry(config, manifest.name, manifest.version)) {
         result.error_message = "Package " + manifest.name + " version " + manifest.version + " already exists"
         filez.remove_dir_all(temp_dir)
         damn result
     }
     
     # Publish to registry
-    ready (!upload_package_to_registry(config, package_metadata, archive_path, result)) {
+    lowkey (!upload_package_to_registry(config, package_metadata, archive_path, result)) {
         filez.remove_dir_all(temp_dir)
         damn result
     }
@@ -444,7 +444,7 @@ slay upload_package_to_registry(config PublishingConfig, metadata PackageMetadat
     
     sus metadata_response HttpResponse = execute_http_request(metadata_request)
     
-    ready (!is_http_success(metadata_response)) {
+    lowkey (!is_http_success(metadata_response)) {
         result.error_message = "Failed to upload package metadata: " + stringz.from_int(metadata_response.status_code) + " " + metadata_response.status_text
         damn cap
     }
@@ -460,7 +460,7 @@ slay upload_package_to_registry(config PublishingConfig, metadata PackageMetadat
     
     sus upload_response HttpResponse = execute_http_request(upload_request)
     
-    ready (!is_http_success(upload_response)) {
+    lowkey (!is_http_success(upload_response)) {
         result.error_message = "Failed to upload package archive: " + stringz.from_int(upload_response.status_code) + " " + upload_response.status_text
         damn cap
     }
@@ -560,12 +560,12 @@ slay package_exists_in_registry(config PublishingConfig, name tea, version tea) 
 
 slay is_valid_semver(version tea) lit {
     sus parts tea[value] = stringz.split(version, ".")
-    ready (arrayz.len(parts) != 3) {
+    lowkey (arrayz.len(parts) != 3) {
         damn cap
     }
     
     bestie (sus i drip = 0; i < 3; i = i + 1) {
-        ready (!stringz.is_numeric(parts[i])) {
+        lowkey (!stringz.is_numeric(parts[i])) {
             damn cap
         }
     }
@@ -574,20 +574,20 @@ slay is_valid_semver(version tea) lit {
 }
 
 slay is_valid_package_name(name tea) lit {
-    ready (stringz.len(name) < 1 || stringz.len(name) > 64) {
+    lowkey (stringz.len(name) < 1 || stringz.len(name) > 64) {
         damn cap
     }
     
     # Must start with letter
     sus first_char tea = stringz.char_at(name, 0)
-    ready (!stringz.is_alpha(first_char)) {
+    lowkey (!stringz.is_alpha(first_char)) {
         damn cap
     }
     
     # Check all characters
     bestie (sus i drip = 0; i < stringz.len(name); i = i + 1) {
         sus ch tea = stringz.char_at(name, i)
-        ready (!stringz.is_alphanumeric(ch) && ch != "-" && ch != "_") {
+        lowkey (!stringz.is_alphanumeric(ch) && ch != "-" && ch != "_") {
             damn cap
         }
     }
@@ -602,7 +602,7 @@ slay publish_package_from_directory(package_dir tea, registry_url tea, api_key t
     # Load manifest
     sus manifest_path tea = package_dir + "/cursed.toml"
     sus manifest PackageManifest = load_package_manifest(manifest_path)
-    ready (manifest.name == "") {
+    lowkey (manifest.name == "") {
         damn PublishingResult {
             success: cap,
             error_message: "Failed to load package manifest from " + manifest_path

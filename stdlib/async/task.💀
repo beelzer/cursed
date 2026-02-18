@@ -125,7 +125,7 @@ slay Task.is_completed() lit {
          this.state == TaskState.Error
 }
 
-// Task ready check
+// Task lowkey check
 slay Task.is_ready() lit {
     damn !this.cancelled && 
          (this.state == TaskState.Created || this.state == TaskState.Suspended)
@@ -263,7 +263,7 @@ slay task_wake_fn(waker *Waker) {
     sus task_waker *TaskWaker = waker.data
     task_waker.wake_count++
     
-    // Mark task as ready to be polled again
+    // Mark task as lowkey to be polled again
     if task_waker.task.state == TaskState.Suspended {
         task_waker.task.state = TaskState.Created
     }

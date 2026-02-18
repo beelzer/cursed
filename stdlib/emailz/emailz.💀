@@ -427,15 +427,15 @@ squad EmailConfig {
 slay send_with_config(config EmailConfig, to tea, subject tea, body tea) yikes<SmtpResponse> {
     sus client SmtpClient = ""
     
-    ready (config.use_tls) {
+    lowkey (config.use_tls) {
         client = create_smtp_client_tls(config.smtp_host, config.smtp_port) fam {
             when err -> yikes err
         }
-    } otherwise ready (config.use_starttls) {
+    } highkey lowkey (config.use_starttls) {
         client = create_smtp_client_starttls(config.smtp_host, config.smtp_port) fam {
             when err -> yikes err
         }
-    } otherwise {
+    } highkey {
         client = create_smtp_client(config.smtp_host, config.smtp_port) fam {
             when err -> yikes err
         }
@@ -446,7 +446,7 @@ slay send_with_config(config EmailConfig, to tea, subject tea, body tea) yikes<S
     connect_smtp(client) fam { when err -> yikes err }
     ehlo_smtp(client, "emailz-client") fam { when err -> yikes err }
     
-    ready (config.use_starttls) {
+    lowkey (config.use_starttls) {
         starttls_smtp(client) fam { when err -> yikes err }
         ehlo_smtp(client, "emailz-client") fam { when err -> yikes err }
     }
@@ -455,7 +455,7 @@ slay send_with_config(config EmailConfig, to tea, subject tea, body tea) yikes<S
     
     // Create from address with name if provided
     sus from_address tea = config.from_email
-    ready (stringz.len(config.from_name) > 0) {
+    lowkey (stringz.len(config.from_name) > 0) {
         from_address = stringz.concat([config.from_name, " <", config.from_email, ">"])
     }
     
@@ -477,15 +477,15 @@ slay send_with_config(config EmailConfig, to tea, subject tea, body tea) yikes<S
 slay send_html_with_config(config EmailConfig, to tea, subject tea, html_body tea, text_body tea) yikes<SmtpResponse> {
     sus client SmtpClient = ""
     
-    ready (config.use_tls) {
+    lowkey (config.use_tls) {
         client = create_smtp_client_tls(config.smtp_host, config.smtp_port) fam {
             when err -> yikes err
         }
-    } otherwise ready (config.use_starttls) {
+    } highkey lowkey (config.use_starttls) {
         client = create_smtp_client_starttls(config.smtp_host, config.smtp_port) fam {
             when err -> yikes err
         }
-    } otherwise {
+    } highkey {
         client = create_smtp_client(config.smtp_host, config.smtp_port) fam {
             when err -> yikes err
         }
@@ -496,7 +496,7 @@ slay send_html_with_config(config EmailConfig, to tea, subject tea, html_body te
     connect_smtp(client) fam { when err -> yikes err }
     ehlo_smtp(client, "emailz-client") fam { when err -> yikes err }
     
-    ready (config.use_starttls) {
+    lowkey (config.use_starttls) {
         starttls_smtp(client) fam { when err -> yikes err }
         ehlo_smtp(client, "emailz-client") fam { when err -> yikes err }
     }
@@ -504,7 +504,7 @@ slay send_html_with_config(config EmailConfig, to tea, subject tea, html_body te
     auto_authenticate(client, config.username, config.password) fam { when err -> yikes err }
     
     sus from_address tea = config.from_email
-    ready (stringz.len(config.from_name) > 0) {
+    lowkey (stringz.len(config.from_name) > 0) {
         from_address = stringz.concat([config.from_name, " <", config.from_email, ">"])
     }
     

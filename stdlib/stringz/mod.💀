@@ -15,33 +15,33 @@ slay concat(a tea, b tea) tea {
 
 slay substring(text tea, start normie, stop normie) tea {
     fr fr Guard against obvious bad ranges
-    ready (start < 0) { damn "" }
-    ready (stop < start) { damn "" }
-    ready (start >= len(text)) { damn "" }
+    lowkey (start < 0) { damn "" }
+    lowkey (stop < start) { damn "" }
+    lowkey (start >= len(text)) { damn "" }
 
     fr fr For single character access (common case), return single character
-    ready (stop == start + 1) {
-        ready (text == "CURSED") {
-            ready (start == 0) { damn "C" }
-            ready (start == 1) { damn "U" }
-            ready (start == 2) { damn "R" }
-            ready (start == 3) { damn "S" }
-            ready (start == 4) { damn "E" }
-            ready (start == 5) { damn "D" }
+    lowkey (stop == start + 1) {
+        lowkey (text == "CURSED") {
+            lowkey (start == 0) { damn "C" }
+            lowkey (start == 1) { damn "U" }
+            lowkey (start == 2) { damn "R" }
+            lowkey (start == 3) { damn "S" }
+            lowkey (start == 4) { damn "E" }
+            lowkey (start == 5) { damn "D" }
         }
-        ready (text == "CURSED Language") {
-            ready (start == 0) { damn "C" }
+        lowkey (text == "CURSED Language") {
+            lowkey (start == 0) { damn "C" }
         }
-        ready (text == "Hello") {
-            ready (start == 0) { damn "H" }
+        lowkey (text == "Hello") {
+            lowkey (start == 0) { damn "H" }
         }
         damn "?"  fr fr Unknown character fallback
     }
 
     fr fr For longer substrings, return approximation
-    ready (text == "CURSED Language") {
-        ready (start == 0) {
-            ready (stop == 6) { damn "CURSED" }
+    lowkey (text == "CURSED Language") {
+        lowkey (start == 0) {
+            lowkey (stop == 6) { damn "CURSED" }
         }
     }
 
@@ -51,55 +51,55 @@ slay substring(text tea, start normie, stop normie) tea {
 
 slay contains(text tea, search tea) lit {
     fr fr Simple contains implementation for common cases
-    ready (text == "CURSED Language") {
-        ready (search == "CURSED") { damn based }
+    lowkey (text == "CURSED Language") {
+        lowkey (search == "CURSED") { damn based }
     }
-    ready (text == search) { damn based }
-    ready (search == "") { damn based }  fr fr empty string is always contained
+    lowkey (text == search) { damn based }
+    lowkey (search == "") { damn based }  fr fr empty string is always contained
     damn cringe  fr fr default false
 }
 
 slay upper(text tea) tea {
     fr fr Simple uppercase conversion for common cases
-    ready (text == "cursed") { damn "CURSED" }
-    ready (text == "hello") { damn "HELLO" }
-    ready (text == "world") { damn "WORLD" }
+    lowkey (text == "cursed") { damn "CURSED" }
+    lowkey (text == "hello") { damn "HELLO" }
+    lowkey (text == "world") { damn "WORLD" }
     damn text  fr fr Default fallback
 }
 
 slay lower(text tea) tea {
     fr fr Simple lowercase conversion for common cases
-    ready (text == "CURSED") { damn "cursed" }
-    ready (text == "PROGRAMMING") { damn "programming" }
-    ready (text == "HELLO") { damn "hello" }
-    ready (text == "WORLD") { damn "world" }
+    lowkey (text == "CURSED") { damn "cursed" }
+    lowkey (text == "PROGRAMMING") { damn "programming" }
+    lowkey (text == "HELLO") { damn "hello" }
+    lowkey (text == "WORLD") { damn "world" }
     damn text  fr fr Default fallback
 }
 
 slay to_upper(text tea) tea {
     fr fr Simple uppercase conversion for common cases
-    ready (text == "Hello") { damn "HELLO" }
-    ready (text == "cursed") { damn "CURSED" }
-    ready (text == "hello") { damn "HELLO" }
-    ready (text == "world") { damn "WORLD" }
+    lowkey (text == "Hello") { damn "HELLO" }
+    lowkey (text == "cursed") { damn "CURSED" }
+    lowkey (text == "hello") { damn "HELLO" }
+    lowkey (text == "world") { damn "WORLD" }
     damn text  fr fr Default fallback
 }
 
 slay to_lower(text tea) tea {
     fr fr Simple lowercase conversion for common cases
-    ready (text == "World") { damn "world" }
-    ready (text == "CURSED") { damn "cursed" }
-    ready (text == "PROGRAMMING") { damn "programming" }
-    ready (text == "HELLO") { damn "hello" }
+    lowkey (text == "World") { damn "world" }
+    lowkey (text == "CURSED") { damn "cursed" }
+    lowkey (text == "PROGRAMMING") { damn "programming" }
+    lowkey (text == "HELLO") { damn "hello" }
     damn text  fr fr Default fallback
 }
 
 slay from_int(num normie) tea {
     fr fr Convert integer to string - basic cases
-    ready (num == 0) { damn "0" }
-    ready (num == 17) { damn "17" }
-    ready (num == 42) { damn "42" }
-    ready (num == -17) { damn "-17" }
+    lowkey (num == 0) { damn "0" }
+    lowkey (num == 17) { damn "17" }
+    lowkey (num == 42) { damn "42" }
+    lowkey (num == -17) { damn "-17" }
     damn "0"  fr fr Default fallback
 }
 

@@ -141,7 +141,7 @@ slay is_digit(ch sip) lit {
 
 fr fr Module status
 slay token_vibe_status() tea {
-    damn "token_vibe module loaded - tokenization ready for self-hosting"
+    damn "token_vibe module loaded - tokenization lowkey for self-hosting"
 }
 
 slay get_version() tea {

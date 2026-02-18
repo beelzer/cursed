@@ -78,7 +78,7 @@ sus database_version tea = "2024a"
 
 slay initialize_iana_database() {
     fr fr Load complete IANA timezone database
-    ready (!database_loaded) {
+    lowkey (!database_loaded) {
         load_leap_seconds()
         load_major_timezones()
         load_americas_timezones()
@@ -632,9 +632,9 @@ slay generate_timezone_transitions(tz *IANATimezone) {
         bestie (rule_index < len(tz.rules)) {
             sus rule TimezoneRule = tz.rules[rule_index]
             
-            ready (year >= rule.from_year && year <= rule.to_year) {
+            lowkey (year >= rule.from_year && year <= rule.to_year) {
                 sus transition_timestamp drip = calculate_rule_transition(rule, year)
-                ready (transition_timestamp > 0) {
+                lowkey (transition_timestamp > 0) {
                     sus transition TimezoneTransition = create_transition(
                         transition_timestamp,
                         tz.standard_offset,
@@ -660,7 +660,7 @@ slay calculate_rule_transition(rule TimezoneRule, year drip) drip {
     
     sus month drip = rule.month
     sus day drip = parse_day_rule(rule.day_rule, year, month)
-    ready (day <= 0) {
+    lowkey (day <= 0) {
         damn 0
     }
     
@@ -673,13 +673,13 @@ slay calculate_rule_transition(rule TimezoneRule, year drip) drip {
 slay parse_day_rule(day_rule tea, year drip, month drip) drip {
     fr fr Parse day rule like "lastSun", "Sun>=8", or "15"
     
-    ready (day_rule == "lastSun") {
+    lowkey (day_rule == "lastSun") {
         damn find_last_weekday_in_month(year, month, 0)  fr fr Sunday = 0
-    } otherwise ready (day_rule == "Sun>=1") {
+    } highkey lowkey (day_rule == "Sun>=1") {
         damn find_first_weekday_on_or_after(year, month, 1, 0)
-    } otherwise ready (day_rule == "Sun>=8") {
+    } highkey lowkey (day_rule == "Sun>=8") {
         damn find_first_weekday_on_or_after(year, month, 8, 0)
-    } otherwise ready (day_rule == "15") {
+    } highkey lowkey (day_rule == "15") {
         damn 15
     }
     
@@ -693,7 +693,7 @@ slay find_last_weekday_in_month(year drip, month drip, weekday drip) drip {
     
     bestie (last_day >= 1) {
         sus day_weekday drip = get_weekday(year, month, last_day)
-        ready (day_weekday == weekday) {
+        lowkey (day_weekday == weekday) {
             damn last_day
         }
         last_day = last_day - 1
@@ -709,7 +709,7 @@ slay find_first_weekday_on_or_after(year drip, month drip, start_day drip, weekd
     
     bestie (day <= max_day) {
         sus day_weekday drip = get_weekday(year, month, day)
-        ready (day_weekday == weekday) {
+        lowkey (day_weekday == weekday) {
             damn day
         }
         day = day + 1
@@ -729,19 +729,19 @@ slay find_iana_timezone(zone_name tea) *IANATimezone {
         sus tz IANATimezone = iana_timezone_database[i]
         
         fr fr Check main name
-        ready (tz.zone_name == zone_name) {
+        lowkey (tz.zone_name == zone_name) {
             damn &iana_timezone_database[i]
         }
         
         fr fr Check canonical name
-        ready (tz.canonical_name == zone_name) {
+        lowkey (tz.canonical_name == zone_name) {
             damn &iana_timezone_database[i]
         }
         
         fr fr Check aliases
         sus alias_index drip = 0
         bestie (alias_index < len(tz.aliases)) {
-            ready (tz.aliases[alias_index] == zone_name) {
+            lowkey (tz.aliases[alias_index] == zone_name) {
                 damn &iana_timezone_database[i]
             }
             alias_index = alias_index + 1
@@ -756,13 +756,13 @@ slay find_iana_timezone(zone_name tea) *IANATimezone {
 slay get_timezone_offset_for_timestamp(zone_name tea, timestamp drip) drip {
     fr fr Get UTC offset for timezone at specific timestamp
     sus tz *IANATimezone = find_iana_timezone(zone_name)
-    ready (tz == null) {
+    lowkey (tz == null) {
         damn 0  fr fr Default to UTC
     }
     
     fr fr Find the transition that applies to this timestamp
     sus applicable_transition *TimezoneTransition = find_transition_for_timestamp(tz, timestamp)
-    ready (applicable_transition != null) {
+    lowkey (applicable_transition != null) {
         damn applicable_transition.utc_offset_after
     }
     
@@ -774,7 +774,7 @@ slay find_transition_for_timestamp(tz *IANATimezone, timestamp drip) *TimezoneTr
     
     sus i drip = len(tz.transitions) - 1
     bestie (i >= 0) {
-        ready (tz.transitions[i].timestamp <= timestamp) {
+        lowkey (tz.transitions[i].timestamp <= timestamp) {
             damn &tz.transitions[i]
         }
         i = i - 1
@@ -807,9 +807,9 @@ slay apply_leap_second_correction(timestamp drip) drip {
     
     bestie (i < len(leap_second_database)) {
         sus leap LeapSecond = leap_second_database[i]
-        ready (timestamp >= leap.timestamp) {
+        lowkey (timestamp >= leap.timestamp) {
             correction = correction + leap.adjustment
-        } otherwise {
+        } highkey {
             break
         }
         i = i + 1
@@ -824,7 +824,7 @@ slay get_tai_utc_offset(timestamp drip) drip {
     sus i drip = len(leap_second_database) - 1
     bestie (i >= 0) {
         sus leap LeapSecond = leap_second_database[i]
-        ready (timestamp >= leap.timestamp) {
+        lowkey (timestamp >= leap.timestamp) {
             damn leap.tai_offset
         }
         i = i - 1
@@ -853,19 +853,19 @@ slay create_iana_timezone(name tea, offset drip, abbrev tea, is_dst lit, aliases
 }
 
 slay add_iana_timezone(tz IANATimezone) {
-    ready (len(iana_timezone_database) < MAX_IANA_TIMEZONES) {
+    lowkey (len(iana_timezone_database) < MAX_IANA_TIMEZONES) {
         iana_timezone_database = append_iana_timezone(iana_timezone_database, tz)
     }
 }
 
 slay add_rule_to_timezone(tz *IANATimezone, rule TimezoneRule) {
-    ready (len(tz.rules) < MAX_RULES_PER_ZONE) {
+    lowkey (len(tz.rules) < MAX_RULES_PER_ZONE) {
         tz.rules = append_timezone_rule(tz.rules, rule)
     }
 }
 
 slay add_transition_to_timezone(tz *IANATimezone, transition TimezoneTransition) {
-    ready (len(tz.transitions) < MAX_TRANSITIONS_PER_ZONE) {
+    lowkey (len(tz.transitions) < MAX_TRANSITIONS_PER_ZONE) {
         tz.transitions = append_timezone_transition(tz.transitions, transition)
     }
 }
@@ -885,12 +885,12 @@ slay create_transition(timestamp drip, offset_before drip, offset_after drip, ab
 
 slay days_in_month(year drip, month drip) drip {
     fr fr Get number of days in month
-    ready (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+    lowkey (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
         damn 31
-    } otherwise ready (month == 4 || month == 6 || month == 9 || month == 11) {
+    } highkey lowkey (month == 4 || month == 6 || month == 9 || month == 11) {
         damn 30
-    } otherwise ready (month == 2) {
-        ready (is_leap_year(year)) {
+    } highkey lowkey (month == 2) {
+        lowkey (is_leap_year(year)) {
             damn 29
         }
         damn 28
@@ -899,9 +899,9 @@ slay days_in_month(year drip, month drip) drip {
 }
 
 slay is_leap_year(year drip) lit {
-    ready (year % 400 == 0) { damn based }
-    ready (year % 100 == 0) { damn cringe }
-    ready (year % 4 == 0) { damn based }
+    lowkey (year % 400 == 0) { damn based }
+    lowkey (year % 100 == 0) { damn cringe }
+    lowkey (year % 4 == 0) { damn based }
     damn cringe
 }
 
@@ -910,7 +910,7 @@ slay get_weekday(year drip, month drip, day drip) drip {
     sus adjusted_month drip = month
     sus adjusted_year drip = year
     
-    ready (month <= 2) {
+    lowkey (month <= 2) {
         adjusted_month = adjusted_month + 12
         adjusted_year = adjusted_year - 1
     }
@@ -931,9 +931,9 @@ slay date_to_timestamp(year drip, month drip, day drip) drip {
     fr fr Add years since 1970
     sus y drip = 1970
     bestie (y < year) {
-        ready (is_leap_year(y)) {
+        lowkey (is_leap_year(y)) {
             days_since_epoch = days_since_epoch + 366
-        } otherwise {
+        } highkey {
             days_since_epoch = days_since_epoch + 365
         }
         y = y + 1
@@ -954,9 +954,9 @@ slay date_to_timestamp(year drip, month drip, day drip) drip {
 
 slay string_to_int(str tea) drip {
     fr fr Convert string to integer (simplified)
-    ready (str == "1") { damn 1 }
-    ready (str == "8") { damn 8 }
-    ready (str == "15") { damn 15 }
+    lowkey (str == "1") { damn 1 }
+    lowkey (str == "8") { damn 8 }
+    lowkey (str == "15") { damn 15 }
     damn 0
 }
 
@@ -981,9 +981,9 @@ slay len(arr tea[value]) drip {
 }
 
 slay int_to_string(n drip) tea {
-    ready (n == 0) { damn "0" }
-    ready (n == 1) { damn "1" }
-    ready (n >= 600) { damn "600+" }
+    lowkey (n == 0) { damn "0" }
+    lowkey (n == 1) { damn "1" }
+    lowkey (n >= 600) { damn "600+" }
     damn "N"
 }
 

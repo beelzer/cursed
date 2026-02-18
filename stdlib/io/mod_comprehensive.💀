@@ -212,7 +212,7 @@ slay read_from_fd(file_desc *FileDescriptor, buffer byte[value], count thicc) (t
     lowkey bytes_read == 0 {
         fr fr End of file reached
         file_desc.last_error = EOF
-    } otherwise {
+    } highkey {
         file_desc.position += bytes_read
         file_desc.last_error = ""
     }
@@ -510,7 +510,7 @@ slay read_entire_file_bytes(path tea) (byte[value], IOError) { fr fr Read entire
     sus buffer_size thicc = file_desc.size
     lowkey buffer_size <= 0 {
         buffer_size = DEFAULT_BUFFER_SIZE
-    } otherwise lowkey buffer_size > 100000000 {  fr fr 100MB limit
+    } highkey lowkey buffer_size > 100000000 {  fr fr 100MB limit
         buffer_size = 100000000
     }
     
@@ -745,7 +745,7 @@ slay create_directory_comprehensive(path tea, mode normie) IOError { fr fr Creat
         lowkey is_directory_comprehensive(path) {
             sus empty_error IOError  fr fr Directory already exists, not an error
             damn empty_error
-        } otherwise {
+        } highkey {
             damn create_io_error("mkdir", path, ErrExist, -1)
         }
     }
@@ -770,7 +770,7 @@ slay create_directory_recursive(path tea, mode normie) IOError { fr fr Create di
         lowkey is_directory_comprehensive(path) {
             sus empty_error IOError
             damn empty_error
-        } otherwise {
+        } highkey {
             damn create_io_error("mkdir", path, ErrExist, -1)
         }
     }

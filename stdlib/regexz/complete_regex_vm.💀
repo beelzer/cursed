@@ -91,34 +91,34 @@ slay execute_complete_regex(vm CompleteRegexVM) RegexMatch {
         sus opcode drip = vm.bytecode[vm.pc]
         vm.pc = vm.pc + 1
         
-        ready (opcode == 0) {  fr fr END
-            ready (vm.text_pos >= start_pos) {
+        lowkey (opcode == 0) {  fr fr END
+            lowkey (vm.text_pos >= start_pos) {
                 match.start_position = start_pos
                 match.length = vm.text_pos - start_pos
                 match.groups = vm.captures
             }
             break
             
-        } otherwise ready (opcode == 1) {  fr fr MATCH_START
-            ready (!match_start_anchor(vm)) {
+        } highkey lowkey (opcode == 1) {  fr fr MATCH_START
+            lowkey (!match_start_anchor(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 2) {  fr fr MATCH_END
-            ready (!match_end_anchor(vm)) {
+        } highkey lowkey (opcode == 2) {  fr fr MATCH_END
+            lowkey (!match_end_anchor(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 3) {  fr fr MATCH_ANY
-            ready (!match_any_char(vm)) {
+        } highkey lowkey (opcode == 3) {  fr fr MATCH_ANY
+            lowkey (!match_any_char(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 4) {  fr fr JUMP
+        } highkey lowkey (opcode == 4) {  fr fr JUMP
             sus jump_offset drip = vm.bytecode[vm.pc]
             vm.pc = jump_offset
             
-        } otherwise ready (opcode == 5) {  fr fr SPLIT
+        } highkey lowkey (opcode == 5) {  fr fr SPLIT
             sus branch1 drip = vm.bytecode[vm.pc]
             sus branch2 drip = vm.bytecode[vm.pc + 1]
             vm.pc = vm.pc + 2
@@ -127,168 +127,168 @@ slay execute_complete_regex(vm CompleteRegexVM) RegexMatch {
             push_backtrack_frame(vm, branch2)
             vm.pc = branch1  fr fr Take first branch
             
-        } otherwise ready (opcode == 6) {  fr fr CAPTURE_START
+        } highkey lowkey (opcode == 6) {  fr fr CAPTURE_START
             sus group_num drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
             start_capture_group(vm, group_num)
             
-        } otherwise ready (opcode == 7) {  fr fr CAPTURE_END
+        } highkey lowkey (opcode == 7) {  fr fr CAPTURE_END
             sus group_num drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
             end_capture_group(vm, group_num)
             
-        } otherwise ready (opcode == 8) {  fr fr MATCH_CHAR
+        } highkey lowkey (opcode == 8) {  fr fr MATCH_CHAR
             sus expected_char drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!match_specific_char(vm, expected_char)) {
+            lowkey (!match_specific_char(vm, expected_char)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 9) {  fr fr MATCH_RANGE
+        } highkey lowkey (opcode == 9) {  fr fr MATCH_RANGE
             sus range_start drip = vm.bytecode[vm.pc]
             sus range_end drip = vm.bytecode[vm.pc + 1] 
             vm.pc = vm.pc + 2
-            ready (!match_char_range(vm, range_start, range_end)) {
+            lowkey (!match_char_range(vm, range_start, range_end)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 10) {  fr fr MATCH_SET
+        } highkey lowkey (opcode == 10) {  fr fr MATCH_SET
             sus set_length drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!match_char_set(vm, set_length)) {
+            lowkey (!match_char_set(vm, set_length)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 11) {  fr fr MATCH_NEG_SET
+        } highkey lowkey (opcode == 11) {  fr fr MATCH_NEG_SET
             sus set_length drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!match_negative_char_set(vm, set_length)) {
+            lowkey (!match_negative_char_set(vm, set_length)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 12) {  fr fr MATCH_DIGIT
-            ready (!match_digit_char(vm)) {
+        } highkey lowkey (opcode == 12) {  fr fr MATCH_DIGIT
+            lowkey (!match_digit_char(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 13) {  fr fr MATCH_WORD
-            ready (!match_word_char(vm)) {
+        } highkey lowkey (opcode == 13) {  fr fr MATCH_WORD
+            lowkey (!match_word_char(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 14) {  fr fr MATCH_SPACE
-            ready (!match_space_char(vm)) {
+        } highkey lowkey (opcode == 14) {  fr fr MATCH_SPACE
+            lowkey (!match_space_char(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 15) {  fr fr MATCH_NON_DIGIT
-            ready (!match_non_digit_char(vm)) {
+        } highkey lowkey (opcode == 15) {  fr fr MATCH_NON_DIGIT
+            lowkey (!match_non_digit_char(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 16) {  fr fr MATCH_NON_WORD
-            ready (!match_non_word_char(vm)) {
+        } highkey lowkey (opcode == 16) {  fr fr MATCH_NON_WORD
+            lowkey (!match_non_word_char(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 17) {  fr fr MATCH_NON_SPACE
-            ready (!match_non_space_char(vm)) {
+        } highkey lowkey (opcode == 17) {  fr fr MATCH_NON_SPACE
+            lowkey (!match_non_space_char(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 18) {  fr fr MATCH_WORD_BOUNDARY
-            ready (!match_word_boundary(vm)) {
+        } highkey lowkey (opcode == 18) {  fr fr MATCH_WORD_BOUNDARY
+            lowkey (!match_word_boundary(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 19) {  fr fr MATCH_NON_WORD_BOUNDARY
-            ready (!match_non_word_boundary(vm)) {
+        } highkey lowkey (opcode == 19) {  fr fr MATCH_NON_WORD_BOUNDARY
+            lowkey (!match_non_word_boundary(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 20) {  fr fr LOOKAHEAD_POS
+        } highkey lowkey (opcode == 20) {  fr fr LOOKAHEAD_POS
             sus lookahead_length drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!execute_positive_lookahead(vm, lookahead_length)) {
+            lowkey (!execute_positive_lookahead(vm, lookahead_length)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 21) {  fr fr LOOKAHEAD_NEG
+        } highkey lowkey (opcode == 21) {  fr fr LOOKAHEAD_NEG
             sus lookahead_length drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!execute_negative_lookahead(vm, lookahead_length)) {
+            lowkey (!execute_negative_lookahead(vm, lookahead_length)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 22) {  fr fr LOOKBEHIND_POS
+        } highkey lowkey (opcode == 22) {  fr fr LOOKBEHIND_POS
             sus lookbehind_length drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!execute_positive_lookbehind(vm, lookbehind_length)) {
+            lowkey (!execute_positive_lookbehind(vm, lookbehind_length)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 23) {  fr fr LOOKBEHIND_NEG
+        } highkey lowkey (opcode == 23) {  fr fr LOOKBEHIND_NEG
             sus lookbehind_length drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!execute_negative_lookbehind(vm, lookbehind_length)) {
+            lowkey (!execute_negative_lookbehind(vm, lookbehind_length)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 24) {  fr fr ATOMIC_GROUP
-            ready (!execute_atomic_group(vm)) {
+        } highkey lowkey (opcode == 24) {  fr fr ATOMIC_GROUP
+            lowkey (!execute_atomic_group(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 25) {  fr fr REPEAT_LAZY
+        } highkey lowkey (opcode == 25) {  fr fr REPEAT_LAZY
             sus min_repeat drip = vm.bytecode[vm.pc]
             sus max_repeat drip = vm.bytecode[vm.pc + 1]
             sus repeat_pattern_start drip = vm.bytecode[vm.pc + 2]
             vm.pc = vm.pc + 3
-            ready (!execute_lazy_repeat(vm, min_repeat, max_repeat, repeat_pattern_start)) {
+            lowkey (!execute_lazy_repeat(vm, min_repeat, max_repeat, repeat_pattern_start)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 26) {  fr fr REPEAT_POSSESSIVE
+        } highkey lowkey (opcode == 26) {  fr fr REPEAT_POSSESSIVE
             sus min_repeat drip = vm.bytecode[vm.pc]
             sus max_repeat drip = vm.bytecode[vm.pc + 1]
             sus repeat_pattern_start drip = vm.bytecode[vm.pc + 2]
             vm.pc = vm.pc + 3
-            ready (!execute_possessive_repeat(vm, min_repeat, max_repeat, repeat_pattern_start)) {
+            lowkey (!execute_possessive_repeat(vm, min_repeat, max_repeat, repeat_pattern_start)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 27) {  fr fr MATCH_UNICODE_CLASS
+        } highkey lowkey (opcode == 27) {  fr fr MATCH_UNICODE_CLASS
             sus unicode_class drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!match_unicode_character_class(vm, unicode_class)) {
+            lowkey (!match_unicode_character_class(vm, unicode_class)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 28) {  fr fr MATCH_NEWLINE
-            ready (!match_platform_newline(vm)) {
+        } highkey lowkey (opcode == 28) {  fr fr MATCH_NEWLINE
+            lowkey (!match_platform_newline(vm)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 29) {  fr fr BACKREF
+        } highkey lowkey (opcode == 29) {  fr fr BACKREF
             sus backref_num drip = vm.bytecode[vm.pc]
             vm.pc = vm.pc + 1
-            ready (!match_backreference(vm, backref_num)) {
+            lowkey (!match_backreference(vm, backref_num)) {
                 damn backtrack_or_fail(vm, match)
             }
             
-        } otherwise ready (opcode == 30) {  fr fr CONDITIONAL
+        } highkey lowkey (opcode == 30) {  fr fr CONDITIONAL
             sus condition_type drip = vm.bytecode[vm.pc]
             sus true_branch drip = vm.bytecode[vm.pc + 1]
             sus false_branch drip = vm.bytecode[vm.pc + 2]
             vm.pc = vm.pc + 3
             
-            ready (evaluate_condition(vm, condition_type)) {
+            lowkey (evaluate_condition(vm, condition_type)) {
                 vm.pc = true_branch
-            } otherwise {
+            } highkey {
                 vm.pc = false_branch
             }
             
-        } otherwise {
+        } highkey {
             fr fr Unknown opcode - this should not happen with complete implementation
             vibez.spill("ERROR: Unknown opcode encountered: " + json_number_to_string(opcode))
             match.start_position = -1
@@ -303,52 +303,52 @@ fr fr ===== MATCHING FUNCTIONS FOR EACH OPCODE =====
 
 slay match_start_anchor(vm CompleteRegexVM) lit {
     fr fr Match start of string or line in multiline mode
-    ready (vm.multiline_mode) {
-        ready (vm.text_pos == 0) {
+    lowkey (vm.multiline_mode) {
+        lowkey (vm.text_pos == 0) {
             damn based  fr fr Start of string
         }
         
         fr fr Check if previous character is newline
-        ready (vm.text_pos > 0) {
+        lowkey (vm.text_pos > 0) {
             sus prev_char tea = substring(vm.text, vm.text_pos - 1, 1)
             damn (prev_char == "\n" || prev_char == "\r")
         }
         
         damn no_cap
-    } otherwise {
+    } highkey {
         damn vm.text_pos == 0
     }
 }
 
 slay match_end_anchor(vm CompleteRegexVM) lit {
     fr fr Match end of string or line in multiline mode
-    ready (vm.multiline_mode) {
-        ready (vm.text_pos == vm.text_length) {
+    lowkey (vm.multiline_mode) {
+        lowkey (vm.text_pos == vm.text_length) {
             damn based  fr fr End of string
         }
         
         fr fr Check if current character is newline
-        ready (vm.text_pos < vm.text_length) {
+        lowkey (vm.text_pos < vm.text_length) {
             sus curr_char tea = substring(vm.text, vm.text_pos, 1)
             damn (curr_char == "\n" || curr_char == "\r")
         }
         
         damn no_cap
-    } otherwise {
+    } highkey {
         damn vm.text_pos == vm.text_length
     }
 }
 
 slay match_any_char(vm CompleteRegexVM) lit {
     fr fr Match any character except newline (unless DOTALL mode)
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap  fr fr End of text
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
     
-    ready (!vm.dot_all) {
-        ready (char == "\n" || char == "\r") {
+    lowkey (!vm.dot_all) {
+        lowkey (char == "\n" || char == "\r") {
             damn no_cap  fr fr Don't match newlines in normal mode
         }
     }
@@ -359,19 +359,19 @@ slay match_any_char(vm CompleteRegexVM) lit {
 
 slay match_specific_char(vm CompleteRegexVM, expected_char drip) lit {
     fr fr Match specific character with case sensitivity handling
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus actual_char drip = char_to_number(substring(vm.text, vm.text_pos, 1))
     
-    ready (vm.case_insensitive) {
-        ready (to_lowercase_char_code(actual_char) == to_lowercase_char_code(expected_char)) {
+    lowkey (vm.case_insensitive) {
+        lowkey (to_lowercase_char_code(actual_char) == to_lowercase_char_code(expected_char)) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
-    } otherwise {
-        ready (actual_char == expected_char) {
+    } highkey {
+        lowkey (actual_char == expected_char) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
@@ -382,23 +382,23 @@ slay match_specific_char(vm CompleteRegexVM, expected_char drip) lit {
 
 slay match_char_range(vm CompleteRegexVM, range_start drip, range_end drip) lit {
     fr fr Match character within range [a-z]
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char_code drip = char_to_number(substring(vm.text, vm.text_pos, 1))
     
-    ready (vm.case_insensitive) {
+    lowkey (vm.case_insensitive) {
         sus lower_char drip = to_lowercase_char_code(char_code)
         sus lower_start drip = to_lowercase_char_code(range_start)
         sus lower_end drip = to_lowercase_char_code(range_end)
         
-        ready (lower_char >= lower_start && lower_char <= lower_end) {
+        lowkey (lower_char >= lower_start && lower_char <= lower_end) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
-    } otherwise {
-        ready (char_code >= range_start && char_code <= range_end) {
+    } highkey {
+        lowkey (char_code >= range_start && char_code <= range_end) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
@@ -409,7 +409,7 @@ slay match_char_range(vm CompleteRegexVM, range_start drip, range_end drip) lit 
 
 slay match_char_set(vm CompleteRegexVM, set_length drip) lit {
     fr fr Match character in set [abc]
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
@@ -420,14 +420,14 @@ slay match_char_set(vm CompleteRegexVM, set_length drip) lit {
     bestie (i < set_length) {
         sus set_char drip = vm.bytecode[vm.pc + i]
         
-        ready (vm.case_insensitive) {
-            ready (to_lowercase_char_code(char_code) == to_lowercase_char_code(set_char)) {
+        lowkey (vm.case_insensitive) {
+            lowkey (to_lowercase_char_code(char_code) == to_lowercase_char_code(set_char)) {
                 vm.pc = vm.pc + set_length  fr fr Skip set data
                 vm.text_pos = vm.text_pos + 1
                 damn based
             }
-        } otherwise {
-            ready (char_code == set_char) {
+        } highkey {
+            lowkey (char_code == set_char) {
                 vm.pc = vm.pc + set_length  fr fr Skip set data
                 vm.text_pos = vm.text_pos + 1
                 damn based
@@ -443,7 +443,7 @@ slay match_char_set(vm CompleteRegexVM, set_length drip) lit {
 
 slay match_negative_char_set(vm CompleteRegexVM, set_length drip) lit {
     fr fr Match character NOT in set [^abc]
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
@@ -454,13 +454,13 @@ slay match_negative_char_set(vm CompleteRegexVM, set_length drip) lit {
     bestie (i < set_length) {
         sus set_char drip = vm.bytecode[vm.pc + i]
         
-        ready (vm.case_insensitive) {
-            ready (to_lowercase_char_code(char_code) == to_lowercase_char_code(set_char)) {
+        lowkey (vm.case_insensitive) {
+            lowkey (to_lowercase_char_code(char_code) == to_lowercase_char_code(set_char)) {
                 vm.pc = vm.pc + set_length  fr fr Skip set data
                 damn no_cap  fr fr Character found in set, fail match
             }
-        } otherwise {
-            ready (char_code == set_char) {
+        } highkey {
+            lowkey (char_code == set_char) {
                 vm.pc = vm.pc + set_length  fr fr Skip set data
                 damn no_cap  fr fr Character found in set, fail match
             }
@@ -475,12 +475,12 @@ slay match_negative_char_set(vm CompleteRegexVM, set_length drip) lit {
 }
 
 slay match_digit_char(vm CompleteRegexVM) lit {
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
-    ready (is_digit_char(char)) {
+    lowkey (is_digit_char(char)) {
         vm.text_pos = vm.text_pos + 1
         damn based
     }
@@ -489,12 +489,12 @@ slay match_digit_char(vm CompleteRegexVM) lit {
 }
 
 slay match_word_char(vm CompleteRegexVM) lit {
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
-    ready (is_word_char(char)) {
+    lowkey (is_word_char(char)) {
         vm.text_pos = vm.text_pos + 1
         damn based
     }
@@ -503,12 +503,12 @@ slay match_word_char(vm CompleteRegexVM) lit {
 }
 
 slay match_space_char(vm CompleteRegexVM) lit {
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
-    ready (is_space_char(char)) {
+    lowkey (is_space_char(char)) {
         vm.text_pos = vm.text_pos + 1
         damn based
     }
@@ -517,12 +517,12 @@ slay match_space_char(vm CompleteRegexVM) lit {
 }
 
 slay match_non_digit_char(vm CompleteRegexVM) lit {
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
-    ready (!is_digit_char(char)) {
+    lowkey (!is_digit_char(char)) {
         vm.text_pos = vm.text_pos + 1
         damn based
     }
@@ -531,12 +531,12 @@ slay match_non_digit_char(vm CompleteRegexVM) lit {
 }
 
 slay match_non_word_char(vm CompleteRegexVM) lit {
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
-    ready (!is_word_char(char)) {
+    lowkey (!is_word_char(char)) {
         vm.text_pos = vm.text_pos + 1
         damn based
     }
@@ -545,12 +545,12 @@ slay match_non_word_char(vm CompleteRegexVM) lit {
 }
 
 slay match_non_space_char(vm CompleteRegexVM) lit {
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
-    ready (!is_space_char(char)) {
+    lowkey (!is_space_char(char)) {
         vm.text_pos = vm.text_pos + 1
         damn based
     }
@@ -563,15 +563,15 @@ slay match_word_boundary(vm CompleteRegexVM) lit {
     sus at_start lit = (vm.text_pos == 0)
     sus at_end lit = (vm.text_pos == vm.text_length)
     
-    ready (at_start || at_end) {
+    lowkey (at_start || at_end) {
         fr fr Start/end of string is word boundary if adjacent char is word char
-        ready (at_start && !at_end) {
+        lowkey (at_start && !at_end) {
             sus next_char tea = substring(vm.text, vm.text_pos, 1)
             damn is_word_char(next_char)
-        } otherwise ready (!at_start && at_end) {
+        } highkey lowkey (!at_start && at_end) {
             sus prev_char tea = substring(vm.text, vm.text_pos - 1, 1)
             damn is_word_char(prev_char)
-        } otherwise {
+        } highkey {
             damn based  fr fr Start and end of empty string
         }
     }
@@ -658,7 +658,7 @@ slay execute_lazy_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat drip, p
     fr fr Match minimum required occurrences
     bestie (match_count < min_repeat) {
         vm.pc = pattern_start
-        ready (!execute_repeat_pattern_once(vm)) {
+        lowkey (!execute_repeat_pattern_once(vm)) {
             vm.text_pos = saved_pos
             damn no_cap  fr fr Failed to match minimum
         }
@@ -680,7 +680,7 @@ slay execute_possessive_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat d
         sus saved_pos drip = vm.text_pos
         vm.pc = pattern_start
         
-        ready (!execute_repeat_pattern_once(vm)) {
+        lowkey (!execute_repeat_pattern_once(vm)) {
             break  fr fr Can't match more
         }
         
@@ -693,43 +693,43 @@ slay execute_possessive_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat d
 
 slay match_unicode_character_class(vm CompleteRegexVM, unicode_class drip) lit {
     fr fr Match Unicode character classes like \p{L}, \p{N}, etc.
-    ready (!vm.unicode_mode) {
+    lowkey (!vm.unicode_mode) {
         damn no_cap  fr fr Unicode not enabled
     }
     
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
     
-    ready (unicode_class == 1) {  fr fr \p{L} - Letter
-        ready (is_unicode_letter(char)) {
+    lowkey (unicode_class == 1) {  fr fr \p{L} - Letter
+        lowkey (is_unicode_letter(char)) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
-    } otherwise ready (unicode_class == 2) {  fr fr \p{N} - Number
-        ready (is_unicode_number(char)) {
+    } highkey lowkey (unicode_class == 2) {  fr fr \p{N} - Number
+        lowkey (is_unicode_number(char)) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
-    } otherwise ready (unicode_class == 3) {  fr fr \p{P} - Punctuation
-        ready (is_unicode_punctuation(char)) {
+    } highkey lowkey (unicode_class == 3) {  fr fr \p{P} - Punctuation
+        lowkey (is_unicode_punctuation(char)) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
-    } otherwise ready (unicode_class == 4) {  fr fr \p{S} - Symbol
-        ready (is_unicode_symbol(char)) {
+    } highkey lowkey (unicode_class == 4) {  fr fr \p{S} - Symbol
+        lowkey (is_unicode_symbol(char)) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
-    } otherwise ready (unicode_class == 5) {  fr fr \p{Z} - Separator
-        ready (is_unicode_separator(char)) {
+    } highkey lowkey (unicode_class == 5) {  fr fr \p{Z} - Separator
+        lowkey (is_unicode_separator(char)) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
-    } otherwise ready (unicode_class == 6) {  fr fr \p{C} - Other/Control
-        ready (is_unicode_control(char)) {
+    } highkey lowkey (unicode_class == 6) {  fr fr \p{C} - Other/Control
+        lowkey (is_unicode_control(char)) {
             vm.text_pos = vm.text_pos + 1
             damn based
         }
@@ -740,22 +740,22 @@ slay match_unicode_character_class(vm CompleteRegexVM, unicode_class drip) lit {
 
 slay match_platform_newline(vm CompleteRegexVM) lit {
     fr fr Match platform-appropriate newline sequence
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
     
-    ready (char == "\n") {
+    lowkey (char == "\n") {
         vm.text_pos = vm.text_pos + 1
         damn based
-    } otherwise ready (char == "\r") {
+    } highkey lowkey (char == "\r") {
         vm.text_pos = vm.text_pos + 1
         
         fr fr Check for \r\n sequence
-        ready (vm.text_pos < vm.text_length) {
+        lowkey (vm.text_pos < vm.text_length) {
             sus next_char tea = substring(vm.text, vm.text_pos, 1)
-            ready (next_char == "\n") {
+            lowkey (next_char == "\n") {
                 vm.text_pos = vm.text_pos + 1
             }
         }
@@ -768,26 +768,26 @@ slay match_platform_newline(vm CompleteRegexVM) lit {
 
 slay match_backreference(vm CompleteRegexVM, backref_num drip) lit {
     fr fr Match backreference \1, \2, etc.
-    ready (backref_num <= 0 || backref_num > array_length(vm.captures)) {
+    lowkey (backref_num <= 0 || backref_num > array_length(vm.captures)) {
         damn no_cap  fr fr Invalid backreference
     }
     
     sus captured_text tea = vm.captures[backref_num - 1]  fr fr 0-indexed array
     sus captured_length drip = string_length(captured_text)
     
-    ready (vm.text_pos + captured_length > vm.text_length) {
+    lowkey (vm.text_pos + captured_length > vm.text_length) {
         damn no_cap  fr fr Not enough text remaining
     }
     
     sus text_to_match tea = substring(vm.text, vm.text_pos, captured_length)
     
-    ready (vm.case_insensitive) {
-        ready (string_equals_ignore_case(text_to_match, captured_text)) {
+    lowkey (vm.case_insensitive) {
+        lowkey (string_equals_ignore_case(text_to_match, captured_text)) {
             vm.text_pos = vm.text_pos + captured_length
             damn based
         }
-    } otherwise {
-        ready (text_to_match == captured_text) {
+    } highkey {
+        lowkey (text_to_match == captured_text) {
             vm.text_pos = vm.text_pos + captured_length
             damn based
         }
@@ -798,16 +798,16 @@ slay match_backreference(vm CompleteRegexVM, backref_num drip) lit {
 
 slay evaluate_condition(vm CompleteRegexVM, condition_type drip) lit {
     fr fr Evaluate conditional expression conditions
-    ready (condition_type == 1) {  fr fr Group exists condition (?(1)...)
+    lowkey (condition_type == 1) {  fr fr Group exists condition (?(1)...)
         sus group_num drip = vm.bytecode[vm.pc]
         vm.pc = vm.pc + 1
         damn (group_num > 0 && group_num <= array_length(vm.captures))
         
-    } otherwise ready (condition_type == 2) {  fr fr Recursive condition (?(R)...)
+    } highkey lowkey (condition_type == 2) {  fr fr Recursive condition (?(R)...)
         fr fr Check if we're in recursive call (simplified)
         damn array_length(vm.backtrack_stack) > 5  fr fr Heuristic for recursion depth
         
-    } otherwise {
+    } highkey {
         damn no_cap  fr fr Unknown condition type
     }
 }
@@ -816,7 +816,7 @@ fr fr ===== BACKTRACKING AND STATE MANAGEMENT =====
 
 slay backtrack_or_fail(vm CompleteRegexVM, match RegexMatch) RegexMatch {
     fr fr Handle backtracking or fail if no more options
-    ready (array_length(vm.backtrack_stack) > 0) {
+    lowkey (array_length(vm.backtrack_stack) > 0) {
         sus frame BacktrackFrame = array_pop(vm.backtrack_stack)
         
         fr fr Restore VM state
@@ -856,7 +856,7 @@ slay start_capture_group(vm CompleteRegexVM, group_num drip) {
 
 slay end_capture_group(vm CompleteRegexVM, group_num drip) {
     fr fr End capturing group and store captured text
-    ready (group_num < array_length(vm.captures)) {
+    lowkey (group_num < array_length(vm.captures)) {
         fr fr Calculate captured text from positions
         fr fr Implementation depends on capture mechanism
     }
@@ -865,14 +865,14 @@ slay end_capture_group(vm CompleteRegexVM, group_num drip) {
 fr fr ===== UTILITY FUNCTIONS =====
 
 slay to_lowercase_char_code(char_code drip) drip {
-    ready (char_code >= 65 && char_code <= 90) {  fr fr A-Z
+    lowkey (char_code >= 65 && char_code <= 90) {  fr fr A-Z
         damn char_code + 32  fr fr Convert to a-z
     }
     damn char_code
 }
 
 slay string_equals_ignore_case(str1 tea, str2 tea) lit {
-    ready (string_length(str1) != string_length(str2)) {
+    lowkey (string_length(str1) != string_length(str2)) {
         damn no_cap
     }
     
@@ -883,7 +883,7 @@ slay string_equals_ignore_case(str1 tea, str2 tea) lit {
         sus char1 drip = char_to_number(substring(str1, i, 1))
         sus char2 drip = char_to_number(substring(str2, i, 1))
         
-        ready (to_lowercase_char_code(char1) != to_lowercase_char_code(char2)) {
+        lowkey (to_lowercase_char_code(char1) != to_lowercase_char_code(char2)) {
             damn no_cap
         }
         
@@ -984,47 +984,47 @@ slay compile_complete_pattern(compiler RegexCompilerState) {
     bestie (compiler.position < string_length(compiler.pattern)) {
         sus char tea = substring(compiler.pattern, compiler.position, 1)
         
-        ready (char == "^") {
+        lowkey (char == "^") {
             emit_bytecode_op(compiler, 1)  fr fr MATCH_START
             compiler.position = compiler.position + 1
             
-        } otherwise ready (char == "$") {
+        } highkey lowkey (char == "$") {
             emit_bytecode_op(compiler, 2)  fr fr MATCH_END
             compiler.position = compiler.position + 1
             
-        } otherwise ready (char == ".") {
+        } highkey lowkey (char == ".") {
             emit_bytecode_op(compiler, 3)  fr fr MATCH_ANY
             compiler.position = compiler.position + 1
             
-        } otherwise ready (char == "*") {
+        } highkey lowkey (char == "*") {
             fr fr Compile Kleene star (0 or more)
             compile_kleene_star(compiler)
             
-        } otherwise ready (char == "+") {
+        } highkey lowkey (char == "+") {
             fr fr Compile plus (1 or more)  
             compile_plus_quantifier(compiler)
             
-        } otherwise ready (char == "?") {
+        } highkey lowkey (char == "?") {
             fr fr Compile optional (0 or 1)
             compile_optional_quantifier(compiler)
             
-        } otherwise ready (char == "[") {
+        } highkey lowkey (char == "[") {
             fr fr Compile character class
             compile_character_class(compiler)
             
-        } otherwise ready (char == "(") {
+        } highkey lowkey (char == "(") {
             fr fr Compile group
             compile_group(compiler)
             
-        } otherwise ready (char == "|") {
+        } highkey lowkey (char == "|") {
             fr fr Compile alternation
             compile_alternation(compiler)
             
-        } otherwise ready (char == "\\") {
+        } highkey lowkey (char == "\\") {
             fr fr Compile escape sequence
             compile_escape_sequence_complete(compiler)
             
-        } otherwise {
+        } highkey {
             fr fr Literal character
             emit_bytecode_op(compiler, 8)  fr fr MATCH_CHAR
             emit_bytecode_op(compiler, char_to_number(char))
@@ -1040,45 +1040,45 @@ slay compile_escape_sequence_complete(compiler RegexCompilerState) {
     fr fr Compile complete escape sequences including advanced features
     compiler.position = compiler.position + 1  fr fr Skip backslash
     
-    ready (compiler.position >= string_length(compiler.pattern)) {
+    lowkey (compiler.position >= string_length(compiler.pattern)) {
         damn  fr fr Invalid escape at end
     }
     
     sus escaped_char tea = substring(compiler.pattern, compiler.position, 1)
     
-    ready (escaped_char == "d") {
+    lowkey (escaped_char == "d") {
         emit_bytecode_op(compiler, 12)  fr fr MATCH_DIGIT
-    } otherwise ready (escaped_char == "D") {
+    } highkey lowkey (escaped_char == "D") {
         emit_bytecode_op(compiler, 15)  fr fr MATCH_NON_DIGIT
-    } otherwise ready (escaped_char == "w") {
+    } highkey lowkey (escaped_char == "w") {
         emit_bytecode_op(compiler, 13)  fr fr MATCH_WORD
-    } otherwise ready (escaped_char == "W") {
+    } highkey lowkey (escaped_char == "W") {
         emit_bytecode_op(compiler, 16)  fr fr MATCH_NON_WORD
-    } otherwise ready (escaped_char == "s") {
+    } highkey lowkey (escaped_char == "s") {
         emit_bytecode_op(compiler, 14)  fr fr MATCH_SPACE
-    } otherwise ready (escaped_char == "S") {
+    } highkey lowkey (escaped_char == "S") {
         emit_bytecode_op(compiler, 17)  fr fr MATCH_NON_SPACE
-    } otherwise ready (escaped_char == "b") {
+    } highkey lowkey (escaped_char == "b") {
         emit_bytecode_op(compiler, 18)  fr fr MATCH_WORD_BOUNDARY
-    } otherwise ready (escaped_char == "B") {
+    } highkey lowkey (escaped_char == "B") {
         emit_bytecode_op(compiler, 19)  fr fr MATCH_NON_WORD_BOUNDARY
-    } otherwise ready (escaped_char == "n") {
+    } highkey lowkey (escaped_char == "n") {
         emit_bytecode_op(compiler, 8)   fr fr MATCH_CHAR
         emit_bytecode_op(compiler, 10)  fr fr Newline
-    } otherwise ready (escaped_char == "r") {
+    } highkey lowkey (escaped_char == "r") {
         emit_bytecode_op(compiler, 8)   fr fr MATCH_CHAR
         emit_bytecode_op(compiler, 13)  fr fr Carriage return
-    } otherwise ready (escaped_char == "t") {
+    } highkey lowkey (escaped_char == "t") {
         emit_bytecode_op(compiler, 8)   fr fr MATCH_CHAR
         emit_bytecode_op(compiler, 9)   fr fr Tab
-    } otherwise ready (escaped_char == "p") {
+    } highkey lowkey (escaped_char == "p") {
         compile_unicode_class(compiler)
-    } otherwise ready (is_digit_char(escaped_char)) {
+    } highkey lowkey (is_digit_char(escaped_char)) {
         fr fr Backreference
         sus backref_num drip = char_to_number(escaped_char) - 48  fr fr '0' = 48
         emit_bytecode_op(compiler, 29)  fr fr BACKREF
         emit_bytecode_op(compiler, backref_num)
-    } otherwise {
+    } highkey {
         fr fr Literal escaped character
         emit_bytecode_op(compiler, 8)  fr fr MATCH_CHAR
         emit_bytecode_op(compiler, char_to_number(escaped_char))
@@ -1095,7 +1095,7 @@ slay compile_unicode_class(compiler RegexCompilerState) {
     fr fr Compile Unicode character class \p{...}
     compiler.position = compiler.position + 1  fr fr Skip 'p'
     
-    ready (compiler.position >= string_length(compiler.pattern) || 
+    lowkey (compiler.position >= string_length(compiler.pattern) || 
           substring(compiler.pattern, compiler.position, 1) != "{") {
         damn  fr fr Invalid Unicode class syntax
     }
@@ -1107,7 +1107,7 @@ slay compile_unicode_class(compiler RegexCompilerState) {
     sus class_end drip = class_start
     
     bestie (class_end < string_length(compiler.pattern)) {
-        ready (substring(compiler.pattern, class_end, 1) == "}") {
+        lowkey (substring(compiler.pattern, class_end, 1) == "}") {
             break
         }
         class_end = class_end + 1
@@ -1117,19 +1117,19 @@ slay compile_unicode_class(compiler RegexCompilerState) {
     
     emit_bytecode_op(compiler, 27)  fr fr MATCH_UNICODE_CLASS
     
-    ready (unicode_class == "L") {
+    lowkey (unicode_class == "L") {
         emit_bytecode_op(compiler, 1)  fr fr Letter
-    } otherwise ready (unicode_class == "N") {
+    } highkey lowkey (unicode_class == "N") {
         emit_bytecode_op(compiler, 2)  fr fr Number
-    } otherwise ready (unicode_class == "P") {
+    } highkey lowkey (unicode_class == "P") {
         emit_bytecode_op(compiler, 3)  fr fr Punctuation
-    } otherwise ready (unicode_class == "S") {
+    } highkey lowkey (unicode_class == "S") {
         emit_bytecode_op(compiler, 4)  fr fr Symbol
-    } otherwise ready (unicode_class == "Z") {
+    } highkey lowkey (unicode_class == "Z") {
         emit_bytecode_op(compiler, 5)  fr fr Separator
-    } otherwise ready (unicode_class == "C") {
+    } highkey lowkey (unicode_class == "C") {
         emit_bytecode_op(compiler, 6)  fr fr Control
-    } otherwise {
+    } highkey {
         emit_bytecode_op(compiler, 0)  fr fr Unknown class
     }
     
@@ -1185,7 +1185,7 @@ slay compile_character_class(compiler RegexCompilerState) {
     sus char_set drip[value] = []
     
     fr fr Check for negation
-    ready (compiler.position < string_length(compiler.pattern) && 
+    lowkey (compiler.position < string_length(compiler.pattern) && 
           substring(compiler.pattern, compiler.position, 1) == "^") {
         is_negated = based
         compiler.position = compiler.position + 1
@@ -1195,11 +1195,11 @@ slay compile_character_class(compiler RegexCompilerState) {
     bestie (compiler.position < string_length(compiler.pattern)) {
         sus char tea = substring(compiler.pattern, compiler.position, 1)
         
-        ready (char == "]") {
+        lowkey (char == "]") {
             break
         }
         
-        ready (char == "-" && array_length(char_set) > 0 && 
+        lowkey (char == "-" && array_length(char_set) > 0 && 
               compiler.position + 1 < string_length(compiler.pattern)) {
             fr fr Handle character range [a-z]
             compiler.position = compiler.position + 1  fr fr Skip '-'
@@ -1211,20 +1211,20 @@ slay compile_character_class(compiler RegexCompilerState) {
             fr fr Remove last character and add range
             array_pop(char_set)
             
-            ready (is_negated) {
+            lowkey (is_negated) {
                 emit_bytecode_op(compiler, 11)  fr fr MATCH_NEG_SET
                 emit_range_to_bytecode(compiler, start_code, end_code)
-            } otherwise {
+            } highkey {
                 emit_bytecode_op(compiler, 9)   fr fr MATCH_RANGE
                 emit_bytecode_op(compiler, start_code)
                 emit_bytecode_op(compiler, end_code)
             }
             
-        } otherwise ready (char == "\\") {
+        } highkey lowkey (char == "\\") {
             fr fr Handle escape sequences in character class
             compiler.position = compiler.position + 1
             compile_character_class_escape(compiler, char_set)
-        } otherwise {
+        } highkey {
             fr fr Regular character
             array_append(char_set, char_to_number(char))
         }
@@ -1233,10 +1233,10 @@ slay compile_character_class(compiler RegexCompilerState) {
     }
     
     fr fr Emit character set instruction
-    ready (array_length(char_set) > 0) {
-        ready (is_negated) {
+    lowkey (array_length(char_set) > 0) {
+        lowkey (is_negated) {
             emit_bytecode_op(compiler, 11)  fr fr MATCH_NEG_SET
-        } otherwise {
+        } highkey {
             emit_bytecode_op(compiler, 10)  fr fr MATCH_SET
         }
         
@@ -1256,43 +1256,43 @@ slay compile_group(compiler RegexCompilerState) {
     sus group_type tea = "normal"
     
     fr fr Check for special group types
-    ready (compiler.position + 1 < string_length(compiler.pattern) &&
+    lowkey (compiler.position + 1 < string_length(compiler.pattern) &&
           substring(compiler.pattern, compiler.position, 1) == "?") {
         compiler.position = compiler.position + 1  fr fr Skip '?'
         
         sus special_char tea = substring(compiler.pattern, compiler.position, 1)
         compiler.position = compiler.position + 1
         
-        ready (special_char == ":") {
+        lowkey (special_char == ":") {
             fr fr Non-capturing group (?:...)
             is_capturing = no_cap
-        } otherwise ready (special_char == "=") {
+        } highkey lowkey (special_char == "=") {
             fr fr Positive lookahead (?=...)
             group_type = "lookahead_pos"
             is_capturing = no_cap
-        } otherwise ready (special_char == "!") {
+        } highkey lowkey (special_char == "!") {
             fr fr Negative lookahead (?!...)
             group_type = "lookahead_neg"
             is_capturing = no_cap
-        } otherwise ready (special_char == "<") {
+        } highkey lowkey (special_char == "<") {
             fr fr Lookbehind or named group
             sus next_char tea = substring(compiler.pattern, compiler.position, 1)
             compiler.position = compiler.position + 1
             
-            ready (next_char == "=") {
+            lowkey (next_char == "=") {
                 fr fr Positive lookbehind (?<=...)
                 group_type = "lookbehind_pos"
                 is_capturing = no_cap
-            } otherwise ready (next_char == "!") {
+            } highkey lowkey (next_char == "!") {
                 fr fr Negative lookbehind (?<!...)
                 group_type = "lookbehind_neg"
                 is_capturing = no_cap
-            } otherwise {
+            } highkey {
                 fr fr Named capturing group (?<name>...)
                 compiler.position = compiler.position - 1  fr fr Go back
                 group_name = parse_group_name(compiler)
             }
-        } otherwise ready (special_char == ">") {
+        } highkey lowkey (special_char == ">") {
             fr fr Atomic group (?>...)
             group_type = "atomic"
             is_capturing = no_cap
@@ -1300,30 +1300,30 @@ slay compile_group(compiler RegexCompilerState) {
     }
     
     fr fr Start capture group if needed
-    ready (is_capturing) {
+    lowkey (is_capturing) {
         compiler.capture_count = compiler.capture_count + 1
         emit_bytecode_op(compiler, 6)  fr fr CAPTURE_START
         emit_bytecode_op(compiler, compiler.capture_count)
     }
     
     fr fr Compile group contents based on type
-    ready (group_type == "lookahead_pos") {
+    lowkey (group_type == "lookahead_pos") {
         compile_lookahead(compiler, based)
-    } otherwise ready (group_type == "lookahead_neg") {
+    } highkey lowkey (group_type == "lookahead_neg") {
         compile_lookahead(compiler, no_cap)
-    } otherwise ready (group_type == "lookbehind_pos") {
+    } highkey lowkey (group_type == "lookbehind_pos") {
         compile_lookbehind(compiler, based)
-    } otherwise ready (group_type == "lookbehind_neg") {
+    } highkey lowkey (group_type == "lookbehind_neg") {
         compile_lookbehind(compiler, no_cap)
-    } otherwise ready (group_type == "atomic") {
+    } highkey lowkey (group_type == "atomic") {
         compile_atomic_group(compiler)
-    } otherwise {
+    } highkey {
         fr fr Normal or non-capturing group
         compile_group_contents(compiler)
     }
     
     fr fr End capture group if needed
-    ready (is_capturing) {
+    lowkey (is_capturing) {
         emit_bytecode_op(compiler, 7)  fr fr CAPTURE_END
         emit_bytecode_op(compiler, compiler.capture_count)
     }
@@ -1387,12 +1387,12 @@ slay execute_positive_lookahead(vm CompleteRegexVM, lookahead_length drip) lit {
         sus opcode drip = vm.bytecode[vm.pc]
         vm.pc = vm.pc + 1
         
-        ready (execute_single_opcode(vm, opcode)) {
-            ready (vm.pc >= lookahead_end) {
+        lowkey (execute_single_opcode(vm, opcode)) {
+            lowkey (vm.pc >= lookahead_end) {
                 lookahead_matched = based
                 break
             }
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -1412,7 +1412,7 @@ slay execute_negative_lookahead(vm CompleteRegexVM, lookahead_length drip) lit {
 
 slay execute_positive_lookbehind(vm CompleteRegexVM, lookbehind_length drip) lit {
     fr fr Execute positive lookbehind (?<=pattern)
-    ready (vm.text_pos < lookbehind_length) {
+    lowkey (vm.text_pos < lookbehind_length) {
         damn no_cap  fr fr Not enough text behind current position
     }
     
@@ -1430,12 +1430,12 @@ slay execute_positive_lookbehind(vm CompleteRegexVM, lookbehind_length drip) lit
         sus opcode drip = vm.bytecode[vm.pc]
         vm.pc = vm.pc + 1
         
-        ready (execute_single_opcode(vm, opcode)) {
-            ready (vm.pc >= lookbehind_end && vm.text_pos == saved_pos) {
+        lowkey (execute_single_opcode(vm, opcode)) {
+            lowkey (vm.pc >= lookbehind_end && vm.text_pos == saved_pos) {
                 lookbehind_matched = based
                 break
             }
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -1469,7 +1469,7 @@ slay execute_atomic_group(vm CompleteRegexVM) lit {
         sus opcode drip = vm.bytecode[vm.pc]
         vm.pc = vm.pc + 1
         
-        ready (!execute_single_opcode(vm, opcode)) {
+        lowkey (!execute_single_opcode(vm, opcode)) {
             group_matched = no_cap
             break
         }
@@ -1492,7 +1492,7 @@ slay execute_lazy_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat drip, r
         sus saved_pc drip = vm.pc
         vm.pc = repeat_pattern_start
         
-        ready (!execute_pattern_segment(vm, pattern_length)) {
+        lowkey (!execute_pattern_segment(vm, pattern_length)) {
             damn no_cap  fr fr Failed to match minimum
         }
         
@@ -1501,7 +1501,7 @@ slay execute_lazy_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat drip, r
     
     fr fr Try to continue without additional matches (lazy behavior)
     sus rest_pattern_start drip = vm.pc
-    ready (test_rest_of_pattern(vm, rest_pattern_start)) {
+    lowkey (test_rest_of_pattern(vm, rest_pattern_start)) {
         damn based  fr fr Pattern matches without additional repetitions
     }
     
@@ -1510,14 +1510,14 @@ slay execute_lazy_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat drip, r
         sus saved_pc drip = vm.pc
         vm.pc = repeat_pattern_start
         
-        ready (!execute_pattern_segment(vm, pattern_length)) {
+        lowkey (!execute_pattern_segment(vm, pattern_length)) {
             break  fr fr No more matches possible
         }
         
         match_count = match_count + 1
         
         fr fr Test if rest of pattern matches after each additional repetition
-        ready (test_rest_of_pattern(vm, rest_pattern_start)) {
+        lowkey (test_rest_of_pattern(vm, rest_pattern_start)) {
             damn based
         }
     }
@@ -1537,7 +1537,7 @@ slay execute_possessive_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat d
         
         vm.pc = repeat_pattern_start
         
-        ready (!execute_pattern_segment(vm, pattern_length)) {
+        lowkey (!execute_pattern_segment(vm, pattern_length)) {
             fr fr Restore position for failed match
             vm.text_pos = saved_pos
             vm.pc = saved_pc
@@ -1553,28 +1553,28 @@ slay execute_possessive_repeat(vm CompleteRegexVM, min_repeat drip, max_repeat d
 
 slay match_unicode_character_class(vm CompleteRegexVM, unicode_class drip) lit {
     fr fr Match Unicode character class based on class identifier
-    ready (vm.text_pos >= vm.text_length) {
+    lowkey (vm.text_pos >= vm.text_length) {
         damn no_cap
     }
     
     sus char tea = substring(vm.text, vm.text_pos, 1)
     sus matched lit = no_cap
     
-    ready (unicode_class == 1) {  fr fr Letter
+    lowkey (unicode_class == 1) {  fr fr Letter
         matched = is_unicode_letter(char)
-    } otherwise ready (unicode_class == 2) {  fr fr Number
+    } highkey lowkey (unicode_class == 2) {  fr fr Number
         matched = is_unicode_number(char)
-    } otherwise ready (unicode_class == 3) {  fr fr Punctuation
+    } highkey lowkey (unicode_class == 3) {  fr fr Punctuation
         matched = is_unicode_punctuation(char)
-    } otherwise ready (unicode_class == 4) {  fr fr Symbol
+    } highkey lowkey (unicode_class == 4) {  fr fr Symbol
         matched = is_unicode_symbol(char)
-    } otherwise ready (unicode_class == 5) {  fr fr Separator
+    } highkey lowkey (unicode_class == 5) {  fr fr Separator
         matched = is_unicode_separator(char)
-    } otherwise ready (unicode_class == 6) {  fr fr Control
+    } highkey lowkey (unicode_class == 6) {  fr fr Control
         matched = is_unicode_control(char)
     }
     
-    ready (matched) {
+    lowkey (matched) {
         vm.text_pos = vm.text_pos + 1
     }
     
@@ -1587,9 +1587,9 @@ slay compile_lookahead(compiler RegexCompilerState, is_positive lit) {
     fr fr Compile lookahead assertion (?=...) or (?!...)
     sus lookahead_start drip = array_length(compiler.bytecode)
     
-    ready (is_positive) {
+    lowkey (is_positive) {
         emit_bytecode_op(compiler, 20)  fr fr LOOKAHEAD_POS
-    } otherwise {
+    } highkey {
         emit_bytecode_op(compiler, 21)  fr fr LOOKAHEAD_NEG
     }
     
@@ -1610,9 +1610,9 @@ slay compile_lookbehind(compiler RegexCompilerState, is_positive lit) {
     fr fr Compile lookbehind assertion (?<=...) or (?<!...)
     sus lookbehind_start drip = array_length(compiler.bytecode)
     
-    ready (is_positive) {
+    lowkey (is_positive) {
         emit_bytecode_op(compiler, 22)  fr fr LOOKBEHIND_POS
-    } otherwise {
+    } highkey {
         emit_bytecode_op(compiler, 23)  fr fr LOOKBEHIND_NEG
     }
     
@@ -1642,15 +1642,15 @@ slay compile_group_contents(compiler RegexCompilerState) {
     bestie (compiler.position < string_length(compiler.pattern) && group_depth > 0) {
         sus char tea = substring(compiler.pattern, compiler.position, 1)
         
-        ready (char == "(") {
+        lowkey (char == "(") {
             group_depth = group_depth + 1
             compile_group(compiler)
-        } otherwise ready (char == ")") {
+        } highkey lowkey (char == ")") {
             group_depth = group_depth - 1
-            ready (group_depth > 0) {
+            lowkey (group_depth > 0) {
                 compiler.position = compiler.position + 1
             }
-        } otherwise {
+        } highkey {
             fr fr Compile regular pattern element
             compile_pattern_element(compiler, char)
         }
@@ -1661,15 +1661,15 @@ fr fr ===== ADDITIONAL HELPER FUNCTIONS =====
 
 slay execute_single_opcode(vm CompleteRegexVM, opcode drip) lit {
     fr fr Execute a single opcode and return success/failure
-    ready (opcode == 8) {  fr fr MATCH_CHAR
+    lowkey (opcode == 8) {  fr fr MATCH_CHAR
         sus expected_char drip = vm.bytecode[vm.pc]
         vm.pc = vm.pc + 1
         damn match_specific_char(vm, expected_char)
-    } otherwise ready (opcode == 12) {  fr fr MATCH_DIGIT
+    } highkey lowkey (opcode == 12) {  fr fr MATCH_DIGIT
         damn match_digit_char(vm)
-    } otherwise ready (opcode == 13) {  fr fr MATCH_WORD
+    } highkey lowkey (opcode == 13) {  fr fr MATCH_WORD
         damn match_word_char(vm)
-    } otherwise ready (opcode == 3) {  fr fr MATCH_ANY
+    } highkey lowkey (opcode == 3) {  fr fr MATCH_ANY
         damn match_any_char(vm)
     }
     
@@ -1685,7 +1685,7 @@ slay execute_pattern_segment(vm CompleteRegexVM, length drip) lit {
         sus opcode drip = vm.bytecode[vm.pc]
         vm.pc = vm.pc + 1
         
-        ready (!execute_single_opcode(vm, opcode)) {
+        lowkey (!execute_single_opcode(vm, opcode)) {
             damn no_cap
         }
     }
@@ -1703,7 +1703,7 @@ slay test_rest_of_pattern(vm CompleteRegexVM, start_pc drip) lit {
     sus result lit = execute_pattern_segment(vm, array_length(vm.bytecode) - start_pc)
     
     fr fr Restore state for backtracking
-    ready (!result) {
+    lowkey (!result) {
         vm.pc = saved_pc
         vm.text_pos = saved_pos  
         vm.captures = saved_captures
@@ -1720,9 +1720,9 @@ slay find_matching_group_end(bytecode drip[value], start_pc drip) drip {
     bestie (pc < array_length(bytecode) && depth > 0) {
         sus opcode drip = bytecode[pc]
         
-        ready (opcode == 6) {  fr fr CAPTURE_START
+        lowkey (opcode == 6) {  fr fr CAPTURE_START
             depth = depth + 1
-        } otherwise ready (opcode == 7) {  fr fr CAPTURE_END
+        } highkey lowkey (opcode == 7) {  fr fr CAPTURE_END
             depth = depth - 1
         }
         
@@ -1763,11 +1763,11 @@ slay find_alternative_start(compiler RegexCompilerState) drip {
     bestie (pos >= 0) {
         sus opcode drip = compiler.bytecode[pos]
         
-        ready (opcode == 6 || opcode == 24) {  fr fr Group start opcodes
+        lowkey (opcode == 6 || opcode == 24) {  fr fr Group start opcodes
             depth = depth + 1
-        } otherwise ready (opcode == 7) {  fr fr Group end
+        } highkey lowkey (opcode == 7) {  fr fr Group end
             depth = depth - 1
-        } otherwise ready (opcode == 5 && depth == 0) {  fr fr SPLIT at same level
+        } highkey lowkey (opcode == 5 && depth == 0) {  fr fr SPLIT at same level
             damn pos
         }
         
@@ -1797,29 +1797,29 @@ slay emit_range_to_bytecode(compiler RegexCompilerState, start_code drip, end_co
 
 slay compile_character_class_escape(compiler RegexCompilerState, char_set drip[value]) {
     fr fr Handle escape sequences within character classes
-    ready (compiler.position >= string_length(compiler.pattern)) {
+    lowkey (compiler.position >= string_length(compiler.pattern)) {
         damn
     }
     
     sus escaped_char tea = substring(compiler.pattern, compiler.position, 1)
     
-    ready (escaped_char == "d") {
+    lowkey (escaped_char == "d") {
         fr fr Add digits 0-9 to character set
         sus i drip = 48  fr fr '0'
         bestie (i <= 57) {  fr fr '9'
             array_append(char_set, i)
             i = i + 1
         }
-    } otherwise ready (escaped_char == "w") {
+    } highkey lowkey (escaped_char == "w") {
         fr fr Add word characters (simplified: a-z, A-Z, 0-9, _)
         add_word_chars_to_set(char_set)
-    } otherwise ready (escaped_char == "s") {
+    } highkey lowkey (escaped_char == "s") {
         fr fr Add whitespace characters
         array_append(char_set, 32)  fr fr Space
         array_append(char_set, 9)   fr fr Tab
         array_append(char_set, 10)  fr fr Newline
         array_append(char_set, 13)  fr fr Carriage return
-    } otherwise {
+    } highkey {
         fr fr Regular escaped character
         array_append(char_set, char_to_number(escaped_char))
     }
@@ -1859,7 +1859,7 @@ slay parse_group_name(compiler RegexCompilerState) tea {
     bestie (compiler.position < string_length(compiler.pattern)) {
         sus char tea = substring(compiler.pattern, compiler.position, 1)
         
-        ready (char == ">") {
+        lowkey (char == ">") {
             break
         }
         
@@ -1872,11 +1872,11 @@ slay parse_group_name(compiler RegexCompilerState) tea {
 
 slay compile_pattern_element(compiler RegexCompilerState, char tea) {
     fr fr Compile a single pattern element
-    ready (char == ".") {
+    lowkey (char == ".") {
         emit_bytecode_op(compiler, 3)  fr fr MATCH_ANY
-    } otherwise ready (char == "\\") {
+    } highkey lowkey (char == "\\") {
         compile_escape_sequence_complete(compiler)
-    } otherwise {
+    } highkey {
         emit_bytecode_op(compiler, 8)  fr fr MATCH_CHAR
         emit_bytecode_op(compiler, char_to_number(char))
     }
@@ -1905,7 +1905,7 @@ fr fr ===== MISSING UTILITY FUNCTIONS =====
 
 slay json_number_to_string(num drip) tea {
     fr fr Convert number to string representation
-    ready (num == 0) {
+    lowkey (num == 0) {
         damn "0"
     }
     
@@ -1913,7 +1913,7 @@ slay json_number_to_string(num drip) tea {
     sus temp drip = num
     sus digits tea[value] = []
     
-    ready (temp < 0) {
+    lowkey (temp < 0) {
         result = "-"
         temp = 0 - temp
     }
@@ -1936,16 +1936,16 @@ slay json_number_to_string(num drip) tea {
 
 slay number_to_char(code drip) tea {
     fr fr Convert character code to string
-    ready (code == 48) damn "0"
-    ready (code == 49) damn "1"
-    ready (code == 50) damn "2"
-    ready (code == 51) damn "3"
-    ready (code == 52) damn "4"
-    ready (code == 53) damn "5"
-    ready (code == 54) damn "6"
-    ready (code == 55) damn "7"
-    ready (code == 56) damn "8"
-    ready (code == 57) damn "9"
+    lowkey (code == 48) damn "0"
+    lowkey (code == 49) damn "1"
+    lowkey (code == 50) damn "2"
+    lowkey (code == 51) damn "3"
+    lowkey (code == 52) damn "4"
+    lowkey (code == 53) damn "5"
+    lowkey (code == 54) damn "6"
+    lowkey (code == 55) damn "7"
+    lowkey (code == 56) damn "8"
+    lowkey (code == 57) damn "9"
     
     fr fr For other characters, use built-in conversion if available
     damn "?"
@@ -1953,7 +1953,7 @@ slay number_to_char(code drip) tea {
 
 slay array_pop(arr tea[value]) tea {
     fr fr Remove and return last element from array
-    ready (array_length(arr) == 0) {
+    lowkey (array_length(arr) == 0) {
         damn ""
     }
     
@@ -1965,7 +1965,7 @@ slay array_pop(arr tea[value]) tea {
 
 slay array_pop_drip(arr drip[value]) drip {
     fr fr Remove and return last element from drip array
-    ready (array_length(arr) == 0) {
+    lowkey (array_length(arr) == 0) {
         damn 0
     }
     
@@ -1977,7 +1977,7 @@ slay array_pop_drip(arr drip[value]) drip {
 
 slay array_pop_backtrack(arr BacktrackFrame[value]) BacktrackFrame {
     fr fr Remove and return last BacktrackFrame from array
-    ready (array_length(arr) == 0) {
+    lowkey (array_length(arr) == 0) {
         sus empty_frame BacktrackFrame = BacktrackFrame{}
         empty_frame.pc = 0
         empty_frame.text_pos = 0
@@ -1997,7 +1997,7 @@ slay string_contains(str tea, substr tea) lit {
     sus str_len drip = string_length(str)
     sus substr_len drip = string_length(substr)
     
-    ready (substr_len > str_len) {
+    lowkey (substr_len > str_len) {
         damn no_cap
     }
     
@@ -2007,14 +2007,14 @@ slay string_contains(str tea, substr tea) lit {
         sus j drip = 0
         
         bestie (j < substr_len) {
-            ready (substring(str, i + j, 1) != substring(substr, j, 1)) {
+            lowkey (substring(str, i + j, 1) != substring(substr, j, 1)) {
                 match = no_cap
                 break
             }
             j = j + 1
         }
         
-        ready (match) {
+        lowkey (match) {
             damn based
         }
         
@@ -2090,7 +2090,7 @@ slay sort_ranges(ranges *drip[value]) {
     bestie (i < len - 1) {
         sus j drip = 0
         bestie (j < len - i - 2) {
-            ready ((*ranges)[j] > (*ranges)[j + 2]) {
+            lowkey ((*ranges)[j] > (*ranges)[j + 2]) {
                 fr fr Swap range pairs
                 sus temp1 drip = (*ranges)[j]
                 sus temp2 drip = (*ranges)[j + 1]
@@ -2107,7 +2107,7 @@ slay sort_ranges(ranges *drip[value]) {
 
 slay merge_ranges(ranges drip[value]) drip[value]{
     fr fr Merge overlapping ranges
-    ready (array_length(ranges) <= 2) {
+    lowkey (array_length(ranges) <= 2) {
         damn ranges
     }
     
@@ -2120,7 +2120,7 @@ slay merge_ranges(ranges drip[value]) drip[value]{
         
         fr fr Check for overlap with next range
         bestie (i + 2 < array_length(ranges) && end >= ranges[i + 2] - 1) {
-            ready (ranges[i + 3] > end) {
+            lowkey (ranges[i + 3] > end) {
                 end = ranges[i + 3]
             }
             i = i + 2  fr fr Skip merged range
@@ -2136,17 +2136,17 @@ slay merge_ranges(ranges drip[value]) drip[value]{
 
 slay load_unicode_property(property tea) drip[value]{
     fr fr Load Unicode property ranges (demo implementation)
-    ready (property == "L") {
+    lowkey (property == "L") {
         damn [65, 90, 97, 122, 192, 214, 216, 246, 248, 255]
-    } otherwise ready (property == "N") {
+    } highkey lowkey (property == "N") {
         damn [48, 57, 178, 179, 185, 185, 188, 190]
-    } otherwise ready (property == "P") {
+    } highkey lowkey (property == "P") {
         damn [33, 47, 58, 64, 91, 96, 123, 126]
-    } otherwise ready (property == "S") {
+    } highkey lowkey (property == "S") {
         damn [36, 36, 43, 43, 60, 62, 124, 124]
-    } otherwise ready (property == "Z") {
+    } highkey lowkey (property == "Z") {
         damn [32, 32, 160, 160, 8192, 8202, 8239, 8239, 8287, 8287, 12288, 12288]
-    } otherwise ready (property == "C") {
+    } highkey lowkey (property == "C") {
         damn [0, 31, 127, 159, 173, 173, 1536, 1541, 1807, 1807, 6068, 6069]
     }
     

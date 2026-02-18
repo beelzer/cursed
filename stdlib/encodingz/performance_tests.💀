@@ -48,10 +48,10 @@ slay generate_test_data(size drip, pattern tea) tea {
     
     bestie bytes_generated < size {
         sus remaining drip = size - bytes_generated
-        ready remaining >= pattern_len {
+        lowkey remaining >= pattern_len {
             result = result + pattern
             bytes_generated = bytes_generated + pattern_len
-        } otherwise {
+        } highkey {
             result = result + substring(pattern, 0, remaining)
             bytes_generated = size
         }
@@ -85,11 +85,11 @@ slay generate_binary_data(size drip) tea {
     bestie i < size {
         sus byte_val drip = i % 256
         fr fr Simulate binary data with various byte values
-        ready byte_val < 32 {
+        lowkey byte_val < 32 {
             result = result + "."  fr fr Control characters as dots
-        } otherwise ready byte_val < 127 {
+        } highkey lowkey byte_val < 127 {
             result = result + char_from_code(byte_val)
-        } otherwise {
+        } highkey {
             result = result + "?"  fr fr High byte values
         }
         i = i + 1
@@ -247,7 +247,7 @@ slay benchmark_streaming_base64(total_size drip) StreamingBenchmark {
         
         fr fr Simulate memory usage tracking
         sus current_memory drip = estimate_streaming_memory(encoder)
-        ready current_memory > peak_memory {
+        lowkey current_memory > peak_memory {
             peak_memory = current_memory
         }
         
@@ -283,7 +283,7 @@ slay benchmark_streaming_hex(total_size drip) StreamingBenchmark {
         sus result tea = stream_encode_chunk(encoder, test_data)
         
         sus current_memory drip = estimate_streaming_memory(encoder)
-        ready current_memory > peak_memory {
+        lowkey current_memory > peak_memory {
             peak_memory = current_memory
         }
         
@@ -338,7 +338,7 @@ slay benchmark_all_encodings(data_size drip) {
     ])
     
     fr fr Streaming benchmarks for larger data
-    ready data_size >= LARGE_DATA_SIZE {
+    lowkey data_size >= LARGE_DATA_SIZE {
         vibez.spill("\n🌊 Streaming Performance Tests")
         vibez.spill("=" * 40)
         
@@ -477,11 +477,11 @@ slay print_streaming_results(results StreamingBenchmark[value]) {
 }
 
 slay format_bytes(bytes drip) tea {
-    ready bytes < 1024 {
+    lowkey bytes < 1024 {
         damn int_to_string(bytes) + " B"
-    } otherwise ready bytes < 1048576 {
+    } highkey lowkey bytes < 1048576 {
         damn int_to_string(bytes / 1024) + " KB"
-    } otherwise {
+    } highkey {
         damn int_to_string(bytes / 1048576) + " MB"
     }
 }

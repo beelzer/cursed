@@ -131,9 +131,9 @@ bestie i := 0; i < len(malicious_urls); i++ {
     sus url tea = malicious_urls[i]
     sus result ValidationResult = validate_url(url)
     
-    ready result.is_valid {
+    lowkey result.is_valid {
         vibez.spill("⚠ URL validation may allow SSRF: " + url)
-    } otherwise {
+    } highkey {
         vibez.spill("✓ URL validation correctly rejects: " + url)
     }
 }

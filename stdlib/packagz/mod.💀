@@ -122,7 +122,7 @@ slay init_package_manager(registry_url tea, cache_dir tea) PackageManager {
 slay parse_version(version_str tea) PackageVersion {
     sus parts tea[value] = stringz.split(version_str, ".")
     
-    ready (arrayz.len(parts) < 3) {
+    lowkey (arrayz.len(parts) < 3) {
         damn PackageVersion { major: 0, minor: 0, patch: 0, pre_release: "", build: "" }
     }
     
@@ -141,18 +141,18 @@ slay parse_version(version_str tea) PackageVersion {
 
 # Compare two package versions (-1: v1 < v2, 0: v1 == v2, 1: v1 > v2)
 slay compare_versions(v1 PackageVersion, v2 PackageVersion) drip {
-    ready (v1.major != v2.major) {
-        ready (v1.major < v2.major) { damn -1 }
+    lowkey (v1.major != v2.major) {
+        lowkey (v1.major < v2.major) { damn -1 }
         damn 1
     }
     
-    ready (v1.minor != v2.minor) {
-        ready (v1.minor < v2.minor) { damn -1 }
+    lowkey (v1.minor != v2.minor) {
+        lowkey (v1.minor < v2.minor) { damn -1 }
         damn 1
     }
     
-    ready (v1.patch != v2.patch) {
-        ready (v1.patch < v2.patch) { damn -1 }
+    lowkey (v1.patch != v2.patch) {
+        lowkey (v1.patch < v2.patch) { damn -1 }
         damn 1
     }
     
@@ -175,24 +175,24 @@ slay search_packages(manager PackageManager, query tea) PackageMetadata[value]{
     request = add_header(request, "Accept", "application/json")
     
     # Add authentication if configured
-    ready (manager.registry.config.api_key != "") {
+    lowkey (manager.registry.config.api_key != "") {
         request = add_auth_bearer(request, manager.registry.config.api_key)
     }
     
     sus response HttpResponse = execute_http_request(request)
-    ready (!is_http_success(response)) {
+    lowkey (!is_http_success(response)) {
         vibez.spill("Failed to search packages:", response.status_code, response.status_text)
         damn []
     }
     
     sus json_data JsonValue = jsonz.json_parse(response.body)
     
-    ready (!jsonz.json_has_key(json_data, "packages")) {
+    lowkey (!jsonz.json_has_key(json_data, "packages")) {
         damn []
     }
     
     sus packages_json JsonValue = jsonz.json_get_object(json_data, "packages")
-    ready (packages_json.type != "array") {
+    lowkey (packages_json.type != "array") {
         damn []
     }
     
@@ -219,9 +219,9 @@ slay parse_package_metadata(json JsonValue) PackageMetadata {
     
     # Parse authors array
     sus authors tea[value] = []
-    ready (jsonz.json_has_key(json, "authors")) {
+    lowkey (jsonz.json_has_key(json, "authors")) {
         sus authors_json JsonValue = jsonz.json_get_object(json, "authors")
-        ready (authors_json.type == "array") {
+        lowkey (authors_json.type == "array") {
             bestie (sus i drip = 0; i < arrayz.len(authors_json.array_values); i = i + 1) {
                 sus author tea = authors_json.array_values[i].string_value
                 authors = arrayz.append(authors, author)
@@ -231,9 +231,9 @@ slay parse_package_metadata(json JsonValue) PackageMetadata {
     
     # Parse keywords array
     sus keywords tea[value] = []
-    ready (jsonz.json_has_key(json, "keywords")) {
+    lowkey (jsonz.json_has_key(json, "keywords")) {
         sus keywords_json JsonValue = jsonz.json_get_object(json, "keywords")
-        ready (keywords_json.type == "array") {
+        lowkey (keywords_json.type == "array") {
             bestie (sus i drip = 0; i < arrayz.len(keywords_json.array_values); i = i + 1) {
                 sus keyword tea = keywords_json.array_values[i].string_value
                 keywords = arrayz.append(keywords, keyword)
@@ -243,9 +243,9 @@ slay parse_package_metadata(json JsonValue) PackageMetadata {
     
     # Parse dependencies array
     sus dependencies PackageDependency[value] = []
-    ready (jsonz.json_has_key(json, "dependencies")) {
+    lowkey (jsonz.json_has_key(json, "dependencies")) {
         sus deps_json JsonValue = jsonz.json_get_object(json, "dependencies")
-        ready (deps_json.type == "array") {
+        lowkey (deps_json.type == "array") {
             bestie (sus i drip = 0; i < arrayz.len(deps_json.array_values); i = i + 1) {
                 sus dep_json JsonValue = deps_json.array_values[i]
                 sus dep PackageDependency = PackageDependency {
@@ -284,12 +284,12 @@ slay download_package(manager PackageManager, name tea, version tea) tea {
     request = add_user_agent(request, "cursed-pkg/1.0.0")
     request = add_header(request, "Accept", "application/json")
     
-    ready (manager.registry.config.api_key != "") {
+    lowkey (manager.registry.config.api_key != "") {
         request = add_auth_bearer(request, manager.registry.config.api_key)
     }
     
     sus response HttpResponse = execute_http_request(request)
-    ready (!is_http_success(response)) {
+    lowkey (!is_http_success(response)) {
         vibez.spill("Failed to get package info for", name, "version", version, 
                    "Status:", response.status_code)
         damn ""
@@ -299,7 +299,7 @@ slay download_package(manager PackageManager, name tea, version tea) tea {
     sus download_url tea = jsonz.json_get_string(json_data, "download_url")
     sus expected_checksum tea = jsonz.json_get_string(json_data, "checksum")
     
-    ready (download_url == "") {
+    lowkey (download_url == "") {
         vibez.spill("No download URL found for package", name)
         damn ""
     }
@@ -308,18 +308,18 @@ slay download_package(manager PackageManager, name tea, version tea) tea {
     sus temp_file tea = manager.installer.temp_dir + "/" + name + "-" + version + ".tar.gz"
     
     sus download_success lit = download_file(download_url, temp_file, null)
-    ready (!download_success) {
+    lowkey (!download_success) {
         vibez.spill("Failed to download package", name, "from", download_url)
         damn ""
     }
     
     # Verify checksum with production algorithms if provided
-    ready (expected_checksum != "") {
+    lowkey (expected_checksum != "") {
         sus archive_data tea = filez.read_file_binary(temp_file)
         sus algorithm ChecksumAlgorithm = detect_checksum_algorithm(expected_checksum)
         sus computed_result ChecksumResult = compute_checksum(archive_data, algorithm)
         
-        ready (!compare_checksums(computed_result.hex_digest, expected_checksum)) {
+        lowkey (!compare_checksums(computed_result.hex_digest, expected_checksum)) {
             vibez.spill("Checksum verification failed for package", name)
             vibez.spill("Expected:", expected_checksum)
             vibez.spill("Computed:", computed_result.hex_digest)
@@ -339,9 +339,9 @@ slay install_package(manager PackageManager, name tea, version_spec tea) lit {
     
     # Check if already installed
     sus installed InstalledPackage = get_installed_package(manager, name)
-    ready (installed.name != "") {
+    lowkey (installed.name != "") {
         vibez.spill("Package", name, "is already installed at version", installed.version)
-        ready (version_spec == "" || installed.version == version_spec) {
+        lowkey (version_spec == "" || installed.version == version_spec) {
             damn based
         }
     }
@@ -352,16 +352,16 @@ slay install_package(manager PackageManager, name tea, version_spec tea) lit {
     
     bestie (sus i drip = 0; i < arrayz.len(search_results); i = i + 1) {
         sus pkg PackageMetadata = search_results[i]
-        ready (pkg.name == name) {
+        lowkey (pkg.name == name) {
             # Use exact version match or latest if no version specified
-            ready (version_spec == "" || pkg.version == version_spec) {
+            lowkey (version_spec == "" || pkg.version == version_spec) {
                 target_package = pkg
                 break
             }
         }
     }
     
-    ready (target_package.name == "") {
+    lowkey (target_package.name == "") {
         vibez.spill("Package not found:", name)
         damn cap
     }
@@ -371,7 +371,7 @@ slay install_package(manager PackageManager, name tea, version_spec tea) lit {
     sus root_packages tea[value] = [name]
     sus resolution_result ResolutionResult = resolve_dependencies_advanced(resolver, root_packages)
     
-    ready (!resolution_result.success) {
+    lowkey (!resolution_result.success) {
         vibez.spill("Dependency resolution failed for package:", name)
         bestie (sus i drip = 0; i < arrayz.len(resolution_result.conflicts); i = i + 1) {
             sus conflict ResolutionConflict = resolution_result.conflicts[i]
@@ -387,7 +387,7 @@ slay install_package(manager PackageManager, name tea, version_spec tea) lit {
     # Install resolved packages in dependency order
     bestie (sus i drip = 0; i < arrayz.len(resolution_result.resolved_packages); i = i + 1) {
         sus pkg PackageMetadata = resolution_result.resolved_packages[i]
-        ready (!install_single_package(manager, pkg)) {
+        lowkey (!install_single_package(manager, pkg)) {
             vibez.spill("Failed to install resolved package:", pkg.name)
             damn cap
         }
@@ -395,20 +395,20 @@ slay install_package(manager PackageManager, name tea, version_spec tea) lit {
     
     # Download the package
     sus archive_path tea = download_package(manager, name, target_package.version)
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         damn cap
     }
     
     # Extract package
     sus extract_dir tea = manager.installer.temp_dir + "/" + name + "-" + target_package.version
-    ready (!extract_package(archive_path, extract_dir)) {
+    lowkey (!extract_package(archive_path, extract_dir)) {
         vibez.spill("Failed to extract package", name)
         damn cap
     }
     
     # Install to final location
     sus install_path tea = manager.installer.install_dir + "/" + name + "-" + target_package.version
-    ready (!filez.copy_dir(extract_dir, install_path)) {
+    lowkey (!filez.copy_dir(extract_dir, install_path)) {
         vibez.spill("Failed to install package to", install_path)
         damn cap
     }
@@ -441,7 +441,7 @@ slay extract_package(archive_path tea, extract_dir tea) lit {
     }
     
     # Use real archive handler for extraction
-    ready (!extract_package_archive(archive_path, extraction_options)) {
+    lowkey (!extract_package_archive(archive_path, extraction_options)) {
         vibez.spill("Failed to extract archive:", archive_path)
         damn cap
     }
@@ -471,14 +471,14 @@ slay install_single_package(manager PackageManager, pkg PackageMetadata) lit {
     
     # Check if already installed at correct version
     sus installed InstalledPackage = get_installed_package(manager, pkg.name)
-    ready (installed.name != "" && installed.version == pkg.version) {
+    lowkey (installed.name != "" && installed.version == pkg.version) {
         vibez.spill("Package", pkg.name, "already installed at correct version")
         damn based
     }
     
     # Download the package
     sus archive_path tea = download_package(manager, pkg.name, pkg.version)
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         damn cap
     }
     
@@ -486,7 +486,7 @@ slay install_single_package(manager PackageManager, pkg PackageMetadata) lit {
     sus security_policy SecurityPolicy = create_default_security_policy()
     sus verification_result VerificationResult = verify_package_integrity(archive_path, pkg, security_policy)
     
-    ready (!verification_result.is_valid) {
+    lowkey (!verification_result.is_valid) {
         vibez.spill("Security verification failed for package:", pkg.name)
         vibez.spill("Error:", verification_result.error_message)
         bestie (sus i drip = 0; i < arrayz.len(verification_result.verification_details); i = i + 1) {
@@ -500,7 +500,7 @@ slay install_single_package(manager PackageManager, pkg PackageMetadata) lit {
     
     # Extract package
     sus extract_dir tea = manager.installer.temp_dir + "/" + pkg.name + "-" + pkg.version
-    ready (!extract_package(archive_path, extract_dir)) {
+    lowkey (!extract_package(archive_path, extract_dir)) {
         vibez.spill("Failed to extract package", pkg.name)
         filez.remove_file(archive_path)
         damn cap
@@ -508,7 +508,7 @@ slay install_single_package(manager PackageManager, pkg PackageMetadata) lit {
     
     # Install to final location
     sus install_path tea = manager.installer.install_dir + "/" + pkg.name + "-" + pkg.version
-    ready (!filez.copy_dir(extract_dir, install_path)) {
+    lowkey (!filez.copy_dir(extract_dir, install_path)) {
         vibez.spill("Failed to install package to", install_path)
         filez.remove_file(archive_path)
         filez.remove_dir_all(extract_dir)
@@ -530,16 +530,16 @@ slay install_single_package(manager PackageManager, pkg PackageMetadata) lit {
     
     bestie (sus i drip = 0; i < arrayz.len(manager.installer.installed_packages); i = i + 1) {
         sus existing InstalledPackage = manager.installer.installed_packages[i]
-        ready (existing.name == pkg.name) {
+        lowkey (existing.name == pkg.name) {
             # Replace existing installation
             updated_packages = arrayz.append(updated_packages, installed_package)
             found = based
-        } otherwise {
+        } highkey {
             updated_packages = arrayz.append(updated_packages, existing)
         }
     }
     
-    ready (!found) {
+    lowkey (!found) {
         updated_packages = arrayz.append(updated_packages, installed_package)
     }
     
@@ -559,20 +559,20 @@ slay uninstall_package(manager PackageManager, name tea) lit {
     vibez.spill("Uninstalling package:", name)
     
     sus installed InstalledPackage = get_installed_package(manager, name)
-    ready (installed.name == "") {
+    lowkey (installed.name == "") {
         vibez.spill("Package not installed:", name)
         damn cap
     }
     
     # Check if other packages depend on this one
     sus dependents tea[value] = find_dependent_packages(manager, name)
-    ready (arrayz.len(dependents) > 0) {
+    lowkey (arrayz.len(dependents) > 0) {
         vibez.spill("Cannot uninstall", name, "- required by:", stringz.join(dependents, ", "))
         damn cap
     }
     
     # Remove installation directory
-    ready (!filez.remove_dir_all(installed.install_path)) {
+    lowkey (!filez.remove_dir_all(installed.install_path)) {
         vibez.spill("Failed to remove installation directory:", installed.install_path)
         damn cap
     }
@@ -581,7 +581,7 @@ slay uninstall_package(manager PackageManager, name tea) lit {
     sus updated_packages InstalledPackage[value] = []
     bestie (sus i drip = 0; i < arrayz.len(manager.installer.installed_packages); i = i + 1) {
         sus pkg InstalledPackage = manager.installer.installed_packages[i]
-        ready (pkg.name != name) {
+        lowkey (pkg.name != name) {
             updated_packages = arrayz.append(updated_packages, pkg)
         }
     }
@@ -601,7 +601,7 @@ slay find_dependent_packages(manager PackageManager, target_name tea) tea[value]
         sus pkg InstalledPackage = manager.installer.installed_packages[i]
         bestie (sus j drip = 0; j < arrayz.len(pkg.dependencies); j = j + 1) {
             sus dep_name tea = pkg.dependencies[j]
-            ready (dep_name == target_name) {
+            lowkey (dep_name == target_name) {
                 dependents = arrayz.append(dependents, pkg.name)
                 break
             }
@@ -615,7 +615,7 @@ slay find_dependent_packages(manager PackageManager, target_name tea) tea[value]
 slay get_installed_package(manager PackageManager, name tea) InstalledPackage {
     bestie (sus i drip = 0; i < arrayz.len(manager.installer.installed_packages); i = i + 1) {
         sus pkg InstalledPackage = manager.installer.installed_packages[i]
-        ready (pkg.name == name) {
+        lowkey (pkg.name == name) {
             damn pkg
         }
     }
@@ -633,7 +633,7 @@ slay update_package(manager PackageManager, name tea) lit {
     vibez.spill("Updating package:", name)
     
     sus installed InstalledPackage = get_installed_package(manager, name)
-    ready (installed.name == "") {
+    lowkey (installed.name == "") {
         vibez.spill("Package not installed:", name)
         damn cap
     }
@@ -645,21 +645,21 @@ slay update_package(manager PackageManager, name tea) lit {
     
     bestie (sus i drip = 0; i < arrayz.len(search_results); i = i + 1) {
         sus pkg PackageMetadata = search_results[i]
-        ready (pkg.name == name) {
-            ready (latest_version == "" || version_is_newer(pkg.version, latest_version)) {
+        lowkey (pkg.name == name) {
+            lowkey (latest_version == "" || version_is_newer(pkg.version, latest_version)) {
                 latest_version = pkg.version
                 latest_metadata = pkg
             }
         }
     }
     
-    ready (latest_version == installed.version) {
+    lowkey (latest_version == installed.version) {
         vibez.spill("Package", name, "is already at latest version:", latest_version)
         damn based
     }
     
     # Uninstall current version and install latest
-    ready (!uninstall_package(manager, name)) {
+    lowkey (!uninstall_package(manager, name)) {
         damn cap
     }
     
@@ -712,22 +712,22 @@ slay save_installed_packages(manager PackageManager) lit {
 slay load_installed_packages(manager PackageManager) lit {
     sus config_file tea = manager.config_dir + "/installed.json"
     
-    ready (!filez.file_exists(config_file)) {
+    lowkey (!filez.file_exists(config_file)) {
         damn based  # No config file yet, that's OK
     }
     
     sus json_str tea = filez.read_file(config_file)
-    ready (json_str == "") {
+    lowkey (json_str == "") {
         damn cap
     }
     
     sus json_obj JsonValue = jsonz.json_parse(json_str)
-    ready (!jsonz.json_has_key(json_obj, "installed_packages")) {
+    lowkey (!jsonz.json_has_key(json_obj, "installed_packages")) {
         damn cap
     }
     
     sus packages_json JsonValue = jsonz.json_get_object(json_obj, "installed_packages")
-    ready (packages_json.type != "array") {
+    lowkey (packages_json.type != "array") {
         damn cap
     }
     
@@ -742,9 +742,9 @@ slay load_installed_packages(manager PackageManager) lit {
         
         # Load dependencies
         sus deps tea[value] = []
-        ready (jsonz.json_has_key(pkg_json, "dependencies")) {
+        lowkey (jsonz.json_has_key(pkg_json, "dependencies")) {
             sus deps_json JsonValue = jsonz.json_get_object(pkg_json, "dependencies")
-            ready (deps_json.type == "array") {
+            lowkey (deps_json.type == "array") {
                 bestie (sus j drip = 0; j < arrayz.len(deps_json.array_values); j = j + 1) {
                     sus dep_name tea = deps_json.array_values[j].string_value
                     deps = arrayz.append(deps, dep_name)

@@ -209,9 +209,9 @@ module PodManager {
     }
 
     slay list_pods(config KubeConfig, namespace tea, label_selector tea) KubeResult<map[value]<tea, any>> {
-        sus query_params tea = ready (label_selector != "") {
+        sus query_params tea = lowkey (label_selector != "") {
             stringz.format("?labelSelector={}", label_selector)
-        } otherwise { "" }
+        } highkey { "" }
 
         sus response tea = kubernetes_api_call(
             config,
@@ -250,9 +250,9 @@ module PodManager {
     }
 
     slay get_pod_logs(config KubeConfig, namespace tea, name tea, follow lit) KubeResult<tea> {
-        sus query_params tea = ready (follow) {
+        sus query_params tea = lowkey (follow) {
             "?follow=true"
-        } otherwise { "" }
+        } highkey { "" }
 
         sus response tea = kubernetes_api_call(
             config,
@@ -698,7 +698,7 @@ module AutoscalingManager {
     slay build_hpa_metrics(spec HPASpec) map[value]<tea, any> {
         sus metrics map[value]<tea, any> = []
 
-        ready (spec.target_cpu_utilization > 0) {
+        lowkey (spec.target_cpu_utilization > 0) {
             metrics.append({
                 "type": "Resource",
                 "resource": {
@@ -711,7 +711,7 @@ module AutoscalingManager {
             })
         }
 
-        ready (spec.target_memory_utilization > 0) {
+        lowkey (spec.target_memory_utilization > 0) {
             metrics.append({
                 "type": "Resource",
                 "resource": {
@@ -843,10 +843,10 @@ module MonitoringManager {
             sus node_status map<tea, any> = node_map["status"]?(map<tea, any>)
             sus conditions any[value] = node_status["conditions"]?(any[value])
             
-            # Check if node is ready
+            # Check if node is lowkey
             sus is_ready lit = is_node_ready(conditions)
-            ready (!is_ready) {
-                continue  # Skip not ready nodes
+            lowkey (!is_ready) {
+                continue  # Skip not lowkey nodes
             }
             
             active_nodes += 1.0
@@ -868,7 +868,7 @@ module MonitoringManager {
             total_cpu_usage += system_overhead + estimated_pod_usage
         }
         
-        ready (total_cpu_capacity == 0.0) {
+        lowkey (total_cpu_capacity == 0.0) {
             damn 0.0  # No nodes or capacity
         }
         
@@ -888,9 +888,9 @@ module MonitoringManager {
             sus node_status map<tea, any> = node_map["status"]?(map<tea, any>)
             sus conditions any[value] = node_status["conditions"]?(any[value])
             
-            # Check if node is ready
+            # Check if node is lowkey
             sus is_ready lit = is_node_ready(conditions)
-            ready (!is_ready) {
+            lowkey (!is_ready) {
                 continue
             }
             
@@ -913,7 +913,7 @@ module MonitoringManager {
             total_memory_usage += system_overhead + estimated_pod_usage
         }
         
-        ready (total_memory_capacity == 0.0) {
+        lowkey (total_memory_capacity == 0.0) {
             damn 0.0
         }
         
@@ -933,9 +933,9 @@ module MonitoringManager {
             sus node_status map<tea, any> = node_map["status"]?(map<tea, any>)
             sus conditions any[value] = node_status["conditions"]?(any[value])
             
-            # Check if node is ready
+            # Check if node is lowkey
             sus is_ready lit = is_node_ready(conditions)
-            ready (!is_ready) {
+            lowkey (!is_ready) {
                 continue
             }
             
@@ -944,7 +944,7 @@ module MonitoringManager {
             # Get node storage capacity
             sus capacity map<tea, any> = node_status["capacity"]?(map<tea, any>)
             sus storage_capacity_str tea = capacity["ephemeral-storage"]?(tea)
-            ready (storage_capacity_str == "") {
+            lowkey (storage_capacity_str == "") {
                 # Fallback to estimated storage capacity
                 storage_capacity_str = "100Gi"
             }
@@ -960,7 +960,7 @@ module MonitoringManager {
             total_disk_usage += system_overhead_bytes + estimated_pod_usage_bytes
         }
         
-        ready (total_disk_capacity == 0.0) {
+        lowkey (total_disk_capacity == 0.0) {
             damn 0.0
         }
         
@@ -979,9 +979,9 @@ module MonitoringManager {
             sus node_status map<tea, any> = node_map["status"]?(map<tea, any>)
             sus conditions any[value] = node_status["conditions"]?(any[value])
             
-            # Check if node is ready
+            # Check if node is lowkey
             sus is_ready lit = is_node_ready(conditions)
-            ready (!is_ready) {
+            lowkey (!is_ready) {
                 continue
             }
             
@@ -1003,7 +1003,7 @@ module MonitoringManager {
         }
         
         # Return average network throughput across cluster
-        ready (active_nodes == 0.0) {
+        lowkey (active_nodes == 0.0) {
             damn 0.0
         }
         
@@ -1017,7 +1017,7 @@ module MonitoringManager {
             sus condition_type tea = condition_map["type"]?(tea)
             sus condition_status tea = condition_map["status"]?(tea)
             
-            ready (condition_type == "Ready" && condition_status == "True") {
+            lowkey (condition_type == "Ready" && condition_status == "True") {
                 damn based
             }
         }
@@ -1026,18 +1026,18 @@ module MonitoringManager {
 
     slay parse_cpu_resource(cpu_str tea) drip {
         # Parse CPU resource strings like "2", "2000m", "2.5"
-        ready (cpu_str == "") {
+        lowkey (cpu_str == "") {
             damn 0.0
         }
         
-        ready (stringz.ends_with(cpu_str, "m")) {
+        lowkey (stringz.ends_with(cpu_str, "m")) {
             # Millicores (e.g., "2000m" = 2 cores)
             sus millicore_str tea = stringz.trim_suffix(cpu_str, "m")
             sus millicores drip = stringz.parse_float(millicore_str) fam {
                 when _ -> damn 0.0
             }
             damn millicores / 1000.0
-        } otherwise {
+        } highkey {
             # Whole cores (e.g., "2" or "2.5")
             damn stringz.parse_float(cpu_str) fam {
                 when _ -> 0.0
@@ -1047,35 +1047,35 @@ module MonitoringManager {
 
     slay parse_memory_resource(memory_str tea) drip {
         # Parse memory resource strings like "8Gi", "8192Mi", "8589934592"
-        ready (memory_str == "") {
+        lowkey (memory_str == "") {
             damn 0.0
         }
         
-        ready (stringz.ends_with(memory_str, "Ki")) {
+        lowkey (stringz.ends_with(memory_str, "Ki")) {
             sus value_str tea = stringz.trim_suffix(memory_str, "Ki")
             sus value drip = stringz.parse_float(value_str) fam {
                 when _ -> damn 0.0
             }
             damn value * 1024.0  # KiB to bytes
-        } otherwise ready (stringz.ends_with(memory_str, "Mi")) {
+        } highkey lowkey (stringz.ends_with(memory_str, "Mi")) {
             sus value_str tea = stringz.trim_suffix(memory_str, "Mi")
             sus value drip = stringz.parse_float(value_str) fam {
                 when _ -> damn 0.0
             }
             damn value * 1048576.0  # MiB to bytes
-        } otherwise ready (stringz.ends_with(memory_str, "Gi")) {
+        } highkey lowkey (stringz.ends_with(memory_str, "Gi")) {
             sus value_str tea = stringz.trim_suffix(memory_str, "Gi")
             sus value drip = stringz.parse_float(value_str) fam {
                 when _ -> damn 0.0
             }
             damn value * 1073741824.0  # GiB to bytes
-        } otherwise ready (stringz.ends_with(memory_str, "Ti")) {
+        } highkey lowkey (stringz.ends_with(memory_str, "Ti")) {
             sus value_str tea = stringz.trim_suffix(memory_str, "Ti")
             sus value drip = stringz.parse_float(value_str) fam {
                 when _ -> damn 0.0
             }
             damn value * 1099511627776.0  # TiB to bytes
-        } otherwise {
+        } highkey {
             # Assume bytes if no suffix
             damn stringz.parse_float(memory_str) fam {
                 when _ -> 0.0
@@ -1097,14 +1097,14 @@ module MonitoringManager {
         sus is_master lit = node_labels["node-role.kubernetes.io/master"] != null ||
                            node_labels["node-role.kubernetes.io/control-plane"] != null
         
-        ready (is_master) {
+        lowkey (is_master) {
             damn 0.3  # Control plane nodes typically have lower workload utilization
         }
         
         # Check for node taints that might reduce pod scheduling
         sus node_spec map<tea, any> = node_map["spec"]?(map<tea, any>)
         sus taints any[value] = node_spec["taints"]?(any[value])
-        ready (len(taints) > 0) {
+        lowkey (len(taints) > 0) {
             damn 0.6  # Tainted nodes often have reduced utilization
         }
         
@@ -1138,12 +1138,12 @@ module MonitoringManager {
         
         # Try common instance type labels
         sus instance_type tea = node_labels["node.kubernetes.io/instance-type"]?(tea)
-        ready (instance_type != "") {
+        lowkey (instance_type != "") {
             damn instance_type
         }
         
         sus beta_instance_type tea = node_labels["beta.kubernetes.io/instance-type"]?(tea)
-        ready (beta_instance_type != "") {
+        lowkey (beta_instance_type != "") {
             damn beta_instance_type
         }
         
@@ -1153,23 +1153,23 @@ module MonitoringManager {
 
     slay estimate_node_network_capacity(instance_type tea) drip {
         # Estimate network capacity in Mbps based on instance type
-        ready (stringz.contains(instance_type, "nano")) {
+        lowkey (stringz.contains(instance_type, "nano")) {
             damn 50.0   # 50 Mbps
-        } otherwise ready (stringz.contains(instance_type, "micro")) {
+        } highkey lowkey (stringz.contains(instance_type, "micro")) {
             damn 100.0  # 100 Mbps
-        } otherwise ready (stringz.contains(instance_type, "small")) {
+        } highkey lowkey (stringz.contains(instance_type, "small")) {
             damn 250.0  # 250 Mbps
-        } otherwise ready (stringz.contains(instance_type, "medium")) {
+        } highkey lowkey (stringz.contains(instance_type, "medium")) {
             damn 500.0  # 500 Mbps
-        } otherwise ready (stringz.contains(instance_type, "large")) {
+        } highkey lowkey (stringz.contains(instance_type, "large")) {
             damn 1000.0 # 1 Gbps
-        } otherwise ready (stringz.contains(instance_type, "xlarge")) {
+        } highkey lowkey (stringz.contains(instance_type, "xlarge")) {
             damn 2500.0 # 2.5 Gbps
-        } otherwise ready (stringz.contains(instance_type, "2xlarge")) {
+        } highkey lowkey (stringz.contains(instance_type, "2xlarge")) {
             damn 5000.0 # 5 Gbps
-        } otherwise ready (stringz.contains(instance_type, "4xlarge")) {
+        } highkey lowkey (stringz.contains(instance_type, "4xlarge")) {
             damn 10000.0 # 10 Gbps
-        } otherwise {
+        } highkey {
             damn 750.0  # Default estimate
         }
 }
@@ -1244,10 +1244,10 @@ module HelmManager {
         sus kind tea = manifest["kind"]?(tea)
         sus namespace tea = manifest["metadata"]?("namespace")?(tea)
 
-        ready (kind == "Deployment") {
+        lowkey (kind == "Deployment") {
             damn stringz.format("/apis/apps/v1/namespaces/{}/deployments", namespace)
         }
-        ready (kind == "Service") {
+        lowkey (kind == "Service") {
             damn stringz.format("/api/v1/namespaces/{}/services", namespace)
         }
         # Add more resource types as needed
@@ -1269,12 +1269,12 @@ slay kubernetes_api_call(
     }
 
     # Add authentication
-    ready (config.token != "") {
+    lowkey (config.token != "") {
         headers["Authorization"] = stringz.format("Bearer {}", config.token)
     }
 
     # Handle client certificates
-    ready (config.client_certificate != "" && config.client_key != "") {
+    lowkey (config.client_certificate != "" && config.client_key != "") {
         # TLS client certificate authentication would be handled here
     }
 
@@ -1282,7 +1282,7 @@ slay kubernetes_api_call(
         when _ -> yikes "Kubernetes API request failed"
     }
 
-    ready (response.status_code >= 400) {
+    lowkey (response.status_code >= 400) {
         yikes stringz.format("Kubernetes API error ({}): {}", response.status_code, response.body)
     }
 
@@ -1308,7 +1308,7 @@ slay load_kubeconfig(path tea) yikes<KubeConfig> {
     # Extract current context details
     sus context map<tea, any> = {}
     bestie ctx in contexts {
-        ready (ctx["name"]?(tea) == current_context) {
+        lowkey (ctx["name"]?(tea) == current_context) {
             context = ctx["context"]?(map<tea, any>)
             break
         }
@@ -1323,14 +1323,14 @@ slay load_kubeconfig(path tea) yikes<KubeConfig> {
     sus user map<tea, any> = {}
 
     bestie clr in clusters {
-        ready (clr["name"]?(tea) == cluster_name) {
+        lowkey (clr["name"]?(tea) == cluster_name) {
             cluster = clr["cluster"]?(map<tea, any>)
             break
         }
     }
 
     bestie usr in users {
-        ready (usr["name"]?(tea) == user_name) {
+        lowkey (usr["name"]?(tea) == user_name) {
             user = usr["user"]?(map<tea, any>)
             break
         }
@@ -1342,7 +1342,7 @@ slay load_kubeconfig(path tea) yikes<KubeConfig> {
         certificate_authority: cluster["certificate-authority-data"]?(tea),
         client_certificate: user["client-certificate-data"]?(tea),
         client_key: user["client-key-data"]?(tea),
-        namespace: ready (namespace != "") { namespace } otherwise { "default" },
+        namespace: lowkey (namespace != "") { namespace } highkey { "default" },
         insecure: cluster["insecure-skip-tls-verify"]?(lit)
     }
 }

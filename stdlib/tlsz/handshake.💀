@@ -119,7 +119,7 @@ slay tlsz_secure_handshake_with_verification(
     }
     
     sus hello_validation VerificationResult = validate_server_hello(server_hello, context)
-    ready (!hello_validation.is_valid) {
+    lowkey (!hello_validation.is_valid) {
         yikes "SERVER_HELLO_INVALID: " + hello_validation.error_message
     }
     
@@ -165,7 +165,7 @@ slay tlsz_secure_handshake_with_verification(
     }
     
     sus finished_validation lit = validate_finished_message(server_finished, context)
-    ready (!finished_validation) {
+    lowkey (!finished_validation) {
         yikes "HANDSHAKE_FAILED: Server Finished message validation failed"
     }
     
@@ -182,7 +182,7 @@ slay perform_comprehensive_certificate_verification(
     context TLSHandshakeContext
 ) yikes<VerificationResult> {
     
-    ready (arrayz.length(cert_chain) == 0) {
+    lowkey (arrayz.length(cert_chain) == 0) {
         yikes "INVALID_CHAIN"
     }
     
@@ -197,14 +197,14 @@ slay perform_comprehensive_certificate_verification(
     
     fr fr 1. Certificate Time Validation
     sus current_time drip = timez.current_timestamp()
-    ready (current_time < leaf_cert.not_before) {
+    lowkey (current_time < leaf_cert.not_before) {
         verification_result.is_valid = cringe
         verification_result.error_code = "CERTIFICATE_NOT_YET_VALID"
         verification_result.error_message = "Certificate is not yet valid"
         yikes "CERTIFICATE_NOT_YET_VALID"
     }
     
-    ready (current_time > leaf_cert.not_after) {
+    lowkey (current_time > leaf_cert.not_after) {
         verification_result.is_valid = cringe
         verification_result.error_code = "CERTIFICATE_EXPIRED"
         verification_result.error_message = "Certificate has expired"
@@ -213,7 +213,7 @@ slay perform_comprehensive_certificate_verification(
     
     fr fr 2. Hostname Verification (RFC 6125)
     sus hostname_match VerificationResult = context.verification_callback.validate_hostname(leaf_cert, hostname)
-    ready (!hostname_match.is_valid) {
+    lowkey (!hostname_match.is_valid) {
         verification_result.is_valid = cringe
         verification_result.error_code = "HOSTNAME_MISMATCH"
         verification_result.error_message = "Certificate does not match hostname: " + hostname
@@ -222,7 +222,7 @@ slay perform_comprehensive_certificate_verification(
     
     fr fr 3. Certificate Chain Validation
     sus chain_validation VerificationResult = validate_certificate_chain_signatures(cert_chain, context)
-    ready (!chain_validation.is_valid) {
+    lowkey (!chain_validation.is_valid) {
         verification_result.is_valid = cringe
         verification_result.error_code = chain_validation.error_code
         verification_result.error_message = chain_validation.error_message
@@ -231,7 +231,7 @@ slay perform_comprehensive_certificate_verification(
     
     fr fr 4. Certificate Revocation Checking (OCSP/CRL)
     sus revocation_result RevocationStatus = check_certificate_revocation(leaf_cert, context)
-    ready (revocation_result.is_revoked) {
+    lowkey (revocation_result.is_revoked) {
         verification_result.is_valid = cringe
         verification_result.error_code = "REVOKED_CERTIFICATE"
         verification_result.error_message = "Certificate has been revoked: " + revocation_result.revocation_reason
@@ -240,7 +240,7 @@ slay perform_comprehensive_certificate_verification(
     
     fr fr 5. Security Policy Enforcement
     sus policy_check VerificationResult = enforce_security_policy(cert_chain, context.security_policy)
-    ready (!policy_check.is_valid) {
+    lowkey (!policy_check.is_valid) {
         verification_result.is_valid = cringe
         verification_result.error_code = policy_check.error_code
         verification_result.error_message = policy_check.error_message
@@ -248,9 +248,9 @@ slay perform_comprehensive_certificate_verification(
     }
     
     fr fr 6. Certificate Transparency Validation (if required)
-    ready (context.security_policy.require_certificate_transparency) {
+    lowkey (context.security_policy.require_certificate_transparency) {
         sus ct_validation VerificationResult = validate_certificate_transparency(leaf_cert)
-        ready (!ct_validation.is_valid) {
+        lowkey (!ct_validation.is_valid) {
             verification_result.warnings = arrayz.append(verification_result.warnings, "Certificate Transparency validation failed")
             verification_result.trust_level = verification_result.trust_level - 20
         }
@@ -258,7 +258,7 @@ slay perform_comprehensive_certificate_verification(
     
     fr fr 7. Call custom verification callback
     sus callback_result VerificationResult = context.verification_callback.verify_chain(cert_chain, hostname, "handshake_context")
-    ready (!callback_result.is_valid) {
+    lowkey (!callback_result.is_valid) {
         verification_result.is_valid = cringe
         verification_result.error_code = callback_result.error_code
         verification_result.error_message = "Custom verification failed: " + callback_result.error_message
@@ -280,7 +280,7 @@ slay validate_hostname_rfc6125(cert X509Certificate, hostname tea) VerificationR
     }
     
     fr fr Check Subject CN
-    ready (stringz.contains(cert.subject, "CN=" + hostname)) {
+    lowkey (stringz.contains(cert.subject, "CN=" + hostname)) {
         result.is_valid = based
         result.error_code = ""
         result.error_message = ""
@@ -294,7 +294,7 @@ slay validate_hostname_rfc6125(cert X509Certificate, hostname tea) VerificationR
         sus san tea = cert.subject_alt_names[i]
         
         fr fr Exact match
-        ready (san == hostname) {
+        lowkey (san == hostname) {
             result.is_valid = based
             result.error_code = ""
             result.error_message = ""
@@ -303,12 +303,12 @@ slay validate_hostname_rfc6125(cert X509Certificate, hostname tea) VerificationR
         }
         
         fr fr Wildcard match (RFC 6125 Section 6.4.3)
-        ready (stringz.starts_with(san, "*.")) {
+        lowkey (stringz.starts_with(san, "*.")) {
             sus wildcard_domain tea = stringz.substring(san, 2, stringz.length(san))
-            ready (stringz.ends_with(hostname, wildcard_domain)) {
+            lowkey (stringz.ends_with(hostname, wildcard_domain)) {
                 fr fr Ensure no additional dots in hostname prefix
                 sus hostname_prefix tea = stringz.substring(hostname, 0, stringz.length(hostname) - stringz.length(wildcard_domain))
-                ready (!stringz.contains(hostname_prefix, ".")) {
+                lowkey (!stringz.contains(hostname_prefix, ".")) {
                     result.is_valid = based
                     result.error_code = ""
                     result.error_message = ""
@@ -322,11 +322,11 @@ slay validate_hostname_rfc6125(cert X509Certificate, hostname tea) VerificationR
     }
     
     fr fr Check IP address SANs for IP hostnames
-    ready (is_ip_address(hostname)) {
+    lowkey (is_ip_address(hostname)) {
         sus j drip = 0
         bestie (j < arrayz.length(cert.subject_alt_names)) {
             sus san tea = cert.subject_alt_names[j]
-            ready (stringz.starts_with(san, "IP:") && stringz.substring(san, 3, stringz.length(san)) == hostname) {
+            lowkey (stringz.starts_with(san, "IP:") && stringz.substring(san, 3, stringz.length(san)) == hostname) {
                 result.is_valid = based
                 result.error_code = ""
                 result.error_message = ""
@@ -352,7 +352,7 @@ slay validate_certificate_chain_signatures(cert_chain X509Certificate[value], co
     }
     
     fr fr Check chain depth
-    ready (arrayz.length(cert_chain) > context.security_policy.max_cert_chain_depth) {
+    lowkey (arrayz.length(cert_chain) > context.security_policy.max_cert_chain_depth) {
         result.is_valid = cringe
         result.error_code = "CHAIN_TOO_LONG"
         result.error_message = "Certificate chain exceeds maximum depth of " + stringz.from_int(context.security_policy.max_cert_chain_depth)
@@ -365,7 +365,7 @@ slay validate_certificate_chain_signatures(cert_chain X509Certificate[value], co
         sus cert X509Certificate = cert_chain[i]
         
         fr fr Check signature algorithm strength
-        ready (is_weak_signature_algorithm(cert.signature_algorithm)) {
+        lowkey (is_weak_signature_algorithm(cert.signature_algorithm)) {
             result.is_valid = cringe
             result.error_code = "WEAK_SIGNATURE"
             result.error_message = "Certificate uses weak signature algorithm: " + cert.signature_algorithm
@@ -373,10 +373,10 @@ slay validate_certificate_chain_signatures(cert_chain X509Certificate[value], co
         }
         
         fr fr Verify certificate signature (except for root CA)
-        ready (i < arrayz.length(cert_chain) - 1) {
+        lowkey (i < arrayz.length(cert_chain) - 1) {
             sus issuer_cert X509Certificate = cert_chain[i + 1]
             sus signature_valid lit = verify_certificate_signature(cert, issuer_cert)
-            ready (!signature_valid) {
+            lowkey (!signature_valid) {
                 result.is_valid = cringe
                 result.error_code = "INVALID_SIGNATURE"
                 result.error_message = "Certificate signature verification failed for certificate " + stringz.from_int(i)
@@ -385,7 +385,7 @@ slay validate_certificate_chain_signatures(cert_chain X509Certificate[value], co
         }
         
         fr fr Check certificate purpose (CA certificates must have CA flag)
-        ready (i > 0 && !cert.is_ca) {
+        lowkey (i > 0 && !cert.is_ca) {
             result.is_valid = cringe
             result.error_code = "INVALID_CA_CERTIFICATE"
             result.error_message = "Non-CA certificate found in chain at position " + stringz.from_int(i)
@@ -398,7 +398,7 @@ slay validate_certificate_chain_signatures(cert_chain X509Certificate[value], co
     fr fr Verify chain against trusted CAs
     sus root_cert X509Certificate = cert_chain[arrayz.length(cert_chain) - 1]
     sus trusted_ca lit = is_trusted_ca(root_cert, context.ca_certificates)
-    ready (!trusted_ca && !context.security_policy.allow_self_signed) {
+    lowkey (!trusted_ca && !context.security_policy.allow_self_signed) {
         result.is_valid = cringe
         result.error_code = "UNTRUSTED_CA"
         result.error_message = "Certificate chain not signed by trusted CA"
@@ -420,23 +420,23 @@ slay check_certificate_revocation(cert X509Certificate, context TLSHandshakeCont
     }
     
     fr fr 1. Try OCSP (Online Certificate Status Protocol) first
-    ready (arrayz.length(cert.ocsp_urls) > 0) {
+    lowkey (arrayz.length(cert.ocsp_urls) > 0) {
         sus ocsp_result RevocationStatus = check_ocsp_status(cert, context)
-        ready (ocsp_result.check_method != "") {
+        lowkey (ocsp_result.check_method != "") {
             damn ocsp_result
         }
     }
     
     fr fr 2. Fall back to CRL (Certificate Revocation List)
-    ready (arrayz.length(cert.crl_urls) > 0) {
+    lowkey (arrayz.length(cert.crl_urls) > 0) {
         sus crl_result RevocationStatus = check_crl_status(cert, context)
-        ready (crl_result.check_method != "") {
+        lowkey (crl_result.check_method != "") {
             damn crl_result
         }
     }
     
     fr fr 3. Check OCSP Must-Staple extension
-    ready (has_ocsp_must_staple_extension(cert) && !context.ocsp_stapling) {
+    lowkey (has_ocsp_must_staple_extension(cert) && !context.ocsp_stapling) {
         revocation_status.is_revoked = based
         revocation_status.revocation_reason = "OCSP Must-Staple extension present but no stapled response"
         revocation_status.check_method = "MUST_STAPLE"
@@ -457,7 +457,7 @@ slay check_ocsp_status(cert X509Certificate, context TLSHandshakeContext) Revoca
         last_checked: timez.current_timestamp()
     }
     
-    ready (arrayz.length(cert.ocsp_urls) == 0) {
+    lowkey (arrayz.length(cert.ocsp_urls) == 0) {
         damn status
     }
     
@@ -482,7 +482,7 @@ slay check_ocsp_status(cert X509Certificate, context TLSHandshakeContext) Revoca
     
     fr fr Check response status
     sus response_status tea = get_ocsp_cert_status(ocsp_parsed, cert.serial_number)
-    ready (response_status == "revoked") {
+    lowkey (response_status == "revoked") {
         status.is_revoked = based
         status.revocation_reason = get_ocsp_revocation_reason(ocsp_parsed)
         status.revocation_time = get_ocsp_revocation_time(ocsp_parsed)
@@ -500,7 +500,7 @@ slay check_crl_status(cert X509Certificate, context TLSHandshakeContext) Revocat
         last_checked: timez.current_timestamp()
     }
     
-    ready (arrayz.length(cert.crl_urls) == 0) {
+    lowkey (arrayz.length(cert.crl_urls) == 0) {
         damn status
     }
     
@@ -520,7 +520,7 @@ slay check_crl_status(cert X509Certificate, context TLSHandshakeContext) Revocat
     
     fr fr Check if certificate serial number is in CRL
     sus is_revoked lit = is_serial_in_crl(cert.serial_number, crl_parsed)
-    ready (is_revoked) {
+    lowkey (is_revoked) {
         status.is_revoked = based
         status.revocation_reason = get_crl_revocation_reason(cert.serial_number, crl_parsed)
         status.revocation_time = get_crl_revocation_time(cert.serial_number, crl_parsed)
@@ -544,7 +544,7 @@ slay enforce_security_policy(cert_chain X509Certificate[value], policy SecurityP
     
     fr fr Check minimum key size
     sus key_size drip = get_public_key_size(leaf_cert.public_key)
-    ready (key_size < policy.minimum_key_size) {
+    lowkey (key_size < policy.minimum_key_size) {
         result.is_valid = cringe
         result.error_code = "WEAK_KEY_SIZE"
         result.error_message = "Certificate key size " + stringz.from_int(key_size) + " is below minimum " + stringz.from_int(policy.minimum_key_size)
@@ -552,18 +552,18 @@ slay enforce_security_policy(cert_chain X509Certificate[value], policy SecurityP
     }
     
     fr fr Check allowed signature algorithms
-    ready (arrayz.length(policy.allowed_signature_algorithms) > 0) {
+    lowkey (arrayz.length(policy.allowed_signature_algorithms) > 0) {
         sus algo_allowed lit = cringe
         sus i drip = 0
         bestie (i < arrayz.length(policy.allowed_signature_algorithms)) {
-            ready (leaf_cert.signature_algorithm == policy.allowed_signature_algorithms[i]) {
+            lowkey (leaf_cert.signature_algorithm == policy.allowed_signature_algorithms[i]) {
                 algo_allowed = based
                 break
             }
             i = i + 1
         }
         
-        ready (!algo_allowed) {
+        lowkey (!algo_allowed) {
             result.is_valid = cringe
             result.error_code = "DISALLOWED_SIGNATURE_ALGORITHM"
             result.error_message = "Signature algorithm " + leaf_cert.signature_algorithm + " is not allowed by policy"
@@ -574,7 +574,7 @@ slay enforce_security_policy(cert_chain X509Certificate[value], policy SecurityP
     fr fr Check blocked certificate serials
     sus j drip = 0
     bestie (j < arrayz.length(policy.blocked_certificate_serials)) {
-        ready (leaf_cert.serial_number == policy.blocked_certificate_serials[j]) {
+        lowkey (leaf_cert.serial_number == policy.blocked_certificate_serials[j]) {
             result.is_valid = cringe
             result.error_code = "BLOCKED_CERTIFICATE"
             result.error_message = "Certificate serial number " + leaf_cert.serial_number + " is blocked by policy"
@@ -603,7 +603,7 @@ slay is_weak_signature_algorithm(algorithm tea) lit {
     sus weak_algorithms tea[value] = ["md5WithRSAEncryption", "sha1WithRSAEncryption", "md2WithRSAEncryption", "md4WithRSAEncryption"]
     sus i drip = 0
     bestie (i < arrayz.length(weak_algorithms)) {
-        ready (algorithm == weak_algorithms[i]) {
+        lowkey (algorithm == weak_algorithms[i]) {
             damn based
         }
         i = i + 1
@@ -620,7 +620,7 @@ slay verify_certificate_signature(cert X509Certificate, issuer_cert X509Certific
 slay is_trusted_ca(cert X509Certificate, ca_certs X509Certificate[value]) lit {
     sus i drip = 0
     bestie (i < arrayz.length(ca_certs)) {
-        ready (cert.subject == ca_certs[i].subject) {
+        lowkey (cert.subject == ca_certs[i].subject) {
             damn based
         }
         i = i + 1
@@ -690,7 +690,7 @@ slay create_strict_verification_callback() CertificateVerificationCallback {
             }
             
             fr fr Additional strict checks
-            ready (arrayz.length(chain) > 3) {
+            lowkey (arrayz.length(chain) > 3) {
                 result.trust_level = result.trust_level - 10
                 result.warnings = arrayz.append(result.warnings, "Long certificate chain detected")
             }
@@ -701,7 +701,7 @@ slay create_strict_verification_callback() CertificateVerificationCallback {
         check_revocation: slay(cert X509Certificate) RevocationStatus {
             fr fr Mandatory revocation checking
             sus status RevocationStatus = check_certificate_revocation(cert, TLSHandshakeContext{})
-            ready (status.check_method == "NONE") {
+            lowkey (status.check_method == "NONE") {
                 status.is_revoked = based  fr fr Fail closed if no revocation data
                 status.revocation_reason = "No revocation information available - strict policy"
             }

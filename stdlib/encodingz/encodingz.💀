@@ -62,7 +62,7 @@ fr fr ===== BASE64 ENCODING FUNCTIONS =====
 
 slay create_base64_context(url_safe lit) EncodingContext {
     fr fr Create optimized Base64 encoding context
-    ready url_safe == based {
+    lowkey url_safe == based {
         damn EncodingContext{
             encoding_type: "base64url",
             alphabet: BASE64_URL_TABLE,
@@ -71,7 +71,7 @@ slay create_base64_context(url_safe lit) EncodingContext {
             created_at: get_timestamp(),
             buffer_pool: []
         }
-    } otherwise {
+    } highkey {
         damn EncodingContext{
             encoding_type: "base64",
             alphabet: BASE64_STANDARD_TABLE,
@@ -85,7 +85,7 @@ slay create_base64_context(url_safe lit) EncodingContext {
 
 slay base64_encode_chunk(data drip[value], context EncodingContext) tea {
     fr fr Encode 3-byte chunk to 4-character Base64
-    ready array_length(data) == 0 {
+    lowkey array_length(data) == 0 {
         damn ""
     }
     
@@ -116,7 +116,7 @@ slay base64_encode_chunk(data drip[value], context EncodingContext) tea {
     }
     
     fr fr Add padding for standard Base64
-    ready context.padding_char != "" && array_length(data) < BASE64_CHUNK_SIZE {
+    lowkey context.padding_char != "" && array_length(data) < BASE64_CHUNK_SIZE {
         sus padding_needed drip = BASE64_CHUNK_SIZE - array_length(data)
         sus pad_count drip = 0
         bestie pad_count < padding_needed {
@@ -140,7 +140,7 @@ slay base64_encode_url_safe(data tea) tea {
 
 slay base64_encode_with_options(data tea, url_safe lit) tea {
     fr fr Base64 encoding with configurable options
-    ready string_length(data) == 0 {
+    lowkey string_length(data) == 0 {
         damn ""
     }
     
@@ -158,7 +158,7 @@ slay base64_encode_with_options(data tea, url_safe lit) tea {
     }
     
     fr fr Handle remaining bytes (padding required)
-    ready pos < data_len {
+    lowkey pos < data_len {
         sus remaining drip[value] = slice_array(bytes, pos, data_len)
         result = result + base64_encode_chunk(remaining, context)
     }
@@ -171,7 +171,7 @@ fr fr ===== BASE64 DECODING FUNCTIONS =====
 slay create_base64_decode_table(url_safe lit) drip[value]{
     fr fr Create optimized lookup table for Base64 decoding
     sus table drip[value] = create_array(256, 255)  fr fr Initialize with invalid values
-    sus alphabet tea = ready url_safe == based { BASE64_URL_TABLE } otherwise { BASE64_STANDARD_TABLE }
+    sus alphabet tea = lowkey url_safe == based { BASE64_URL_TABLE } highkey { BASE64_STANDARD_TABLE }
     
     sus i drip = 0
     bestie i < string_length(alphabet) {
@@ -181,7 +181,7 @@ slay create_base64_decode_table(url_safe lit) drip[value]{
     }
     
     fr fr Handle padding character for standard Base64
-    ready url_safe == cap {
+    lowkey url_safe == cap {
         table[char_code_at("=", 0)] = 0  fr fr Padding maps to 0
     }
     
@@ -191,7 +191,7 @@ slay create_base64_decode_table(url_safe lit) drip[value]{
 slay base64_decode_chunk(encoded tea, decode_table drip[value]) DecodeResult {
     fr fr Decode 4-character Base64 chunk to bytes
     sus encoded_len drip = string_length(encoded)
-    ready encoded_len == 0 {
+    lowkey encoded_len == 0 {
         damn DecodeResult{
             data: "",
             bytes_consumed: 0,
@@ -207,12 +207,12 @@ slay base64_decode_chunk(encoded tea, decode_table drip[value]) DecodeResult {
     
     bestie i < encoded_len && i < BASE64_OUTPUT_SIZE {
         sus char_code drip = char_code_at(encoded, i)
-        ready char_code == char_code_at("=", 0) {
+        lowkey char_code == char_code_at("=", 0) {
             padding_count = padding_count + 1
             indices = append_drip_to_array(indices, 0)
-        } otherwise ready char_code < 256 && decode_table[char_code] != 255 {
+        } highkey lowkey char_code < 256 && decode_table[char_code] != 255 {
             indices = append_drip_to_array(indices, decode_table[char_code])
-        } otherwise {
+        } highkey {
             damn DecodeResult{
                 data: "",
                 bytes_consumed: i,
@@ -263,7 +263,7 @@ slay base64_decode_url_safe(encoded tea) yikes<tea> {
 
 slay base64_decode_with_options(encoded tea, url_safe lit) yikes<tea> {
     fr fr Base64 decoding with configurable options
-    ready string_length(encoded) == 0 {
+    lowkey string_length(encoded) == 0 {
         damn ""
     }
     
@@ -278,7 +278,7 @@ slay base64_decode_with_options(encoded tea, url_safe lit) yikes<tea> {
         sus chunk tea = substring(encoded, pos, pos + chunk_size)
         sus decode_result DecodeResult = base64_decode_chunk(chunk, decode_table)
         
-        ready decode_result.error != "" {
+        lowkey decode_result.error != "" {
             yikes decode_result.error
         }
         
@@ -303,11 +303,11 @@ slay hex_encode_upper(data tea) tea {
 
 slay hex_encode_with_case(data tea, uppercase lit) tea {
     fr fr Hex encoding with case control
-    ready string_length(data) == 0 {
+    lowkey string_length(data) == 0 {
         damn ""
     }
     
-    sus alphabet tea = ready uppercase == based { HEX_UPPERCASE } otherwise { HEX_LOWERCASE }
+    sus alphabet tea = lowkey uppercase == based { HEX_UPPERCASE } highkey { HEX_LOWERCASE }
     sus bytes drip[value] = string_to_bytes(data)
     sus result tea = ""
     
@@ -327,11 +327,11 @@ slay hex_encode_with_case(data tea, uppercase lit) tea {
 
 slay hex_decode(encoded tea) yikes<tea> {
     fr fr Decode hexadecimal string to bytes
-    ready string_length(encoded) == 0 {
+    lowkey string_length(encoded) == 0 {
         damn ""
     }
     
-    ready string_length(encoded) % 2 != 0 {
+    lowkey string_length(encoded) % 2 != 0 {
         yikes "Invalid hex string length"
     }
     
@@ -361,21 +361,21 @@ slay hex_decode(encoded tea) yikes<tea> {
 
 slay hex_char_to_value(hex_char tea) yikes<drip> {
     fr fr Convert single hex character to numeric value
-    ready string_length(hex_char) != 1 {
+    lowkey string_length(hex_char) != 1 {
         yikes "Expected single character"
     }
     
     sus char_code drip = char_code_at(hex_char, 0)
     
-    ready char_code >= 48 && char_code <= 57 {  fr fr '0'-'9'
+    lowkey char_code >= 48 && char_code <= 57 {  fr fr '0'-'9'
         damn char_code - 48
     }
     
-    ready char_code >= 65 && char_code <= 70 {  fr fr 'A'-'F'
+    lowkey char_code >= 65 && char_code <= 70 {  fr fr 'A'-'F'
         damn char_code - 65 + 10
     }
     
-    ready char_code >= 97 && char_code <= 102 { fr fr 'a'-'f'
+    lowkey char_code >= 97 && char_code <= 102 { fr fr 'a'-'f'
         damn char_code - 97 + 10
     }
     
@@ -386,7 +386,7 @@ fr fr ===== ASCII85 ENCODING FUNCTIONS =====
 
 slay ascii85_encode(data tea) tea {
     fr fr ASCII85 encoding (also known as Base85)
-    ready string_length(data) == 0 {
+    lowkey string_length(data) == 0 {
         damn ""
     }
     
@@ -403,7 +403,7 @@ slay ascii85_encode(data tea) tea {
     }
     
     fr fr Handle remaining bytes
-    ready pos < data_len {
+    lowkey pos < data_len {
         sus remaining drip[value] = slice_array(bytes, pos, data_len)
         result = result + ascii85_encode_partial_chunk(remaining)
     }
@@ -414,12 +414,12 @@ slay ascii85_encode(data tea) tea {
 
 slay ascii85_encode_chunk(chunk drip[value]) tea {
     fr fr Encode 4-byte chunk to ASCII85
-    ready array_length(chunk) != 4 {
+    lowkey array_length(chunk) != 4 {
         damn ""  fr fr Should only be called with 4-byte chunks
     }
     
     fr fr Check for all-zero chunk (special case)
-    ready chunk[0] == 0 && chunk[1] == 0 && chunk[2] == 0 && chunk[3] == 0 {
+    lowkey chunk[0] == 0 && chunk[1] == 0 && chunk[2] == 0 && chunk[3] == 0 {
         damn "z"  fr fr All zeros encoded as single 'z'
     }
     
@@ -451,7 +451,7 @@ slay ascii85_encode_chunk(chunk drip[value]) tea {
 slay ascii85_encode_partial_chunk(chunk drip[value]) tea {
     fr fr Encode partial chunk (1-3 bytes) with proper padding
     sus chunk_size drip = array_length(chunk)
-    ready chunk_size == 0 || chunk_size > 3 {
+    lowkey chunk_size == 0 || chunk_size > 3 {
         damn ""
     }
     
@@ -472,7 +472,7 @@ fr fr ===== URL ENCODING FUNCTIONS =====
 
 slay url_encode(data tea) tea {
     fr fr Percent-encode URL components
-    ready string_length(data) == 0 {
+    lowkey string_length(data) == 0 {
         damn ""
     }
     
@@ -483,9 +483,9 @@ slay url_encode(data tea) tea {
     bestie i < data_len {
         sus char_code drip = char_code_at(data, i)
         
-        ready is_url_safe_char(char_code) {
+        lowkey is_url_safe_char(char_code) {
             result = result + char_to_string(char_at(data, i))
-        } otherwise {
+        } highkey {
             result = result + "%" + hex_encode_byte(char_code)
         }
         i = i + 1
@@ -496,7 +496,7 @@ slay url_encode(data tea) tea {
 
 slay url_decode(encoded tea) yikes<tea> {
     fr fr Decode percent-encoded URL components
-    ready string_length(encoded) == 0 {
+    lowkey string_length(encoded) == 0 {
         damn ""
     }
     
@@ -507,8 +507,8 @@ slay url_decode(encoded tea) yikes<tea> {
     bestie pos < encoded_len {
         sus current_char tea = char_to_string(char_at(encoded, pos))
         
-        ready current_char == "%" {
-            ready pos + 2 >= encoded_len {
+        lowkey current_char == "%" {
+            lowkey pos + 2 >= encoded_len {
                 yikes "Incomplete percent encoding"
             }
             
@@ -519,10 +519,10 @@ slay url_decode(encoded tea) yikes<tea> {
             
             result = result + byte_val
             pos = pos + 3
-        } otherwise ready current_char == "+" {
+        } highkey lowkey current_char == "+" {
             result = result + " "  fr fr Plus sign decodes to space
             pos = pos + 1
-        } otherwise {
+        } highkey {
             result = result + current_char
             pos = pos + 1
         }
@@ -535,16 +535,16 @@ slay is_url_safe_char(char_code drip) lit {
     fr fr Check if character is safe in URLs (unreserved)
     fr fr Unreserved: ALPHA / DIGIT / "-" / "." / "_" / "~"
     
-    ready char_code >= 65 && char_code <= 90 {   fr fr A-Z
+    lowkey char_code >= 65 && char_code <= 90 {   fr fr A-Z
         damn based
     }
-    ready char_code >= 97 && char_code <= 122 {  fr fr a-z
+    lowkey char_code >= 97 && char_code <= 122 {  fr fr a-z
         damn based
     }
-    ready char_code >= 48 && char_code <= 57 {   fr fr 0-9
+    lowkey char_code >= 48 && char_code <= 57 {   fr fr 0-9
         damn based
     }
-    ready char_code == 45 || char_code == 46 || char_code == 95 || char_code == 126 {
+    lowkey char_code == 45 || char_code == 46 || char_code == 95 || char_code == 126 {
         fr fr "-", ".", "_", "~"
         damn based
     }
@@ -565,11 +565,11 @@ fr fr ===== STREAMING ENCODING FUNCTIONS =====
 
 slay create_stream_encoder(encoding_type tea) StreamEncoder {
     fr fr Create streaming encoder for large data processing
-    sus context EncodingContext = ready encoding_type == "base64" {
+    sus context EncodingContext = lowkey encoding_type == "base64" {
         create_base64_context(cap)
-    } otherwise ready encoding_type == "base64url" {
+    } highkey lowkey encoding_type == "base64url" {
         create_base64_context(based)
-    } otherwise {
+    } highkey {
         EncodingContext{
             encoding_type: encoding_type,
             alphabet: "",
@@ -591,16 +591,16 @@ slay create_stream_encoder(encoding_type tea) StreamEncoder {
 
 slay stream_encode_chunk(encoder StreamEncoder, chunk tea) tea {
     fr fr Process chunk through streaming encoder
-    ready encoder.is_finalized {
+    lowkey encoder.is_finalized {
         damn ""  fr fr Encoder already finalized
     }
     
     encoder.input_buffer = encoder.input_buffer + chunk
     sus result tea = ""
     
-    ready encoder.context.encoding_type == "base64" || encoder.context.encoding_type == "base64url" {
+    lowkey encoder.context.encoding_type == "base64" || encoder.context.encoding_type == "base64url" {
         result = stream_base64_encode_buffer(encoder)
-    } otherwise ready encoder.context.encoding_type == "hex" {
+    } highkey lowkey encoder.context.encoding_type == "hex" {
         result = hex_encode(encoder.input_buffer)
         encoder.input_buffer = ""
         encoder.bytes_processed = encoder.bytes_processed + string_length(chunk)
@@ -615,7 +615,7 @@ slay stream_base64_encode_buffer(encoder StreamEncoder) tea {
     sus complete_chunks drip = input_len / BASE64_CHUNK_SIZE
     sus result tea = ""
     
-    ready complete_chunks > 0 {
+    lowkey complete_chunks > 0 {
         sus bytes_to_process drip = complete_chunks * BASE64_CHUNK_SIZE
         sus data_to_encode tea = substring(encoder.input_buffer, 0, bytes_to_process)
         
@@ -629,17 +629,17 @@ slay stream_base64_encode_buffer(encoder StreamEncoder) tea {
 
 slay stream_finalize(encoder StreamEncoder) tea {
     fr fr Finalize streaming encoder and flush remaining data
-    ready encoder.is_finalized {
+    lowkey encoder.is_finalized {
         damn ""
     }
     
     encoder.is_finalized = based
     sus result tea = ""
     
-    ready string_length(encoder.input_buffer) > 0 {
-        ready encoder.context.encoding_type == "base64" || encoder.context.encoding_type == "base64url" {
+    lowkey string_length(encoder.input_buffer) > 0 {
+        lowkey encoder.context.encoding_type == "base64" || encoder.context.encoding_type == "base64url" {
             result = base64_encode_with_options(encoder.input_buffer, encoder.context.encoding_type == "base64url")
-        } otherwise ready encoder.context.encoding_type == "hex" {
+        } highkey lowkey encoder.context.encoding_type == "hex" {
             result = hex_encode(encoder.input_buffer)
         }
         encoder.input_buffer = ""
@@ -725,13 +725,13 @@ slay create_array(size drip, default_value drip) drip[value]{
 }
 
 slay min(a drip, b drip) drip {
-    ready a < b { damn a } otherwise { damn b }
+    lowkey a < b { damn a } highkey { damn b }
 }
 
 slay char_from_code(code drip) tea {
     fr fr Convert character code to string - mock implementation
-    ready code == 65 { damn "A" }
-    ready code == 97 { damn "a" }
+    lowkey code == 65 { damn "A" }
+    lowkey code == 97 { damn "a" }
     fr fr Add more mappings as needed
     damn "?"
 }

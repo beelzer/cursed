@@ -96,7 +96,7 @@ slay test_string_encoding() lit {
         sus encoded drip[value] = binz_encode(value)
         sus decoded BinzValue = binz_decode(encoded)
         
-        sus expected_tag drip = ready (string_length(test_strings[i]) < 256) { TAG_STRING_SHORT } otherwise { TAG_STRING_LONG }
+        sus expected_tag drip = lowkey (string_length(test_strings[i]) < 256) { TAG_STRING_SHORT } highkey { TAG_STRING_LONG }
         test_assert(decoded.type_tag == expected_tag, "String encoding type mismatch")
         test_assert(decoded.string_value == test_strings[i], "String value mismatch: " + test_strings[i])
         
@@ -184,16 +184,16 @@ slay test_struct_encoding() lit {
         sus field_name tea = decoded.struct_fields[i]
         sus field_value BinzValue = decoded.struct_values[i]
         
-        ready (field_name == "name") {
+        lowkey (field_name == "name") {
             test_assert(field_value.string_value == "Alice", "Name field value")
             found_name = based
-        } otherwise ready (field_name == "age") {
+        } highkey lowkey (field_name == "age") {
             test_assert(field_value.int_value == 30, "Age field value")
             found_age = based
-        } otherwise ready (field_name == "active") {
+        } highkey lowkey (field_name == "active") {
             test_assert(field_value.bool_value == based, "Active field value")
             found_active = based
-        } otherwise ready (field_name == "score") {
+        } highkey lowkey (field_name == "score") {
             sus diff normie = abs_float(field_value.float_value - 98.5)
             test_assert(diff < 0.001, "Score field value")
             found_score = based
@@ -239,11 +239,11 @@ slay test_nested_structures() lit {
     sus field_count drip = array_length(decoded.struct_fields)
     sus i drip = 0
     bestie (i < field_count) {
-        ready (decoded.struct_fields[i] == "point") {
+        lowkey (decoded.struct_fields[i] == "point") {
             sus point BinzValue = decoded.struct_values[i]
             test_assert(point.type_tag == TAG_STRUCT, "Nested point type")
             point_found = based
-        } otherwise ready (decoded.struct_fields[i] == "numbers") {
+        } highkey lowkey (decoded.struct_fields[i] == "numbers") {
             sus numbers BinzValue = decoded.struct_values[i]
             test_assert(numbers.type_tag == TAG_ARRAY_MIXED, "Nested array type")
             test_assert(array_length(numbers.array_values) == 3, "Nested array length")
@@ -598,7 +598,7 @@ slay create_repetitive_data() BinzValue {
 }
 
 slay abs_float(val normie) normie {
-    ready (val < 0.0) {
+    lowkey (val < 0.0) {
         damn -val
     }
     damn val
@@ -610,32 +610,32 @@ slay get_current_time() drip {
 }
 
 slay number_to_char(code drip) tea {
-    ready (code == 65) { damn "A" }
-    ready (code == 66) { damn "B" }
-    ready (code == 67) { damn "C" }
-    ready (code == 68) { damn "D" }
-    ready (code == 69) { damn "E" }
-    ready (code == 70) { damn "F" }
-    ready (code == 71) { damn "G" }
-    ready (code == 72) { damn "H" }
-    ready (code == 73) { damn "I" }
-    ready (code == 74) { damn "J" }
-    ready (code == 75) { damn "K" }
-    ready (code == 76) { damn "L" }
-    ready (code == 77) { damn "M" }
-    ready (code == 78) { damn "N" }
-    ready (code == 79) { damn "O" }
-    ready (code == 80) { damn "P" }
-    ready (code == 81) { damn "Q" }
-    ready (code == 82) { damn "R" }
-    ready (code == 83) { damn "S" }
-    ready (code == 84) { damn "T" }
-    ready (code == 85) { damn "U" }
-    ready (code == 86) { damn "V" }
-    ready (code == 87) { damn "W" }
-    ready (code == 88) { damn "X" }
-    ready (code == 89) { damn "Y" }
-    ready (code == 90) { damn "Z" }
+    lowkey (code == 65) { damn "A" }
+    lowkey (code == 66) { damn "B" }
+    lowkey (code == 67) { damn "C" }
+    lowkey (code == 68) { damn "D" }
+    lowkey (code == 69) { damn "E" }
+    lowkey (code == 70) { damn "F" }
+    lowkey (code == 71) { damn "G" }
+    lowkey (code == 72) { damn "H" }
+    lowkey (code == 73) { damn "I" }
+    lowkey (code == 74) { damn "J" }
+    lowkey (code == 75) { damn "K" }
+    lowkey (code == 76) { damn "L" }
+    lowkey (code == 77) { damn "M" }
+    lowkey (code == 78) { damn "N" }
+    lowkey (code == 79) { damn "O" }
+    lowkey (code == 80) { damn "P" }
+    lowkey (code == 81) { damn "Q" }
+    lowkey (code == 82) { damn "R" }
+    lowkey (code == 83) { damn "S" }
+    lowkey (code == 84) { damn "T" }
+    lowkey (code == 85) { damn "U" }
+    lowkey (code == 86) { damn "V" }
+    lowkey (code == 87) { damn "W" }
+    lowkey (code == 88) { damn "X" }
+    lowkey (code == 89) { damn "Y" }
+    lowkey (code == 90) { damn "Z" }
     damn "A"  fr fr Default
 }
 
@@ -650,58 +650,58 @@ slay run_all_binz_tests() lit {
     
     fr fr Run all test functions
     test_count = test_count + 1
-    ready (test_basic_null_encoding()) { passed_count = passed_count + 1 }
+    lowkey (test_basic_null_encoding()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1  
-    ready (test_basic_boolean_encoding()) { passed_count = passed_count + 1 }
+    lowkey (test_basic_boolean_encoding()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_integer_encoding()) { passed_count = passed_count + 1 }
+    lowkey (test_integer_encoding()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_float_encoding()) { passed_count = passed_count + 1 }
+    lowkey (test_float_encoding()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_string_encoding()) { passed_count = passed_count + 1 }
+    lowkey (test_string_encoding()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_array_encoding()) { passed_count = passed_count + 1 }
+    lowkey (test_array_encoding()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_struct_encoding()) { passed_count = passed_count + 1 }
+    lowkey (test_struct_encoding()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_nested_structures()) { passed_count = passed_count + 1 }
+    lowkey (test_nested_structures()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_schema_creation_and_validation()) { passed_count = passed_count + 1 }
+    lowkey (test_schema_creation_and_validation()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_schema_migration()) { passed_count = passed_count + 1 }
+    lowkey (test_schema_migration()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_compression()) { passed_count = passed_count + 1 }
+    lowkey (test_compression()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_large_data_structures()) { passed_count = passed_count + 1 }
+    lowkey (test_large_data_structures()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_edge_cases()) { passed_count = passed_count + 1 }
+    lowkey (test_edge_cases()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_memory_pool_optimization()) { passed_count = passed_count + 1 }
+    lowkey (test_memory_pool_optimization()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_batch_operations()) { passed_count = passed_count + 1 }
+    lowkey (test_batch_operations()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_error_handling()) { passed_count = passed_count + 1 }
+    lowkey (test_error_handling()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_reflection_serialization()) { passed_count = passed_count + 1 }
+    lowkey (test_reflection_serialization()) { passed_count = passed_count + 1 }
     
     test_count = test_count + 1
-    ready (test_size_calculations()) { passed_count = passed_count + 1 }
+    lowkey (test_size_calculations()) { passed_count = passed_count + 1 }
     
     fr fr Print results
     vibez.spill("=" * 60)
@@ -710,10 +710,10 @@ slay run_all_binz_tests() lit {
     vibez.spill("   Passed: " + int_to_string(passed_count))
     vibez.spill("   Failed: " + int_to_string(test_count - passed_count))
     
-    ready (passed_count == test_count) {
+    lowkey (passed_count == test_count) {
         vibez.spill("🎉 All BINZ tests passed! Binary serialization is production ready.")
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Some BINZ tests failed. Check implementation.")
         damn cringe
     }

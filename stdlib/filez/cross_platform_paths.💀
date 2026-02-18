@@ -11,11 +11,11 @@ slay detect_platform() tea {
     fr fr In production, this would be a runtime system call
     sus test_path tea = get_current_directory()
     
-    ready (contains_substring(test_path, "\\") || contains_substring(test_path, ":")) {
+    lowkey (contains_substring(test_path, "\\") || contains_substring(test_path, ":")) {
         damn "windows"
-    } otherwise ready (starts_with(test_path, "/")) {
+    } highkey lowkey (starts_with(test_path, "/")) {
         damn "unix"
-    } otherwise {
+    } highkey {
         damn "unix"  fr fr Default to Unix
     }
 }
@@ -26,9 +26,9 @@ slay get_platform_separator() tea {
     fr fr Get the correct path separator for current platform
     sus platform tea = detect_platform()
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         damn "\\"
-    } otherwise {
+    } highkey {
         damn "/"
     }
 }
@@ -37,9 +37,9 @@ slay get_alt_separator() tea {
     fr fr Get alternative separator (Windows accepts both / and \)
     sus platform tea = detect_platform()
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         damn "/"
-    } otherwise {
+    } highkey {
         damn ""  fr fr Unix doesn't have alternative separator
     }
 }
@@ -48,9 +48,9 @@ slay is_path_separator(char tea) lit {
     fr fr Check if character is a valid path separator
     sus platform tea = detect_platform()
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         damn (char == "\\" || char == "/")
-    } otherwise {
+    } highkey {
         damn (char == "/")
     }
 }
@@ -75,37 +75,37 @@ slay parse_drive_info(path tea) DriveInfo {
     info.share_name = ""
     
     sus platform tea = detect_platform()
-    ready (platform != "windows") {
+    lowkey (platform != "windows") {
         damn info  fr fr No drives on Unix
     }
     
     fr fr Check for UNC path (\\server\share)
-    ready (starts_with(path, "\\\\") || starts_with(path, "//")) {
+    lowkey (starts_with(path, "\\\\") || starts_with(path, "//")) {
         info.is_unc = based
         sus unc_path tea = path
-        ready (starts_with(path, "\\\\")) {
+        lowkey (starts_with(path, "\\\\")) {
             unc_path = substring(path, 2, string_length(path) - 2)
-        } otherwise {
+        } highkey {
             unc_path = substring(path, 2, string_length(path) - 2)
         }
         
         fr fr Parse server\share
         sus first_sep drip = find_first_occurrence(unc_path, "\\")
-        ready (first_sep == -1) {
+        lowkey (first_sep == -1) {
             first_sep = find_first_occurrence(unc_path, "/")
         }
         
-        ready (first_sep > 0) {
+        lowkey (first_sep > 0) {
             info.server_name = substring(unc_path, 0, first_sep)
             sus remaining tea = substring(unc_path, first_sep + 1, string_length(unc_path) - first_sep - 1)
             sus second_sep drip = find_first_occurrence(remaining, "\\")
-            ready (second_sep == -1) {
+            lowkey (second_sep == -1) {
                 second_sep = find_first_occurrence(remaining, "/")
             }
             
-            ready (second_sep > 0) {
+            lowkey (second_sep > 0) {
                 info.share_name = substring(remaining, 0, second_sep)
-            } otherwise {
+            } highkey {
                 info.share_name = remaining
             }
         }
@@ -114,11 +114,11 @@ slay parse_drive_info(path tea) DriveInfo {
     }
     
     fr fr Check for drive letter (C:, D:, etc.)
-    ready (string_length(path) >= 2) {
+    lowkey (string_length(path) >= 2) {
         sus second_char tea = substring(path, 1, 1)
-        ready (second_char == ":") {
+        lowkey (second_char == ":") {
             sus first_char tea = substring(path, 0, 1)
-            ready (is_alpha_char(first_char)) {
+            lowkey (is_alpha_char(first_char)) {
                 info.has_drive = based
                 info.letter = to_uppercase(first_char)
             }
@@ -137,9 +137,9 @@ slay is_alpha_char(char tea) lit {
 slay to_uppercase(char tea) tea {
     fr fr Convert character to uppercase
     sus code drip = char_code(char)
-    ready (code >= 97 && code <= 122) {
+    lowkey (code >= 97 && code <= 122) {
         damn char_from_code(code - 32)
-    } otherwise {
+    } highkey {
         damn char
     }
 }
@@ -151,10 +151,10 @@ slay normalize_path_separators(path tea) tea {
     sus platform tea = detect_platform()
     sus normalized tea = path
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         fr fr On Windows, convert / to \
         normalized = replace_all(normalized, "/", "\\")
-    } otherwise {
+    } highkey {
         fr fr On Unix, ensure only / is used
         normalized = replace_all(normalized, "\\", "/")
     }
@@ -167,25 +167,25 @@ slay is_absolute_path(path tea) lit {
     sus platform tea = detect_platform()
     sus drive_info DriveInfo = parse_drive_info(path)
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         fr fr Windows absolute paths
-        ready (drive_info.is_unc) {
+        lowkey (drive_info.is_unc) {
             damn based  fr fr UNC paths are absolute
         }
         
-        ready (drive_info.has_drive) {
+        lowkey (drive_info.has_drive) {
             fr fr Check for drive + separator (C:\)
-            ready (string_length(path) >= 3) {
+            lowkey (string_length(path) >= 3) {
                 sus third_char tea = substring(path, 2, 1)
                 damn is_path_separator(third_char)
-            } otherwise {
+            } highkey {
                 damn cringe  fr fr Just drive letter, not absolute
             }
         }
         
         fr fr Check for rooted path (\path)
         damn is_path_separator(substring(path, 0, 1))
-    } otherwise {
+    } highkey {
         fr fr Unix absolute paths start with /
         damn starts_with(path, "/")
     }
@@ -196,21 +196,21 @@ slay get_root_path(path tea) tea {
     sus platform tea = detect_platform()
     sus drive_info DriveInfo = parse_drive_info(path)
     
-    ready (platform == "windows") {
-        ready (drive_info.is_unc) {
+    lowkey (platform == "windows") {
+        lowkey (drive_info.is_unc) {
             fr fr UNC root is \\server\share\
             sus separator tea = get_platform_separator()
             damn "\\\\" + drive_info.server_name + separator + drive_info.share_name + separator
         }
         
-        ready (drive_info.has_drive) {
+        lowkey (drive_info.has_drive) {
             sus separator tea = get_platform_separator()
             damn drive_info.letter + ":" + separator
         }
         
         fr fr Root path without drive
         damn get_platform_separator()
-    } otherwise {
+    } highkey {
         damn "/"
     }
 }
@@ -219,7 +219,7 @@ fr fr ===== ADVANCED PATH OPERATIONS =====
 
 slay cross_platform_join(parts tea[value]) tea {
     fr fr Join path components with proper cross-platform handling
-    ready (array_length(parts) == 0) {
+    lowkey (array_length(parts) == 0) {
         damn ""
     }
     
@@ -231,17 +231,17 @@ slay cross_platform_join(parts tea[value]) tea {
         sus part tea = parts[i]
         
         fr fr Skip empty parts
-        ready (part == "") {
+        lowkey (part == "") {
             i = i + 1
             continue
         }
         
         fr fr Handle absolute path in middle of join
-        ready (is_absolute_path(part)) {
+        lowkey (is_absolute_path(part)) {
             result = part  fr fr Replace with absolute path
-        } otherwise {
+        } highkey {
             fr fr Add separator if needed
-            ready (!ends_with(result, separator) && !ends_with(result, "/") && !ends_with(result, "\\")) {
+            lowkey (!ends_with(result, separator) && !ends_with(result, "/") && !ends_with(result, "\\")) {
                 result = result + separator
             }
             result = result + part
@@ -265,19 +265,19 @@ slay cross_platform_split(path tea) tea[value]{
     sus drive_info DriveInfo = parse_drive_info(path)
     sus start_index drip = 0
     
-    ready (drive_info.is_unc) {
+    lowkey (drive_info.is_unc) {
         fr fr UNC path - include \\server\share as first part
         sus root tea = get_root_path(path)
         parts[part_count] = root
         part_count = part_count + 1
         start_index = string_length(root)
-    } otherwise ready (drive_info.has_drive) {
+    } highkey lowkey (drive_info.has_drive) {
         fr fr Drive letter - include C:\ as first part
         sus root tea = get_root_path(path)
         parts[part_count] = root
         part_count = part_count + 1
         start_index = string_length(root)
-    } otherwise ready (starts_with(path, "/") || starts_with(path, "\\")) {
+    } highkey lowkey (starts_with(path, "/") || starts_with(path, "\\")) {
         fr fr Root path
         parts[part_count] = get_platform_separator()
         part_count = part_count + 1
@@ -289,13 +289,13 @@ slay cross_platform_split(path tea) tea[value]{
     bestie (i < string_length(path)) {
         sus char tea = substring(path, i, 1)
         
-        ready (is_path_separator(char)) {
-            ready (current_part != "") {
+        lowkey (is_path_separator(char)) {
+            lowkey (current_part != "") {
                 parts[part_count] = current_part
                 part_count = part_count + 1
                 current_part = ""
             }
-        } otherwise {
+        } highkey {
             current_part = current_part + char
         }
         
@@ -303,7 +303,7 @@ slay cross_platform_split(path tea) tea[value]{
     }
     
     fr fr Add final part
-    ready (current_part != "") {
+    lowkey (current_part != "") {
         parts[part_count] = current_part
         part_count = part_count + 1
     }
@@ -313,7 +313,7 @@ slay cross_platform_split(path tea) tea[value]{
 
 slay cross_platform_normalize(path tea) tea {
     fr fr Comprehensive path normalization
-    ready (path == "") {
+    lowkey (path == "") {
         damn ""
     }
     
@@ -334,18 +334,18 @@ slay cross_platform_normalize(path tea) tea {
     bestie (i < array_length(parts)) {
         sus part tea = parts[i]
         
-        ready (part == "" || part == ".") {
+        lowkey (part == "" || part == ".") {
             fr fr Skip current directory and empty parts
-        } otherwise ready (part == "..") {
+        } highkey lowkey (part == "..") {
             fr fr Go up one directory
-            ready (part_count > 0) {
+            lowkey (part_count > 0) {
                 sus last_part tea = normalized_parts[part_count - 1]
                 fr fr Don't go above root or drive
-                ready (!is_root_part(last_part)) {
+                lowkey (!is_root_part(last_part)) {
                     part_count = part_count - 1
                 }
             }
-        } otherwise {
+        } highkey {
             normalized_parts[part_count] = part
             part_count = part_count + 1
         }
@@ -354,10 +354,10 @@ slay cross_platform_normalize(path tea) tea {
     }
     
     fr fr Reconstruct path
-    ready (part_count == 0) {
-        ready (is_abs) {
+    lowkey (part_count == 0) {
+        lowkey (is_abs) {
             damn get_root_path(normalized)
-        } otherwise {
+        } highkey {
             damn "."
         }
     }
@@ -365,11 +365,11 @@ slay cross_platform_normalize(path tea) tea {
     sus result tea = ""
     i = 0
     bestie (i < part_count) {
-        ready (i == 0) {
+        lowkey (i == 0) {
             result = normalized_parts[i]
-        } otherwise {
+        } highkey {
             sus separator tea = get_platform_separator()
-            ready (!ends_with(result, separator) && !ends_with(result, "/") && !ends_with(result, "\\")) {
+            lowkey (!ends_with(result, separator) && !ends_with(result, "/") && !ends_with(result, "\\")) {
                 result = result + separator
             }
             result = result + normalized_parts[i]
@@ -382,18 +382,18 @@ slay cross_platform_normalize(path tea) tea {
 
 slay is_root_part(part tea) lit {
     fr fr Check if a path part represents a root (drive, UNC, etc.)
-    ready (part == "/" || part == "\\") {
+    lowkey (part == "/" || part == "\\") {
         damn based
     }
     
-    ready (string_length(part) >= 2) {
+    lowkey (string_length(part) >= 2) {
         sus second_char tea = substring(part, 1, 1)
-        ready (second_char == ":") {
+        lowkey (second_char == ":") {
             damn based  fr fr Drive letter
         }
     }
     
-    ready (starts_with(part, "\\\\")) {
+    lowkey (starts_with(part, "\\\\")) {
         damn based  fr fr UNC path
     }
     
@@ -418,15 +418,15 @@ slay calculate_relative_path(from_path tea, to_path tea) tea {
     fr fr Find common prefix
     sus common_length drip = 0
     sus min_length drip = array_length(from_parts)
-    ready (array_length(to_parts) < min_length) {
+    lowkey (array_length(to_parts) < min_length) {
         min_length = array_length(to_parts)
     }
     
     sus i drip = 0
     bestie (i < min_length) {
-        ready (from_parts[i] == to_parts[i]) {
+        lowkey (from_parts[i] == to_parts[i]) {
             common_length = i + 1
-        } otherwise {
+        } highkey {
             break
         }
         i = i + 1
@@ -452,7 +452,7 @@ slay calculate_relative_path(from_path tea, to_path tea) tea {
         i = i + 1
     }
     
-    ready (rel_count == 0) {
+    lowkey (rel_count == 0) {
         damn "."
     }
     
@@ -461,7 +461,7 @@ slay calculate_relative_path(from_path tea, to_path tea) tea {
 
 slay cross_platform_absolute(path tea) tea {
     fr fr Convert path to absolute with cross-platform handling
-    ready (is_absolute_path(path)) {
+    lowkey (is_absolute_path(path)) {
         damn cross_platform_normalize(path)
     }
     
@@ -479,19 +479,19 @@ slay validate_path_chars(path tea) lit {
     bestie (i < string_length(path)) {
         sus char tea = substring(path, i, 1)
         
-        ready (platform == "windows") {
+        lowkey (platform == "windows") {
             fr fr Windows forbidden characters: < > : " | ? * and control chars
-            ready (char == "<" || char == ">" || char == "\"" || char == "|" || char == "?" || char == "*") {
+            lowkey (char == "<" || char == ">" || char == "\"" || char == "|" || char == "?" || char == "*") {
                 damn cringe
             }
             
             sus char_code drip = char_code(char)
-            ready (char_code < 32) {
+            lowkey (char_code < 32) {
                 damn cringe  fr fr Control characters
             }
-        } otherwise {
+        } highkey {
             fr fr Unix only forbids null character in most filesystems
-            ready (char_code(char) == 0) {
+            lowkey (char_code(char) == 0) {
                 damn cringe
             }
         }
@@ -507,11 +507,11 @@ slay validate_path_length(path tea) lit {
     sus platform tea = detect_platform()
     sus length drip = string_length(path)
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         fr fr Windows MAX_PATH is typically 260 characters
         fr fr But can be longer with \\?\ prefix or long path support
         damn (length <= 32767)  fr fr Extended limit
-    } otherwise {
+    } highkey {
         fr fr Unix PATH_MAX is typically 4096
         damn (length <= 4096)
     }
@@ -529,10 +529,10 @@ slay get_parent_directory(path tea) tea {
     sus normalized tea = cross_platform_normalize(path)
     sus parts tea[value] = cross_platform_split(normalized)
     
-    ready (array_length(parts) <= 1) {
-        ready (is_absolute_path(normalized)) {
+    lowkey (array_length(parts) <= 1) {
+        lowkey (is_absolute_path(normalized)) {
             damn get_root_path(normalized)
-        } otherwise {
+        } highkey {
             damn ".."
         }
     }
@@ -553,9 +553,9 @@ slay get_filename_without_extension(path tea) tea {
     sus filename tea = get_filename_component(path)
     sus dot_pos drip = find_last_occurrence(filename, ".")
     
-    ready (dot_pos > 0) {
+    lowkey (dot_pos > 0) {
         damn substring(filename, 0, dot_pos)
-    } otherwise {
+    } highkey {
         damn filename
     }
 }
@@ -563,9 +563,9 @@ slay get_filename_without_extension(path tea) tea {
 slay get_filename_component(path tea) tea {
     fr fr Get just the filename component
     sus parts tea[value] = cross_platform_split(path)
-    ready (array_length(parts) > 0) {
+    lowkey (array_length(parts) > 0) {
         damn parts[array_length(parts) - 1]
-    } otherwise {
+    } highkey {
         damn ""
     }
 }
@@ -575,9 +575,9 @@ slay get_extension_component(path tea) tea {
     sus filename tea = get_filename_component(path)
     sus dot_pos drip = find_last_occurrence(filename, ".")
     
-    ready (dot_pos > 0) {
+    lowkey (dot_pos > 0) {
         damn substring(filename, dot_pos, string_length(filename) - dot_pos)
-    } otherwise {
+    } highkey {
         damn ""
     }
 }
@@ -589,40 +589,40 @@ slay get_current_directory() tea {
     fr fr Mock implementation - would be system call
     sus platform tea = detect_platform()
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         damn "C:\\Users\\developer\\project"
-    } otherwise {
+    } highkey {
         damn "/home/developer/project"
     }
 }
 
 slay char_code(char tea) drip {
     fr fr Mock implementation - would be built-in
-    ready (char == "A" || char == "a") { damn 65 }
-    ready (char == "B" || char == "b") { damn 66 }
-    ready (char == "C" || char == "c") { damn 67 }
-    ready (char == "D" || char == "d") { damn 68 }
-    ready (char == "Z" || char == "z") { damn 90 }
-    ready (char == "/") { damn 47 }
-    ready (char == "\\") { damn 92 }
-    ready (char == ":") { damn 58 }
-    ready (char == ".") { damn 46 }
-    ready (char == "<") { damn 60 }
-    ready (char == ">") { damn 62 }
-    ready (char == "\"") { damn 34 }
-    ready (char == "|") { damn 124 }
-    ready (char == "?") { damn 63 }
-    ready (char == "*") { damn 42 }
+    lowkey (char == "A" || char == "a") { damn 65 }
+    lowkey (char == "B" || char == "b") { damn 66 }
+    lowkey (char == "C" || char == "c") { damn 67 }
+    lowkey (char == "D" || char == "d") { damn 68 }
+    lowkey (char == "Z" || char == "z") { damn 90 }
+    lowkey (char == "/") { damn 47 }
+    lowkey (char == "\\") { damn 92 }
+    lowkey (char == ":") { damn 58 }
+    lowkey (char == ".") { damn 46 }
+    lowkey (char == "<") { damn 60 }
+    lowkey (char == ">") { damn 62 }
+    lowkey (char == "\"") { damn 34 }
+    lowkey (char == "|") { damn 124 }
+    lowkey (char == "?") { damn 63 }
+    lowkey (char == "*") { damn 42 }
     damn 32  fr fr Default space character
 }
 
 slay char_from_code(code drip) tea {
     fr fr Mock implementation - would be built-in
-    ready (code == 65) { damn "A" }
-    ready (code == 66) { damn "B" }
-    ready (code == 67) { damn "C" }
-    ready (code == 68) { damn "D" }
-    ready (code == 90) { damn "Z" }
+    lowkey (code == 65) { damn "A" }
+    lowkey (code == 66) { damn "B" }
+    lowkey (code == 67) { damn "C" }
+    lowkey (code == 68) { damn "D" }
+    lowkey (code == 90) { damn "Z" }
     damn " "  fr fr Default
 }
 
@@ -669,9 +669,9 @@ slay test_cross_platform_paths() {
 }
 
 slay bool_to_string(value lit) tea {
-    ready (value) {
+    lowkey (value) {
         damn "true"
-    } otherwise {
+    } highkey {
         damn "false"
     }
 }

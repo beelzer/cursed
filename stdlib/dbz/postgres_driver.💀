@@ -52,7 +52,7 @@ sus postgres_connection_pool PostgresConnection[value] = []
 sus postgres_pool_initialized lit = cringe
 
 slay init_postgres_pool() {
-    ready (!postgres_pool_initialized) {
+    lowkey (!postgres_pool_initialized) {
         postgres_connection_pool = make_array<PostgresConnection>(MAX_POSTGRES_CONNECTIONS)
         bestie (sus i drip = 0; i < MAX_POSTGRES_CONNECTIONS; i++) {
             postgres_connection_pool[i] = PostgresConnection{
@@ -72,7 +72,7 @@ slay get_postgres_connection(host tea, port drip, database tea, username tea, pa
     fr fr Try to find existing connection
     bestie (sus i drip = 0; i < MAX_POSTGRES_CONNECTIONS; i++) {
         sus *conn *PostgresConnection = &postgres_connection_pool[i]
-        ready (conn.connected && 
+        lowkey (conn.connected && 
                conn.host == host && 
                conn.port == port &&
                conn.database == database &&
@@ -84,15 +84,15 @@ slay get_postgres_connection(host tea, port drip, database tea, username tea, pa
     fr fr Find empty slot for new connection
     bestie (sus i drip = 0; i < MAX_POSTGRES_CONNECTIONS; i++) {
         sus *conn *PostgresConnection = &postgres_connection_pool[i]
-        ready (!conn.connected) {
+        lowkey (!conn.connected) {
             conn.host = host
             conn.port = port
             conn.database = database
             conn.username = username
             conn.password = password
-            ready (postgres_connect(conn)) {
+            lowkey (postgres_connect(conn)) {
                 damn conn
-            } otherwise {
+            } highkey {
                 damn nullable<PostgresConnection>
             }
         }
@@ -157,7 +157,7 @@ slay send_startup_message(conn *PostgresConnection) lit {
     
     fr fr Send length then message
     sus bytes_sent drip = networkz.socket_send(conn.socket_fd, length_bytes)
-    ready (bytes_sent != 4) {
+    lowkey (bytes_sent != 4) {
         damn cringe
     }
     
@@ -169,7 +169,7 @@ slay receive_message(conn *PostgresConnection) (rune, rune[value]) {
     sus header rune[value] = make_array<rune>(5)
     sus bytes_received drip = networkz.socket_receive(conn.socket_fd, header)
     
-    ready (bytes_received != 5) {
+    lowkey (bytes_received != 5) {
         damn 0, []
     }
     
@@ -179,7 +179,7 @@ slay receive_message(conn *PostgresConnection) (rune, rune[value]) {
     sus payload rune[value] = make_array<rune>(msg_length - 4)
     bytes_received = networkz.socket_receive(conn.socket_fd, payload)
     
-    ready (bytes_received != msg_length - 4) {
+    lowkey (bytes_received != msg_length - 4) {
         damn 0, []
     }
     
@@ -216,7 +216,7 @@ slay handle_authentication(conn *PostgresConnection, auth_type drip, auth_data r
         }
         when POSTGRES_AUTH_MD5 -> {
             fr fr MD5 authentication with salt
-            ready (auth_data.len() < 4) {
+            lowkey (auth_data.len() < 4) {
                 damn cringe
             }
             
@@ -260,19 +260,19 @@ slay handle_authentication(conn *PostgresConnection, auth_type drip, auth_data r
 slay postgres_connect(conn *PostgresConnection) lit {
     fr fr Create TCP connection
     conn.socket_fd = networkz.socket_create()
-    ready (conn.socket_fd < 0) {
+    lowkey (conn.socket_fd < 0) {
         vibez.spill("ERROR: Failed to create PostgreSQL socket")
         damn cringe
     }
     
-    ready (!networkz.socket_connect(conn.socket_fd, conn.host, conn.port)) {
+    lowkey (!networkz.socket_connect(conn.socket_fd, conn.host, conn.port)) {
         vibez.spill("ERROR: Failed to connect to PostgreSQL server")
         networkz.socket_close(conn.socket_fd)
         damn cringe
     }
     
     fr fr Send startup message
-    ready (!send_startup_message(conn)) {
+    lowkey (!send_startup_message(conn)) {
         vibez.spill("ERROR: Failed to send PostgreSQL startup message")
         networkz.socket_close(conn.socket_fd)
         damn cringe
@@ -285,7 +285,7 @@ slay postgres_connect(conn *PostgresConnection) lit {
         
         sick msg_type {
             when 'R' -> {  // Authentication request
-                ready (payload.len() < 4) {
+                lowkey (payload.len() < 4) {
                     vibez.spill("ERROR: Invalid PostgreSQL auth message")
                     damn cringe
                 }
@@ -293,12 +293,12 @@ slay postgres_connect(conn *PostgresConnection) lit {
                 sus auth_type drip = read_int32(payload[0:4])
                 sus auth_data rune[value] = payload[4:]
                 
-                ready (!handle_authentication(conn, auth_type, auth_data)) {
+                lowkey (!handle_authentication(conn, auth_type, auth_data)) {
                     vibez.spill("ERROR: PostgreSQL authentication failed")
                     damn cringe
                 }
                 
-                ready (auth_type == POSTGRES_AUTH_OK) {
+                lowkey (auth_type == POSTGRES_AUTH_OK) {
                     authenticated = based
                 }
             }
@@ -307,20 +307,20 @@ slay postgres_connect(conn *PostgresConnection) lit {
                 sus param_name tea = stringz.from_null_terminated(payload, 0)
                 sus param_value tea = stringz.from_null_terminated(payload, stringz.strlen(param_name) + 1)
                 
-                ready (param_name == "server_version") {
+                lowkey (param_name == "server_version") {
                     conn.server_version = param_value
-                } otherwise ready (param_name == "server_encoding") {
+                } highkey lowkey (param_name == "server_encoding") {
                     conn.server_encoding = param_value
                 }
             }
             when POSTGRES_BACKEND_KEY_DATA -> {
-                ready (payload.len() >= 8) {
+                lowkey (payload.len() >= 8) {
                     conn.process_id = read_int32(payload[0:4])
                     conn.secret_key = read_int32(payload[4:8])
                 }
             }
             when POSTGRES_READY_FOR_QUERY -> {
-                ready (payload.len() >= 1) {
+                lowkey (payload.len() >= 1) {
                     conn.transaction_status = payload[0]
                 }
                 authenticated = based
@@ -348,7 +348,7 @@ slay postgres_execute_query(conn *PostgresConnection, sql tea) QueryResult {
     sus result QueryResult = QueryResult{}
     result.success = cringe
     
-    ready (!conn.connected) {
+    lowkey (!conn.connected) {
         result.error_message = "PostgreSQL connection not established"
         damn result
     }
@@ -372,7 +372,7 @@ slay postgres_execute_query(conn *PostgresConnection, sql tea) QueryResult {
     pos++
     
     sus bytes_sent drip = networkz.socket_send(conn.socket_fd, query_msg[0:pos])
-    ready (bytes_sent != pos) {
+    lowkey (bytes_sent != pos) {
         result.error_message = "Failed to send PostgreSQL query"
         damn result
     }
@@ -388,7 +388,7 @@ slay postgres_execute_query(conn *PostgresConnection, sql tea) QueryResult {
         sick msg_type {
             when POSTGRES_ROW_DESCRIPTION -> {
                 fr fr Column metadata
-                ready (payload.len() < 2) {
+                lowkey (payload.len() < 2) {
                     result.error_message = "Invalid row description"
                     damn result
                 }
@@ -406,7 +406,7 @@ slay postgres_execute_query(conn *PostgresConnection, sql tea) QueryResult {
             }
             when POSTGRES_DATA_ROW -> {
                 fr fr Row data
-                ready (payload.len() < 2) {
+                lowkey (payload.len() < 2) {
                     continue
                 }
                 
@@ -415,17 +415,17 @@ slay postgres_execute_query(conn *PostgresConnection, sql tea) QueryResult {
                 
                 sus offset drip = 2
                 bestie (sus i drip = 0; i < column_count; i++) {
-                    ready (offset + 4 > payload.len()) {
+                    lowkey (offset + 4 > payload.len()) {
                         break
                     }
                     
                     sus field_length drip = read_int32(payload[offset:offset+4])
                     offset += 4
                     
-                    ready (field_length == -1) {
+                    lowkey (field_length == -1) {
                         row[i] = ""  // NULL value
-                    } otherwise {
-                        ready (offset + field_length <= payload.len()) {
+                    } highkey {
+                        lowkey (offset + field_length <= payload.len()) {
                             row[i] = stringz.from_bytes(payload[offset:offset+field_length])
                             offset += field_length
                         }
@@ -438,17 +438,17 @@ slay postgres_execute_query(conn *PostgresConnection, sql tea) QueryResult {
                 fr fr Extract rows affected from command tag
                 sus command_tag tea = stringz.from_null_terminated(payload, 0)
                 
-                ready (stringz.contains(command_tag, "INSERT")) {
+                lowkey (stringz.contains(command_tag, "INSERT")) {
                     sus parts tea[value] = stringz.split(command_tag, " ")
-                    ready (parts.len() >= 3) {
+                    lowkey (parts.len() >= 3) {
                         result.rows_affected = stringz.to_int(parts[2])
-                        ready (parts.len() >= 2) {
+                        lowkey (parts.len() >= 2) {
                             result.last_insert_id = stringz.to_int(parts[1])
                         }
                     }
-                } otherwise ready (stringz.contains(command_tag, "UPDATE") || stringz.contains(command_tag, "DELETE")) {
+                } highkey lowkey (stringz.contains(command_tag, "UPDATE") || stringz.contains(command_tag, "DELETE")) {
                     sus parts tea[value] = stringz.split(command_tag, " ")
-                    ready (parts.len() >= 2) {
+                    lowkey (parts.len() >= 2) {
                         result.rows_affected = stringz.to_int(parts[1])
                     }
                 }
@@ -456,7 +456,7 @@ slay postgres_execute_query(conn *PostgresConnection, sql tea) QueryResult {
                 result.success = based
             }
             when POSTGRES_READY_FOR_QUERY -> {
-                ready (payload.len() >= 1) {
+                lowkey (payload.len() >= 1) {
                     conn.transaction_status = payload[0]
                 }
                 query_complete = based
@@ -482,7 +482,7 @@ fr fr ===== Public PostgreSQL Functions =====
 
 slay postgres_real_query(host tea, port drip, database tea, username tea, password tea, sql tea) QueryResult {
     sus *conn *PostgresConnection = get_postgres_connection(host, port, database, username, password)
-    ready (conn == nullable<PostgresConnection>) {
+    lowkey (conn == nullable<PostgresConnection>) {
         sus result QueryResult = QueryResult{}
         result.success = cringe
         result.error_message = "Failed to get PostgreSQL connection"
@@ -502,15 +502,15 @@ slay postgres_real_query_simple(connection_string tea, sql tea) QueryResult {
     
     sus params tea[value] = stringz.split(connection_string, " ")
     bestie (sus param tea : params) {
-        ready (stringz.starts_with(param, "host=")) {
+        lowkey (stringz.starts_with(param, "host=")) {
             host = param[5:]
-        } otherwise ready (stringz.starts_with(param, "port=")) {
+        } highkey lowkey (stringz.starts_with(param, "port=")) {
             port = stringz.to_int(param[5:])
-        } otherwise ready (stringz.starts_with(param, "dbname=")) {
+        } highkey lowkey (stringz.starts_with(param, "dbname=")) {
             database = param[7:]
-        } otherwise ready (stringz.starts_with(param, "user=")) {
+        } highkey lowkey (stringz.starts_with(param, "user=")) {
             username = param[5:]
-        } otherwise ready (stringz.starts_with(param, "password=")) {
+        } highkey lowkey (stringz.starts_with(param, "password=")) {
             password = param[9:]
         }
     }
@@ -538,9 +538,9 @@ slay postgres_rollback_transaction(connection_string tea) lit {
 fr fr ===== Connection Management =====
 
 slay postgres_close_all_connections() {
-    ready (postgres_pool_initialized) {
+    lowkey (postgres_pool_initialized) {
         bestie (sus i drip = 0; i < MAX_POSTGRES_CONNECTIONS; i++) {
-            ready (postgres_connection_pool[i].connected) {
+            lowkey (postgres_connection_pool[i].connected) {
                 networkz.socket_close(postgres_connection_pool[i].socket_fd)
                 postgres_connection_pool[i].connected = cringe
             }
@@ -553,9 +553,9 @@ slay postgres_get_connection_stats() (drip, drip) {
     sus active_connections drip = 0
     sus total_connections drip = 0
     
-    ready (postgres_pool_initialized) {
+    lowkey (postgres_pool_initialized) {
         bestie (sus conn PostgresConnection : postgres_connection_pool) {
-            ready (conn.connected) {
+            lowkey (conn.connected) {
                 active_connections++
             }
             total_connections++

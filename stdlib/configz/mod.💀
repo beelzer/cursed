@@ -156,7 +156,7 @@ squad ReloadCallback {
 fr fr ===== CORE CONFIGURATION MANAGEMENT =====
 
 slay config_create_manager() ConfigManager {
-    fr fr Create production-ready configuration manager
+    fr fr Create production-lowkey configuration manager
     sus manager ConfigManager = ConfigManager{
         sources: [],
         values: create_string_map(),
@@ -192,7 +192,7 @@ slay config_add_source(manager ConfigManager, source_type tea, path tea, priorit
     
     fr fr Load and validate source content
     (content, load_error) := load_source_content(source)
-    ready (load_error != "") {
+    lowkey (load_error != "") {
         vibez.spill("Warning: Failed to load source " + path + ": " + load_error)
         damn manager
     }
@@ -245,7 +245,7 @@ slay config_load_all(manager ConfigManager) ConfigManager {
     
     fr fr Handle validation errors
     sus error_count drip = array_length(manager.validation_errors)
-    ready (error_count > 0) {
+    lowkey (error_count > 0) {
         vibez.spill("Configuration validation found " + drip_to_string(error_count) + " errors:")
         sus j drip = 0
         bestie (j < error_count) {
@@ -286,13 +286,13 @@ slay load_source_complete(manager ConfigManager, source ConfigSource) ConfigMana
 
 slay load_json_source_complete(manager ConfigManager, source ConfigSource) ConfigManager {
     fr fr Load JSON with complete RFC 7159 compliant parsing
-    ready (source.content == "") {
+    lowkey (source.content == "") {
         damn manager
     }
     
     fr fr Use enhanced JSON parser for complete specification support
     sus parse_result JsonParseResult = json_parse_string(source.content)
-    ready (!parse_result.success) {
+    lowkey (!parse_result.success) {
         sus error ValidationError = ValidationError{
             key: source.path,
             message: "JSON parsing error: " + parse_result.error_message,
@@ -313,14 +313,14 @@ slay load_json_source_complete(manager ConfigManager, source ConfigSource) Confi
 
 slay load_yaml_source_complete(manager ConfigManager, source ConfigSource) ConfigManager {
     fr fr Complete YAML parser with spec compliance
-    ready (source.content == "") {
+    lowkey (source.content == "") {
         damn manager
     }
     
     sus yaml_parser YamlParser = create_yaml_parser(source.content)
     (yaml_value, yaml_error) := parse_yaml_complete(yaml_parser)
     
-    ready (yaml_error.error_message != "") {
+    lowkey (yaml_error.error_message != "") {
         sus error ValidationError = ValidationError{
             key: source.path,
             message: "YAML parsing error: " + yaml_error.error_message,
@@ -339,14 +339,14 @@ slay load_yaml_source_complete(manager ConfigManager, source ConfigSource) Confi
 
 slay load_toml_source_complete(manager ConfigManager, source ConfigSource) ConfigManager {
     fr fr TOML v1.0.0 compliant parser
-    ready (source.content == "") {
+    lowkey (source.content == "") {
         damn manager
     }
     
     sus toml_parser TomlParser = create_toml_parser(source.content)
     (toml_document, toml_error) := parse_toml_complete(toml_parser)
     
-    ready (toml_error.error_message != "") {
+    lowkey (toml_error.error_message != "") {
         sus error ValidationError = ValidationError{
             key: source.path,
             message: "TOML parsing error: " + toml_error.error_message,
@@ -380,7 +380,7 @@ slay load_env_source_complete(manager ConfigManager, source ConfigSource) Config
         
         fr fr Complete environment variable expansion
         sus expansion_result EnvExpansionResult = expand_environment_variables(env_var.value)
-        ready (!expansion_result.success) {
+        lowkey (!expansion_result.success) {
             sus error ValidationError = ValidationError{
                 key: config_key,
                 message: "Environment variable expansion error: " + expansion_result.error_message,
@@ -397,7 +397,7 @@ slay load_env_source_complete(manager ConfigManager, source ConfigSource) Config
         sus config_value ConfigValue = create_enhanced_config_value_from_env(expansion_result.expanded_text, source.type)
         
         fr fr Handle encrypted values with enhanced security
-        ready (is_encrypted_key(manager.encrypted_keys, config_key)) {
+        lowkey (is_encrypted_key(manager.encrypted_keys, config_key)) {
             config_value = decrypt_config_value_enhanced(config_value)
         }
         
@@ -452,7 +452,7 @@ slay create_yaml_parser(input tea) YamlParser {
         in_flow_context: cringe
     }
     
-    ready (string_length(input) > 0) {
+    lowkey (string_length(input) > 0) {
         parser.current_char = string_char_at(input, 0)
     }
     
@@ -463,12 +463,12 @@ slay parse_yaml_complete(parser YamlParser) (YamlValue, YamlError) {
     fr fr Main YAML parser entry point
     parser = skip_yaml_whitespace(parser)
     
-    ready (parser.position >= string_length(parser.input)) {
+    lowkey (parser.position >= string_length(parser.input)) {
         damn (YamlValue{type: "null"}, YamlError{})
     }
     
     fr fr Handle document markers
-    ready (string_starts_with_at(parser.input, parser.position, "---")) {
+    lowkey (string_starts_with_at(parser.input, parser.position, "---")) {
         parser = skip_line(parser)
         parser = skip_yaml_whitespace(parser)
     }
@@ -480,34 +480,34 @@ slay parse_yaml_value(parser YamlParser) (YamlValue, YamlError) {
     fr fr Parse any YAML value
     parser = skip_yaml_whitespace(parser)
     
-    ready (parser.position >= string_length(parser.input)) {
+    lowkey (parser.position >= string_length(parser.input)) {
         damn (YamlValue{type: "null"}, YamlError{})
     }
     
     sus char tea = parser.current_char
     
     fr fr Handle flow sequences [...]
-    ready (char == "[") {
+    lowkey (char == "[") {
         damn parse_yaml_flow_sequence(parser)
     }
     
     fr fr Handle flow mappings {...}
-    ready (char == "{") {
+    lowkey (char == "{") {
         damn parse_yaml_flow_mapping(parser)
     }
     
     fr fr Handle quoted strings
-    ready (char == "\"" || char == "'") {
+    lowkey (char == "\"" || char == "'") {
         damn parse_yaml_quoted_string(parser)
     }
     
     fr fr Handle block sequences/mappings
-    ready (char == "-" && is_yaml_sequence_indicator(parser)) {
+    lowkey (char == "-" && is_yaml_sequence_indicator(parser)) {
         damn parse_yaml_block_sequence(parser)
     }
     
     fr fr Handle literals and folded strings
-    ready (char == "|" || char == ">") {
+    lowkey (char == "|" || char == ">") {
         damn parse_yaml_literal_string(parser)
     }
     
@@ -528,10 +528,10 @@ slay parse_yaml_quoted_string(parser YamlParser) (YamlValue, YamlError) {
         
         sus char tea = parser.current_char
         
-        ready (!is_single_quoted && char == "\\") {
+        lowkey (!is_single_quoted && char == "\\") {
             fr fr Handle escape sequences in double-quoted strings
             parser = advance_yaml_parser(parser)
-            ready (parser.position >= string_length(parser.input)) {
+            lowkey (parser.position >= string_length(parser.input)) {
                 sus error YamlError = YamlError{
                     error_message: "Unterminated escape sequence in quoted string",
                     line: parser.line,
@@ -553,7 +553,7 @@ slay parse_yaml_quoted_string(parser YamlParser) (YamlValue, YamlError) {
                 "x" => {
                     fr fr Hexadecimal escape \xXX
                     (hex_value, hex_error) := parse_yaml_hex_escape(parser, 2)
-                    ready (hex_error.error_message != "") {
+                    lowkey (hex_error.error_message != "") {
                         damn (YamlValue{}, hex_error)
                     }
                     result = string_concat(result, unicode_to_string(hex_value))
@@ -562,7 +562,7 @@ slay parse_yaml_quoted_string(parser YamlParser) (YamlValue, YamlError) {
                 "u" => {
                     fr fr Unicode escape \uXXXX
                     (unicode_value, unicode_error) := parse_yaml_hex_escape(parser, 4)
-                    ready (unicode_error.error_message != "") {
+                    lowkey (unicode_error.error_message != "") {
                         damn (YamlValue{}, unicode_error)
                     }
                     result = string_concat(result, unicode_to_string(unicode_value))
@@ -570,7 +570,7 @@ slay parse_yaml_quoted_string(parser YamlParser) (YamlValue, YamlError) {
                 }
                 _ => result = string_concat(result, escape_char)
             }
-        } else ready (is_single_quoted && char == "'" && 
+        } else lowkey (is_single_quoted && char == "'" && 
                      parser.position + 1 < string_length(parser.input) &&
                      string_char_at(parser.input, parser.position + 1) == "'") {
             fr fr Handle escaped single quote in single-quoted string
@@ -584,7 +584,7 @@ slay parse_yaml_quoted_string(parser YamlParser) (YamlValue, YamlError) {
         parser = advance_yaml_parser(parser)
     }
     
-    ready (parser.current_char != quote_char) {
+    lowkey (parser.current_char != quote_char) {
         sus error YamlError = YamlError{
             error_message: "Unterminated quoted string",
             line: parser.line,
@@ -655,7 +655,7 @@ slay create_toml_parser(input tea) TomlParser {
         tables: create_string_map()
     }
     
-    ready (string_length(input) > 0) {
+    lowkey (string_length(input) > 0) {
         parser.current_char = string_char_at(input, 0)
     }
     
@@ -676,23 +676,23 @@ slay parse_toml_complete(parser TomlParser) (TomlValue, TomlError) {
     bestie (parser.position < string_length(parser.input)) {
         parser = skip_toml_whitespace_and_comments(parser)
         
-        ready (parser.position >= string_length(parser.input)) {
+        lowkey (parser.position >= string_length(parser.input)) {
             break
         }
         
         sus char tea = parser.current_char
         
         fr fr Handle table headers [table] or [[array.table]]
-        ready (char == "[") {
+        lowkey (char == "[") {
             (table_name, table_error) := parse_toml_table_header(parser)
-            ready (table_error.error_message != "") {
+            lowkey (table_error.error_message != "") {
                 damn (TomlValue{}, table_error)
             }
             parser.current_table = table_name
-        } else ready (is_toml_key_start(char)) {
+        } else lowkey (is_toml_key_start(char)) {
             fr fr Handle key-value pairs
             (key, value, kv_error) := parse_toml_key_value(parser)
-            ready (kv_error.error_message != "") {
+            lowkey (kv_error.error_message != "") {
                 damn (TomlValue{}, kv_error)
             }
             
@@ -719,13 +719,13 @@ slay parse_toml_complete(parser TomlParser) (TomlValue, TomlError) {
 slay parse_toml_key_value(parser TomlParser) (tea, TomlValue, TomlError) {
     fr fr Parse TOML key = value pair
     (key, key_error) := parse_toml_key(parser)
-    ready (key_error.error_message != "") {
+    lowkey (key_error.error_message != "") {
         damn ("", TomlValue{}, key_error)
     }
     
     parser = skip_toml_whitespace(parser)
     
-    ready (parser.current_char != "=") {
+    lowkey (parser.current_char != "=") {
         sus error TomlError = TomlError{
             error_message: "Expected = after key",
             line: parser.line,
@@ -739,7 +739,7 @@ slay parse_toml_key_value(parser TomlParser) (tea, TomlValue, TomlError) {
     parser = skip_toml_whitespace(parser)
     
     (value, value_error) := parse_toml_value(parser)
-    ready (value_error.error_message != "") {
+    lowkey (value_error.error_message != "") {
         damn ("", TomlValue{}, value_error)
     }
     
@@ -758,11 +758,11 @@ slay parse_toml_value(parser TomlParser) (TomlValue, TomlError) {
         "[" => damn parse_toml_array(parser)
         "{" => damn parse_toml_inline_table(parser)
         _ => {
-            ready (char == "t" || char == "f") {
+            lowkey (char == "t" || char == "f") {
                 damn parse_toml_boolean(parser)
-            } else ready (is_toml_number_start(char)) {
+            } else lowkey (is_toml_number_start(char)) {
                 damn parse_toml_number(parser)
-            } else ready (is_toml_datetime_start(parser)) {
+            } else lowkey (is_toml_datetime_start(parser)) {
                 damn parse_toml_datetime(parser)
             } else {
                 sus error TomlError = TomlError{
@@ -790,11 +790,11 @@ slay validate_all_configurations(manager ConfigManager) ConfigManager {
         sus value ConfigValue = map_get(manager.values, key)
         
         fr fr Check if schema exists for this key
-        ready (map_has_key(manager.schemas, key)) {
+        lowkey (map_has_key(manager.schemas, key)) {
             sus schema ConfigSchema = map_get_schema(manager.schemas, key)
             sus is_valid lit = validate_config_value(value, schema)
             
-            ready (!is_valid) {
+            lowkey (!is_valid) {
                 sus error ValidationError = create_validation_error(key, value, schema)
                 manager.validation_errors = append_validation_error(manager.validation_errors, error)
             }
@@ -812,8 +812,8 @@ slay validate_all_configurations(manager ConfigManager) ConfigManager {
         sus schema_key tea = schema_keys[j]
         sus schema ConfigSchema = map_get_schema(manager.schemas, schema_key)
         
-        ready (schema.required && !map_has_key(manager.values, schema_key)) {
-            ready (schema.default_value.is_valid()) {
+        lowkey (schema.required && !map_has_key(manager.values, schema_key)) {
+            lowkey (schema.default_value.is_valid()) {
                 fr fr Use default value
                 map_set(manager.values, schema_key, schema.default_value)
             } else {
@@ -841,7 +841,7 @@ slay validate_config_value(value ConfigValue, schema ConfigSchema) lit {
     
     fr fr Check type compatibility
     sus value_type tea = value.get_type()
-    ready (value_type != schema.type) {
+    lowkey (value_type != schema.type) {
         damn cringe
     }
     
@@ -863,40 +863,40 @@ slay validate_string_value(value ConfigValue, schema ConfigSchema) lit {
     
     fr fr Length constraints
     sus str_length drip = string_length(str_value)
-    ready (constraints.min_length > 0 && str_length < constraints.min_length) {
+    lowkey (constraints.min_length > 0 && str_length < constraints.min_length) {
         damn cringe
     }
-    ready (constraints.max_length > 0 && str_length > constraints.max_length) {
+    lowkey (constraints.max_length > 0 && str_length > constraints.max_length) {
         damn cringe
     }
     
     fr fr Pattern validation (simplified regex)
-    ready (constraints.pattern != "") {
-        ready (!string_matches_pattern(str_value, constraints.pattern)) {
+    lowkey (constraints.pattern != "") {
+        lowkey (!string_matches_pattern(str_value, constraints.pattern)) {
             damn cringe
         }
     }
     
     fr fr Enum validation
     sus enum_count drip = array_length(constraints.enum_values)
-    ready (enum_count > 0) {
+    lowkey (enum_count > 0) {
         sus is_in_enum lit = cringe
         sus i drip = 0
         bestie (i < enum_count) {
-            ready (str_value == constraints.enum_values[i]) {
+            lowkey (str_value == constraints.enum_values[i]) {
                 is_in_enum = based
                 break
             }
             i = i + 1
         }
-        ready (!is_in_enum) {
+        lowkey (!is_in_enum) {
             damn cringe
         }
     }
     
     fr fr Format validation
-    ready (constraints.format != "") {
-        ready (!validate_string_format(str_value, constraints.format)) {
+    lowkey (constraints.format != "") {
+        lowkey (!validate_string_format(str_value, constraints.format)) {
             damn cringe
         }
     }
@@ -920,23 +920,23 @@ slay validate_string_format(value tea, format tea) lit {
 
 slay validate_email_format(email tea) lit {
     fr fr Basic email validation
-    ready (!string_contains(email, "@")) {
+    lowkey (!string_contains(email, "@")) {
         damn cringe
     }
     
     sus parts tea[value] = string_split(email, "@")
-    ready (array_length(parts) != 2) {
+    lowkey (array_length(parts) != 2) {
         damn cringe
     }
     
     sus local tea = parts[0]
     sus domain tea = parts[1]
     
-    ready (string_length(local) == 0 || string_length(domain) == 0) {
+    lowkey (string_length(local) == 0 || string_length(domain) == 0) {
         damn cringe
     }
     
-    ready (!string_contains(domain, ".")) {
+    lowkey (!string_contains(domain, ".")) {
         damn cringe
     }
     
@@ -945,12 +945,12 @@ slay validate_email_format(email tea) lit {
 
 slay validate_url_format(url tea) lit {
     fr fr Basic URL validation
-    ready (!string_starts_with(url, "http://") && !string_starts_with(url, "https://")) {
+    lowkey (!string_starts_with(url, "http://") && !string_starts_with(url, "https://")) {
         damn cringe
     }
     
     sus url_length drip = string_length(url)
-    ready (url_length < 10) {  fr fr Minimum valid URL length
+    lowkey (url_length < 10) {  fr fr Minimum valid URL length
         damn cringe
     }
     
@@ -960,19 +960,19 @@ slay validate_url_format(url tea) lit {
 slay validate_ipv4_format(ip tea) lit {
     fr fr Basic IPv4 validation
     sus parts tea[value] = string_split(ip, ".")
-    ready (array_length(parts) != 4) {
+    lowkey (array_length(parts) != 4) {
         damn cringe
     }
     
     sus i drip = 0
     bestie (i < 4) {
         sus part tea = parts[i]
-        ready (!is_numeric_string(part)) {
+        lowkey (!is_numeric_string(part)) {
             damn cringe
         }
         
         sus num drip = string_to_int(part)
-        ready (num < 0 || num > 255) {
+        lowkey (num < 0 || num > 255) {
             damn cringe
         }
         
@@ -994,7 +994,7 @@ slay config_enable_watching(manager ConfigManager) ConfigManager {
     
     bestie (i < source_count) {
         sus source ConfigSource = manager.sources[i]
-        ready (source.watch_enabled) {
+        lowkey (source.watch_enabled) {
             sus watcher ConfigWatcher = ConfigWatcher{
                 path: source.path,
                 last_check: get_current_timestamp(),
@@ -1015,7 +1015,7 @@ slay config_enable_watching(manager ConfigManager) ConfigManager {
 
 slay config_check_for_changes(manager ConfigManager) ConfigManager {
     fr fr Check for file changes and reload if necessary
-    ready (!manager.is_watching) {
+    lowkey (!manager.is_watching) {
         damn manager
     }
     
@@ -1027,21 +1027,21 @@ slay config_check_for_changes(manager ConfigManager) ConfigManager {
     bestie (i < watcher_count) {
         sus watcher ConfigWatcher = manager.watchers[i]
         
-        ready (watcher.is_active && 
+        lowkey (watcher.is_active && 
                current_time - watcher.last_check >= watcher.check_interval) {
             
             sus file_mod_time drip = get_file_modified_time(watcher.path)
             sus source_index drip = find_source_by_path(manager.sources, watcher.path)
             
-            ready (source_index >= 0) {
+            lowkey (source_index >= 0) {
                 sus source ConfigSource = manager.sources[source_index]
                 
-                ready (file_mod_time > source.last_modified) {
+                lowkey (file_mod_time > source.last_modified) {
                     vibez.spill("Configuration file changed: " + watcher.path)
                     
                     fr fr Reload the specific source
                     (new_content, load_error) := load_source_content(source)
-                    ready (load_error == "") {
+                    lowkey (load_error == "") {
                         source.content = new_content
                         source.last_modified = file_mod_time
                         manager.sources[source_index] = source
@@ -1060,7 +1060,7 @@ slay config_check_for_changes(manager ConfigManager) ConfigManager {
     }
     
     fr fr If changes were detected, reload all configuration
-    ready (changes_detected) {
+    lowkey (changes_detected) {
         manager = config_load_all(manager)
         manager = trigger_reload_callbacks(manager)
     }
@@ -1102,7 +1102,7 @@ fr fr ===== HIGH-LEVEL API =====
 
 slay config_get_string(manager ConfigManager, key tea, default_value tea) tea {
     fr fr Get string value with default
-    ready (map_has_key(manager.values, key)) {
+    lowkey (map_has_key(manager.values, key)) {
         sus value ConfigValue = map_get(manager.values, key)
         damn value.to_string()
     }
@@ -1111,7 +1111,7 @@ slay config_get_string(manager ConfigManager, key tea, default_value tea) tea {
 
 slay config_get_int(manager ConfigManager, key tea, default_value drip) drip {
     fr fr Get integer value with default
-    ready (map_has_key(manager.values, key)) {
+    lowkey (map_has_key(manager.values, key)) {
         sus value ConfigValue = map_get(manager.values, key)
         damn value.to_int()
     }
@@ -1120,7 +1120,7 @@ slay config_get_int(manager ConfigManager, key tea, default_value drip) drip {
 
 slay config_get_bool(manager ConfigManager, key tea, default_value lit) lit {
     fr fr Get boolean value with default
-    ready (map_has_key(manager.values, key)) {
+    lowkey (map_has_key(manager.values, key)) {
         sus value ConfigValue = map_get(manager.values, key)
         damn value.to_bool()
     }
@@ -1129,7 +1129,7 @@ slay config_get_bool(manager ConfigManager, key tea, default_value lit) lit {
 
 slay config_get_array(manager ConfigManager, key tea) ConfigValue[value]{
     fr fr Get array value
-    ready (map_has_key(manager.values, key)) {
+    lowkey (map_has_key(manager.values, key)) {
         sus value ConfigValue = map_get(manager.values, key)
         damn value.to_array()
     }
@@ -1176,7 +1176,7 @@ fr fr ==========================================
 
 slay enhanced_json_to_config_recursive(manager ConfigManager, json_value JsonValue, prefix tea, source_type tea) ConfigManager {
     fr fr Convert enhanced JSON value to configuration values with full type support
-    ready (json_value.value_type == "string") {
+    lowkey (json_value.value_type == "string") {
         sus config_value ConfigValue = StringConfigValue{
             value: json_value.string_value,
             source: source_type,
@@ -1184,7 +1184,7 @@ slay enhanced_json_to_config_recursive(manager ConfigManager, json_value JsonVal
             validation_pattern: ""
         }
         map_set(manager.values, prefix, config_value)
-    } otherwise ready (json_value.value_type == "number") {
+    } highkey lowkey (json_value.value_type == "number") {
         sus config_value ConfigValue = NumberConfigValue{
             int_value: drip(json_value.number_value),
             float_value: json_value.number_value,
@@ -1194,7 +1194,7 @@ slay enhanced_json_to_config_recursive(manager ConfigManager, json_value JsonVal
             max_value: 0.0
         }
         map_set(manager.values, prefix, config_value)
-    } otherwise ready (json_value.value_type == "boolean") {
+    } highkey lowkey (json_value.value_type == "boolean") {
         sus config_value ConfigValue = BooleanConfigValue{
             value: json_value.boolean_value,
             source: source_type,
@@ -1202,7 +1202,7 @@ slay enhanced_json_to_config_recursive(manager ConfigManager, json_value JsonVal
             false_values: ["false", "0", "no", "off"]
         }
         map_set(manager.values, prefix, config_value)
-    } otherwise ready (json_value.value_type == "array") {
+    } highkey lowkey (json_value.value_type == "array") {
         sus array_elements ConfigValue[value] = []
         sus element_count drip = len(json_value.array_items)
         
@@ -1221,7 +1221,7 @@ slay enhanced_json_to_config_recursive(manager ConfigManager, json_value JsonVal
             max_length: -1
         }
         map_set(manager.values, prefix, config_value)
-    } otherwise ready (json_value.value_type == "object") {
+    } highkey lowkey (json_value.value_type == "object") {
         sus pair_count drip = len(json_value.object_pairs)
         sus i drip = 0
         
@@ -1243,10 +1243,10 @@ slay enhanced_normalize_env_key(env_key tea) tea {
     normalized = string_replace_all(normalized, "-", ".")
     
     fr fr Handle common environment variable prefixes
-    ready (string_starts_with(normalized, "cursed.")) {
+    lowkey (string_starts_with(normalized, "cursed.")) {
         normalized = string_substring_safe(normalized, 7, string_length(normalized) - 7)
     }
-    ready (string_starts_with(normalized, "app.")) {
+    lowkey (string_starts_with(normalized, "app.")) {
         normalized = string_substring_safe(normalized, 4, string_length(normalized) - 4)
     }
     
@@ -1263,7 +1263,7 @@ slay apply_enhanced_key_transformations(key tea, rules TransformationRule[value]
         sus rule TransformationRule = rules[i]
         
         fr fr Use pattern matching for complex transformations
-        ready (string_match_glob_pattern(transformed_key, rule.source_key)) {
+        lowkey (string_match_glob_pattern(transformed_key, rule.source_key)) {
             transformed_key = apply_transformation_rule(transformed_key, rule)
         }
         
@@ -1275,25 +1275,25 @@ slay apply_enhanced_key_transformations(key tea, rules TransformationRule[value]
 
 slay apply_transformation_rule(key tea, rule TransformationRule) tea {
     fr fr Apply individual transformation rule
-    ready (rule.transformation == "snake_case") {
+    lowkey (rule.transformation == "snake_case") {
         damn string_to_snake_case(key)
-    } otherwise ready (rule.transformation == "kebab_case") {
+    } highkey lowkey (rule.transformation == "kebab_case") {
         damn string_to_kebab_case(key)
-    } otherwise ready (rule.transformation == "camel_case") {
+    } highkey lowkey (rule.transformation == "camel_case") {
         damn string_to_camel_case(key)
-    } otherwise ready (rule.transformation == "uppercase") {
+    } highkey lowkey (rule.transformation == "uppercase") {
         damn string_to_uppercase(key)
-    } otherwise ready (rule.transformation == "lowercase") {
+    } highkey lowkey (rule.transformation == "lowercase") {
         damn string_to_lowercase(key)
-    } otherwise ready (rule.transformation == "trim") {
+    } highkey lowkey (rule.transformation == "trim") {
         damn string_trim(key)
-    } otherwise ready (rule.transformation == "prefix_remove") {
-        ready (string_starts_with(key, rule.condition)) {
+    } highkey lowkey (rule.transformation == "prefix_remove") {
+        lowkey (string_starts_with(key, rule.condition)) {
             damn string_substring_safe(key, string_length(rule.condition), 
                                      string_length(key) - string_length(rule.condition))
         }
         damn key
-    } otherwise {
+    } highkey {
         damn key
     }
 }
@@ -1304,7 +1304,7 @@ slay create_enhanced_config_value_from_env(env_value tea, source_type tea) Confi
     
     fr fr Advanced boolean detection
     sus lower_value tea = string_to_lowercase(trimmed_value)
-    ready (array_contains_enhanced(["true", "1", "yes", "on", "enabled"], lower_value)) {
+    lowkey (array_contains_enhanced(["true", "1", "yes", "on", "enabled"], lower_value)) {
         damn BooleanConfigValue{
             value: based,
             source: source_type,
@@ -1312,7 +1312,7 @@ slay create_enhanced_config_value_from_env(env_value tea, source_type tea) Confi
             false_values: ["false", "0", "no", "off", "disabled"]
         }
     }
-    ready (array_contains_enhanced(["false", "0", "no", "off", "disabled"], lower_value)) {
+    lowkey (array_contains_enhanced(["false", "0", "no", "off", "disabled"], lower_value)) {
         damn BooleanConfigValue{
             value: cringe,
             source: source_type,
@@ -1322,8 +1322,8 @@ slay create_enhanced_config_value_from_env(env_value tea, source_type tea) Confi
     }
     
     fr fr Advanced number detection
-    ready (is_numeric_string_enhanced(trimmed_value)) {
-        ready (string_contains(trimmed_value, ".") || 
+    lowkey (is_numeric_string_enhanced(trimmed_value)) {
+        lowkey (string_contains(trimmed_value, ".") || 
                string_contains(trimmed_value, "e") || 
                string_contains(trimmed_value, "E")) {
             sus float_val meal = string_to_float(trimmed_value)
@@ -1335,7 +1335,7 @@ slay create_enhanced_config_value_from_env(env_value tea, source_type tea) Confi
                 min_value: 0.0,
                 max_value: 0.0
             }
-        } otherwise {
+        } highkey {
             sus int_val drip = string_to_int(trimmed_value)
             damn NumberConfigValue{
                 int_value: int_val,
@@ -1349,9 +1349,9 @@ slay create_enhanced_config_value_from_env(env_value tea, source_type tea) Confi
     }
     
     fr fr Array detection (comma-separated values)
-    ready (string_contains(trimmed_value, ",")) {
+    lowkey (string_contains(trimmed_value, ",")) {
         sus split_result StringSplitResult = string_split_enhanced(trimmed_value, ",", 0)
-        ready (split_result.success) {
+        lowkey (split_result.success) {
             sus elements ConfigValue[value] = []
             sus part_count drip = split_result.count
             
@@ -1400,7 +1400,7 @@ slay array_contains_enhanced(arr tea[value], target tea) lit {
 
 slay is_numeric_string_enhanced(str tea) lit {
     fr fr Enhanced numeric string validation with scientific notation support
-    ready (str == "") { damn cringe }
+    lowkey (str == "") { damn cringe }
     
     sus length drip = string_length(str)
     sus has_dot lit = cringe
@@ -1408,29 +1408,29 @@ slay is_numeric_string_enhanced(str tea) lit {
     sus i drip = 0
     
     fr fr Handle optional sign
-    ready (string_char_at(str, 0) == "-" || string_char_at(str, 0) == "+") {
+    lowkey (string_char_at(str, 0) == "-" || string_char_at(str, 0) == "+") {
         i = 1
     }
     
-    ready (i >= length) { damn cringe }
+    lowkey (i >= length) { damn cringe }
     
     bestie (i < length) {
         sus char tea = string_char_at(str, i)
         
-        ready (char >= "0" && char <= "9") {
+        lowkey (char >= "0" && char <= "9") {
             fr fr Valid digit
-        } otherwise ready (char == "." && !has_dot && !has_e) {
+        } highkey lowkey (char == "." && !has_dot && !has_e) {
             has_dot = based
-        } otherwise ready ((char == "e" || char == "E") && !has_e) {
+        } highkey lowkey ((char == "e" || char == "E") && !has_e) {
             has_e = based
             fr fr Next character can be sign
-            ready (i + 1 < length) {
+            lowkey (i + 1 < length) {
                 sus next_char tea = string_char_at(str, i + 1)
-                ready (next_char == "+" || next_char == "-") {
+                lowkey (next_char == "+" || next_char == "-") {
                     i = i + 1
                 }
             }
-        } otherwise {
+        } highkey {
             damn cringe
         }
         
@@ -1442,14 +1442,14 @@ slay is_numeric_string_enhanced(str tea) lit {
 
 slay json_value_to_config_value(json_value JsonValue) ConfigValue {
     fr fr Convert single JSON value to configuration value
-    ready (json_value.value_type == "string") {
+    lowkey (json_value.value_type == "string") {
         damn StringConfigValue{
             value: json_value.string_value,
             source: "json",
             is_encrypted: cringe,
             validation_pattern: ""
         }
-    } otherwise ready (json_value.value_type == "number") {
+    } highkey lowkey (json_value.value_type == "number") {
         damn NumberConfigValue{
             int_value: drip(json_value.number_value),
             float_value: json_value.number_value,
@@ -1458,14 +1458,14 @@ slay json_value_to_config_value(json_value JsonValue) ConfigValue {
             min_value: 0.0,
             max_value: 0.0
         }
-    } otherwise ready (json_value.value_type == "boolean") {
+    } highkey lowkey (json_value.value_type == "boolean") {
         damn BooleanConfigValue{
             value: json_value.boolean_value,
             source: "json",
             true_values: ["true"],
             false_values: ["false"]
         }
-    } otherwise {
+    } highkey {
         damn StringConfigValue{
             value: "",
             source: "json",
@@ -1477,9 +1477,9 @@ slay json_value_to_config_value(json_value JsonValue) ConfigValue {
 
 slay combine_config_keys(prefix tea, key tea) tea {
     fr fr Combine configuration keys with proper dot notation
-    ready (prefix == "") {
+    lowkey (prefix == "") {
         damn key
-    } otherwise {
+    } highkey {
         damn prefix + "." + key
     }
 }
@@ -1506,16 +1506,16 @@ slay string_replace_all(str tea, old_str tea, new_str tea) tea {
     sus old_length drip = string_length(old_str)
     sus position drip = 0
     
-    ready (old_length == 0) {
+    lowkey (old_length == 0) {
         damn str
     }
     
     bestie (position < str_length) {
-        ready (position + old_length <= str_length &&
+        lowkey (position + old_length <= str_length &&
                string_substring_safe(str, position, old_length) == old_str) {
             result = result + new_str
             position = position + old_length
-        } otherwise {
+        } highkey {
             result = result + string_char_at(str, position)
             position = position + 1
         }
@@ -1531,28 +1531,28 @@ slay string_to_int(str tea) drip {
     sus is_negative lit = cringe
     sus start_pos drip = 0
     
-    ready (length == 0) { damn 0 }
+    lowkey (length == 0) { damn 0 }
     
-    ready (string_char_at(str, 0) == "-") {
+    lowkey (string_char_at(str, 0) == "-") {
         is_negative = based
         start_pos = 1
-    } otherwise ready (string_char_at(str, 0) == "+") {
+    } highkey lowkey (string_char_at(str, 0) == "+") {
         start_pos = 1
     }
     
     sus i drip = start_pos
     bestie (i < length) {
         sus char tea = string_char_at(str, i)
-        ready (char >= "0" && char <= "9") {
+        lowkey (char >= "0" && char <= "9") {
             sus digit drip = char_code_to_digit(char)
             result = result * 10 + digit
-        } otherwise {
+        } highkey {
             break
         }
         i = i + 1
     }
     
-    ready (is_negative) {
+    lowkey (is_negative) {
         result = -result
     }
     
@@ -1567,16 +1567,16 @@ slay string_to_float(str tea) meal {
 
 slay char_code_to_digit(char tea) drip {
     fr fr Convert character code to digit
-    ready (char == "0") { damn 0 }
-    ready (char == "1") { damn 1 }
-    ready (char == "2") { damn 2 }
-    ready (char == "3") { damn 3 }
-    ready (char == "4") { damn 4 }
-    ready (char == "5") { damn 5 }
-    ready (char == "6") { damn 6 }
-    ready (char == "7") { damn 7 }
-    ready (char == "8") { damn 8 }
-    ready (char == "9") { damn 9 }
+    lowkey (char == "0") { damn 0 }
+    lowkey (char == "1") { damn 1 }
+    lowkey (char == "2") { damn 2 }
+    lowkey (char == "3") { damn 3 }
+    lowkey (char == "4") { damn 4 }
+    lowkey (char == "5") { damn 5 }
+    lowkey (char == "6") { damn 6 }
+    lowkey (char == "7") { damn 7 }
+    lowkey (char == "8") { damn 8 }
+    lowkey (char == "9") { damn 9 }
     damn 0
 }
 

@@ -369,7 +369,7 @@ slay register_redis_driver() lit {
 fr fr Utility functions
 
 slay get_driver_name(driver_type DatabaseDriverType) tea {
-    ready driver_type {
+    lowkey driver_type {
         DRIVER_POSTGRES -> damn "PostgreSQL"
         DRIVER_MYSQL -> damn "MySQL"
         DRIVER_SQLITE -> damn "SQLite"
@@ -417,7 +417,7 @@ slay create_new_connection(pool ConnectionPool) tea {
 }
 
 slay connect_driver(config DatabaseDriverConfig) tea {
-    ready config.driver_type {
+    lowkey config.driver_type {
         DRIVER_POSTGRES -> damn postgres_connect(config)
         DRIVER_MYSQL -> damn mysql_connect(config)
         DRIVER_SQLITE -> damn sqlite_connect(config)
@@ -428,7 +428,7 @@ slay connect_driver(config DatabaseDriverConfig) tea {
 }
 
 slay execute_driver_query(connection_id tea, query tea, params tea[value], driver_type DatabaseDriverType) QueryResult {
-    ready driver_type {
+    lowkey driver_type {
         DRIVER_POSTGRES -> damn postgres_execute(connection_id, query, params)
         DRIVER_MYSQL -> damn mysql_execute(connection_id, query, params)
         DRIVER_SQLITE -> damn sqlite_execute(connection_id, query, params)

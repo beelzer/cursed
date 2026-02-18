@@ -196,7 +196,7 @@ slay server_static(server *HttpServer, path tea, directory tea) lit {
         sus content tea = read_static_file(file_path)
         sus content_type tea = get_content_type(file_path)
         
-        ready (!is_empty(content)) {
+        lowkey (!is_empty(content)) {
             sus response HttpResponse = create_response(HTTP_STATUS_OK, content)
             response.headers = append(response.headers, create_header("Content-Type", content_type))
             damn response
@@ -208,7 +208,7 @@ slay server_static(server *HttpServer, path tea, directory tea) lit {
 
 slay server_start(server *HttpServer) lit {
     fr fr Real HTTP server start implementation
-    ready (server.port <= 0 || server.port > 65535) {
+    lowkey (server.port <= 0 || server.port > 65535) {
         damn cringe
     }
     server.is_running = based
@@ -219,7 +219,7 @@ slay server_start(server *HttpServer) lit {
 
 slay server_stop(server *HttpServer) lit {
     fr fr Real HTTP server stop implementation
-    ready (!server.is_running) {
+    lowkey (!server.is_running) {
         damn cringe
     }
     server.is_running = cap
@@ -281,7 +281,7 @@ slay create_header(name tea, value tea) HttpHeader {
 }
 
 slay add_header(request *HttpRequest, name tea, value tea) lit {
-    ready (name == "" || value == "") {
+    lowkey (name == "" || value == "") {
         damn cringe
     }
     request.headers = append(request.headers, create_header(name, value))
@@ -292,7 +292,7 @@ slay get_header(headers HttpHeader[value], name tea) tea {
     sus lower_name tea = to_lowercase(name)
     sus i drip = 0
     bestie (i < len(headers)) {
-        ready (equals(to_lowercase(headers[i].name), lower_name)) {
+        lowkey (equals(to_lowercase(headers[i].name), lower_name)) {
             damn headers[i].value
         }
         i = i + 1
@@ -316,16 +316,16 @@ fr fr ===== URL OPERATIONS =====
 
 slay build_url(base tea, path tea, params tea[value]) tea {
     sus url tea = base
-    ready (!ends_with(url, "/") && !starts_with(path, "/")) {
+    lowkey (!ends_with(url, "/") && !starts_with(path, "/")) {
         url = concat(url, "/")
     }
     url = concat(url, path)
     
-    ready (len(params) > 0) {
+    lowkey (len(params) > 0) {
         url = concat(url, "?")
         sus i drip = 0
         bestie (i < len(params)) {
-            ready (i > 0) {
+            lowkey (i > 0) {
                 url = concat(url, "&")
             }
             url = concat(url, params[i])
@@ -348,9 +348,9 @@ slay url_encode(text tea) tea {
     
     bestie (i < length(text)) {
         sus ch tea = char_at(text, i)
-        ready (is_url_safe_char(ch)) {
+        lowkey (is_url_safe_char(ch)) {
             result = concat(result, ch)
-        } otherwise {
+        } highkey {
             sus hex tea = char_to_hex(ch)
             result = concat(result, concat("%", hex))
         }
@@ -366,20 +366,20 @@ slay url_decode(encoded_text tea) tea {
     
     bestie (i < length(encoded_text)) {
         sus ch tea = char_at(encoded_text, i)
-        ready (ch == "%") {
-            ready (i + 2 < length(encoded_text)) {
+        lowkey (ch == "%") {
+            lowkey (i + 2 < length(encoded_text)) {
                 sus hex tea = substring(encoded_text, i + 1, i + 3)
                 sus decoded_ch tea = hex_to_char(hex)
                 result = concat(result, decoded_ch)
                 i = i + 3
-            } otherwise {
+            } highkey {
                 result = concat(result, ch)
                 i = i + 1
             }
-        } otherwise ready (ch == "+") {
+        } highkey lowkey (ch == "+") {
             result = concat(result, " ")
             i = i + 1
-        } otherwise {
+        } highkey {
             result = concat(result, ch)
             i = i + 1
         }
@@ -390,7 +390,7 @@ slay url_decode(encoded_text tea) tea {
 fr fr ===== COOKIE OPERATIONS =====
 
 slay set_cookie(response *HttpResponse, name tea, value tea) lit {
-    ready (name == "" || value == "") {
+    lowkey (name == "" || value == "") {
         damn cringe
     }
     sus cookie_header tea = concat(name, concat("=", value))
@@ -399,20 +399,20 @@ slay set_cookie(response *HttpResponse, name tea, value tea) lit {
 }
 
 slay set_cookie_with_options(response *HttpResponse, name tea, value tea, max_age drip, path tea, domain tea) lit {
-    ready (name == "" || value == "") {
+    lowkey (name == "" || value == "") {
         damn cringe
     }
     sus cookie_header tea = concat(name, concat("=", value))
     
-    ready (max_age > 0) {
+    lowkey (max_age > 0) {
         cookie_header = concat(cookie_header, concat("; Max-Age=", int_to_string(max_age)))
     }
     
-    ready (!is_empty(path)) {
+    lowkey (!is_empty(path)) {
         cookie_header = concat(cookie_header, concat("; Path=", path))
     }
     
-    ready (!is_empty(domain)) {
+    lowkey (!is_empty(domain)) {
         cookie_header = concat(cookie_header, concat("; Domain=", domain))
     }
     
@@ -425,9 +425,9 @@ slay set_cookie_with_options(response *HttpResponse, name tea, value tea, max_ag
 
 slay get_cookie(request HttpRequest, name tea) tea {
     sus cookie_header tea = get_header(request.headers, "Cookie")
-    ready (is_empty(cookie_header)) {
+    lowkey (is_empty(cookie_header)) {
         sus file_content tea = read_static_file(file_path)
-        ready (string_length(file_content) == 0) {
+        lowkey (string_length(file_content) == 0) {
             damn create_error_response(404, "Not Found")
         }
         sus response HttpResponse = HttpResponse{
@@ -444,7 +444,7 @@ slay get_cookie(request HttpRequest, name tea) tea {
     bestie (i < len(cookies)) {
         sus cookie tea = trim(cookies[i])
         sus parts tea[value] = split(cookie, "=")
-        ready (len(parts) == 2 && equals(trim(parts[0]), name)) {
+        lowkey (len(parts) == 2 && equals(trim(parts[0]), name)) {
             damn trim(parts[1])
         }
         i = i + 1
@@ -479,16 +479,16 @@ slay middleware_logging(request HttpRequest, next slay(HttpRequest) HttpResponse
 
 slay middleware_auth(request HttpRequest, next slay(HttpRequest) HttpResponse) HttpResponse {
     sus auth_header tea = get_header(request.headers, "Authorization")
-    ready (is_empty(auth_header)) {
+    lowkey (is_empty(auth_header)) {
         damn create_response(HTTP_STATUS_UNAUTHORIZED, "Unauthorized")
     }
     
-    ready (!starts_with(auth_header, "Bearer ")) {
+    lowkey (!starts_with(auth_header, "Bearer ")) {
         damn create_response(HTTP_STATUS_UNAUTHORIZED, "Invalid authorization header")
     }
     
     sus token tea = slice(auth_header, 7)
-    ready (!validate_token(token)) {
+    lowkey (!validate_token(token)) {
         damn create_response(HTTP_STATUS_UNAUTHORIZED, "Invalid token")
     }
     
@@ -503,7 +503,7 @@ slay system_call_tcp_connect(host tea, port drip) drip {
     sus curl_cmd = "curl -s --connect-timeout 5 --max-time 10 http://" + host + ":" + str(port) + "/ >/dev/null 2>&1"
     sus result = system_exec(curl_cmd)
     
-    ready (result == 0) {
+    lowkey (result == 0) {
         damn 1  fr fr Success - return fake socket fd
     } nah {
         damn -1  fr fr Connection failed
@@ -538,20 +538,20 @@ slay execute_command_with_output(command tea) tea {
     fr fr Temporary implementation using file I/O simulation
     
     fr fr Simulate different responses based on URL patterns
-    ready (str_contains(command, "httpbin.org/ip")) {
+    lowkey (str_contains(command, "httpbin.org/ip")) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 32\r\n\r\n{\"origin\": \"203.0.113.1\"}"
     }
     
-    ready (str_contains(command, "google.com")) {
+    lowkey (str_contains(command, "google.com")) {
         damn "HTTP/1.1 301 Moved Permanently\r\nLocation: https://www.google.com/\r\nContent-Length: 219\r\n\r\n<HTML><HEAD><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<TITLE>301 Moved</TITLE></HEAD><BODY>\n<H1>301 Moved</H1>\nThe document has moved\n<A HREF=\"https://www.google.com/\">here</A>.\r\n</BODY></HTML>"
     }
     
-    ready (str_contains(command, "nonexistent-domain") || str_contains(command, ".invalid")) {
+    lowkey (str_contains(command, "nonexistent-domain") || str_contains(command, ".invalid")) {
         damn "curl: (6) Could not resolve host: nonexistent-domain-12345.invalid"
     }
     
-    ready (str_contains(command, "httpbin.org/post")) {
-        ready (str_contains(command, "-d")) {
+    lowkey (str_contains(command, "httpbin.org/post")) {
+        lowkey (str_contains(command, "-d")) {
             damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 85\r\n\r\n{\"args\": {}, \"data\": \"{\\\"test\\\": \\\"data\\\"}\", \"headers\": {\"Content-Type\": \"application/json\"}}"
         } nah {
             damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 50\r\n\r\n{\"args\": {}, \"data\": \"\", \"headers\": {}}"
@@ -584,27 +584,27 @@ slay tcp_receive_response(socket_fd drip) tea {
     
     bestie (total_received < max_response_size) {
         sus chunk = system_call_tcp_receive(socket_fd, 4096)
-        ready (chunk == "") {
+        lowkey (chunk == "") {
             halt  fr fr Connection closed or timeout
         }
         response_buffer = response_buffer + chunk
         total_received = total_received + len(chunk)
         
         fr fr Check if we have complete HTTP response
-        ready (str_contains(response_buffer, "\r\n\r\n")) {
+        lowkey (str_contains(response_buffer, "\r\n\r\n")) {
             sus header_end = str_find(response_buffer, "\r\n\r\n") + 4
             sus headers = str_slice(response_buffer, 0, header_end)
             
             fr fr Check for Content-Length header
-            ready (str_contains(headers, "Content-Length:")) {
+            lowkey (str_contains(headers, "Content-Length:")) {
                 sus content_length = parse_content_length(headers)
                 sus body_received = len(response_buffer) - header_end
-                ready (body_received >= content_length) {
+                lowkey (body_received >= content_length) {
                     halt  fr fr Complete response received
                 }
-            } nah ready (str_contains(headers, "Transfer-Encoding: chunked")) {
+            } nah lowkey (str_contains(headers, "Transfer-Encoding: chunked")) {
                 fr fr Handle chunked encoding
-                ready (str_ends_with(response_buffer, "\r\n0\r\n\r\n")) {
+                lowkey (str_ends_with(response_buffer, "\r\n0\r\n\r\n")) {
                     halt  fr fr End of chunked response
                 }
             } nah {
@@ -631,11 +631,11 @@ slay parse_url(url tea) squad { host tea, port drip, path tea, scheme tea } {
     sus url_work = url
     
     fr fr Extract scheme
-    ready (str_starts_with(url_work, "https://")) {
+    lowkey (str_starts_with(url_work, "https://")) {
         scheme = "https"
         port = 443
         url_work = str_slice(url_work, 8, len(url_work))
-    } nah ready (str_starts_with(url_work, "http://")) {
+    } nah lowkey (str_starts_with(url_work, "http://")) {
         scheme = "http"
         port = 80
         url_work = str_slice(url_work, 7, len(url_work))
@@ -643,7 +643,7 @@ slay parse_url(url tea) squad { host tea, port drip, path tea, scheme tea } {
     
     fr fr Extract host and path
     sus slash_pos = str_find(url_work, "/")
-    ready (slash_pos >= 0) {
+    lowkey (slash_pos >= 0) {
         host = str_slice(url_work, 0, slash_pos)
         path = str_slice(url_work, slash_pos, len(url_work))
     } nah {
@@ -653,7 +653,7 @@ slay parse_url(url tea) squad { host tea, port drip, path tea, scheme tea } {
     
     fr fr Extract port from host
     sus colon_pos = str_find(host, ":")
-    ready (colon_pos >= 0) {
+    lowkey (colon_pos >= 0) {
         port = str_to_int(str_slice(host, colon_pos + 1, len(host)))
         host = str_slice(host, 0, colon_pos)
     }
@@ -674,7 +674,7 @@ slay build_http_request_string(request HttpRequest) tea {
     }
     
     sus content_length tea = ""
-    ready (request.body != "") {
+    lowkey (request.body != "") {
         content_length = "Content-Length: " + str(len(request.body)) + "\r\n"
     }
     
@@ -685,20 +685,20 @@ slay build_http_request_string(request HttpRequest) tea {
 slay parse_http_response(response_data tea) HttpResponse {
     fr fr Parse HTTP response string into HttpResponse struct
     sus lines = str_split(response_data, "\r\n")
-    ready (len(lines) == 0) {
+    lowkey (len(lines) == 0) {
         damn HttpResponse{ status: HTTP_STATUS_RESPONSE_ERROR, status_text: "Invalid response", headers: [], body: "" }
     }
     
     fr fr Parse status line
     sus status_line = lines[0]
     sus status_parts = str_split(status_line, " ")
-    ready (len(status_parts) < 2) {
+    lowkey (len(status_parts) < 2) {
         damn HttpResponse{ status: HTTP_STATUS_RESPONSE_ERROR, status_text: "Invalid status line", headers: [], body: "" }
     }
     
     sus status = str_to_int(status_parts[1])
     sus status_text = ""
-    ready (len(status_parts) >= 3) {
+    lowkey (len(status_parts) >= 3) {
         status_text = str_join(str_slice_array(status_parts, 2, len(status_parts)), " ")
     }
     
@@ -708,7 +708,7 @@ slay parse_http_response(response_data tea) HttpResponse {
     bestie (header_end < len(lines) && lines[header_end] != "") {
         sus header_line = lines[header_end]
         sus colon_pos = str_find(header_line, ":")
-        ready (colon_pos > 0) {
+        lowkey (colon_pos > 0) {
             sus name = str_trim(str_slice(header_line, 0, colon_pos))
             sus value = str_trim(str_slice(header_line, colon_pos + 1, len(header_line)))
             array_push(headers, HttpHeader{ name: name, value: value })
@@ -732,7 +732,7 @@ slay parse_content_length(headers tea) drip {
     sus lines = str_split(headers, "\r\n")
     bestie (sus i drip = 0; i < len(lines); i = i + 1) {
         sus line = str_to_lower(lines[i])
-        ready (str_starts_with(line, "content-length:")) {
+        lowkey (str_starts_with(line, "content-length:")) {
             sus colon_pos = str_find(lines[i], ":")
             sus value_str = str_trim(str_slice(lines[i], colon_pos + 1, len(lines[i])))
             damn str_to_int(value_str)
@@ -747,7 +747,7 @@ slay send_request(request HttpRequest) HttpResponse {
     fr fr Real HTTP client implementation using system curl
     
     fr fr Validate request
-    ready (request.url == "") {
+    lowkey (request.url == "") {
         damn create_response(HTTP_STATUS_REQUEST_ERROR, "Empty URL provided")
     }
     
@@ -755,7 +755,7 @@ slay send_request(request HttpRequest) HttpResponse {
     sus curl_cmd = "curl -s -i --connect-timeout 5 --max-time 30"
     
     fr fr Add method
-    ready (request.method != "GET") {
+    lowkey (request.method != "GET") {
         curl_cmd = curl_cmd + " -X " + request.method
     }
     
@@ -765,7 +765,7 @@ slay send_request(request HttpRequest) HttpResponse {
     }
     
     fr fr Add body for POST/PUT requests
-    ready (request.body != "") {
+    lowkey (request.body != "") {
         curl_cmd = curl_cmd + " -d '" + request.body + "'"
     }
     
@@ -775,12 +775,12 @@ slay send_request(request HttpRequest) HttpResponse {
     fr fr Execute curl and capture output
     sus response_data = execute_command_with_output(curl_cmd)
     
-    ready (response_data == "") {
+    lowkey (response_data == "") {
         damn create_response(HTTP_STATUS_CONNECTION_ERROR, "Failed to connect to server")
     }
     
     fr fr Check for curl error indicators
-    ready (str_contains(response_data, "curl: (")) {
+    lowkey (str_contains(response_data, "curl: (")) {
         damn create_response(HTTP_STATUS_CONNECTION_ERROR, "Connection error: " + response_data)
     }
     
@@ -790,14 +790,14 @@ slay send_request(request HttpRequest) HttpResponse {
 }
 
 slay get_status_text(status drip) tea {
-    ready (status == 200) { damn "OK" }
-    ready (status == 201) { damn "Created" }
-    ready (status == 204) { damn "No Content" }
-    ready (status == 400) { damn "Bad Request" }
-    ready (status == 401) { damn "Unauthorized" }
-    ready (status == 403) { damn "Forbidden" }
-    ready (status == 404) { damn "Not Found" }
-    ready (status == 500) { damn "Internal Server Error" }
+    lowkey (status == 200) { damn "OK" }
+    lowkey (status == 201) { damn "Created" }
+    lowkey (status == 204) { damn "No Content" }
+    lowkey (status == 400) { damn "Bad Request" }
+    lowkey (status == 401) { damn "Unauthorized" }
+    lowkey (status == 403) { damn "Forbidden" }
+    lowkey (status == 404) { damn "Not Found" }
+    lowkey (status == 500) { damn "Internal Server Error" }
     damn "Unknown"
 }
 
@@ -818,10 +818,10 @@ slay base64_decode(encoded_text tea) tea {
 }
 
 slay is_url_safe_char(ch tea) lit {
-    ready (is_alpha_char(ch) || is_digit_char(ch)) {
+    lowkey (is_alpha_char(ch) || is_digit_char(ch)) {
         damn based
     }
-    ready (ch == "-" || ch == "_" || ch == "." || ch == "~") {
+    lowkey (ch == "-" || ch == "_" || ch == "." || ch == "~") {
         damn based
     }
     damn cap
@@ -841,7 +841,7 @@ slay hex_to_char(hex tea) tea {
 
 slay int_to_hex(value drip) tea {
     fr fr Convert integer to hex string
-    ready (value == 0) { damn "00" }
+    lowkey (value == 0) { damn "00" }
     
     sus hex_chars tea = "0123456789ABCDEF"
     sus result tea = ""
@@ -854,7 +854,7 @@ slay int_to_hex(value drip) tea {
     }
     
     fr fr Pad to 2 characters
-    ready (length(result) == 1) {
+    lowkey (length(result) == 1) {
         result = concat("0", result)
     }
     damn result
@@ -869,11 +869,11 @@ slay hex_to_int(hex tea) drip {
         sus ch tea = char_at(hex, i)
         sus digit drip = 0
         
-        ready (ch >= "0" && ch <= "9") {
+        lowkey (ch >= "0" && ch <= "9") {
             digit = char_to_ascii(ch) - 48
-        } otherwise ready (ch >= "A" && ch <= "F") {
+        } highkey lowkey (ch >= "A" && ch <= "F") {
             digit = char_to_ascii(ch) - 55
-        } otherwise ready (ch >= "a" && ch <= "f") {
+        } highkey lowkey (ch >= "a" && ch <= "f") {
             digit = char_to_ascii(ch) - 87
         }
         
@@ -887,23 +887,23 @@ slay get_content_type(file_path tea) tea {
     sus ext tea = get_extension(file_path)
     sus lower_ext tea = to_lowercase(ext)
     
-    ready (equals(lower_ext, ".html") || equals(lower_ext, ".htm")) {
+    lowkey (equals(lower_ext, ".html") || equals(lower_ext, ".htm")) {
         damn "text/html"
-    } otherwise ready (equals(lower_ext, ".css")) {
+    } highkey lowkey (equals(lower_ext, ".css")) {
         damn "text/css"
-    } otherwise ready (equals(lower_ext, ".js")) {
+    } highkey lowkey (equals(lower_ext, ".js")) {
         damn "application/javascript"
-    } otherwise ready (equals(lower_ext, ".json")) {
+    } highkey lowkey (equals(lower_ext, ".json")) {
         damn "application/json"
-    } otherwise ready (equals(lower_ext, ".xml")) {
+    } highkey lowkey (equals(lower_ext, ".xml")) {
         damn "application/xml"
-    } otherwise ready (equals(lower_ext, ".png")) {
+    } highkey lowkey (equals(lower_ext, ".png")) {
         damn "image/png"
-    } otherwise ready (equals(lower_ext, ".jpg") || equals(lower_ext, ".jpeg")) {
+    } highkey lowkey (equals(lower_ext, ".jpg") || equals(lower_ext, ".jpeg")) {
         damn "image/jpeg"
-    } otherwise ready (equals(lower_ext, ".gif")) {
+    } highkey lowkey (equals(lower_ext, ".gif")) {
         damn "image/gif"
-    } otherwise ready (equals(lower_ext, ".svg")) {
+    } highkey lowkey (equals(lower_ext, ".svg")) {
         damn "image/svg+xml"
     }
     damn "text/plain"
@@ -912,7 +912,7 @@ slay get_content_type(file_path tea) tea {
 slay build_file_path(base_directory tea, request_url tea, mount_path tea) tea {
     fr fr Remove mount path from URL to get relative path
     sus relative_path tea = slice(request_url, length(mount_path))
-    ready (starts_with(relative_path, "/")) {
+    lowkey (starts_with(relative_path, "/")) {
         relative_path = slice(relative_path, 1)
     }
     damn join_path(base_directory, relative_path)
@@ -963,7 +963,7 @@ slay concat(a tea, b tea) tea {
 
 slay is_empty(text tea) lit {
     fr fr Real implementation for empty string check
-    ready (text == "") {
+    lowkey (text == "") {
         damn based
     }
     damn cringe
@@ -1049,7 +1049,7 @@ fr fr ===== SYSTEM FUNCTIONS =====
 
 slay system_start_server(port drip) lit {
     fr fr Mock server start - in production would bind to port
-    ready (port > 1024 && port < 65536) {
+    lowkey (port > 1024 && port < 65536) {
         damn based
     }
     damn cringe
@@ -1071,13 +1071,13 @@ slay write_to_console(text tea) {
 
 slay execute_command_with_output(command tea) tea {
     fr fr Mock command execution - return HTTP response for demo
-    ready (str_contains(command, "httpbin.org/get")) {
+    lowkey (str_contains(command, "httpbin.org/get")) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 45\r\n\r\n{\"args\": {}, \"headers\": {\"User-Agent\": \"curl\"}}"
     }
-    ready (str_contains(command, "httpbin.org/post")) {
+    lowkey (str_contains(command, "httpbin.org/post")) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 60\r\n\r\n{\"args\": {}, \"data\": \"test\", \"json\": {\"message\": \"Hello\"}}"
     }
-    ready (str_contains(command, "google.com")) {
+    lowkey (str_contains(command, "google.com")) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 20\r\n\r\n<h1>Google</h1>"
     }
     damn "HTTP/1.1 404 Not Found\r\n\r\n"
@@ -1085,7 +1085,7 @@ slay execute_command_with_output(command tea) tea {
 
 slay system_exec(command tea) drip {
     fr fr Mock system command execution
-    ready (str_contains(command, "curl")) {
+    lowkey (str_contains(command, "curl")) {
         damn 0  fr fr Success
     }
     damn 1  fr fr Failure
@@ -1097,20 +1097,20 @@ slay str_contains(text tea, substr tea) lit {
     fr fr Check if text contains substring
     sus text_len drip = len(text)
     sus sub_len drip = len(substr)
-    ready (sub_len > text_len) { damn cringe }
+    lowkey (sub_len > text_len) { damn cringe }
     
     sus i drip = 0
     bestie (i <= text_len - sub_len) {
         sus match lit = based
         sus j drip = 0
         bestie (j < sub_len) {
-            ready (char_at(text, i + j) != char_at(substr, j)) {
+            lowkey (char_at(text, i + j) != char_at(substr, j)) {
                 match = cringe
                 halt
             }
             j = j + 1
         }
-        ready (match) { damn based }
+        lowkey (match) { damn based }
         i = i + 1
     }
     damn cringe
@@ -1120,20 +1120,20 @@ slay str_find(text tea, substr tea) drip {
     fr fr Find position of substring
     sus text_len drip = len(text)
     sus sub_len drip = len(substr)
-    ready (sub_len > text_len) { damn -1 }
+    lowkey (sub_len > text_len) { damn -1 }
     
     sus i drip = 0
     bestie (i <= text_len - sub_len) {
         sus match lit = based
         sus j drip = 0
         bestie (j < sub_len) {
-            ready (char_at(text, i + j) != char_at(substr, j)) {
+            lowkey (char_at(text, i + j) != char_at(substr, j)) {
                 match = cringe
                 halt
             }
             j = j + 1
         }
-        ready (match) { damn i }
+        lowkey (match) { damn i }
         i = i + 1
     }
     damn -1
@@ -1141,11 +1141,11 @@ slay str_find(text tea, substr tea) drip {
 
 slay str_starts_with(text tea, prefix tea) lit {
     sus prefix_len drip = len(prefix)
-    ready (len(text) < prefix_len) { damn cringe }
+    lowkey (len(text) < prefix_len) { damn cringe }
     
     sus i drip = 0
     bestie (i < prefix_len) {
-        ready (char_at(text, i) != char_at(prefix, i)) {
+        lowkey (char_at(text, i) != char_at(prefix, i)) {
             damn cringe
         }
         i = i + 1
@@ -1155,8 +1155,8 @@ slay str_starts_with(text tea, prefix tea) lit {
 
 slay str_slice(text tea, start drip, end drip) tea {
     fr fr Extract slice of string
-    ready (start < 0 || start >= len(text)) { damn "" }
-    ready (end <= start || end > len(text)) { damn "" }
+    lowkey (start < 0 || start >= len(text)) { damn "" }
+    lowkey (end <= start || end > len(text)) { damn "" }
     
     sus result tea = ""
     sus i drip = start
@@ -1169,27 +1169,27 @@ slay str_slice(text tea, start drip, end drip) tea {
 
 slay str_to_int(text tea) drip {
     fr fr Convert string to integer
-    ready (text == "") { damn 0 }
+    lowkey (text == "") { damn 0 }
     
     sus result drip = 0
     sus i drip = 0
     sus negative lit = cringe
     
-    ready (char_at(text, 0) == "-") {
+    lowkey (char_at(text, 0) == "-") {
         negative = based
         i = 1
     }
     
     bestie (i < len(text)) {
         sus ch tea = char_at(text, i)
-        ready (ch >= "0" && ch <= "9") {
+        lowkey (ch >= "0" && ch <= "9") {
             sus digit drip = char_to_ascii(ch) - 48
             result = result * 10 + digit
         }
         i = i + 1
     }
     
-    ready (negative) {
+    lowkey (negative) {
         result = 0 - result
     }
     damn result
@@ -1224,12 +1224,12 @@ slay str_ends_with(text tea, suffix tea) lit {
     fr fr Check if string ends with suffix
     sus text_len drip = len(text)
     sus suffix_len drip = len(suffix)
-    ready (suffix_len > text_len) { damn cringe }
+    lowkey (suffix_len > text_len) { damn cringe }
     
     sus start_pos drip = text_len - suffix_len
     sus i drip = 0
     bestie (i < suffix_len) {
-        ready (char_at(text, start_pos + i) != char_at(suffix, i)) {
+        lowkey (char_at(text, start_pos + i) != char_at(suffix, i)) {
             damn cringe
         }
         i = i + 1
@@ -1240,7 +1240,7 @@ slay str_ends_with(text tea, suffix tea) lit {
 fr fr Import functions for HTTP functionality
 slay spill(msg tea) lit {
     fr fr Real logging implementation for HTTP module
-    ready (msg != "") {
+    lowkey (msg != "") {
         sus timestamp tea = get_current_timestamp()
         sus log_entry tea = "[" + timestamp + "] HTTP: " + msg
         write_to_console(log_entry)

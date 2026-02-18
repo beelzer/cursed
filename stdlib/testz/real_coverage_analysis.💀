@@ -143,7 +143,7 @@ slay enable_runtime_coverage_hooks() {
 
 fr fr Real function entry recording
 slay record_function_entry(function_name tea, file_path tea, line_number normie) {
-    ready (!__global_coverage_tracker.enabled) {
+    lowkey (!__global_coverage_tracker.enabled) {
         damn
     }
     
@@ -157,14 +157,14 @@ slay record_function_entry(function_name tea, file_path tea, line_number normie)
     update_file_coverage_function(file_path, function_name, current_time)
     
     fr fr Debug output in comprehensive mode
-    ready (__global_coverage_tracker.tracking_mode == "comprehensive") {
+    lowkey (__global_coverage_tracker.tracking_mode == "comprehensive") {
         vibez.spill("🔍 Function call:", function_name, "in", file_path, "line", line_number)
     }
 }
 
 fr fr Real line execution recording
 slay record_line_execution(file_path tea, line_number normie, execution_time normie) {
-    ready (!__global_coverage_tracker.enabled) {
+    lowkey (!__global_coverage_tracker.enabled) {
         damn
     }
     
@@ -175,8 +175,8 @@ slay record_line_execution(file_path tea, line_number normie, execution_time nor
     fr fr Update file coverage
     update_file_coverage_line(file_path, line_number, execution_time)
     
-    ready (__global_coverage_tracker.tracking_mode == "line" || __global_coverage_tracker.tracking_mode == "comprehensive") {
-        ready (current_count == 0) {  fr fr First time this line is executed
+    lowkey (__global_coverage_tracker.tracking_mode == "line" || __global_coverage_tracker.tracking_mode == "comprehensive") {
+        lowkey (current_count == 0) {  fr fr First time this line is executed
             vibez.spill("📝 New line covered:", file_path, "line", line_number)
         }
     }
@@ -184,15 +184,15 @@ slay record_line_execution(file_path tea, line_number normie, execution_time nor
 
 fr fr Real branch decision recording
 slay record_branch_decision(file_path tea, line_number normie, condition tea, decision lit) {
-    ready (!__global_coverage_tracker.enabled) {
+    lowkey (!__global_coverage_tracker.enabled) {
         damn
     }
     
     sus branch_key tea = file_path + ":" + int_to_string(line_number) + ":" + condition
     __global_coverage_tracker.branch_decisions = set_map_value(__global_coverage_tracker.branch_decisions, branch_key, decision)
     
-    ready (__global_coverage_tracker.tracking_mode == "branch" || __global_coverage_tracker.tracking_mode == "comprehensive") {
-        vibez.spill("🌿 Branch decision:", condition, "->", ready (decision) { "true" } otherwise { "false" })
+    lowkey (__global_coverage_tracker.tracking_mode == "branch" || __global_coverage_tracker.tracking_mode == "comprehensive") {
+        vibez.spill("🌿 Branch decision:", condition, "->", lowkey (decision) { "true" } highkey { "false" })
     }
 }
 
@@ -306,7 +306,7 @@ slay calculate_overall_function_coverage() normie {
     sus total_functions normie = __global_coverage_tracker.total_functions_discovered
     sus covered_functions normie = count_covered_functions()
     
-    ready (total_functions == 0) {
+    lowkey (total_functions == 0) {
         damn 0
     }
     
@@ -317,7 +317,7 @@ slay calculate_overall_line_coverage() normie {
     sus total_lines normie = __global_coverage_tracker.total_lines_discovered
     sus covered_lines normie = count_covered_lines()
     
-    ready (total_lines == 0) {
+    lowkey (total_lines == 0) {
         damn 0
     }
     
@@ -328,7 +328,7 @@ slay calculate_overall_branch_coverage() normie {
     sus total_branches normie = count_total_branches()
     sus covered_branches normie = count_covered_branches()
     
-    ready (total_branches == 0) {
+    lowkey (total_branches == 0) {
         damn 0
     }
     
@@ -352,7 +352,7 @@ slay find_uncovered_functions() [tea] {
     sus i normie = 0
     bestie (i < len(all_functions)) {
         sus function_name tea = all_functions[i]
-        ready (!map_contains_key(__global_coverage_tracker.function_calls, function_name)) {
+        lowkey (!map_contains_key(__global_coverage_tracker.function_calls, function_name)) {
             uncovered = append_string(uncovered, function_name)
         }
         i = i + 1
@@ -400,19 +400,19 @@ slay identify_coverage_gaps() [CoverageGap] {
 slay generate_coverage_recommendations(line_coverage normie, function_coverage normie, gaps [CoverageGap]) [tea] {
     sus recommendations [tea] = []
     
-    ready (line_coverage < 80) {
+    lowkey (line_coverage < 80) {
         recommendations = append_string(recommendations, "Increase line coverage to at least 80% by adding more unit tests")
     }
     
-    ready (function_coverage < 90) {
+    lowkey (function_coverage < 90) {
         recommendations = append_string(recommendations, "Improve function coverage to 90% by testing all public functions")
     }
     
-    ready (len(gaps) > 0) {
+    lowkey (len(gaps) > 0) {
         recommendations = append_string(recommendations, "Address " + int_to_string(len(gaps)) + " critical coverage gaps identified")
     }
     
-    ready (line_coverage >= 90 && function_coverage >= 95) {
+    lowkey (line_coverage >= 90 && function_coverage >= 95) {
         recommendations = append_string(recommendations, "Excellent coverage! Consider adding property-based and fuzz tests")
     }
     
@@ -437,34 +437,34 @@ slay print_coverage_report(report CoverageReport) {
     fr fr Coverage assessment
     sus overall_score normie = (report.overall_line_coverage + report.overall_function_coverage + report.overall_branch_coverage) / 3
     
-    ready (overall_score >= 90) {
+    lowkey (overall_score >= 90) {
         vibez.spill("🏆 EXCELLENT COVERAGE - Production ready!")
-    } otherwise ready (overall_score >= 80) {
+    } highkey lowkey (overall_score >= 80) {
         vibez.spill("✅ GOOD COVERAGE - Minor improvements needed")
-    } otherwise ready (overall_score >= 70) {
+    } highkey lowkey (overall_score >= 70) {
         vibez.spill("⚠️ MODERATE COVERAGE - Significant improvements needed")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ LOW COVERAGE - Major improvements required")
     }
     
     vibez.spill("")
     
     fr fr Critical gaps
-    ready (len(report.critical_gaps) > 0) {
+    lowkey (len(report.critical_gaps) > 0) {
         vibez.spill("🚨 CRITICAL COVERAGE GAPS:")
         print_coverage_gaps(report.critical_gaps)
         vibez.spill("")
     }
     
     fr fr Uncovered functions
-    ready (len(report.uncovered_functions) > 0) {
+    lowkey (len(report.uncovered_functions) > 0) {
         vibez.spill("🔍 UNCOVERED FUNCTIONS:")
         print_string_list(report.uncovered_functions)
         vibez.spill("")
     }
     
     fr fr Recommendations
-    ready (len(report.recommendations) > 0) {
+    lowkey (len(report.recommendations) > 0) {
         vibez.spill("💡 RECOMMENDATIONS:")
         print_string_list(report.recommendations)
         vibez.spill("")
@@ -502,7 +502,7 @@ slay start_realtime_coverage_monitoring() {
         bestie (based) {
             sleep_milliseconds(5000)  fr fr Update every 5 seconds
             
-            ready (__global_coverage_tracker.enabled) {
+            lowkey (__global_coverage_tracker.enabled) {
                 print_realtime_coverage_update()
             }
         }

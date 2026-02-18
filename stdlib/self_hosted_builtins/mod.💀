@@ -64,7 +64,7 @@ slay math_multiply_pure(a drip, b drip) drip {
 
 slay math_divide_pure(a drip, b drip) drip {
     fr fr Pure CURSED integer division
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn 0  fr fr Avoid division by zero
     }
     damn a / b
@@ -104,7 +104,7 @@ slay array_length_string_pure(arr tea[value]) drip {
 
 slay array_get_pure(arr drip[value], index drip) drip {
     fr fr Pure CURSED array element access with bounds checking
-    ready (index < 0 || index >= len(arr)) {
+    lowkey (index < 0 || index >= len(arr)) {
         damn 0  fr fr Return default value for out of bounds
     }
     damn arr[index]
@@ -112,28 +112,28 @@ slay array_get_pure(arr drip[value], index drip) drip {
 
 slay array_set_pure(arr drip[value], index drip, value drip) drip[value]{
     fr fr Pure CURSED array element update (returns new array)
-    ready (index < 0 || index >= len(arr)) {
+    lowkey (index < 0 || index >= len(arr)) {
         damn arr  fr fr Return original array if out of bounds
     }
     
     fr fr Create new array with updated value
     sus length drip = len(arr)
-    ready (length == 1) {
+    lowkey (length == 1) {
         damn [value]
     }
-    ready (length == 2) {
-        ready (index == 0) { damn [value, arr[1]] }
+    lowkey (length == 2) {
+        lowkey (index == 0) { damn [value, arr[1]] }
         damn [arr[0], value]
     }
-    ready (length == 3) {
-        ready (index == 0) { damn [value, arr[1], arr[2]] }
-        ready (index == 1) { damn [arr[0], value, arr[2]] }
+    lowkey (length == 3) {
+        lowkey (index == 0) { damn [value, arr[1], arr[2]] }
+        lowkey (index == 1) { damn [arr[0], value, arr[2]] }
         damn [arr[0], arr[1], value]
     }
-    ready (length == 4) {
-        ready (index == 0) { damn [value, arr[1], arr[2], arr[3]] }
-        ready (index == 1) { damn [arr[0], value, arr[2], arr[3]] }
-        ready (index == 2) { damn [arr[0], arr[1], value, arr[3]] }
+    lowkey (length == 4) {
+        lowkey (index == 0) { damn [value, arr[1], arr[2], arr[3]] }
+        lowkey (index == 1) { damn [arr[0], value, arr[2], arr[3]] }
+        lowkey (index == 2) { damn [arr[0], arr[1], value, arr[3]] }
         damn [arr[0], arr[1], arr[2], value]
     }
     
@@ -201,7 +201,7 @@ slay string_to_int_pure(s tea) drip {
 
 slay bool_to_string_pure(value lit) tea {
     fr fr Pure CURSED boolean to string conversion
-    ready (value) {
+    lowkey (value) {
         damn "based"
     }
     damn "cringe"
@@ -209,7 +209,7 @@ slay bool_to_string_pure(value lit) tea {
 
 slay string_to_bool_pure(s tea) lit {
     fr fr Pure CURSED string to boolean conversion
-    ready (s == "based" || s == "true" || s == "1") {
+    lowkey (s == "based" || s == "true" || s == "1") {
         damn based
     }
     damn cringe
@@ -219,22 +219,22 @@ fr fr ===== MEMORY OPERATIONS (Pure CURSED) =====
 
 slay create_array_pure(size drip, default_value drip) drip[value]{
     fr fr Pure CURSED array creation with default values
-    ready (size <= 0) {
+    lowkey (size <= 0) {
         damn []
     }
-    ready (size == 1) {
+    lowkey (size == 1) {
         damn [default_value]
     }
-    ready (size == 2) {
+    lowkey (size == 2) {
         damn [default_value, default_value]
     }
-    ready (size == 3) {
+    lowkey (size == 3) {
         damn [default_value, default_value, default_value]
     }
-    ready (size == 4) {
+    lowkey (size == 4) {
         damn [default_value, default_value, default_value, default_value]
     }
-    ready (size == 5) {
+    lowkey (size == 5) {
         damn [default_value, default_value, default_value, default_value, default_value]
     }
     
@@ -245,22 +245,22 @@ slay create_array_pure(size drip, default_value drip) drip[value]{
 slay copy_array_pure(source drip[value]) drip[value]{
     fr fr Pure CURSED array copying
     sus length drip = len(source)
-    ready (length == 0) {
+    lowkey (length == 0) {
         damn []
     }
-    ready (length == 1) {
+    lowkey (length == 1) {
         damn [source[0]]
     }
-    ready (length == 2) {
+    lowkey (length == 2) {
         damn [source[0], source[1]]
     }
-    ready (length == 3) {
+    lowkey (length == 3) {
         damn [source[0], source[1], source[2]]
     }
-    ready (length == 4) {
+    lowkey (length == 4) {
         damn [source[0], source[1], source[2], source[3]]
     }
-    ready (length == 5) {
+    lowkey (length == 5) {
         damn [source[0], source[1], source[2], source[3], source[4]]
     }
     
@@ -273,25 +273,25 @@ fr fr ===== VALIDATION AND TESTING FUNCTIONS =====
 slay test_string_operations() lit {
     fr fr Test pure CURSED string implementations
     sus result1 tea = string_concat_pure("hello", " world")
-    ready (result1 != "hello world") {
+    lowkey (result1 != "hello world") {
         vibez.spill("FAIL: string_concat_pure")
         damn cringe
     }
     
     sus len1 drip = string_length_pure("hello")
-    ready (len1 != 5) {
+    lowkey (len1 != 5) {
         vibez.spill("FAIL: string_length_pure")
         damn cringe
     }
     
     sus char1 tea = string_char_at_pure("hello", 1)
-    ready (char1 != "e") {
+    lowkey (char1 != "e") {
         vibez.spill("FAIL: string_char_at_pure")
         damn cringe
     }
     
     sus substr1 tea = string_substring_pure("hello", 1, 3)
-    ready (substr1 != "ell") {
+    lowkey (substr1 != "ell") {
         vibez.spill("FAIL: string_substring_pure")
         damn cringe
     }
@@ -303,25 +303,25 @@ slay test_string_operations() lit {
 slay test_math_operations() lit {
     fr fr Test pure CURSED math implementations
     sus add_result drip = math_add_pure(5, 3)
-    ready (add_result != 8) {
+    lowkey (add_result != 8) {
         vibez.spill("FAIL: math_add_pure")
         damn cringe
     }
     
     sus mult_result drip = math_multiply_pure(6, 7)
-    ready (mult_result != 42) {
+    lowkey (mult_result != 42) {
         vibez.spill("FAIL: math_multiply_pure")
         damn cringe
     }
     
     sus abs_result drip = math_abs_pure(-5)
-    ready (abs_result != 5) {
+    lowkey (abs_result != 5) {
         vibez.spill("FAIL: math_abs_pure")
         damn cringe
     }
     
     sus max_result drip = math_max_pure(10, 7)
-    ready (max_result != 10) {
+    lowkey (max_result != 10) {
         vibez.spill("FAIL: math_max_pure")
         damn cringe
     }
@@ -335,20 +335,20 @@ slay test_array_operations() lit {
     sus test_arr drip[value] = [1, 2, 3, 4, 5]
     
     sus len_result drip = array_length_pure(test_arr)
-    ready (len_result != 5) {
+    lowkey (len_result != 5) {
         vibez.spill("FAIL: array_length_pure")
         damn cringe
     }
     
     sus get_result drip = array_get_pure(test_arr, 2)
-    ready (get_result != 3) {
+    lowkey (get_result != 3) {
         vibez.spill("FAIL: array_get_pure")
         damn cringe
     }
     
     sus new_arr drip[value] = create_array_pure(3, 42)
     sus new_len drip = array_length_pure(new_arr)
-    ready (new_len != 3) {
+    lowkey (new_len != 3) {
         vibez.spill("FAIL: create_array_pure")
         damn cringe
     }
@@ -360,25 +360,25 @@ slay test_array_operations() lit {
 slay test_type_conversions() lit {
     fr fr Test pure CURSED type conversion implementations
     sus int_str tea = int_to_string_pure(42)
-    ready (int_str != "42") {
+    lowkey (int_str != "42") {
         vibez.spill("FAIL: int_to_string_pure")
         damn cringe
     }
     
     sus str_int drip = string_to_int_pure("123")
-    ready (str_int != 123) {
+    lowkey (str_int != 123) {
         vibez.spill("FAIL: string_to_int_pure")
         damn cringe
     }
     
     sus bool_str tea = bool_to_string_pure(based)
-    ready (bool_str != "based") {
+    lowkey (bool_str != "based") {
         vibez.spill("FAIL: bool_to_string_pure")
         damn cringe
     }
     
     sus str_bool lit = string_to_bool_pure("based")
-    ready (!str_bool) {
+    lowkey (!str_bool) {
         vibez.spill("FAIL: string_to_bool_pure")
         damn cringe
     }
@@ -393,25 +393,25 @@ slay run_all_tests() lit {
     vibez.spill("🧪 Testing Pure CURSED Built-in Implementations...")
     vibez.spill("")
     
-    ready (!test_string_operations()) {
+    lowkey (!test_string_operations()) {
         damn cringe
     }
     
-    ready (!test_math_operations()) {
+    lowkey (!test_math_operations()) {
         damn cringe
     }
     
-    ready (!test_array_operations()) {
+    lowkey (!test_array_operations()) {
         damn cringe
     }
     
-    ready (!test_type_conversions()) {
+    lowkey (!test_type_conversions()) {
         damn cringe
     }
     
     vibez.spill("")
     vibez.spill("🎉 All self-hosted built-in tests passed!")
-    vibez.spill("✅ Pure CURSED implementations are ready to replace Zig built-ins")
+    vibez.spill("✅ Pure CURSED implementations are lowkey to replace Zig built-ins")
     damn based
 }
 

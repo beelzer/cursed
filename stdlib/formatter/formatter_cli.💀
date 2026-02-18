@@ -46,42 +46,42 @@ slay parse_cli_arguments(args tea[value]) FormatCliArgs {
     bestie (i < len(args)) {
         sus arg tea = args[i]
         
-        ready (arg == "--help" || arg == "-h") {
+        lowkey (arg == "--help" || arg == "-h") {
             cli_args.help = based
-        } otherwise ready (arg == "--version" || arg == "-v") {
+        } highkey lowkey (arg == "--version" || arg == "-v") {
             cli_args.version = based
-        } otherwise ready (arg == "--check" || arg == "-c") {
+        } highkey lowkey (arg == "--check" || arg == "-c") {
             cli_args.check = based
-        } otherwise ready (arg == "--diff" || arg == "-d") {
+        } highkey lowkey (arg == "--diff" || arg == "-d") {
             cli_args.diff = based
-        } otherwise ready (arg == "--in-place" || arg == "-i") {
+        } highkey lowkey (arg == "--in-place" || arg == "-i") {
             cli_args.in_place = based
-        } otherwise ready (arg == "--backup" || arg == "-b") {
+        } highkey lowkey (arg == "--backup" || arg == "-b") {
             cli_args.backup = based
-        } otherwise ready (arg == "--validate" || arg == "-V") {
+        } highkey lowkey (arg == "--validate" || arg == "-V") {
             cli_args.validate = based
-        } otherwise ready (arg == "--verbose") {
+        } highkey lowkey (arg == "--verbose") {
             cli_args.verbose = based
-        } otherwise ready (arg == "--style" || arg == "-s") {
-            ready (i + 1 < len(args)) {
+        } highkey lowkey (arg == "--style" || arg == "-s") {
+            lowkey (i + 1 < len(args)) {
                 i = i + 1
                 cli_args.style = args[i]
             }
-        } otherwise ready (arg == "--config" || arg == "-C") {
-            ready (i + 1 < len(args)) {
+        } highkey lowkey (arg == "--config" || arg == "-C") {
+            lowkey (i + 1 < len(args)) {
                 i = i + 1
                 cli_args.config_file = args[i]
             }
-        } otherwise ready (arg == "--output" || arg == "-o") {
-            ready (i + 1 < len(args)) {
+        } highkey lowkey (arg == "--output" || arg == "-o") {
+            lowkey (i + 1 < len(args)) {
                 i = i + 1
                 cli_args.output_file = args[i]
             }
-        } otherwise ready (!starts_with(arg, "-")) {
-            ready (cli_args.input_file == "") {
+        } highkey lowkey (!starts_with(arg, "-")) {
+            lowkey (cli_args.input_file == "") {
                 cli_args.input_file = arg
             }
-        } otherwise {
+        } highkey {
             vibez.spill("Unknown option: " + arg)
         }
         
@@ -141,11 +141,11 @@ slay print_cli_version() {
 fr fr ===== CONFIGURATION LOADING =====
 
 slay load_config_for_style(style tea) FormatterConfig {
-    ready (style == "compact") {
+    lowkey (style == "compact") {
         damn compact_formatter_config()
-    } otherwise ready (style == "google") {
+    } highkey lowkey (style == "google") {
         damn google_style_config()
-    } otherwise {
+    } highkey {
         damn default_formatter_config()
     }
 }
@@ -160,7 +160,7 @@ slay load_config_from_file(filename tea) FormatterConfig {
 slay load_effective_config(cli_args FormatCliArgs) FormatterConfig {
     sus config FormatterConfig = load_config_for_style(cli_args.style)
     
-    ready (cli_args.config_file != "") {
+    lowkey (cli_args.config_file != "") {
         config = load_config_from_file(cli_args.config_file)
     }
     
@@ -172,13 +172,13 @@ fr fr ===== FILE OPERATIONS =====
 slay read_source_file(filename tea) tea {
     fr fr In a real implementation, this would read from filesystem
     fr fr For demo, return sample code based on filename
-    ready (filename == "test.💀") {
+    lowkey (filename == "test.💀") {
         damn "sus x drip=42;slay test(){damn x+1;}"
-    } otherwise ready (filename == "complex.💀") {
-        damn "ready(x>0){vibez.spill(x);}otherwise{vibez.spill(0);}"
-    } otherwise ready (filename == "struct.💀") {
+    } highkey lowkey (filename == "complex.💀") {
+        damn "lowkey(x>0){vibez.spill(x);}highkey{vibez.spill(0);}"
+    } highkey lowkey (filename == "struct.💀") {
         damn "squad Point{spill x drip spill y drip}"
-    } otherwise {
+    } highkey {
         damn "sus example drip = 123; slay demo() { damn example; }"
     }
 }
@@ -199,7 +199,7 @@ slay create_backup_file(filename tea, content tea) lit {
 
 slay file_exists_check(filename tea) lit {
     fr fr In a real implementation, this would check file existence
-    ready (filename == "test.💀" || filename == "complex.💀" || filename == "struct.💀") {
+    lowkey (filename == "test.💀" || filename == "complex.💀" || filename == "struct.💀") {
         damn based
     }
     damn cringe
@@ -209,36 +209,36 @@ fr fr ===== MAIN CLI PROCESSING =====
 
 slay process_cli_request(cli_args FormatCliArgs) drip {
     fr fr Handle help and version
-    ready (cli_args.help) {
+    lowkey (cli_args.help) {
         print_cli_help()
         damn 0
     }
     
-    ready (cli_args.version) {
+    lowkey (cli_args.version) {
         print_cli_version()
         damn 0
     }
     
     fr fr Validate input file
-    ready (cli_args.input_file == "") {
+    lowkey (cli_args.input_file == "") {
         vibez.spill("Error: No input file specified")
         vibez.spill("Use --help for usage information")
         damn 2
     }
     
-    ready (!file_exists_check(cli_args.input_file)) {
+    lowkey (!file_exists_check(cli_args.input_file)) {
         vibez.spill("Error: File not found: " + cli_args.input_file)
         damn 2
     }
     
-    ready (cli_args.verbose) {
+    lowkey (cli_args.verbose) {
         vibez.spill("Processing file: " + cli_args.input_file)
         vibez.spill("Style: " + cli_args.style)
     }
     
     fr fr Read source code
     sus source_code tea = read_source_file(cli_args.input_file)
-    ready (source_code == "") {
+    lowkey (source_code == "") {
         vibez.spill("Error: Could not read file: " + cli_args.input_file)
         damn 2
     }
@@ -246,22 +246,22 @@ slay process_cli_request(cli_args FormatCliArgs) drip {
     fr fr Load configuration
     sus config FormatterConfig = load_effective_config(cli_args)
     
-    ready (cli_args.verbose) {
+    lowkey (cli_args.verbose) {
         vibez.spill("Configuration:")
         vibez.spill("  Indent size: " + int_to_string(config.indent_size))
         vibez.spill("  Max line length: " + int_to_string(config.max_line_length))
-        vibez.spill("  Use spaces: " + (ready (config.use_spaces) { "yes" } otherwise { "no" }))
+        vibez.spill("  Use spaces: " + (lowkey (config.use_spaces) { "yes" } highkey { "no" }))
     }
     
     fr fr Handle validation only mode
-    ready (cli_args.validate) {
+    lowkey (cli_args.validate) {
         sus errors tea[value] = validate_basic_syntax(source_code)
-        ready (len(errors) == 0) {
-            ready (cli_args.verbose) {
+        lowkey (len(errors) == 0) {
+            lowkey (cli_args.verbose) {
                 vibez.spill("✅ Syntax validation passed")
             }
             damn 0
-        } otherwise {
+        } highkey {
             vibez.spill("❌ Syntax validation failed:")
             sus i drip = 0
             bestie (i < len(errors)) {
@@ -276,15 +276,15 @@ slay process_cli_request(cli_args FormatCliArgs) drip {
     sus formatted_code tea = format_cursed_code_with_config(source_code, config)
     
     fr fr Handle check only mode
-    ready (cli_args.check) {
+    lowkey (cli_args.check) {
         sus needs_fmt lit = needs_formatting(source_code, config)
-        ready (!needs_fmt) {
-            ready (cli_args.verbose) {
+        lowkey (!needs_fmt) {
+            lowkey (cli_args.verbose) {
                 vibez.spill("✅ File is already formatted correctly")
             }
             damn 0
-        } otherwise {
-            ready (cli_args.verbose) {
+        } highkey {
+            lowkey (cli_args.verbose) {
                 vibez.spill("❌ File needs formatting")
                 sus change_count drip = count_format_changes(source_code, config)
                 vibez.spill("Changes needed: " + int_to_string(change_count))
@@ -294,48 +294,48 @@ slay process_cli_request(cli_args FormatCliArgs) drip {
     }
     
     fr fr Handle diff mode
-    ready (cli_args.diff) {
+    lowkey (cli_args.diff) {
         sus diff_output tea = format_with_diff(source_code, config)
         vibez.spill(diff_output)
         damn 0
     }
     
     fr fr Handle in-place formatting
-    ready (cli_args.in_place) {
+    lowkey (cli_args.in_place) {
         fr fr Create backup if requested
-        ready (cli_args.backup) {
+        lowkey (cli_args.backup) {
             sus backup_success lit = create_backup_file(cli_args.input_file, source_code)
-            ready (!backup_success) {
+            lowkey (!backup_success) {
                 vibez.spill("Error: Could not create backup file")
                 damn 2
             }
-            ready (cli_args.verbose) {
+            lowkey (cli_args.verbose) {
                 vibez.spill("✅ Backup created: " + cli_args.input_file + ".backup")
             }
         }
         
         fr fr Write formatted code back to original file
         sus write_success lit = write_source_file(cli_args.input_file, formatted_code)
-        ready (!write_success) {
+        lowkey (!write_success) {
             vibez.spill("Error: Could not write to file: " + cli_args.input_file)
             damn 2
         }
         
-        ready (cli_args.verbose) {
+        lowkey (cli_args.verbose) {
             vibez.spill("✅ File formatted in place: " + cli_args.input_file)
         }
         damn 0
     }
     
     fr fr Handle output to specific file
-    ready (cli_args.output_file != "") {
+    lowkey (cli_args.output_file != "") {
         sus write_success lit = write_source_file(cli_args.output_file, formatted_code)
-        ready (!write_success) {
+        lowkey (!write_success) {
             vibez.spill("Error: Could not write to file: " + cli_args.output_file)
             damn 2
         }
         
-        ready (cli_args.verbose) {
+        lowkey (cli_args.verbose) {
             vibez.spill("✅ Formatted code written to: " + cli_args.output_file)
         }
         damn 0
@@ -354,7 +354,7 @@ slay process_multiple_files(files tea[value], cli_args FormatCliArgs) drip {
     sus success_count drip = 0
     sus error_count drip = 0
     
-    ready (cli_args.verbose) {
+    lowkey (cli_args.verbose) {
         vibez.spill("Processing " + int_to_string(total_files) + " files...")
     }
     
@@ -364,14 +364,14 @@ slay process_multiple_files(files tea[value], cli_args FormatCliArgs) drip {
         sus file_args FormatCliArgs = cli_args
         file_args.input_file = file
         
-        ready (cli_args.verbose) {
+        lowkey (cli_args.verbose) {
             vibez.spill("Processing (" + int_to_string(i + 1) + "/" + int_to_string(total_files) + "): " + file)
         }
         
         sus result drip = process_cli_request(file_args)
-        ready (result == 0) {
+        lowkey (result == 0) {
             success_count = success_count + 1
-        } otherwise {
+        } highkey {
             error_count = error_count + 1
         }
         
@@ -382,7 +382,7 @@ slay process_multiple_files(files tea[value], cli_args FormatCliArgs) drip {
     vibez.spill("  ✅ Success: " + int_to_string(success_count))
     vibez.spill("  ❌ Errors: " + int_to_string(error_count))
     
-    ready (error_count > 0) {
+    lowkey (error_count > 0) {
         damn 1
     }
     damn 0
@@ -403,35 +403,35 @@ slay run_interactive_mode() {
         
         fr fr Simulate user input for demo
         sus input tea = ""
-        ready (iteration == 0) {
+        lowkey (iteration == 0) {
             input = "sus x drip=42;"
-        } otherwise ready (iteration == 1) {
+        } highkey lowkey (iteration == 1) {
             input = "style compact"
-        } otherwise ready (iteration == 2) {
+        } highkey lowkey (iteration == 2) {
             input = "slay test(){damn 42;}"
-        } otherwise ready (iteration == 3) {
+        } highkey lowkey (iteration == 3) {
             input = "validate sus x drip = ;"
-        } otherwise {
+        } highkey {
             input = "quit"
         }
         
         vibez.spill(input)
         
-        ready (input == "quit" || input == "exit") {
+        lowkey (input == "quit" || input == "exit") {
             vibez.spill("Goodbye!")
             break
-        } otherwise ready (input == "help") {
+        } highkey lowkey (input == "help") {
             print_interactive_help()
-        } otherwise ready (starts_with(input, "style ")) {
+        } highkey lowkey (starts_with(input, "style ")) {
             sus style tea = slice_tea(input, 6, string_length(input))
             config = load_config_for_style(style)
             vibez.spill("✅ Style changed to: " + style)
-        } otherwise ready (starts_with(input, "validate ")) {
+        } highkey lowkey (starts_with(input, "validate ")) {
             sus code tea = slice_tea(input, 9, string_length(input))
             sus errors tea[value] = validate_basic_syntax(code)
-            ready (len(errors) == 0) {
+            lowkey (len(errors) == 0) {
                 vibez.spill("✅ Valid syntax")
-            } otherwise {
+            } highkey {
                 vibez.spill("❌ Syntax errors:")
                 sus i drip = 0
                 bestie (i < len(errors)) {
@@ -439,7 +439,7 @@ slay run_interactive_mode() {
                     i = i + 1
                 }
             }
-        } otherwise {
+        } highkey {
             fr fr Format the input
             sus formatted tea = format_cursed_code_with_config(input, config)
             vibez.spill("Formatted:")
@@ -464,14 +464,14 @@ slay print_interactive_help() {
 fr fr ===== MAIN CLI ENTRY POINT =====
 
 slay cli_main(args tea[value]) drip {
-    ready (len(args) == 0) {
+    lowkey (len(args) == 0) {
         vibez.spill("CURSED Code Formatter")
         vibez.spill("Use --help for usage information or try 'interactive' mode")
         damn 0
     }
     
     fr fr Special commands
-    ready (len(args) == 1 && args[0] == "interactive") {
+    lowkey (len(args) == 1 && args[0] == "interactive") {
         run_interactive_mode()
         damn 0
     }

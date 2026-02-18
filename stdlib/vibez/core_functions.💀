@@ -28,7 +28,7 @@ slay init_runtime() lit {
     }
 }
 
-fr fr Check if runtime is ready
+fr fr Check if runtime is lowkey
 slay is_runtime_ready() lit {
     damn runtime_ready
 }

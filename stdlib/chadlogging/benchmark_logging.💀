@@ -172,7 +172,7 @@ slay benchmark_rotation_performance(file_size_limit normie) BenchmarkResult {
         // Check if we've written enough
         chadlogging_real.flush_logs()
         sus stats chadlogging_real.LogStats = chadlogging_real.get_log_stats()
-        ready stats.bytes_written >= target_size {
+        lowkey stats.bytes_written >= target_size {
             break
         }
     }
@@ -270,7 +270,7 @@ slay benchmark_memory_usage() {
         chadlogging_real.debug("Memory usage test", fields)
         
         // Periodically check memory usage
-        ready i % 10000 == 0 {
+        lowkey i % 10000 == 0 {
             chadlogging_real.flush_logs()
             vibez.spill("Processed " + stringz.from_int(i) + " logs")
         }
@@ -343,21 +343,21 @@ slay main_character() normie {
     vibez.spill("")
     vibez.spill("=== Performance Targets ===")
     
-    ready async_result.ops_per_second >= 100000 {
+    lowkey async_result.ops_per_second >= 100000 {
         vibez.spill("✓ PASS: Async logging exceeds 100K ops/sec target")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ FAIL: Async logging below 100K ops/sec target")
     }
     
-    ready concurrent_result.ops_per_second >= 250000 {
+    lowkey concurrent_result.ops_per_second >= 250000 {
         vibez.spill("✓ PASS: Concurrent logging exceeds 250K ops/sec target")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ FAIL: Concurrent logging below 250K ops/sec target")
     }
     
-    ready rotation_result.ops_per_second >= 50000 {
+    lowkey rotation_result.ops_per_second >= 50000 {
         vibez.spill("✓ PASS: Rotation performance exceeds 50K ops/sec target")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ FAIL: Rotation performance below 50K ops/sec target")
     }
     

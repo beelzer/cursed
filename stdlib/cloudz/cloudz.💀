@@ -71,7 +71,7 @@ module AWS {
         security_groups tea[value],
         user_data tea
     ) CloudResult<tea> {
-        ready (!validate_credentials()) {
+        lowkey (!validate_credentials()) {
             damn CloudResult{
                 success: nah,
                 error: "Invalid AWS credentials",
@@ -268,7 +268,7 @@ module AWS {
             when _ -> yikes "Network request failed"
         }
 
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             yikes stringz.format("AWS API error: {}", response.body)
         }
 
@@ -449,7 +449,7 @@ module Azure {
             when _ -> yikes "Azure API request failed"
         }
 
-        ready (response.status_code >= 400) {
+        lowkey (response.status_code >= 400) {
             yikes stringz.format("Azure API error: {}", response.body)
         }
 
@@ -585,7 +585,7 @@ module GCP {
             when _ -> yikes "GCP API request failed"
         }
 
-        ready (response.status_code >= 400) {
+        lowkey (response.status_code >= 400) {
             yikes stringz.format("GCP API error: {}", response.body)
         }
 
@@ -639,7 +639,7 @@ module MultiCloud {
                     config["image_family"]?(tea)
                 )
             }
-            otherwise -> {
+            highkey -> {
                 damn CloudResult{
                     success: nah,
                     error: "Unsupported cloud provider",
@@ -715,22 +715,22 @@ module MultiCloud {
                 
                 # Rightsizing analysis based on CPU utilization
                 sus cpu_util drip = get_resource_cpu_utilization(resource)
-                ready (cpu_util < 20.0) {
+                lowkey (cpu_util < 20.0) {
                     rightsizing_savings = base_cost * 0.50  # Downsize opportunity
-                } otherwise ready (cpu_util < 50.0) {
+                } highkey lowkey (cpu_util < 50.0) {
                     rightsizing_savings = base_cost * 0.25  # Moderate downsize
                 }
                 
                 # Check for idle instances (low network/disk I/O)
                 sus network_util drip = get_resource_network_utilization(resource)
-                ready (network_util < 5.0 && cpu_util < 10.0) {
+                lowkey (network_util < 5.0 && cpu_util < 10.0) {
                     idle_resource_savings = base_cost * 0.90  # Nearly idle
                 }
             }
             when ResourceType.Storage -> {
                 # Storage class optimization
                 sus storage_access_pattern drip = get_storage_access_pattern(resource)
-                ready (storage_access_pattern < 0.1) {  # Infrequent access
+                lowkey (storage_access_pattern < 0.1) {  # Infrequent access
                     reservation_discount = base_cost * 0.60  # IA or Glacier savings
                 }
             }
@@ -738,7 +738,7 @@ module MultiCloud {
                 # RDS Reserved Instance and rightsizing
                 reservation_discount = base_cost * 0.35
                 sus db_cpu_util drip = get_resource_cpu_utilization(resource)
-                ready (db_cpu_util < 30.0) {
+                lowkey (db_cpu_util < 30.0) {
                     rightsizing_savings = base_cost * 0.40
                 }
             }
@@ -769,7 +769,7 @@ module MultiCloud {
             when ResourceType.Compute -> {
                 # Azure Hybrid Benefit for Windows/SQL Server
                 sus os_type tea = get_resource_os_type(resource)
-                ready (os_type == "windows" || os_type == "sql_server") {
+                lowkey (os_type == "windows" || os_type == "sql_server") {
                     hybrid_benefit_savings = base_cost * 0.40  # Up to 40% with AHB
                 }
                 
@@ -778,20 +778,20 @@ module MultiCloud {
                 
                 # Spot instance opportunities
                 sus workload_type tea = get_workload_type(resource)
-                ready (workload_type == "batch" || workload_type == "dev_test") {
+                lowkey (workload_type == "batch" || workload_type == "dev_test") {
                     spot_savings = base_cost * 0.80  # Up to 80% with spot
                 }
                 
                 # Auto-shutdown for dev/test environments
                 sus environment tea = get_environment_tag(resource)
-                ready (environment == "development" || environment == "test") {
+                lowkey (environment == "development" || environment == "test") {
                     autoscaling_savings = base_cost * 0.60  # Shutdown nights/weekends
                 }
             }
             when ResourceType.Storage -> {
                 # Azure Storage tier optimization
                 sus access_tier tea = get_storage_access_tier(resource)
-                ready (access_tier == "hot" && get_storage_access_pattern(resource) < 0.2) {
+                lowkey (access_tier == "hot" && get_storage_access_pattern(resource) < 0.2) {
                     reserved_savings = base_cost * 0.50  # Move to cool/archive
                 }
             }
@@ -801,7 +801,7 @@ module MultiCloud {
                 
                 # Elastic pool optimization
                 sus db_utilization drip = get_resource_cpu_utilization(resource)
-                ready (db_utilization < 25.0) {
+                lowkey (db_utilization < 25.0) {
                     autoscaling_savings = base_cost * 0.45  # Elastic pool sharing
                 }
             }
@@ -833,7 +833,7 @@ module MultiCloud {
             when ResourceType.Compute -> {
                 # Sustained Use Discounts (automatic)
                 sus monthly_usage_hours drip = get_monthly_usage_hours(resource)
-                ready (monthly_usage_hours > 200) {  # >25% of month
+                lowkey (monthly_usage_hours > 200) {  # >25% of month
                     sustained_use_discount = base_cost * 0.20  # Up to 20% automatic
                 }
                 
@@ -842,7 +842,7 @@ module MultiCloud {
                 
                 # Preemptible instance opportunities
                 sus workload_tolerance tea = get_workload_interruption_tolerance(resource)
-                ready (workload_tolerance == "high") {
+                lowkey (workload_tolerance == "high") {
                     preemptible_savings = base_cost * 0.80  # Up to 80% savings
                 }
                 
@@ -852,7 +852,7 @@ module MultiCloud {
                 sus cpu_util drip = get_resource_cpu_utilization(resource)
                 sus memory_util drip = get_resource_memory_utilization(resource)
                 
-                ready (cpu_util < 60.0 || memory_util < 60.0) {
+                lowkey (cpu_util < 60.0 || memory_util < 60.0) {
                     # Calculate optimal custom machine type
                     sus optimal_cpu drip = mathz.ceil(cpu_count * (cpu_util / 100.0) * 1.2)
                     sus optimal_memory drip = mathz.ceil(memory_gb * (memory_util / 100.0) * 1.2)
@@ -866,9 +866,9 @@ module MultiCloud {
             when ResourceType.Storage -> {
                 # Storage class optimization for Cloud Storage
                 sus access_pattern drip = get_storage_access_pattern(resource)
-                ready (access_pattern < 0.05) {  # Very infrequent access
+                lowkey (access_pattern < 0.05) {  # Very infrequent access
                     committed_use_discount = base_cost * 0.70  # Archive storage
-                } otherwise ready (access_pattern < 0.3) {  # Infrequent access
+                } highkey lowkey (access_pattern < 0.3) {  # Infrequent access
                     committed_use_discount = base_cost * 0.40  # Nearline storage
                 }
             }
@@ -879,7 +879,7 @@ module MultiCloud {
                 # High availability optimization
                 sus ha_enabled lit = get_database_ha_enabled(resource)
                 sus environment tea = get_environment_tag(resource)
-                ready (ha_enabled && (environment == "development" || environment == "test")) {
+                lowkey (ha_enabled && (environment == "development" || environment == "test")) {
                     # Disable HA for non-prod environments
                     sus ha_cost_overhead drip = base_cost * 0.50
                     custom_machine_savings += ha_cost_overhead
@@ -967,11 +967,11 @@ module MultiCloud {
         sus days_active drip = mathz.min(30.0, created_hours / 24.0)
         
         # Estimate usage based on resource age and type
-        ready (days_active < 7.0) {
+        lowkey (days_active < 7.0) {
             damn 0.8  # New resources typically have lower initial usage
-        } otherwise ready (days_active < 30.0) {
+        } highkey lowkey (days_active < 30.0) {
             damn 0.9  # Ramping up usage
-        } otherwise {
+        } highkey {
             damn 1.0  # Steady state usage
         }
     }
@@ -985,7 +985,7 @@ module MultiCloud {
         sus base_utilization drip = sick (resource.type) {
             when ResourceType.Compute -> 45.0
             when ResourceType.Database -> 60.0
-            otherwise -> 35.0
+            highkey -> 35.0
         }
         
         # Adjust by environment
@@ -994,15 +994,15 @@ module MultiCloud {
             when "staging" -> 0.8
             when "development" -> 0.5
             when "test" -> 0.3
-            otherwise -> 1.0
+            highkey -> 1.0
         }
         
         # Adjust by instance size (larger instances often underutilized)
-        sus size_factor drip = ready (stringz.contains(instance_type, "large")) {
+        sus size_factor drip = lowkey (stringz.contains(instance_type, "large")) {
             0.7
-        } otherwise ready (stringz.contains(instance_type, "medium")) {
+        } highkey lowkey (stringz.contains(instance_type, "medium")) {
             0.85
-        } otherwise {
+        } highkey {
             1.0
         }
         
@@ -1015,7 +1015,7 @@ module MultiCloud {
         sus memory_factor drip = sick (resource.type) {
             when ResourceType.Database -> 1.3  # Databases use more memory
             when ResourceType.Storage -> 0.4   # Storage services use less
-            otherwise -> 1.1
+            highkey -> 1.1
         }
         
         damn mathz.min(90.0, cpu_util * memory_factor)
@@ -1029,13 +1029,13 @@ module MultiCloud {
             when ResourceType.Database -> 25.0
             when ResourceType.Storage -> 40.0
             when ResourceType.Compute -> 15.0
-            otherwise -> 10.0
+            highkey -> 10.0
         }
         
         sus traffic_multiplier drip = sick (environment) {
             when "production" -> 1.5
             when "staging" -> 0.6
-            otherwise -> 0.3
+            highkey -> 0.3
         }
         
         damn base_network * traffic_multiplier
@@ -1055,7 +1055,7 @@ module MultiCloud {
             when "staging" -> 0.3
             when "development" -> 0.2
             when "backup" -> 0.05
-            otherwise -> 0.5
+            highkey -> 0.5
         }
         
         damn age_factor * env_factor
@@ -1071,21 +1071,21 @@ module MultiCloud {
             }
         }
         
-        ready (env != "") {
+        lowkey (env != "") {
             damn stringz.to_lower(env)
         }
         
         # Infer from resource name
         sus name tea = stringz.to_lower(resource.name)
-        ready (stringz.contains(name, "prod")) {
+        lowkey (stringz.contains(name, "prod")) {
             damn "production"
-        } otherwise ready (stringz.contains(name, "dev")) {
+        } highkey lowkey (stringz.contains(name, "dev")) {
             damn "development"
-        } otherwise ready (stringz.contains(name, "test")) {
+        } highkey lowkey (stringz.contains(name, "test")) {
             damn "test"
-        } otherwise ready (stringz.contains(name, "stage")) {
+        } highkey lowkey (stringz.contains(name, "stage")) {
             damn "staging"
-        } otherwise {
+        } highkey {
             damn "unknown"
         }
     }
@@ -1101,7 +1101,7 @@ module MultiCloud {
             when "staging" -> 16.0       # Business hours + some testing
             when "development" -> 10.0   # Development hours
             when "test" -> 6.0           # Test execution periods
-            otherwise -> 12.0            # Default assumption
+            highkey -> 12.0            # Default assumption
         }
         
         # Calculate monthly projection
@@ -1109,9 +1109,9 @@ module MultiCloud {
         sus monthly_hours drip = daily_hours * days_in_month
         
         # If resource is newer than a month, use actual hours
-        ready (lifetime_hours < monthly_hours) {
+        lowkey (lifetime_hours < monthly_hours) {
             damn lifetime_hours
-        } otherwise {
+        } highkey {
             damn monthly_hours
         }
     }
@@ -1133,7 +1133,7 @@ module MultiCloud {
                     when "m5.large" -> damn 0.096 * 730.0
                     when "m5.xlarge" -> damn 0.192 * 730.0
                     when "c5.large" -> damn 0.085 * 730.0
-                    otherwise -> damn 75.0  # Average medium instance
+                    highkey -> damn 75.0  # Average medium instance
                 }
             }
             when ResourceType.Storage -> {
@@ -1147,10 +1147,10 @@ module MultiCloud {
                     when "db.t3.micro" -> damn 0.017 * 730.0
                     when "db.t3.small" -> damn 0.034 * 730.0
                     when "db.m5.large" -> damn 0.192 * 730.0
-                    otherwise -> damn 125.0  # Average DB instance
+                    highkey -> damn 125.0  # Average DB instance
                 }
             }
-            otherwise -> damn 50.0  # Default base cost
+            highkey -> damn 50.0  # Default base cost
         }
     }
 
@@ -1176,7 +1176,7 @@ module MultiCloud {
             when "eu-central-1" -> damn 1.12  # Frankfurt
             when "ap-southeast-1" -> damn 1.25 # Singapore
             when "ap-northeast-1" -> damn 1.3  # Tokyo
-            otherwise -> damn 1.08             # Average premium region
+            highkey -> damn 1.08             # Average premium region
         }
     }
 
@@ -1193,16 +1193,16 @@ module MultiCloud {
             when "us-west1" -> damn 1.1        # Oregon
             when "europe-west1" -> damn 1.08   # Belgium
             when "asia-east1" -> damn 1.2      # Taiwan
-            otherwise -> damn 1.05             # Average
+            highkey -> damn 1.05             # Average
         }
     }
 
     # Additional cost calculation helpers
     slay get_resource_storage_cost(resource CloudResource) drip {
         sus storage_gb drip = resource.metadata["storage_gb"]?(drip)
-        ready (storage_gb > 0) {
+        lowkey (storage_gb > 0) {
             damn storage_gb * 0.10  # $0.10 per GB/month for EBS
-        } otherwise {
+        } highkey {
             damn 8.0  # Default 30GB root volume cost
         }
     }
@@ -1231,9 +1231,9 @@ module MultiCloud {
     slay get_database_backup_cost(resource CloudResource) drip {
         # Database backup storage costs
         sus db_size_gb drip = resource.metadata["allocated_storage"]?(drip)
-        ready (db_size_gb > 0) {
+        lowkey (db_size_gb > 0) {
             damn db_size_gb * 0.095  # Backup storage cost
-        } otherwise {
+        } highkey {
             damn 5.0  # Default backup cost
         }
     }
@@ -1248,22 +1248,22 @@ module MultiCloud {
     # Additional helper functions for advanced analysis
     slay get_resource_os_type(resource CloudResource) tea {
         sus image tea = resource.metadata["image"]?(tea)
-        ready (stringz.contains(stringz.to_lower(image), "windows")) {
+        lowkey (stringz.contains(stringz.to_lower(image), "windows")) {
             damn "windows"
-        } otherwise ready (stringz.contains(stringz.to_lower(image), "sql")) {
+        } highkey lowkey (stringz.contains(stringz.to_lower(image), "sql")) {
             damn "sql_server"
-        } otherwise {
+        } highkey {
             damn "linux"
         }
     }
 
     slay get_workload_type(resource CloudResource) tea {
         sus name tea = stringz.to_lower(resource.name)
-        ready (stringz.contains(name, "batch") || stringz.contains(name, "job")) {
+        lowkey (stringz.contains(name, "batch") || stringz.contains(name, "job")) {
             damn "batch"
-        } otherwise ready (stringz.contains(name, "dev") || stringz.contains(name, "test")) {
+        } highkey lowkey (stringz.contains(name, "dev") || stringz.contains(name, "test")) {
             damn "dev_test"
-        } otherwise {
+        } highkey {
             damn "production"
         }
     }
@@ -1276,47 +1276,47 @@ module MultiCloud {
         sus name tea = stringz.to_lower(resource.name)
         sus environment tea = get_environment_tag(resource)
         
-        ready (environment == "development" || environment == "test") {
+        lowkey (environment == "development" || environment == "test") {
             damn "high"
-        } otherwise ready (stringz.contains(name, "batch") || stringz.contains(name, "analytics")) {
+        } highkey lowkey (stringz.contains(name, "batch") || stringz.contains(name, "analytics")) {
             damn "high"
-        } otherwise {
+        } highkey {
             damn "low"
         }
     }
 
     slay get_resource_cpu_count(resource CloudResource) drip {
         sus instance_type tea = resource.metadata["instance_type"]?(tea)
-        ready (stringz.contains(instance_type, "nano")) {
+        lowkey (stringz.contains(instance_type, "nano")) {
             damn 1.0
-        } otherwise ready (stringz.contains(instance_type, "micro") || stringz.contains(instance_type, "small")) {
+        } highkey lowkey (stringz.contains(instance_type, "micro") || stringz.contains(instance_type, "small")) {
             damn 2.0
-        } otherwise ready (stringz.contains(instance_type, "medium")) {
+        } highkey lowkey (stringz.contains(instance_type, "medium")) {
             damn 2.0
-        } otherwise ready (stringz.contains(instance_type, "large")) {
+        } highkey lowkey (stringz.contains(instance_type, "large")) {
             damn 4.0
-        } otherwise ready (stringz.contains(instance_type, "xlarge")) {
+        } highkey lowkey (stringz.contains(instance_type, "xlarge")) {
             damn 8.0
-        } otherwise {
+        } highkey {
             damn 4.0  # Default
         }
     }
 
     slay get_resource_memory_gb(resource CloudResource) drip {
         sus instance_type tea = resource.metadata["instance_type"]?(tea)
-        ready (stringz.contains(instance_type, "nano")) {
+        lowkey (stringz.contains(instance_type, "nano")) {
             damn 0.5
-        } otherwise ready (stringz.contains(instance_type, "micro")) {
+        } highkey lowkey (stringz.contains(instance_type, "micro")) {
             damn 1.0
-        } otherwise ready (stringz.contains(instance_type, "small")) {
+        } highkey lowkey (stringz.contains(instance_type, "small")) {
             damn 2.0
-        } otherwise ready (stringz.contains(instance_type, "medium")) {
+        } highkey lowkey (stringz.contains(instance_type, "medium")) {
             damn 4.0
-        } otherwise ready (stringz.contains(instance_type, "large")) {
+        } highkey lowkey (stringz.contains(instance_type, "large")) {
             damn 8.0
-        } otherwise ready (stringz.contains(instance_type, "xlarge")) {
+        } highkey lowkey (stringz.contains(instance_type, "xlarge")) {
             damn 16.0
-        } otherwise {
+        } highkey {
             damn 8.0  # Default
         }
     }
@@ -1440,7 +1440,7 @@ module Security {
             sus score drip = assess_resource_security(resource)
             total_score += score
 
-            ready (score < 70) {
+            lowkey (score < 70) {
                 vulnerabilities.append(stringz.format("Resource {} has security issues", resource.id))
                 recommendations.append(stringz.format("Secure resource {}", resource.id))
             }
@@ -1465,7 +1465,7 @@ module Security {
             when ResourceType.Compute -> damn 85.0
             when ResourceType.Storage -> damn 90.0
             when ResourceType.Database -> damn 75.0
-            otherwise -> damn 80.0
+            highkey -> damn 80.0
         }
     }
 

@@ -78,16 +78,16 @@ fr fr ===== HTTP RESPONSE PARSING =====
 
 slay parse_http_status_code(response tea) drip {
     fr fr Extract status code from HTTP response
-    ready (contains_substring(response, "200 OK")) {
+    lowkey (contains_substring(response, "200 OK")) {
         damn 200
     }
-    ready (contains_substring(response, "201 Created")) {
+    lowkey (contains_substring(response, "201 Created")) {
         damn 201
     }
-    ready (contains_substring(response, "404 Not Found")) {
+    lowkey (contains_substring(response, "404 Not Found")) {
         damn 404
     }
-    ready (contains_substring(response, "500 Internal Server Error")) {
+    lowkey (contains_substring(response, "500 Internal Server Error")) {
         damn 500
     }
     damn 0
@@ -97,13 +97,13 @@ slay parse_http_body(response tea) tea {
     fr fr Extract body from HTTP response
     sus double_crlf tea = "\r\n\r\n"
     sus header_end drip = indexOf(response, double_crlf)
-    ready (header_end < 0) {
+    lowkey (header_end < 0) {
         damn response  # If no headers, entire response is body
     }
     
     sus body_start drip = header_end + 4
     sus response_len drip = string_length(response)
-    ready (body_start >= response_len) {
+    lowkey (body_start >= response_len) {
         damn ""  # No body content
     }
     
@@ -115,13 +115,13 @@ slay get_http_header(response tea, header_name tea) tea {
     sus header_key tea = to_lowercase(header_name) + ": "
     sus response_lower tea = to_lowercase(response)
     sus header_start drip = indexOf(response_lower, header_key)
-    ready (header_start < 0) {
+    lowkey (header_start < 0) {
         damn ""  # Header not found
     }
     
     sus value_start drip = header_start + string_length(header_key)
     sus line_end drip = indexOf(substring(response, value_start, 100), "\r\n")
-    ready (line_end < 0) {
+    lowkey (line_end < 0) {
         damn substring(response, value_start, 50)
     }
     
@@ -133,20 +133,20 @@ fr fr ===== MOCK HTTP CLIENT =====
 slay http_get(url tea) tea {
     fr fr Real HTTP GET request with proper networking
     sus parsed_url URLComponents = parse_url_components(url)
-    ready (!parsed_url.is_valid) {
+    lowkey (!parsed_url.is_valid) {
         damn create_http_error_response(400, "Invalid URL format")
     }
     
     fr fr Establish TCP connection
     sus connection NetworkConnection = establish_http_connection(parsed_url)
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn create_http_error_response(500, "Connection failed: " + connection.error_message)
     }
     
     fr fr Build and send HTTP request
     sus request tea = build_get_request(parsed_url.host, parsed_url.path)
     sus bytes_sent drip = send_http_data(connection, request)
-    ready (bytes_sent <= 0) {
+    lowkey (bytes_sent <= 0) {
         close_connection(connection)
         damn create_http_error_response(500, "Failed to send request")
     }
@@ -155,7 +155,7 @@ slay http_get(url tea) tea {
     sus response tea = receive_http_response(connection)
     close_connection(connection)
     
-    ready (response == "") {
+    lowkey (response == "") {
         damn create_http_error_response(408, "Request timeout")
     }
     
@@ -165,20 +165,20 @@ slay http_get(url tea) tea {
 slay http_post(url tea, body tea) tea {
     fr fr Real HTTP POST request with proper networking
     sus parsed_url URLComponents = parse_url_components(url)
-    ready (!parsed_url.is_valid) {
+    lowkey (!parsed_url.is_valid) {
         damn create_http_error_response(400, "Invalid URL format")
     }
     
     fr fr Establish TCP connection
     sus connection NetworkConnection = establish_http_connection(parsed_url)
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn create_http_error_response(500, "Connection failed: " + connection.error_message)
     }
     
     fr fr Build and send HTTP POST request
     sus request tea = build_post_request(parsed_url.host, parsed_url.path, body)
     sus bytes_sent drip = send_http_data(connection, request)
-    ready (bytes_sent <= 0) {
+    lowkey (bytes_sent <= 0) {
         close_connection(connection)
         damn create_http_error_response(500, "Failed to send request")
     }
@@ -187,7 +187,7 @@ slay http_post(url tea, body tea) tea {
     sus response tea = receive_http_response(connection)
     close_connection(connection)
     
-    ready (response == "") {
+    lowkey (response == "") {
         damn create_http_error_response(408, "Request timeout")
     }
     
@@ -213,7 +213,7 @@ fr fr ===== HTTP CLIENT HELPERS =====
 slay http_get_with_timeout(url tea, timeout_seconds normie) tea {
     fr fr HTTP GET with configurable timeout
     sus parsed_url = parse_url(url)
-    ready (timeout_seconds <= 0) {
+    lowkey (timeout_seconds <= 0) {
         damn "HTTP/1.1 408 Request Timeout\r\n\r\ntimeout"
     }
     damn http_get(url) fr fr Delegate to standard GET for now
@@ -254,7 +254,7 @@ fr fr ===== URL PARSING =====
 slay parse_url_scheme(url tea) tea {
     fr fr Extract scheme (protocol) from URL
     sus colon_pos drip = indexOf(url, ":")
-    ready (colon_pos < 0) {
+    lowkey (colon_pos < 0) {
         damn ""
     }
     damn substring(url, 0, colon_pos)
@@ -262,18 +262,18 @@ slay parse_url_scheme(url tea) tea {
 
 slay parse_url_host(url tea) tea {
     fr fr Extract host from URL
-    ready (starts_with(url, "http://")) {
+    lowkey (starts_with(url, "http://")) {
         sus without_scheme tea = substring(url, 7, string_length(url) - 7)
         sus slash_pos drip = indexOf(without_scheme, "/")
-        ready (slash_pos < 0) {
+        lowkey (slash_pos < 0) {
             damn without_scheme
         }
         damn substring(without_scheme, 0, slash_pos)
     }
-    ready (starts_with(url, "https://")) {
+    lowkey (starts_with(url, "https://")) {
         sus without_scheme tea = substring(url, 8, string_length(url) - 8)
         sus slash_pos drip = indexOf(without_scheme, "/")
-        ready (slash_pos < 0) {
+        lowkey (slash_pos < 0) {
             damn without_scheme
         }
         damn substring(without_scheme, 0, slash_pos)
@@ -283,18 +283,18 @@ slay parse_url_host(url tea) tea {
 
 slay parse_url_path(url tea) tea {
     fr fr Extract path from URL
-    ready (starts_with(url, "http://")) {
+    lowkey (starts_with(url, "http://")) {
         sus without_scheme tea = substring(url, 7, string_length(url) - 7)
         sus slash_pos drip = indexOf(without_scheme, "/")
-        ready (slash_pos < 0) {
+        lowkey (slash_pos < 0) {
             damn "/"
         }
         damn substring(without_scheme, slash_pos, string_length(without_scheme) - slash_pos)
     }
-    ready (starts_with(url, "https://")) {
+    lowkey (starts_with(url, "https://")) {
         sus without_scheme tea = substring(url, 8, string_length(url) - 8)
         sus slash_pos drip = indexOf(without_scheme, "/")
-        ready (slash_pos < 0) {
+        lowkey (slash_pos < 0) {
             damn "/"
         }
         damn substring(without_scheme, slash_pos, string_length(without_scheme) - slash_pos)
@@ -304,7 +304,7 @@ slay parse_url_path(url tea) tea {
 
 slay build_url(scheme tea, host tea, path tea) tea {
     fr fr Build URL from components
-    ready (starts_with(path, "/")) {
+    lowkey (starts_with(path, "/")) {
         damn scheme + "://" + host + path
     }
     damn scheme + "://" + host + "/" + path
@@ -315,15 +315,15 @@ fr fr ===== HTTP SERVER HELPERS =====
 slay create_response(status_code drip, body tea) tea {
     fr fr Create HTTP response
     sus status_line tea = ""
-    ready (status_code == 200) {
+    lowkey (status_code == 200) {
         status_line = "HTTP/1.1 200 OK"
-    } otherwise ready (status_code == 201) {
+    } highkey lowkey (status_code == 201) {
         status_line = "HTTP/1.1 201 Created"
-    } otherwise ready (status_code == 404) {
+    } highkey lowkey (status_code == 404) {
         status_line = "HTTP/1.1 404 Not Found"
-    } otherwise ready (status_code == 500) {
+    } highkey lowkey (status_code == 500) {
         status_line = "HTTP/1.1 500 Internal Server Error"
-    } otherwise {
+    } highkey {
         status_line = "HTTP/1.1 200 OK"
     }
     
@@ -353,14 +353,14 @@ fr fr ===== REST API HELPERS =====
 
 slay rest_get_all(resource tea) tea {
     fr fr GET /resource - get all items
-    ready (resource == "users") {
+    lowkey (resource == "users") {
         sus users tea = json_create_array_two(
             json_create_object_two("id", "1", "name", "John"),
             json_create_object_two("id", "2", "name", "Jane")
         )
         damn create_success_response(users)
     }
-    ready (resource == "posts") {
+    lowkey (resource == "posts") {
         sus posts tea = json_create_array(json_create_object_two("id", "1", "title", "Hello World"))
         damn create_success_response(posts)
     }
@@ -370,11 +370,11 @@ slay rest_get_all(resource tea) tea {
 
 slay rest_get_by_id(resource tea, id tea) tea {
     fr fr GET /resource/:id - get specific item
-    ready (resource == "users" && id == "1") {
+    lowkey (resource == "users" && id == "1") {
         sus user tea = json_create_object_two("id", "1", "name", "John")
         damn create_success_response(user)
     }
-    ready (resource == "users" && id == "2") {
+    lowkey (resource == "users" && id == "2") {
         sus user tea = json_create_object_two("id", "2", "name", "Jane")
         damn create_success_response(user)
     }
@@ -384,7 +384,7 @@ slay rest_get_by_id(resource tea, id tea) tea {
 
 slay rest_create(resource tea, data tea) tea {
     fr fr POST /resource - create new item
-    ready (resource == "users") {
+    lowkey (resource == "users") {
         sus created_user tea = json_create_object_two("id", "3", "name", "New User")
         damn create_json_response(201, created_user)
     }
@@ -394,7 +394,7 @@ slay rest_create(resource tea, data tea) tea {
 
 slay rest_update(resource tea, id tea, data tea) tea {
     fr fr PUT /resource/:id - update item
-    ready (resource == "users") {
+    lowkey (resource == "users") {
         sus updated_user tea = json_create_object_two("id", id, "name", "Updated User")
         damn create_success_response(updated_user)
     }
@@ -413,13 +413,13 @@ slay parse_query_param(url tea, param_name tea) tea {
     fr fr Extract query parameter value
     sus param_key tea = param_name + "="
     sus param_start drip = indexOf(url, param_key)
-    ready (param_start < 0) {
+    lowkey (param_start < 0) {
         damn ""
     }
     
     sus value_start drip = param_start + string_length(param_key)
     sus ampersand_pos drip = indexOf(substring(url, value_start, 50), "&")
-    ready (ampersand_pos < 0) {
+    lowkey (ampersand_pos < 0) {
         damn substring(url, value_start, 20)
     }
     
@@ -465,7 +465,7 @@ slay url_decode(text tea) tea {
 
 slay is_valid_url(url tea) lit {
     fr fr Basic URL validation
-    ready (starts_with(url, "http://") || starts_with(url, "https://")) {
+    lowkey (starts_with(url, "http://") || starts_with(url, "https://")) {
         sus has_domain lit = (indexOf(url, ".") > 0)
         sus has_valid_path lit = (!contains_substring(url, ".."))
         damn (has_domain && has_valid_path)
@@ -482,10 +482,10 @@ slay get_base_url(url tea) tea {
 
 slay join_url_paths(base tea, path tea) tea {
     fr fr Join URL base and path
-    ready (ends_with(base, "/") && starts_with(path, "/")) {
+    lowkey (ends_with(base, "/") && starts_with(path, "/")) {
         damn base + substring(path, 1, string_length(path) - 1)
     }
-    ready (ends_with(base, "/") || starts_with(path, "/")) {
+    lowkey (ends_with(base, "/") || starts_with(path, "/")) {
         damn base + path
     }
     damn base + "/" + path
@@ -508,7 +508,7 @@ slay create_secure_tls_context(cert_path tea, key_path tea) tea {
     sus validation tea = validate_tls_configuration(config)
     sus is_secure lit = json_get_boolean(validation, "configuration_valid")
     
-    ready (!is_secure) {
+    lowkey (!is_secure) {
         fr fr Log security warnings
         sus warnings tea = json_get_string(validation, "warnings")
         vibez.spill("TLS Security Warning: " + warnings)
@@ -521,12 +521,12 @@ slay verify_ssl_certificate_secure(hostname tea, cert_data tea) lit {
     fr fr Secure certificate verification with comprehensive checks
     
     fr fr Basic hostname matching (enhanced)
-    ready (!validate_hostname_match(cert_data, hostname)) {
+    lowkey (!validate_hostname_match(cert_data, hostname)) {
         damn cringe
     }
     
     fr fr Check for weak signature algorithms
-    ready (has_weak_signature_algorithm(cert_data)) {
+    lowkey (has_weak_signature_algorithm(cert_data)) {
         vibez.spill("Certificate has weak signature algorithm")
         damn cringe
     }
@@ -535,7 +535,7 @@ slay verify_ssl_certificate_secure(hostname tea, cert_data tea) lit {
     sus not_before drip = 1700000000  fr fr Mock start time
     sus not_after drip = 1800000000   fr fr Mock end time
     
-    ready (!is_certificate_time_valid(not_before, not_after)) {
+    lowkey (!is_certificate_time_valid(not_before, not_after)) {
         vibez.spill("Certificate is expired or not yet valid")
         damn cringe
     }
@@ -546,7 +546,7 @@ slay verify_ssl_certificate_secure(hostname tea, cert_data tea) lit {
 
 slay https_get_secure(url tea) tea {
     fr fr Secure HTTPS GET request with comprehensive TLS validation
-    ready (!starts_with(url, "https://")) {
+    lowkey (!starts_with(url, "https://")) {
         damn create_tls_error("INSECURE_PROTOCOL", "URL must use HTTPS protocol")
     }
     
@@ -561,7 +561,7 @@ slay https_get(url tea) tea {
 
 slay https_post_secure(url tea, body tea) tea {
     fr fr Secure HTTPS POST request with comprehensive TLS validation
-    ready (!starts_with(url, "https://")) {
+    lowkey (!starts_with(url, "https://")) {
         damn create_tls_error("INSECURE_PROTOCOL", "URL must use HTTPS protocol")
     }
     
@@ -589,15 +589,15 @@ slay create_secure_headers() tea {
 slay create_secure_response(status_code drip, body tea) tea {
     fr fr Create secure HTTP response with security headers
     sus status_line tea = ""
-    ready (status_code == 200) {
+    lowkey (status_code == 200) {
         status_line = "HTTP/1.1 200 OK"
-    } otherwise ready (status_code == 201) {
+    } highkey lowkey (status_code == 201) {
         status_line = "HTTP/1.1 201 Created"
-    } otherwise ready (status_code == 404) {
+    } highkey lowkey (status_code == 404) {
         status_line = "HTTP/1.1 404 Not Found"
-    } otherwise ready (status_code == 500) {
+    } highkey lowkey (status_code == 500) {
         status_line = "HTTP/1.1 500 Internal Server Error"
-    } otherwise {
+    } highkey {
         status_line = "HTTP/1.1 200 OK"
     }
     
@@ -610,12 +610,12 @@ slay create_secure_response(status_code drip, body tea) tea {
 
 slay validate_tls_version(version tea) lit {
     fr fr Validate TLS version is secure - real implementation
-    ready (equals(version, "TLSv1.3")) { damn true }
-    ready (equals(version, "TLSv1.2")) { damn true }
-    ready (equals(version, "TLSv1.1")) { damn false }  fr fr Deprecated
-    ready (equals(version, "TLSv1.0")) { damn false }  fr fr Deprecated
-    ready (equals(version, "SSLv3")) { damn false }    fr fr Insecure
-    ready (equals(version, "SSLv2")) { damn false }    fr fr Insecure
+    lowkey (equals(version, "TLSv1.3")) { damn true }
+    lowkey (equals(version, "TLSv1.2")) { damn true }
+    lowkey (equals(version, "TLSv1.1")) { damn false }  fr fr Deprecated
+    lowkey (equals(version, "TLSv1.0")) { damn false }  fr fr Deprecated
+    lowkey (equals(version, "SSLv3")) { damn false }    fr fr Insecure
+    lowkey (equals(version, "SSLv2")) { damn false }    fr fr Insecure
     damn false
 }
 
@@ -631,7 +631,7 @@ slay generate_ssl_certificate(domain tea, days_valid drip) tea {
 
 slay extract_ssl_fingerprint(cert_data tea) tea {
     fr fr Extract SSL certificate fingerprint
-    ready (contains_substring(cert_data, "BEGIN CERTIFICATE")) {
+    lowkey (contains_substring(cert_data, "BEGIN CERTIFICATE")) {
         damn "SHA256:1234567890abcdef" + substring(cert_data, 20, 10)
     }
     damn "INVALID_CERTIFICATE"
@@ -673,10 +673,10 @@ slay validate_webhook_signature(payload tea, signature tea, secret tea) lit {
 slay process_webhook(payload tea) tea {
     fr fr Process incoming webhook
     sus event tea = json_get_string(payload, "event")
-    ready (event == "user.created") {
+    lowkey (event == "user.created") {
         damn json_create_object("status", "processed")
     }
-    ready (event == "order.completed") {
+    lowkey (event == "order.completed") {
         damn json_create_object("status", "acknowledged")
     }
     

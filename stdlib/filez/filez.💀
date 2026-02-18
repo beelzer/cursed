@@ -31,16 +31,16 @@ fr fr ===== CORE FILE OPERATIONS =====
 
 slay read_file(filename tea) (tea, tea) {
     fr fr Read entire file contents
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn ("", "Empty filename not allowed")
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn ("", "File not found: " + filename)
     }
     
     sus content tea = runtime_read_file(filename)
-    ready (content == "ERROR") {
+    lowkey (content == "ERROR") {
         damn ("", "Failed to read file: " + filename)
     }
     
@@ -49,20 +49,20 @@ slay read_file(filename tea) (tea, tea) {
 
 slay write_file(filename tea, content tea) tea {
     fr fr Write content to file (overwrites existing)
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (content == "") {
+    lowkey (content == "") {
         damn "Empty content not allowed"  
     }
     
-    ready (!is_valid_filename(filename)) {
+    lowkey (!is_valid_filename(filename)) {
         damn "Invalid filename: " + filename
     }
     
     sus result lit = runtime_write_file(filename, content)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to write file: " + filename
     }
     
@@ -71,16 +71,16 @@ slay write_file(filename tea, content tea) tea {
 
 slay append_file(filename tea, content tea) tea {
     fr fr Append content to existing file
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (content == "") {
+    lowkey (content == "") {
         damn "Empty content not allowed"
     }
     
     sus result lit = runtime_append_file(filename, content) 
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to append to file: " + filename
     }
     
@@ -89,7 +89,7 @@ slay append_file(filename tea, content tea) tea {
 
 slay file_exists(filename tea) lit {
     fr fr Check if file exists
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn cringe
     }
     
@@ -98,16 +98,16 @@ slay file_exists(filename tea) lit {
 
 slay file_size(filename tea) (drip, tea) {
     fr fr Get file size in bytes
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn (0, "Empty filename not allowed")
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn (0, "File not found: " + filename)
     }
     
     sus size drip = runtime_file_size(filename)
-    ready (size < 0) {
+    lowkey (size < 0) {
         damn (0, "Failed to get file size: " + filename)
     }
     
@@ -116,16 +116,16 @@ slay file_size(filename tea) (drip, tea) {
 
 slay delete_file(filename tea) tea {
     fr fr Delete file
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn "File not found: " + filename
     }
     
     sus result lit = runtime_delete_file(filename)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to delete file: " + filename
     }
     
@@ -134,21 +134,21 @@ slay delete_file(filename tea) tea {
 
 slay copy_file(source tea, destination tea) tea {
     fr fr Copy file from source to destination
-    ready (source == "" || destination == "") {
+    lowkey (source == "" || destination == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (!file_exists_internal(source)) {
+    lowkey (!file_exists_internal(source)) {
         damn "Source file not found: " + source
     }
     
     (content, read_err) := read_file(source)
-    ready (read_err != "") {
+    lowkey (read_err != "") {
         damn "Failed to read source file: " + read_err
     }
     
     sus write_err tea = write_file(destination, content)
-    ready (write_err != "") {
+    lowkey (write_err != "") {
         damn "Failed to write destination file: " + write_err
     }
     
@@ -157,17 +157,17 @@ slay copy_file(source tea, destination tea) tea {
 
 slay move_file(source tea, destination tea) tea {
     fr fr Move/rename file
-    ready (source == "" || destination == "") {
+    lowkey (source == "" || destination == "") {
         damn "Empty filename not allowed"
     }
     
     sus copy_err tea = copy_file(source, destination)
-    ready (copy_err != "") {
+    lowkey (copy_err != "") {
         damn copy_err
     }
     
     sus delete_err tea = delete_file(source)
-    ready (delete_err != "") {
+    lowkey (delete_err != "") {
         damn "Moved file but failed to delete source: " + delete_err
     }
     
@@ -179,7 +179,7 @@ fr fr ===== LINE-BASED OPERATIONS =====
 slay read_file_lines(filename tea) (tea[value], tea) {
     fr fr Read file as array of lines
     (content, err) := read_file(filename)
-    ready (err != "") {
+    lowkey (err != "") {
         sus empty_lines tea[value] = []
         damn (empty_lines, err)
     }
@@ -190,7 +190,7 @@ slay read_file_lines(filename tea) (tea[value], tea) {
 
 slay write_file_lines(filename tea, lines tea[value]) tea {
     fr fr Write array of lines to file
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn "Empty filename not allowed"
     }
     
@@ -202,18 +202,18 @@ fr fr ===== BINARY OPERATIONS =====
 
 slay read_file_bytes(filename tea, max_bytes drip) (drip[value], tea) {
     fr fr Read file as byte array with size limit
-    ready (filename == "") {
+    lowkey (filename == "") {
         sus empty_bytes drip[value] = []
         damn (empty_bytes, "Empty filename not allowed")
     }
     
-    ready (max_bytes <= 0) {
+    lowkey (max_bytes <= 0) {
         sus empty_bytes drip[value] = []
         damn (empty_bytes, "Invalid max_bytes value")
     }
     
     sus bytes drip[value] = runtime_read_file_bytes(filename, max_bytes)
-    ready (array_length(bytes) == 0 && file_exists_internal(filename)) {
+    lowkey (array_length(bytes) == 0 && file_exists_internal(filename)) {
         sus empty_bytes drip[value] = []
         damn (empty_bytes, "Failed to read file bytes: " + filename)
     }
@@ -223,16 +223,16 @@ slay read_file_bytes(filename tea, max_bytes drip) (drip[value], tea) {
 
 slay write_file_bytes(filename tea, bytes drip[value]) tea {
     fr fr Write byte array to file
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (array_length(bytes) == 0) {
+    lowkey (array_length(bytes) == 0) {
         damn "Empty byte array not allowed"
     }
     
     sus result lit = runtime_write_file_bytes(filename, bytes)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to write file bytes: " + filename
     }
     
@@ -245,11 +245,11 @@ slay file_info(filename tea) (FileInfo, tea) {
     fr fr Get comprehensive file information
     sus info FileInfo = FileInfo{}
     
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn (info, "Empty filename not allowed")
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn (info, "File not found: " + filename)
     }
     
@@ -267,16 +267,16 @@ slay file_info(filename tea) (FileInfo, tea) {
 
 slay file_modified_time(filename tea) (drip, tea) {
     fr fr Get file modification timestamp
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn (0, "Empty filename not allowed")
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn (0, "File not found: " + filename)
     }
     
     sus mod_time drip = runtime_file_modified_time(filename)
-    ready (mod_time <= 0) {
+    lowkey (mod_time <= 0) {
         damn (0, "Failed to get modification time: " + filename)
     }
     
@@ -285,11 +285,11 @@ slay file_modified_time(filename tea) (drip, tea) {
 
 slay file_permissions(filename tea) (tea, tea) {
     fr fr Get file permissions as string
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn ("", "Empty filename not allowed")
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn ("", "File not found: " + filename)
     }
     
@@ -301,21 +301,21 @@ slay file_permissions(filename tea) (tea, tea) {
 
 slay set_file_permissions(filename tea, permissions tea) tea {
     fr fr Set file permissions
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn "File not found: " + filename
     }
     
     sus perms_value drip = permissions_string_to_value(permissions)
-    ready (perms_value < 0) {
+    lowkey (perms_value < 0) {
         damn "Invalid permissions format: " + permissions
     }
     
     sus result lit = runtime_set_file_permissions(filename, perms_value)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to set permissions: " + filename
     }
     
@@ -324,16 +324,16 @@ slay set_file_permissions(filename tea, permissions tea) tea {
 
 slay sync_file(filename tea) tea {
     fr fr Force file sync to disk
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (!file_exists_internal(filename)) {
+    lowkey (!file_exists_internal(filename)) {
         damn "File not found: " + filename
     }
     
     sus result lit = runtime_sync_file(filename)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to sync file: " + filename
     }
     
@@ -344,11 +344,11 @@ fr fr ===== FILE TYPE CHECKING =====
 
 slay is_file(path tea) lit {
     fr fr Check if path is a regular file
-    ready (path == "") {
+    lowkey (path == "") {
         damn cringe
     }
     
-    ready (!file_exists_internal(path)) {
+    lowkey (!file_exists_internal(path)) {
         damn cringe
     }
     
@@ -357,11 +357,11 @@ slay is_file(path tea) lit {
 
 slay is_directory(path tea) lit {
     fr fr Check if path is a directory
-    ready (path == "") {
+    lowkey (path == "") {
         damn cringe
     }
     
-    ready (!file_exists_internal(path)) {
+    lowkey (!file_exists_internal(path)) {
         damn cringe
     }
     
@@ -372,16 +372,16 @@ fr fr ===== DIRECTORY OPERATIONS =====
 
 slay create_directory(dirname tea) tea {
     fr fr Create directory
-    ready (dirname == "") {
+    lowkey (dirname == "") {
         damn "Empty directory name not allowed"
     }
     
-    ready (file_exists_internal(dirname)) {
+    lowkey (file_exists_internal(dirname)) {
         damn "Directory already exists: " + dirname
     }
     
     sus result lit = runtime_create_directory(dirname)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to create directory: " + dirname
     }
     
@@ -390,20 +390,20 @@ slay create_directory(dirname tea) tea {
 
 slay remove_directory(dirname tea) tea {
     fr fr Remove empty directory
-    ready (dirname == "") {
+    lowkey (dirname == "") {
         damn "Empty directory name not allowed"
     }
     
-    ready (!file_exists_internal(dirname)) {
+    lowkey (!file_exists_internal(dirname)) {
         damn "Directory not found: " + dirname
     }
     
-    ready (!runtime_is_directory(dirname)) {
+    lowkey (!runtime_is_directory(dirname)) {
         damn "Path is not a directory: " + dirname
     }
     
     sus result lit = runtime_remove_directory(dirname)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to remove directory: " + dirname
     }
     
@@ -412,7 +412,7 @@ slay remove_directory(dirname tea) tea {
 
 slay directory_exists(dirname tea) lit {
     fr fr Check if directory exists
-    ready (dirname == "") {
+    lowkey (dirname == "") {
         damn cringe
     }
     
@@ -421,18 +421,18 @@ slay directory_exists(dirname tea) lit {
 
 slay list_directory(dirname tea) (tea[value], tea) {
     fr fr List directory contents
-    ready (dirname == "") {
+    lowkey (dirname == "") {
         sus empty_list tea[value] = []
         damn (empty_list, "Empty directory name not allowed")
     }
     
-    ready (!directory_exists(dirname)) {
+    lowkey (!directory_exists(dirname)) {
         sus empty_list tea[value] = []
         damn (empty_list, "Directory not found: " + dirname)
     }
     
     sus entries tea[value] = runtime_list_directory(dirname)
-    ready (array_length(entries) == 0 && runtime_directory_has_entries(dirname)) {
+    lowkey (array_length(entries) == 0 && runtime_directory_has_entries(dirname)) {
         sus empty_list tea[value] = []
         damn (empty_list, "Failed to list directory: " + dirname)
     }
@@ -442,27 +442,27 @@ slay list_directory(dirname tea) (tea[value], tea) {
 
 slay copy_directory(source tea, destination tea) tea {
     fr fr Copy directory recursively
-    ready (source == "" || destination == "") {
+    lowkey (source == "" || destination == "") {
         damn "Empty directory name not allowed"
     }
     
-    ready (!directory_exists(source)) {
+    lowkey (!directory_exists(source)) {
         damn "Source directory not found: " + source
     }
     
-    ready (file_exists_internal(destination)) {
+    lowkey (file_exists_internal(destination)) {
         damn "Destination already exists: " + destination
     }
     
     fr fr Create destination directory
     sus create_err tea = create_directory(destination)
-    ready (create_err != "") {
+    lowkey (create_err != "") {
         damn create_err
     }
     
     fr fr Copy all entries
     (entries, list_err) := list_directory(source)
-    ready (list_err != "") {
+    lowkey (list_err != "") {
         damn "Failed to list source directory: " + list_err
     }
     
@@ -472,14 +472,14 @@ slay copy_directory(source tea, destination tea) tea {
         sus source_path tea = join_paths(source, entry_name)
         sus dest_path tea = join_paths(destination, entry_name)
         
-        ready (is_directory(source_path)) {
+        lowkey (is_directory(source_path)) {
             sus copy_dir_err tea = copy_directory(source_path, dest_path)
-            ready (copy_dir_err != "") {
+            lowkey (copy_dir_err != "") {
                 damn copy_dir_err
             }
-        } otherwise {
+        } highkey {
             sus copy_file_err tea = copy_file(source_path, dest_path)
-            ready (copy_file_err != "") {
+            lowkey (copy_file_err != "") {
                 damn copy_file_err
             }
         }
@@ -495,7 +495,7 @@ fr fr ===== WORKING DIRECTORY =====
 slay get_working_directory() (tea, tea) {
     fr fr Get current working directory
     sus cwd tea = runtime_get_working_directory()
-    ready (cwd == "") {
+    lowkey (cwd == "") {
         damn ("", "Failed to get working directory")
     }
     
@@ -504,16 +504,16 @@ slay get_working_directory() (tea, tea) {
 
 slay set_working_directory(dirname tea) tea {
     fr fr Change working directory
-    ready (dirname == "") {
+    lowkey (dirname == "") {
         damn "Empty directory name not allowed"
     }
     
-    ready (!directory_exists(dirname)) {
+    lowkey (!directory_exists(dirname)) {
         damn "Directory not found: " + dirname
     }
     
     sus result lit = runtime_set_working_directory(dirname)
-    ready (!result) {
+    lowkey (!result) {
         damn "Failed to change working directory: " + dirname
     }
     
@@ -525,7 +525,7 @@ fr fr ===== TEMPORARY FILES =====
 slay get_temp_directory() (tea, tea) {
     fr fr Get system temp directory
     sus temp_dir tea = runtime_get_temp_directory()
-    ready (temp_dir == "") {
+    lowkey (temp_dir == "") {
         damn ("", "Failed to get temp directory")
     }
     
@@ -534,12 +534,12 @@ slay get_temp_directory() (tea, tea) {
 
 slay create_temp_file(prefix tea, suffix tea) (tea, tea) {
     fr fr Create unique temporary file
-    ready (prefix == "") {
+    lowkey (prefix == "") {
         damn ("", "Empty prefix not allowed")
     }
     
     (temp_dir, temp_err) := get_temp_directory()
-    ready (temp_err != "") {
+    lowkey (temp_err != "") {
         damn ("", temp_err)
     }
     
@@ -548,7 +548,7 @@ slay create_temp_file(prefix tea, suffix tea) (tea, tea) {
     
     fr fr Create empty temp file
     sus write_err tea = write_file(temp_path, "")
-    ready (write_err != "") {
+    lowkey (write_err != "") {
         damn ("", "Failed to create temp file: " + write_err)
     }
     
@@ -559,27 +559,27 @@ fr fr ===== UTILITY FUNCTIONS =====
 
 slay is_valid_filename(filename tea) lit {
     fr fr Validate filename for security
-    ready (filename == "") {
+    lowkey (filename == "") {
         damn cringe
     }
     
-    ready (string_length(filename) > 255) {
+    lowkey (string_length(filename) > 255) {
         damn cringe
     }
     
-    ready (contains_substring(filename, "..")) {
+    lowkey (contains_substring(filename, "..")) {
         damn cringe
     }
     
-    ready (contains_substring(filename, "<") || contains_substring(filename, ">")) {
+    lowkey (contains_substring(filename, "<") || contains_substring(filename, ">")) {
         damn cringe
     }
     
-    ready (contains_substring(filename, "|") || contains_substring(filename, "*")) {
+    lowkey (contains_substring(filename, "|") || contains_substring(filename, "*")) {
         damn cringe
     }
     
-    ready (contains_substring(filename, "?") || contains_substring(filename, "\"")) {
+    lowkey (contains_substring(filename, "?") || contains_substring(filename, "\"")) {
         damn cringe
     }
     
@@ -588,15 +588,15 @@ slay is_valid_filename(filename tea) lit {
 
 slay rename_file(old_name tea, new_name tea) tea {
     fr fr Rename file
-    ready (old_name == "" || new_name == "") {
+    lowkey (old_name == "" || new_name == "") {
         damn "Empty filename not allowed"
     }
     
-    ready (!file_exists_internal(old_name)) {
+    lowkey (!file_exists_internal(old_name)) {
         damn "Source file not found: " + old_name
     }
     
-    ready (file_exists_internal(new_name)) {
+    lowkey (file_exists_internal(new_name)) {
         damn "Destination already exists: " + new_name
     }
     
@@ -615,7 +615,7 @@ slay extract_filename_from_path(path tea) tea {
     sus separator tea = get_path_separator()
     sus last_sep_pos drip = find_last_index(path, separator)
     
-    ready (last_sep_pos >= 0) {
+    lowkey (last_sep_pos >= 0) {
         damn substring(path, last_sep_pos + 1, string_length(path) - last_sep_pos - 1)
     }
     
@@ -624,16 +624,16 @@ slay extract_filename_from_path(path tea) tea {
 
 slay join_paths(path1 tea, path2 tea) tea {
     fr fr Join two path components
-    ready (path1 == "") {
+    lowkey (path1 == "") {
         damn path2
     }
     
-    ready (path2 == "") {
+    lowkey (path2 == "") {
         damn path1
     }
     
     sus separator tea = get_path_separator()
-    ready (ends_with(path1, separator)) {
+    lowkey (ends_with(path1, separator)) {
         damn path1 + path2
     }
     
@@ -655,11 +655,11 @@ slay split_string_by_newline(text tea) tea[value]{
     bestie (i < string_length(text)) {
         sus char tea = substring(text, i, 1)
         
-        ready (char == "\n") {
+        lowkey (char == "\n") {
             lines[line_count] = current_line
             line_count = line_count + 1
             current_line = ""
-        } otherwise {
+        } highkey {
             current_line = current_line + char
         }
         
@@ -667,7 +667,7 @@ slay split_string_by_newline(text tea) tea[value]{
     }
     
     fr fr Add final line if not empty
-    ready (current_line != "") {
+    lowkey (current_line != "") {
         lines[line_count] = current_line
     }
     
@@ -676,7 +676,7 @@ slay split_string_by_newline(text tea) tea[value]{
 
 slay join_lines_with_newline(lines tea[value]) tea {
     fr fr Join lines with newline characters
-    ready (array_length(lines) == 0) {
+    lowkey (array_length(lines) == 0) {
         damn ""
     }
     
@@ -693,19 +693,19 @@ slay join_lines_with_newline(lines tea[value]) tea {
 
 slay permissions_to_string(perms drip) tea {
     fr fr Convert numeric permissions to string
-    ready (perms == 644) { damn "644" }
-    ready (perms == 755) { damn "755" }
-    ready (perms == 600) { damn "600" }
-    ready (perms == 777) { damn "777" }
+    lowkey (perms == 644) { damn "644" }
+    lowkey (perms == 755) { damn "755" }
+    lowkey (perms == 600) { damn "600" }
+    lowkey (perms == 777) { damn "777" }
     damn "644"  fr fr Default permissions
 }
 
 slay permissions_string_to_value(perms_str tea) drip {
     fr fr Convert permission string to numeric value
-    ready (perms_str == "644") { damn 644 }
-    ready (perms_str == "755") { damn 755 }
-    ready (perms_str == "600") { damn 600 }
-    ready (perms_str == "777") { damn 777 }
+    lowkey (perms_str == "644") { damn 644 }
+    lowkey (perms_str == "755") { damn 755 }
+    lowkey (perms_str == "600") { damn 600 }
+    lowkey (perms_str == "777") { damn 777 }
     damn -1  fr fr Invalid permissions
 }
 
@@ -733,7 +733,7 @@ slay find_last_index(text tea, search tea) drip {
     
     bestie (i <= string_length(text) - string_length(search)) {
         sus substr tea = substring(text, i, string_length(search))
-        ready (substr == search) {
+        lowkey (substr == search) {
             last_index = i
         }
         i = i + 1
@@ -747,9 +747,9 @@ fr fr These functions would be implemented in the Zig runtime for performance
 
 slay runtime_read_file(filename tea) tea {
     fr fr Mock implementation - would call native file read
-    ready (filename == "test.txt") { damn "Test file content" }
-    ready (filename == "empty.txt") { damn "" }
-    ready (filename != "") { damn "File content placeholder" }
+    lowkey (filename == "test.txt") { damn "Test file content" }
+    lowkey (filename == "empty.txt") { damn "" }
+    lowkey (filename != "") { damn "File content placeholder" }
     damn "ERROR"
 }
 
@@ -765,14 +765,14 @@ slay runtime_append_file(filename tea, content tea) lit {
 
 slay runtime_file_exists(filename tea) lit {
     fr fr Mock implementation - would call native file exists check
-    ready (filename == "nonexistent.txt") { damn cringe }
+    lowkey (filename == "nonexistent.txt") { damn cringe }
     damn filename != ""
 }
 
 slay runtime_file_size(filename tea) drip {
     fr fr Mock implementation - would call native file size
-    ready (filename == "test.txt") { damn 1024 }
-    ready (filename == "large.txt") { damn 1048576 }
+    lowkey (filename == "test.txt") { damn 1024 }
+    lowkey (filename == "large.txt") { damn 1048576 }
     damn 512
 }
 
@@ -844,7 +844,7 @@ slay runtime_get_temp_directory() tea {
 
 slay runtime_read_file_bytes(filename tea, max_bytes drip) drip[value]{
     sus bytes drip[value] = []
-    ready (filename == "test.bin") {
+    lowkey (filename == "test.bin") {
         bytes[0] = 72   fr fr 'H'
         bytes[1] = 101  fr fr 'e'
         bytes[2] = 108  fr fr 'l'

@@ -54,11 +54,11 @@ slay test_basic_integration() {
     fr fr Start watcher
     (watch_id, start_error) := start_file_watcher(test_file, test_callback)
     
-    ready (start_error != "") {
+    lowkey (start_error != "") {
         vibez.spill("⚠️  Could not start file watcher (expected in mock): " + start_error)
         fr fr In mock mode, this is expected
         assert_ne_str(start_error, "", "Mock should return error for missing native implementation")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ File watcher started successfully with ID: " + int_to_string(watch_id))
         
         fr fr Test watcher status
@@ -85,17 +85,17 @@ slay test_platform_detection() {
     assert_ne_str(platform, "", "Platform should be detected")
     
     fr fr Test platform-specific paths
-    ready (platform == "linux") {
+    lowkey (platform == "linux") {
         vibez.spill("📝 Testing Linux-specific functionality")
         test_linux_specific()
     }
     
-    ready (platform == "macos") {
+    lowkey (platform == "macos") {
         vibez.spill("📝 Testing macOS-specific functionality")
         test_macos_specific()
     }
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         vibez.spill("📝 Testing Windows-specific functionality")
         test_windows_specific()
     }
@@ -197,18 +197,18 @@ slay setup_integration_test() {
     vibez.spill("🔧 Setting up integration test environment...")
     
     fr fr Create test directory
-    ready (!directory_exists("./integration_test_dir")) {
+    lowkey (!directory_exists("./integration_test_dir")) {
         create_directory("./integration_test_dir")
     }
     
-    vibez.spill("✅ Integration test environment ready")
+    vibez.spill("✅ Integration test environment lowkey")
 }
 
 slay cleanup_integration_test() {
     vibez.spill("🧹 Cleaning up integration test environment...")
     
     fr fr Remove test directory
-    ready (directory_exists("./integration_test_dir")) {
+    lowkey (directory_exists("./integration_test_dir")) {
         remove_directory("./integration_test_dir")
     }
     
@@ -229,11 +229,11 @@ slay create_empty_array_drip() drip[value]{
 }
 
 slay event_type_to_string(event_type drip) tea {
-    ready (event_type == EVENT_CREATED) { damn "CREATED" }
-    ready (event_type == EVENT_MODIFIED) { damn "MODIFIED" }
-    ready (event_type == EVENT_DELETED) { damn "DELETED" }
-    ready (event_type == EVENT_MOVED) { damn "MOVED" }
-    ready (event_type == EVENT_ATTRIBUTES) { damn "ATTRIBUTES" }
+    lowkey (event_type == EVENT_CREATED) { damn "CREATED" }
+    lowkey (event_type == EVENT_MODIFIED) { damn "MODIFIED" }
+    lowkey (event_type == EVENT_DELETED) { damn "DELETED" }
+    lowkey (event_type == EVENT_MOVED) { damn "MOVED" }
+    lowkey (event_type == EVENT_ATTRIBUTES) { damn "ATTRIBUTES" }
     damn "UNKNOWN"
 }
 
@@ -264,7 +264,7 @@ slay test_api_completeness() {
     
     fr fr Test utility functions
     (active_ids, list_err) := list_active_watchers()
-    ready (list_err == "") {
+    lowkey (list_err == "") {
         vibez.spill("Active watchers: " + int_to_string(array_length(active_ids)))
     }
     
@@ -283,7 +283,7 @@ slay test_memory_safety_integration() {
         fr fr Access all event fields to test memory safety
         sus path_len drip = string_length(event.path)
         sus old_path_len drip = string_length(event.old_path)
-        ready (path_len >= 0 && old_path_len >= 0) {
+        lowkey (path_len >= 0 && old_path_len >= 0) {
             fr fr Fields accessible
         }
         
@@ -292,7 +292,7 @@ slay test_memory_safety_integration() {
     
     fr fr Test with various inputs
     (id1, err1) := start_file_watcher("test.txt", memory_callback)
-    ready (err1 == "") {
+    lowkey (err1 == "") {
         stop_file_watcher(id1)
     }
     
@@ -328,7 +328,7 @@ slay test_performance_integration() {
         write_file(test_file, "performance test")
         
         (watch_id, err) := start_file_watcher(test_file, performance_callback)
-        ready (err == "") {
+        lowkey (err == "") {
             watcher_ids[created_count] = watch_id
             created_count = created_count + 1
         }
@@ -380,9 +380,9 @@ slay test_cross_platform_compatibility() {
     
     fr fr Test path joining
     sus joined tea = join_paths("test", "file.txt")
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         assert_eq_str(joined, "test\\file.txt", "Windows path joining")
-    } otherwise {
+    } highkey {
         assert_eq_str(joined, "test/file.txt", "Unix path joining")
     }
     

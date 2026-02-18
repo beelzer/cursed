@@ -304,7 +304,7 @@ sus tls_context TLSHandshakeContext = tlsz_secure_connect_custom(hostname, port,
 }
 
 # Verify connection properties
-ready (len(tls_context.hostname) > 0) {
+lowkey (len(tls_context.hostname) > 0) {
     # Perform HTTPS request if connection succeeded
     sus response tea = tlsz_https_get("https://" + hostname + "/api/test") fam {
         when _ -> damn ""

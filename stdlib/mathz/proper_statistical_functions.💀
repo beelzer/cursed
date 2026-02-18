@@ -53,7 +53,7 @@ slay merge_arrays(arr meal[value], left drip, mid drip, right drip) lit {
     sus merged_idx drip = left
     
     bestie (left_idx < left_size && right_idx < right_size) {
-        ready (left_arr[left_idx] <= right_arr[right_idx]) {
+        lowkey (left_arr[left_idx] <= right_arr[right_idx]) {
             arr[merged_idx] = left_arr[left_idx]
             left_idx = left_idx + 1
         } sus {
@@ -81,7 +81,7 @@ slay merge_arrays(arr meal[value], left drip, mid drip, right drip) lit {
 
 slay merge_sort(arr meal[value], left drip, right drip) lit {
     fr fr Merge sort for stable, O(n log n) sorting
-    ready (left < right) {
+    lowkey (left < right) {
         sus mid drip = left + (right - left) / 2
         
         merge_sort(arr, left, mid)
@@ -108,10 +108,10 @@ fr fr ==========================================
 slay median_sorting_based(values meal[value], count drip) meal {
     fr fr Mathematically correct median using proper sorting
     fr fr Definition: middle value in sorted dataset
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
-    ready (count == 1) {
+    lowkey (count == 1) {
         damn values[0]
     }
     
@@ -123,7 +123,7 @@ slay median_sorting_based(values meal[value], count drip) meal {
     merge_sort(sorted_values, 0, count - 1)
     
     fr fr Calculate median according to mathematical definition
-    ready (count % 2 == 1) {
+    lowkey (count % 2 == 1) {
         fr fr Odd number of elements: return middle element
         damn sorted_values[count / 2]
     }
@@ -137,7 +137,7 @@ slay median_sorting_based(values meal[value], count drip) meal {
 slay quantile(values meal[value], count drip, q meal) meal {
     fr fr Calculate q-quantile (q between 0 and 1)
     fr fr Uses proper interpolation method
-    ready (count <= 0 || q < 0.0 || q > 1.0) {
+    lowkey (count <= 0 || q < 0.0 || q > 1.0) {
         damn 0.0
     }
     
@@ -149,7 +149,7 @@ slay quantile(values meal[value], count drip, q meal) meal {
     sus lower_index drip = floor_proper(index)
     sus upper_index drip = ceil_proper(index)
     
-    ready (lower_index == upper_index) {
+    lowkey (lower_index == upper_index) {
         damn sorted_values[lower_index]
     }
     
@@ -166,7 +166,7 @@ slay percentile(values meal[value], count drip, p meal) meal {
 slay quartiles_proper(values meal[value], count drip) meal[value]{
     fr fr Calculate Q1, Q2 (median), Q3 using proper definitions
     sus result meal[value] = [0.0, 0.0, 0.0]
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn result
     }
     
@@ -183,7 +183,7 @@ fr fr ==========================================
 
 slay mean_arithmetic_stable(values meal[value], count drip) meal {
     fr fr Numerically stable mean using Kahan summation
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
     
@@ -205,7 +205,7 @@ slay mean_arithmetic_stable(values meal[value], count drip) meal {
 slay variance_welford(values meal[value], count drip) meal {
     fr fr Welford's online algorithm for numerically stable variance
     fr fr This is the mathematically preferred method for variance calculation
-    ready (count <= 1) {
+    lowkey (count <= 1) {
         damn 0.0
     }
     
@@ -226,7 +226,7 @@ slay variance_welford(values meal[value], count drip) meal {
 
 slay variance_population_welford(values meal[value], count drip) meal {
     fr fr Population variance using Welford's algorithm
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
     
@@ -247,7 +247,7 @@ slay variance_population_welford(values meal[value], count drip) meal {
 
 slay standard_deviation_sample(values meal[value], count drip) meal {
     sus variance_val meal = variance_welford(values, count)
-    ready (variance_val <= 0.0) {
+    lowkey (variance_val <= 0.0) {
         damn 0.0
     }
     damn sqrt_stable(variance_val)
@@ -255,7 +255,7 @@ slay standard_deviation_sample(values meal[value], count drip) meal {
 
 slay standard_deviation_population(values meal[value], count drip) meal {
     sus variance_val meal = variance_population_welford(values, count)
-    ready (variance_val <= 0.0) {
+    lowkey (variance_val <= 0.0) {
         damn 0.0
     }
     damn sqrt_stable(variance_val)
@@ -267,13 +267,13 @@ fr fr ==========================================
 
 slay skewness_proper(values meal[value], count drip) meal {
     fr fr Sample skewness using the standard unbiased formula
-    ready (count <= 2) {
+    lowkey (count <= 2) {
         damn 0.0
     }
     
     sus mean_val meal = mean_arithmetic_stable(values, count)
     sus std_dev meal = standard_deviation_sample(values, count)
-    ready (std_dev <= 0.0) {
+    lowkey (std_dev <= 0.0) {
         damn 0.0
     }
     
@@ -293,13 +293,13 @@ slay skewness_proper(values meal[value], count drip) meal {
 
 slay kurtosis_proper(values meal[value], count drip) meal {
     fr fr Sample kurtosis using the standard unbiased formula
-    ready (count <= 3) {
+    lowkey (count <= 3) {
         damn 0.0
     }
     
     sus mean_val meal = mean_arithmetic_stable(values, count)
     sus std_dev meal = standard_deviation_sample(values, count)
-    ready (std_dev <= 0.0) {
+    lowkey (std_dev <= 0.0) {
         damn 0.0
     }
     
@@ -322,13 +322,13 @@ slay kurtosis_proper(values meal[value], count drip) meal {
 
 slay moment_central(values meal[value], count drip, order drip) meal {
     fr fr Calculate central moment of specified order
-    ready (count <= 0 || order < 0) {
+    lowkey (count <= 0 || order < 0) {
         damn 0.0
     }
-    ready (order == 0) {
+    lowkey (order == 0) {
         damn 1.0
     }
-    ready (order == 1) {
+    lowkey (order == 1) {
         damn 0.0  fr fr First central moment is always zero
     }
     
@@ -352,7 +352,7 @@ fr fr ==========================================
 
 slay median_absolute_deviation(values meal[value], count drip) meal {
     fr fr MAD - robust measure of variability
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
     
@@ -376,7 +376,7 @@ slay interquartile_range(values meal[value], count drip) meal {
 
 slay trimmed_mean(values meal[value], count drip, trim_fraction meal) meal {
     fr fr Trimmed mean - remove extreme values before calculating mean
-    ready (count <= 0 || trim_fraction < 0.0 || trim_fraction >= 0.5) {
+    lowkey (count <= 0 || trim_fraction < 0.0 || trim_fraction >= 0.5) {
         damn 0.0
     }
     
@@ -389,7 +389,7 @@ slay trimmed_mean(values meal[value], count drip, trim_fraction meal) meal {
     sus end_idx drip = count - trim_count
     sus valid_count drip = end_idx - start_idx
     
-    ready (valid_count <= 0) {
+    lowkey (valid_count <= 0) {
         damn 0.0
     }
     
@@ -405,7 +405,7 @@ slay trimmed_mean(values meal[value], count drip, trim_fraction meal) meal {
 
 slay winsorized_mean(values meal[value], count drip, trim_fraction meal) meal {
     fr fr Winsorized mean - replace extreme values with boundary values
-    ready (count <= 0 || trim_fraction < 0.0 || trim_fraction >= 0.5) {
+    lowkey (count <= 0 || trim_fraction < 0.0 || trim_fraction >= 0.5) {
         damn 0.0
     }
     
@@ -421,10 +421,10 @@ slay winsorized_mean(values meal[value], count drip, trim_fraction meal) meal {
     sus i drip = 0
     bestie (i < count) {
         sus winsorized_value meal = values[i]
-        ready (winsorized_value < lower_bound) {
+        lowkey (winsorized_value < lower_bound) {
             winsorized_value = lower_bound
         }
-        ready (winsorized_value > upper_bound) {
+        lowkey (winsorized_value > upper_bound) {
             winsorized_value = upper_bound
         }
         sum = sum + winsorized_value
@@ -439,7 +439,7 @@ fr fr HELPER FUNCTIONS
 fr fr ==========================================
 
 slay abs_float_stable(x meal) meal {
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         damn -x
     }
     damn x
@@ -447,10 +447,10 @@ slay abs_float_stable(x meal) meal {
 
 slay sqrt_stable(x meal) meal {
     fr fr Stable square root using Newton-Raphson
-    ready (x <= 0.0) {
+    lowkey (x <= 0.0) {
         damn 0.0
     }
-    ready (x == 1.0) {
+    lowkey (x == 1.0) {
         damn 1.0
     }
     
@@ -461,7 +461,7 @@ slay sqrt_stable(x meal) meal {
     sus i drip = 0
     bestie (i < max_iterations) {
         sus new_guess meal = (guess + x / guess) / 2.0
-        ready (abs_float_stable(new_guess - guess) < epsilon) {
+        lowkey (abs_float_stable(new_guess - guess) < epsilon) {
             damn new_guess
         }
         guess = new_guess
@@ -473,14 +473,14 @@ slay sqrt_stable(x meal) meal {
 
 slay power_stable(base meal, exponent drip) meal {
     fr fr Stable power function for positive integer exponents
-    ready (exponent == 0) {
+    lowkey (exponent == 0) {
         damn 1.0
     }
-    ready (exponent == 1) {
+    lowkey (exponent == 1) {
         damn base
     }
-    ready (exponent < 0) {
-        ready (abs_float_stable(base) < 1e-15) {
+    lowkey (exponent < 0) {
+        lowkey (abs_float_stable(base) < 1e-15) {
             damn 0.0  fr fr Avoid division by zero
         }
         damn 1.0 / power_stable(base, -exponent)
@@ -491,7 +491,7 @@ slay power_stable(base meal, exponent drip) meal {
     sus current_exp drip = exponent
     
     bestie (current_exp > 0) {
-        ready (current_exp % 2 == 1) {
+        lowkey (current_exp % 2 == 1) {
             result = result * current_base
         }
         current_base = current_base * current_base
@@ -503,7 +503,7 @@ slay power_stable(base meal, exponent drip) meal {
 
 slay floor_proper(x meal) drip {
     sus int_part drip = x.(drip)
-    ready (x >= 0.0 || x == int_part.(meal)) {
+    lowkey (x >= 0.0 || x == int_part.(meal)) {
         damn int_part
     }
     damn int_part - 1
@@ -511,7 +511,7 @@ slay floor_proper(x meal) drip {
 
 slay ceil_proper(x meal) drip {
     sus int_part drip = x.(drip)
-    ready (x <= 0.0 || x == int_part.(meal)) {
+    lowkey (x <= 0.0 || x == int_part.(meal)) {
         damn int_part
     }
     damn int_part + 1
@@ -527,14 +527,14 @@ slay test_statistical_functions() lit {
     fr fr Test median calculation
     sus test_odd meal[value] = [3.0, 1.0, 4.0, 1.0, 5.0]  fr fr Should be 3.0
     sus median_odd meal = median_sorting_based(test_odd, 5)
-    ready (abs_float_stable(median_odd - 3.0) > 1e-10) {
+    lowkey (abs_float_stable(median_odd - 3.0) > 1e-10) {
         spill_facts("ERROR: Odd median failed, expected 3.0, got", median_odd)
         damn cringe
     }
     
     sus test_even meal[value] = [2.0, 4.0, 1.0, 3.0]  fr fr Should be 2.5
     sus median_even meal = median_sorting_based(test_even, 4)
-    ready (abs_float_stable(median_even - 2.5) > 1e-10) {
+    lowkey (abs_float_stable(median_even - 2.5) > 1e-10) {
         spill_facts("ERROR: Even median failed, expected 2.5, got", median_even)
         damn cringe
     }
@@ -542,7 +542,7 @@ slay test_statistical_functions() lit {
     fr fr Test Welford's variance
     sus test_variance meal[value] = [2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0]
     sus variance_result meal = variance_welford(test_variance, 8)
-    ready (abs_float_stable(variance_result - 4.571428571) > 1e-6) {
+    lowkey (abs_float_stable(variance_result - 4.571428571) > 1e-6) {
         spill_facts("ERROR: Welford variance failed, expected ~4.57, got", variance_result)
         damn cringe
     }

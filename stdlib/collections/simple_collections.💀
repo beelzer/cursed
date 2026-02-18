@@ -34,15 +34,15 @@ slay Vec_push(vec DynamicArray, element extra) DynamicArray {
     fr fr Reconstruct array with new element
     lowkey vec.length == 0 {
         vec.data = [element]
-    } ready vec.length == 1 {
+    } lowkey vec.length == 1 {
         vec.data = [vec.data[0], element]
-    } ready vec.length == 2 {
+    } lowkey vec.length == 2 {
         vec.data = [vec.data[0], vec.data[1], element]
-    } ready vec.length == 3 {
+    } lowkey vec.length == 3 {
         vec.data = [vec.data[0], vec.data[1], vec.data[2], element]
-    } ready vec.length == 4 {
+    } lowkey vec.length == 4 {
         vec.data = [vec.data[0], vec.data[1], vec.data[2], vec.data[3], element]
-    } ready vec.length == 5 {
+    } lowkey vec.length == 5 {
         vec.data = [vec.data[0], vec.data[1], vec.data[2], vec.data[3], vec.data[4], element]
     }
     
@@ -61,13 +61,13 @@ slay Vec_pop(vec DynamicArray) extra {
     fr fr Reconstruct array without last element
     lowkey vec.length == 0 {
         vec.data = []
-    } ready vec.length == 1 {
+    } lowkey vec.length == 1 {
         vec.data = [vec.data[0]]
-    } ready vec.length == 2 {
+    } lowkey vec.length == 2 {
         vec.data = [vec.data[0], vec.data[1]]
-    } ready vec.length == 3 {
+    } lowkey vec.length == 3 {
         vec.data = [vec.data[0], vec.data[1], vec.data[2]]
-    } ready vec.length == 4 {
+    } lowkey vec.length == 4 {
         vec.data = [vec.data[0], vec.data[1], vec.data[2], vec.data[3]]
     }
     
@@ -86,15 +86,15 @@ slay Vec_set(vec DynamicArray, index normie, element extra) DynamicArray {
         fr fr Reconstruct array with updated element
         lowkey vec.length == 1 {
             vec.data = [element]
-        } ready vec.length == 2 && index == 0 {
+        } lowkey vec.length == 2 && index == 0 {
             vec.data = [element, vec.data[1]]
-        } ready vec.length == 2 && index == 1 {
+        } lowkey vec.length == 2 && index == 1 {
             vec.data = [vec.data[0], element]
-        } ready vec.length == 3 && index == 0 {
+        } lowkey vec.length == 3 && index == 0 {
             vec.data = [element, vec.data[1], vec.data[2]]
-        } ready vec.length == 3 && index == 1 {
+        } lowkey vec.length == 3 && index == 1 {
             vec.data = [vec.data[0], element, vec.data[2]]
-        } ready vec.length == 3 && index == 2 {
+        } lowkey vec.length == 3 && index == 2 {
             vec.data = [vec.data[0], vec.data[1], element]
         }
     }
@@ -155,15 +155,15 @@ slay HashMap_insert(map SimpleHashMap, key tea, value extra) SimpleHashMap {
         fr fr Update existing entry by reconstructing array
         lowkey len(map.entries) == 1 {
             map.entries = [SimpleHashEntry{ .key = key, .value = value, .is_used = based }]
-        } ready len(map.entries) == 2 && existing_index == 0 {
+        } lowkey len(map.entries) == 2 && existing_index == 0 {
             map.entries = [SimpleHashEntry{ .key = key, .value = value, .is_used = based }, map.entries[1]]
-        } ready len(map.entries) == 2 && existing_index == 1 {
+        } lowkey len(map.entries) == 2 && existing_index == 1 {
             map.entries = [map.entries[0], SimpleHashEntry{ .key = key, .value = value, .is_used = based }]
-        } ready len(map.entries) == 3 && existing_index == 0 {
+        } lowkey len(map.entries) == 3 && existing_index == 0 {
             map.entries = [SimpleHashEntry{ .key = key, .value = value, .is_used = based }, map.entries[1], map.entries[2]]
-        } ready len(map.entries) == 3 && existing_index == 1 {
+        } lowkey len(map.entries) == 3 && existing_index == 1 {
             map.entries = [map.entries[0], SimpleHashEntry{ .key = key, .value = value, .is_used = based }, map.entries[2]]
-        } ready len(map.entries) == 3 && existing_index == 2 {
+        } lowkey len(map.entries) == 3 && existing_index == 2 {
             map.entries = [map.entries[0], map.entries[1], SimpleHashEntry{ .key = key, .value = value, .is_used = based }]
         }
         damn map
@@ -177,13 +177,13 @@ slay HashMap_insert(map SimpleHashMap, key tea, value extra) SimpleHashMap {
     
     lowkey len(map.entries) == 0 {
         map.entries = [new_entry]
-    } ready len(map.entries) == 1 {
+    } lowkey len(map.entries) == 1 {
         map.entries = [map.entries[0], new_entry]
-    } ready len(map.entries) == 2 {
+    } lowkey len(map.entries) == 2 {
         map.entries = [map.entries[0], map.entries[1], new_entry]
-    } ready len(map.entries) == 3 {
+    } lowkey len(map.entries) == 3 {
         map.entries = [map.entries[0], map.entries[1], map.entries[2], new_entry]
-    } ready len(map.entries) == 4 {
+    } lowkey len(map.entries) == 4 {
         map.entries = [map.entries[0], map.entries[1], map.entries[2], map.entries[3], new_entry]
     }
     
@@ -212,15 +212,15 @@ slay HashMap_remove(map SimpleHashMap, key tea) SimpleHashMap {
     fr fr Remove by reconstructing array without the element
     lowkey len(map.entries) == 1 {
         map.entries = []
-    } ready len(map.entries) == 2 && index == 0 {
+    } lowkey len(map.entries) == 2 && index == 0 {
         map.entries = [map.entries[1]]
-    } ready len(map.entries) == 2 && index == 1 {
+    } lowkey len(map.entries) == 2 && index == 1 {
         map.entries = [map.entries[0]]
-    } ready len(map.entries) == 3 && index == 0 {
+    } lowkey len(map.entries) == 3 && index == 0 {
         map.entries = [map.entries[1], map.entries[2]]
-    } ready len(map.entries) == 3 && index == 1 {
+    } lowkey len(map.entries) == 3 && index == 1 {
         map.entries = [map.entries[0], map.entries[2]]
-    } ready len(map.entries) == 3 && index == 2 {
+    } lowkey len(map.entries) == 3 && index == 2 {
         map.entries = [map.entries[0], map.entries[1]]
     }
     
@@ -242,9 +242,9 @@ slay HashMap_keys(map SimpleHashMap) tea[value]{
     fr fr Reconstruct keys array
     lowkey map.size == 1 {
         damn [map.entries[0].key]
-    } ready map.size == 2 {
+    } lowkey map.size == 2 {
         damn [map.entries[0].key, map.entries[1].key]
-    } ready map.size == 3 {
+    } lowkey map.size == 3 {
         damn [map.entries[0].key, map.entries[1].key, map.entries[2].key]
     }
     
@@ -259,9 +259,9 @@ slay HashMap_values(map SimpleHashMap) extra[value]{
     fr fr Reconstruct values array
     lowkey map.size == 1 {
         damn [map.entries[0].value]
-    } ready map.size == 2 {
+    } lowkey map.size == 2 {
         damn [map.entries[0].value, map.entries[1].value]
-    } ready map.size == 3 {
+    } lowkey map.size == 3 {
         damn [map.entries[0].value, map.entries[1].value, map.entries[2].value]
     }
     

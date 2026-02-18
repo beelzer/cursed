@@ -85,7 +85,7 @@ slay add_row(writer *TabWriter, row_data tea[value]) {
     
     bestie (sus i drip = 0; i < row_data.length; i += 1) {
         sus content tea = ""
-        ready (i < row_data.length) {
+        lowkey (i < row_data.length) {
             content = row_data[i]
         }
         
@@ -93,7 +93,7 @@ slay add_row(writer *TabWriter, row_data tea[value]) {
         sus padding drip = 2
         sus width drip = 0
         
-        ready (i < writer.columns.length) {
+        lowkey (i < writer.columns.length) {
             alignment = writer.columns[i].alignment
             padding = writer.columns[i].padding
             width = writer.columns[i].width
@@ -112,7 +112,7 @@ slay add_row(writer *TabWriter, row_data tea[value]) {
     writer.rows = append(writer.rows, cells)
     
     # Update column widths if auto-sizing
-    ready (writer.auto_size) {
+    lowkey (writer.auto_size) {
         auto_size_columns(writer)
     }
 }
@@ -131,19 +131,19 @@ slay auto_size_columns(writer *TabWriter) {
         
         # Check all rows for maximum width in this column
         bestie (sus row_idx drip = 0; row_idx < writer.rows.length; row_idx += 1) {
-            ready (col_idx < writer.rows[row_idx].length) {
+            lowkey (col_idx < writer.rows[row_idx].length) {
                 sus content_width drip = writer.rows[row_idx][col_idx].content.length
-                ready (content_width > max_width) {
+                lowkey (content_width > max_width) {
                     max_width = content_width
                 }
             }
         }
         
         # Apply min/max constraints
-        ready (max_width < writer.columns[col_idx].min_width) {
+        lowkey (max_width < writer.columns[col_idx].min_width) {
             max_width = writer.columns[col_idx].min_width
         }
-        ready (max_width > writer.columns[col_idx].max_width) {
+        lowkey (max_width > writer.columns[col_idx].max_width) {
             max_width = writer.columns[col_idx].max_width
         }
         
@@ -154,17 +154,17 @@ slay auto_size_columns(writer *TabWriter) {
 # Format cell content with alignment and padding
 slay format_cell(content tea, width drip, alignment drip, padding drip, truncate lit) tea {
     sus padded_width drip = width - (padding * 2)
-    ready (padded_width <= 0) {
+    lowkey (padded_width <= 0) {
         padded_width = 1
     }
     
     sus display_content tea = content
     
     # Truncate if needed
-    ready (truncate && content.length > padded_width) {
-        ready (padded_width > 3) {
+    lowkey (truncate && content.length > padded_width) {
+        lowkey (padded_width > 3) {
             display_content = substring(content, 0, padded_width - 3) + "..."
-        } otherwise {
+        } highkey {
             display_content = substring(content, 0, padded_width)
         }
     }
@@ -174,13 +174,13 @@ slay format_cell(content tea, width drip, alignment drip, padding drip, truncate
     sus padding_right drip = padding
     sus content_padding drip = padded_width - display_content.length
     
-    ready (content_padding > 0) {
-        ready (alignment == ColumnAlignment.CENTER) {
+    lowkey (content_padding > 0) {
+        lowkey (alignment == ColumnAlignment.CENTER) {
             padding_left += content_padding / 2
             padding_right += content_padding - (content_padding / 2)
-        } otherwise ready (alignment == ColumnAlignment.RIGHT) {
+        } highkey lowkey (alignment == ColumnAlignment.RIGHT) {
             padding_left += content_padding
-        } otherwise {
+        } highkey {
             padding_right += content_padding
         }
     }
@@ -219,7 +219,7 @@ slay render_header(writer *TabWriter) tea {
             separator_line = separator_line + writer.header_separator
         }
         
-        ready (i < writer.columns.length - 1) {
+        lowkey (i < writer.columns.length - 1) {
             header_line = header_line + writer.separator
             separator_line = separator_line + writer.separator
         }
@@ -238,7 +238,7 @@ slay render_row(writer *TabWriter, row TableCell[value]) tea {
         sus padding drip = writer.columns[i].padding
         sus truncate lit = writer.columns[i].truncate
         
-        ready (i < row.length) {
+        lowkey (i < row.length) {
             content = row[i].content
         }
         
@@ -252,7 +252,7 @@ slay render_row(writer *TabWriter, row TableCell[value]) tea {
         
         row_line = row_line + formatted_cell
         
-        ready (i < writer.columns.length - 1) {
+        lowkey (i < writer.columns.length - 1) {
             row_line = row_line + writer.separator
         }
     }
@@ -262,7 +262,7 @@ slay render_row(writer *TabWriter, row TableCell[value]) tea {
 
 # Render complete table
 slay render_table(writer *TabWriter) tea {
-    ready (writer.columns.length == 0) {
+    lowkey (writer.columns.length == 0) {
         damn ""
     }
     
@@ -290,14 +290,14 @@ slay set_header_separator(writer *TabWriter, sep tea) {
 
 slay set_auto_size(writer *TabWriter, auto_size lit) {
     writer.auto_size = auto_size
-    ready (auto_size) {
+    lowkey (auto_size) {
         auto_size_columns(writer)
     }
 }
 
 # Create border around table
 slay render_table_with_border(writer *TabWriter) tea {
-    ready (writer.columns.length == 0) {
+    lowkey (writer.columns.length == 0) {
         damn ""
     }
     
@@ -306,7 +306,7 @@ slay render_table_with_border(writer *TabWriter) tea {
     sus horizontal_char tea = "-"
     sus vertical_char tea = "|"
     
-    ready (writer.border_chars.length >= 3) {
+    lowkey (writer.border_chars.length >= 3) {
         border_char = char_to_string(writer.border_chars[0])
         horizontal_char = char_to_string(writer.border_chars[1])
         vertical_char = char_to_string(writer.border_chars[2])
@@ -330,7 +330,7 @@ slay render_table_with_border(writer *TabWriter) tea {
     sus header_content tea = render_header(writer)
     sus header_lines tea[value] = split_lines(header_content)
     bestie (sus i drip = 0; i < header_lines.length; i += 1) {
-        ready (header_lines[i].length > 0) {
+        lowkey (header_lines[i].length > 0) {
             result = result + vertical_char + header_lines[i] + vertical_char + "\n"
         }
     }
@@ -346,7 +346,7 @@ slay render_table_with_border(writer *TabWriter) tea {
     bestie (sus row_idx drip = 0; row_idx < writer.rows.length; row_idx += 1) {
         sus row_content tea = render_row(writer, writer.rows[row_idx])
         sus trimmed_row tea = trim_trailing_newline(row_content)
-        ready (trimmed_row.length > 0) {
+        lowkey (trimmed_row.length > 0) {
             result = result + vertical_char + trimmed_row + vertical_char + "\n"
         }
     }
@@ -366,10 +366,10 @@ slay render_csv(writer *TabWriter, include_header lit) tea {
     sus result tea = ""
     
     # Render header if requested
-    ready (include_header) {
+    lowkey (include_header) {
         bestie (sus i drip = 0; i < writer.columns.length; i += 1) {
             result = result + escape_csv_field(writer.columns[i].header)
-            ready (i < writer.columns.length - 1) {
+            lowkey (i < writer.columns.length - 1) {
                 result = result + ","
             }
         }
@@ -381,12 +381,12 @@ slay render_csv(writer *TabWriter, include_header lit) tea {
         sus row TableCell[value] = writer.rows[row_idx]
         bestie (sus col_idx drip = 0; col_idx < writer.columns.length; col_idx += 1) {
             sus content tea = ""
-            ready (col_idx < row.length) {
+            lowkey (col_idx < row.length) {
                 content = row[col_idx].content
             }
             
             result = result + escape_csv_field(content)
-            ready (col_idx < writer.columns.length - 1) {
+            lowkey (col_idx < writer.columns.length - 1) {
                 result = result + ","
             }
         }
@@ -398,7 +398,7 @@ slay render_csv(writer *TabWriter, include_header lit) tea {
 
 # Helper function to escape CSV fields
 slay escape_csv_field(field tea) tea {
-    ready (contains_csv_special_chars(field)) {
+    lowkey (contains_csv_special_chars(field)) {
         # Escape quotes and wrap in quotes
         sus escaped tea = replace_all(field, "\"", "\"\"")
         damn "\"" + escaped + "\""
@@ -417,7 +417,7 @@ slay contains_csv_special_chars(field tea) lit {
 # Helper functions for string operations
 slay contains_char(text tea, ch rune) lit {
     bestie (sus i drip = 0; i < text.length; i += 1) {
-        ready (text[i] == ch) {
+        lowkey (text[i] == ch) {
             damn based
         }
     }
@@ -435,15 +435,15 @@ slay split_lines(text tea) tea[value]{
     sus current_line tea = ""
     
     bestie (sus i drip = 0; i < text.length; i += 1) {
-        ready (text[i] == '\n') {
+        lowkey (text[i] == '\n') {
             lines = append(lines, current_line)
             current_line = ""
-        } otherwise {
+        } highkey {
             current_line = current_line + char_to_string(text[i])
         }
     }
     
-    ready (current_line.length > 0) {
+    lowkey (current_line.length > 0) {
         lines = append(lines, current_line)
     }
     
@@ -451,7 +451,7 @@ slay split_lines(text tea) tea[value]{
 }
 
 slay trim_trailing_newline(text tea) tea {
-    ready (text.length > 0 && text[text.length - 1] == '\n') {
+    lowkey (text.length > 0 && text[text.length - 1] == '\n') {
         damn substring(text, 0, text.length - 1)
     }
     damn text

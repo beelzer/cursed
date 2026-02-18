@@ -154,7 +154,7 @@ slay await_future(future *Future) normie {
             damn 0
         basic:
             fr fr Wait for completion
-            ready {
+            lowkey {
                 mood result := dm_recv(future.completion_channel):
                     damn result
                 mood dm_recv(future.cancel_channel):
@@ -179,7 +179,7 @@ slay await_future_timeout(future *Future, timeout_ms normie) normie {
         basic:
             sus timeout_channel dm<lit> = create_timeout_channel(timeout_ms)
             
-            ready {
+            lowkey {
                 mood result := dm_recv(future.completion_channel):
                     damn result
                 mood dm_recv(timeout_channel):
@@ -387,7 +387,7 @@ slay create_child_context(parent *AsyncContext) *AsyncContext {
     
     fr fr Propagate parent cancellation
     stan {
-        ready {
+        lowkey {
             mood dm_recv(parent.cancel_token):
                 cancel_async_context(child)
             mood dm_recv(child.cancel_token):
@@ -425,7 +425,7 @@ slay run_with_context(context *AsyncContext, task slay() normie) *Future {
     sus future *Future = create_future()
     
     stan {
-        ready {
+        lowkey {
             mood dm_recv(context.cancel_token):
                 cancel_future(future)
                 damn
@@ -514,7 +514,7 @@ slay await_timer(timer *Timer) lit {
         damn cap
     }
     
-    ready {
+    lowkey {
         mood dm_recv(timer.channel):
             damn based
         basic:
@@ -545,7 +545,7 @@ slay stream_send(stream *AsyncStream, data normie) lit {
         damn cap
     }
     
-    ready {
+    lowkey {
         mood dm_send(stream.data_channel, data):
             damn based
         basic:
@@ -559,7 +559,7 @@ slay stream_receive(stream *AsyncStream) normie {
         damn 0
     }
     
-    ready {
+    lowkey {
         mood data := dm_recv(stream.data_channel):
             damn data
         mood error := dm_recv(stream.error_channel):
@@ -810,7 +810,7 @@ slay async_timeout(task slay() normie, timeout_ms normie) *Future {
         }
         
         fr fr Wait for either completion or timeout
-        ready {
+        lowkey {
             mood result := dm_recv(result_channel):
                 future.result = result
                 future.state = TASK_COMPLETED

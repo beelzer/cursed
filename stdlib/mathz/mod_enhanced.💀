@@ -593,7 +593,7 @@ slay asin_meal(x meal) meal {
         damn 0.0
     }
     
-    fr fr Use Taylor series for |x| < 0.5, otherwise use identity
+    fr fr Use Taylor series for |x| < 0.5, highkey use identity
     check abs_meal(x) < 0.5 {
         sus result meal = x
         sus term meal = x

@@ -11,16 +11,16 @@ yeet "arrayz"
 
 // Parses a complete raw email message into structured data
 slay parse_email(raw_email tea) yikes<ParsedEmail> {
-    ready (stringz.len(raw_email) == 0) {
+    lowkey (stringz.len(raw_email) == 0) {
         yikes email_format_error("Empty email message")
     }
     
     // Split headers from body (double CRLF separator)
     sus separator_pos drip = stringz.find_first(raw_email, "\r\n\r\n")
-    ready (separator_pos == -1) {
+    lowkey (separator_pos == -1) {
         // Try single LF separator as fallback
         separator_pos = stringz.find_first(raw_email, "\n\n")
-        ready (separator_pos == -1) {
+        lowkey (separator_pos == -1) {
             yikes email_format_error("No header/body separator found")
         }
     }
@@ -64,15 +64,15 @@ slay parse_email(raw_email tea) yikes<ParsedEmail> {
     }
     
     // Parse body based on content type
-    ready (parsed.is_multipart) {
+    lowkey (parsed.is_multipart) {
         parsed = parse_multipart_body(parsed) fam {
             when err -> yikes err
         }
-    } otherwise {
+    } highkey {
         // Simple single-part message
-        ready (stringz.contains(content_type, "text/html")) {
+        lowkey (stringz.contains(content_type, "text/html")) {
             parsed.body_html = decode_body_content(raw_body, get_content_encoding(headers))
-        } otherwise {
+        } highkey {
             parsed.body_text = decode_body_content(raw_body, get_content_encoding(headers))
         }
     }
@@ -82,7 +82,7 @@ slay parse_email(raw_email tea) yikes<ParsedEmail> {
 
 // Parses email headers from raw header section
 slay parse_email_headers(header_section tea) yikes<EmailHeader[value]> {
-    ready (stringz.len(header_section) == 0) {
+    lowkey (stringz.len(header_section) == 0) {
         damn []
     }
     
@@ -97,14 +97,14 @@ slay parse_email_headers(header_section tea) yikes<EmailHeader[value]> {
         sus line tea = stringz.trim(unfolded_lines[i])
         
         // Skip empty lines
-        ready (stringz.len(line) == 0) {
+        lowkey (stringz.len(line) == 0) {
             i = i + 1
             damn // Continue
         }
         
         // Find colon separator
         sus colon_pos drip = stringz.find_first(line, ":")
-        ready (colon_pos == -1) {
+        lowkey (colon_pos == -1) {
             yikes email_format_error(stringz.concat(["Invalid header format: ", line]))
         }
         
@@ -112,7 +112,7 @@ slay parse_email_headers(header_section tea) yikes<EmailHeader[value]> {
         sus header_value tea = stringz.trim(stringz.substring(line, colon_pos + 1, stringz.len(line)))
         
         // Validate header name
-        ready (stringz.len(header_name) == 0) {
+        lowkey (stringz.len(header_name) == 0) {
             yikes email_format_error("Empty header name found")
         }
         
@@ -137,7 +137,7 @@ slay get_header_value(headers EmailHeader[value], header_name tea) tea {
         sus header EmailHeader = headers[i]
         sus current_name tea = stringz.to_lower(header.name)
         
-        ready (stringz.equals(current_name, target_name)) {
+        lowkey (stringz.equals(current_name, target_name)) {
             damn header.value
         }
         i = i + 1
@@ -156,7 +156,7 @@ slay get_header_values(headers EmailHeader[value], header_name tea) tea[value]{
         sus header EmailHeader = headers[i]
         sus current_name tea = stringz.to_lower(header.name)
         
-        ready (stringz.equals(current_name, target_name)) {
+        lowkey (stringz.equals(current_name, target_name)) {
             values = arrayz.push(values, header.value)
         }
         i = i + 1
@@ -173,7 +173,7 @@ slay get_header_values(headers EmailHeader[value], header_name tea) tea[value]{
 slay parse_multipart_body(parsed ParsedEmail) yikes<ParsedEmail> {
     // Extract boundary from Content-Type header
     sus boundary tea = extract_mime_boundary(parsed.content_type)
-    ready (stringz.len(boundary) == 0) {
+    lowkey (stringz.len(boundary) == 0) {
         yikes email_format_error("No MIME boundary found in multipart message")
     }
     
@@ -198,7 +198,7 @@ slay parse_multipart_body(parsed ParsedEmail) yikes<ParsedEmail> {
 // Extracts MIME boundary from Content-Type header
 slay extract_mime_boundary(content_type tea) tea {
     sus boundary_start drip = stringz.find_first(content_type, "boundary=")
-    ready (boundary_start == -1) {
+    lowkey (boundary_start == -1) {
         damn ""
     }
     
@@ -208,13 +208,13 @@ slay extract_mime_boundary(content_type tea) tea {
     boundary_value = stringz.trim(boundary_value)
     
     // Remove quotes if present
-    ready (stringz.starts_with(boundary_value, "\"") && stringz.ends_with(boundary_value, "\"")) {
+    lowkey (stringz.starts_with(boundary_value, "\"") && stringz.ends_with(boundary_value, "\"")) {
         boundary_value = stringz.substring(boundary_value, 1, stringz.len(boundary_value) - 1)
     }
     
     // Handle parameter continuation
     sus semicolon_pos drip = stringz.find_first(boundary_value, ";")
-    ready (semicolon_pos != -1) {
+    lowkey (semicolon_pos != -1) {
         boundary_value = stringz.substring(boundary_value, 0, semicolon_pos)
     }
     
@@ -233,15 +233,15 @@ slay split_mime_parts(body tea, boundary tea) tea[value]{
     
     bestie (current_pos < stringz.len(body)) {
         sus next_boundary drip = stringz.find_from(body, boundary_delimiter, current_pos)
-        ready (next_boundary == -1) {
+        lowkey (next_boundary == -1) {
             damn parts  // No more boundaries found
         }
         
         // Check if this is the end boundary
         sus potential_end tea = stringz.substring(body, next_boundary, next_boundary + stringz.len(end_boundary))
-        ready (stringz.equals(potential_end, end_boundary)) {
+        lowkey (stringz.equals(potential_end, end_boundary)) {
             // Process final part if we have a start position
-            ready (start_pos != -1) {
+            lowkey (start_pos != -1) {
                 sus part_content tea = stringz.substring(body, start_pos, next_boundary)
                 parts = arrayz.push(parts, stringz.trim(part_content))
             }
@@ -249,21 +249,21 @@ slay split_mime_parts(body tea, boundary tea) tea[value]{
         }
         
         // If we have a previous start position, extract that part
-        ready (start_pos != -1) {
+        lowkey (start_pos != -1) {
             sus part_content tea = stringz.substring(body, start_pos, next_boundary)
             parts = arrayz.push(parts, stringz.trim(part_content))
         }
         
         // Find start of next part (after the boundary line)
         sus line_end drip = stringz.find_from(body, "\r\n", next_boundary)
-        ready (line_end == -1) {
+        lowkey (line_end == -1) {
             line_end = stringz.find_from(body, "\n", next_boundary)
         }
         
-        ready (line_end != -1) {
+        lowkey (line_end != -1) {
             start_pos = line_end + 2  // Skip \r\n or \n
             current_pos = start_pos
-        } otherwise {
+        } highkey {
             current_pos = next_boundary + stringz.len(boundary_delimiter)
         }
     }
@@ -275,9 +275,9 @@ slay split_mime_parts(body tea, boundary tea) tea[value]{
 slay process_mime_part(parsed ParsedEmail, part_content tea) yikes<ParsedEmail> {
     // Split part into headers and body
     sus header_end drip = stringz.find_first(part_content, "\r\n\r\n")
-    ready (header_end == -1) {
+    lowkey (header_end == -1) {
         header_end = stringz.find_first(part_content, "\n\n")
-        ready (header_end == -1) {
+        lowkey (header_end == -1) {
             // No headers, treat entire content as body
             yikes email_format_error("Invalid MIME part format - no header/body separator")
         }
@@ -300,27 +300,27 @@ slay process_mime_part(parsed ParsedEmail, part_content tea) yikes<ParsedEmail> 
     sus decoded_body tea = decode_body_content(part_body, content_transfer_encoding)
     
     // Determine how to handle this part
-    ready (stringz.contains(content_disposition, "attachment")) {
+    lowkey (stringz.contains(content_disposition, "attachment")) {
         // This is an attachment
         sus attachment EmailAttachment = create_attachment_from_mime_part(part_headers, decoded_body)
         parsed.attachments = arrayz.push(parsed.attachments, attachment)
         
-    } otherwise ready (stringz.contains(content_type, "text/plain")) {
+    } highkey lowkey (stringz.contains(content_type, "text/plain")) {
         // Plain text body part
-        ready (stringz.len(parsed.body_text) == 0) {  // Use first text part
+        lowkey (stringz.len(parsed.body_text) == 0) {  // Use first text part
             parsed.body_text = decoded_body
         }
         
-    } otherwise ready (stringz.contains(content_type, "text/html")) {
+    } highkey lowkey (stringz.contains(content_type, "text/html")) {
         // HTML body part
-        ready (stringz.len(parsed.body_html) == 0) {  // Use first HTML part
+        lowkey (stringz.len(parsed.body_html) == 0) {  // Use first HTML part
             parsed.body_html = decoded_body
         }
         
-    } otherwise ready (stringz.contains(content_type, "multipart/")) {
+    } highkey lowkey (stringz.contains(content_type, "multipart/")) {
         // Nested multipart - recursively process
         sus nested_boundary tea = extract_mime_boundary(content_type)
-        ready (stringz.len(nested_boundary) > 0) {
+        lowkey (stringz.len(nested_boundary) > 0) {
             sus nested_parts tea[value] = split_mime_parts(decoded_body, nested_boundary)
             sus j drip = 0
             bestie (j < arrayz.len(nested_parts)) {
@@ -333,7 +333,7 @@ slay process_mime_part(parsed ParsedEmail, part_content tea) yikes<ParsedEmail> 
             }
         }
         
-    } otherwise {
+    } highkey {
         // Unknown or binary content - treat as attachment
         sus attachment EmailAttachment = create_attachment_from_mime_part(part_headers, decoded_body)
         parsed.attachments = arrayz.push(parsed.attachments, attachment)
@@ -351,23 +351,23 @@ slay create_attachment_from_mime_part(headers EmailHeader[value], content tea) E
     
     // Extract filename from Content-Disposition
     sus filename tea = extract_filename_from_disposition(content_disposition)
-    ready (stringz.len(filename) == 0) {
+    lowkey (stringz.len(filename) == 0) {
         // Fallback: try to get filename from Content-Type
         filename = extract_filename_from_content_type(content_type)
     }
-    ready (stringz.len(filename) == 0) {
+    lowkey (stringz.len(filename) == 0) {
         // Generate a default filename
         filename = "attachment.bin"
     }
     
     // Clean up Content-ID (remove angle brackets)
-    ready (stringz.starts_with(content_id, "<") && stringz.ends_with(content_id, ">")) {
+    lowkey (stringz.starts_with(content_id, "<") && stringz.ends_with(content_id, ">")) {
         content_id = stringz.substring(content_id, 1, stringz.len(content_id) - 1)
     }
     
     // Determine disposition
     sus disposition tea = "attachment"
-    ready (stringz.contains(content_disposition, "inline")) {
+    lowkey (stringz.contains(content_disposition, "inline")) {
         disposition = "inline"
     }
     
@@ -418,14 +418,14 @@ slay decode_quoted_printable(content tea) yikes<tea> {
     bestie (i < stringz.len(content)) {
         sus char tea = stringz.char_at(content, i)
         
-        ready (stringz.equals(char, "=")) {
+        lowkey (stringz.equals(char, "=")) {
             // Check for soft line break (= at end of line)
-            ready (i + 1 < stringz.len(content)) {
+            lowkey (i + 1 < stringz.len(content)) {
                 sus next_char tea = stringz.char_at(content, i + 1)
-                ready (stringz.equals(next_char, "\r") || stringz.equals(next_char, "\n")) {
+                lowkey (stringz.equals(next_char, "\r") || stringz.equals(next_char, "\n")) {
                     // Soft line break - skip the = and following whitespace
                     i = i + 1
-                    ready (stringz.equals(next_char, "\r") && i + 1 < stringz.len(content) && stringz.equals(stringz.char_at(content, i + 1), "\n")) {
+                    lowkey (stringz.equals(next_char, "\r") && i + 1 < stringz.len(content) && stringz.equals(stringz.char_at(content, i + 1), "\n")) {
                         i = i + 1  // Skip \n after \r
                     }
                     i = i + 1
@@ -434,7 +434,7 @@ slay decode_quoted_printable(content tea) yikes<tea> {
             }
             
             // Hex encoded character
-            ready (i + 2 < stringz.len(content)) {
+            lowkey (i + 2 < stringz.len(content)) {
                 sus hex_digits tea = stringz.substring(content, i + 1, i + 3)
                 sus decoded_char tea = hex_to_char(hex_digits) fam {
                     when err -> {
@@ -446,12 +446,12 @@ slay decode_quoted_printable(content tea) yikes<tea> {
                 }
                 result = stringz.concat([result, decoded_char])
                 i = i + 3
-            } otherwise {
+            } highkey {
                 result = stringz.concat([result, char])
                 i = i + 1
             }
             
-        } otherwise {
+        } highkey {
             result = stringz.concat([result, char])
             i = i + 1
         }
@@ -462,7 +462,7 @@ slay decode_quoted_printable(content tea) yikes<tea> {
 
 // Decodes header values (handles RFC 2047 encoded-words)
 slay decode_header_value(header_value tea) tea {
-    ready (!stringz.contains(header_value, "=?") || !stringz.contains(header_value, "?=")) {
+    lowkey (!stringz.contains(header_value, "=?") || !stringz.contains(header_value, "?=")) {
         damn header_value  // No encoding
     }
     
@@ -471,12 +471,12 @@ slay decode_header_value(header_value tea) tea {
     
     bestie (start < stringz.len(result)) {
         sus encoded_start drip = stringz.find_from(result, "=?", start)
-        ready (encoded_start == -1) {
+        lowkey (encoded_start == -1) {
             damn result  // No more encoded words
         }
         
         sus encoded_end drip = stringz.find_from(result, "?=", encoded_start)
-        ready (encoded_end == -1) {
+        lowkey (encoded_end == -1) {
             damn result  // Malformed encoded word
         }
         
@@ -496,7 +496,7 @@ slay decode_header_value(header_value tea) tea {
 // Decodes RFC 2047 encoded word (=?charset?encoding?data?=)
 slay decode_encoded_word(encoded_word tea) yikes<tea> {
     // Remove =? prefix and ?= suffix
-    ready (!stringz.starts_with(encoded_word, "=?") || !stringz.ends_with(encoded_word, "?=")) {
+    lowkey (!stringz.starts_with(encoded_word, "=?") || !stringz.ends_with(encoded_word, "?=")) {
         yikes email_format_error("Invalid encoded word format")
     }
     
@@ -504,7 +504,7 @@ slay decode_encoded_word(encoded_word tea) yikes<tea> {
     
     // Split into parts: charset?encoding?data
     sus parts tea[value] = stringz.split(inner, "?")
-    ready (arrayz.len(parts) != 3) {
+    lowkey (arrayz.len(parts) != 3) {
         yikes email_format_error("Invalid encoded word format - expected 3 parts")
     }
     
@@ -514,18 +514,18 @@ slay decode_encoded_word(encoded_word tea) yikes<tea> {
     
     // Decode based on encoding type
     sus decoded tea = ""
-    ready (stringz.equals(encoding, "B")) {
+    lowkey (stringz.equals(encoding, "B")) {
         // Base64 encoding
         decoded = decode_base64(data) fam {
             when err -> yikes err
         }
-    } otherwise ready (stringz.equals(encoding, "Q")) {
+    } highkey lowkey (stringz.equals(encoding, "Q")) {
         // Quoted-printable encoding (with _ as space)
         sus qp_data tea = stringz.replace_all(data, "_", " ")
         decoded = decode_quoted_printable(qp_data) fam {
             when err -> yikes err
         }
-    } otherwise {
+    } highkey {
         yikes email_format_error(stringz.concat(["Unsupported encoding: ", encoding]))
     }
     
@@ -541,7 +541,7 @@ slay decode_encoded_word(encoded_word tea) yikes<tea> {
 
 // Parses a comma-separated list of email addresses
 slay parse_address_list(address_header tea) tea[value]{
-    ready (stringz.len(address_header) == 0) {
+    lowkey (stringz.len(address_header) == 0) {
         damn []
     }
     
@@ -551,9 +551,9 @@ slay parse_address_list(address_header tea) tea[value]{
     sus i drip = 0
     bestie (i < arrayz.len(parts)) {
         sus part tea = stringz.trim(parts[i])
-        ready (stringz.len(part) > 0) {
+        lowkey (stringz.len(part) > 0) {
             sus clean_address tea = parse_single_address(part)
-            ready (stringz.len(clean_address) > 0) {
+            lowkey (stringz.len(clean_address) > 0) {
                 addresses = arrayz.push(addresses, clean_address)
             }
         }
@@ -565,21 +565,21 @@ slay parse_address_list(address_header tea) tea[value]{
 
 // Parses a single email address (handles display names)
 slay parse_single_address(address_string tea) tea {
-    ready (stringz.len(address_string) == 0) {
+    lowkey (stringz.len(address_string) == 0) {
         damn ""
     }
     
     sus trimmed tea = stringz.trim(address_string)
     
     // Handle format: "Display Name" <email@example.com>
-    ready (stringz.contains(trimmed, "<") && stringz.ends_with(trimmed, ">")) {
+    lowkey (stringz.contains(trimmed, "<") && stringz.ends_with(trimmed, ">")) {
         sus start_bracket drip = stringz.find_last(trimmed, "<")
         sus email_part tea = stringz.substring(trimmed, start_bracket + 1, stringz.len(trimmed) - 1)
         damn stringz.trim(email_part)
     }
     
     // Handle format: Display Name <email@example.com> (no quotes)
-    ready (stringz.contains(trimmed, "<") && stringz.contains(trimmed, ">")) {
+    lowkey (stringz.contains(trimmed, "<") && stringz.contains(trimmed, ">")) {
         sus start_bracket drip = stringz.find_first(trimmed, "<")
         sus end_bracket drip = stringz.find_first(trimmed, ">")
         sus email_part tea = stringz.substring(trimmed, start_bracket + 1, end_bracket)
@@ -596,7 +596,7 @@ slay parse_single_address(address_string tea) tea {
 
 // Unfolds header lines (handles RFC 5322 line continuation)
 slay unfold_header_lines(lines tea[value]) tea[value]{
-    ready (arrayz.len(lines) == 0) {
+    lowkey (arrayz.len(lines) == 0) {
         damn []
     }
     
@@ -608,12 +608,12 @@ slay unfold_header_lines(lines tea[value]) tea[value]{
         sus line tea = lines[i]
         
         // Check if this line is a continuation (starts with whitespace)
-        ready (stringz.len(line) > 0 && (stringz.starts_with(line, " ") || stringz.starts_with(line, "\t"))) {
+        lowkey (stringz.len(line) > 0 && (stringz.starts_with(line, " ") || stringz.starts_with(line, "\t"))) {
             // Continuation line - append to current line
             current_line = stringz.concat([current_line, " ", stringz.trim(line)])
-        } otherwise {
+        } highkey {
             // New header line
-            ready (stringz.len(current_line) > 0) {
+            lowkey (stringz.len(current_line) > 0) {
                 unfolded = arrayz.push(unfolded, current_line)
             }
             current_line = line
@@ -622,7 +622,7 @@ slay unfold_header_lines(lines tea[value]) tea[value]{
     }
     
     // Add final line
-    ready (stringz.len(current_line) > 0) {
+    lowkey (stringz.len(current_line) > 0) {
         unfolded = arrayz.push(unfolded, current_line)
     }
     
@@ -632,7 +632,7 @@ slay unfold_header_lines(lines tea[value]) tea[value]{
 // Gets content encoding from headers
 slay get_content_encoding(headers EmailHeader[value]) tea {
     sus encoding tea = get_header_value(headers, "Content-Transfer-Encoding")
-    ready (stringz.len(encoding) == 0) {
+    lowkey (stringz.len(encoding) == 0) {
         damn "7bit"  // Default encoding
     }
     damn stringz.to_lower(stringz.trim(encoding))
@@ -640,20 +640,20 @@ slay get_content_encoding(headers EmailHeader[value]) tea {
 
 // Extracts filename from Content-Disposition header
 slay extract_filename_from_disposition(disposition tea) tea {
-    ready (stringz.len(disposition) == 0) {
+    lowkey (stringz.len(disposition) == 0) {
         damn ""
     }
     
     // Look for filename parameter
     sus filename_start drip = stringz.find_first(disposition, "filename=")
-    ready (filename_start == -1) {
+    lowkey (filename_start == -1) {
         // Try filename* (RFC 2231)
         filename_start = stringz.find_first(disposition, "filename*=")
-        ready (filename_start == -1) {
+        lowkey (filename_start == -1) {
             damn ""
         }
         filename_start = filename_start + 10  // Length of "filename*="
-    } otherwise {
+    } highkey {
         filename_start = filename_start + 9  // Length of "filename="
     }
     
@@ -661,14 +661,14 @@ slay extract_filename_from_disposition(disposition tea) tea {
     filename_part = stringz.trim(filename_part)
     
     // Remove quotes if present
-    ready (stringz.starts_with(filename_part, "\"") && stringz.contains(stringz.substring(filename_part, 1, stringz.len(filename_part)), "\"")) {
+    lowkey (stringz.starts_with(filename_part, "\"") && stringz.contains(stringz.substring(filename_part, 1, stringz.len(filename_part)), "\"")) {
         sus end_quote drip = stringz.find_from(filename_part, "\"", 1)
         filename_part = stringz.substring(filename_part, 1, end_quote)
     }
     
     // Handle parameter continuation (stop at semicolon)
     sus semicolon_pos drip = stringz.find_first(filename_part, ";")
-    ready (semicolon_pos != -1) {
+    lowkey (semicolon_pos != -1) {
         filename_part = stringz.substring(filename_part, 0, semicolon_pos)
     }
     
@@ -677,12 +677,12 @@ slay extract_filename_from_disposition(disposition tea) tea {
 
 // Extracts filename from Content-Type header (fallback)
 slay extract_filename_from_content_type(content_type tea) tea {
-    ready (stringz.len(content_type) == 0) {
+    lowkey (stringz.len(content_type) == 0) {
         damn ""
     }
     
     sus name_start drip = stringz.find_first(content_type, "name=")
-    ready (name_start == -1) {
+    lowkey (name_start == -1) {
         damn ""
     }
     
@@ -691,14 +691,14 @@ slay extract_filename_from_content_type(content_type tea) tea {
     name_part = stringz.trim(name_part)
     
     // Remove quotes if present
-    ready (stringz.starts_with(name_part, "\"") && stringz.contains(stringz.substring(name_part, 1, stringz.len(name_part)), "\"")) {
+    lowkey (stringz.starts_with(name_part, "\"") && stringz.contains(stringz.substring(name_part, 1, stringz.len(name_part)), "\"")) {
         sus end_quote drip = stringz.find_from(name_part, "\"", 1)
         name_part = stringz.substring(name_part, 1, end_quote)
     }
     
     // Stop at semicolon
     sus semicolon_pos drip = stringz.find_first(name_part, ";")
-    ready (semicolon_pos != -1) {
+    lowkey (semicolon_pos != -1) {
         name_part = stringz.substring(name_part, 0, semicolon_pos)
     }
     
@@ -707,7 +707,7 @@ slay extract_filename_from_content_type(content_type tea) tea {
 
 // Converts hex digits to character
 slay hex_to_char(hex_digits tea) yikes<tea> {
-    ready (stringz.len(hex_digits) != 2) {
+    lowkey (stringz.len(hex_digits) != 2) {
         yikes email_format_error("Invalid hex digits length")
     }
     
@@ -756,52 +756,52 @@ slay hex_char_to_int(hex_char tea) yikes<drip> {
 // Helper function to convert character code to string
 slay char_from_code(code drip) tea {
     // Convert ASCII code to character string
-    ready (code == 0) { damn "\0" }
-    ready (code == 9) { damn "\t" }
-    ready (code == 10) { damn "\n" }
-    ready (code == 13) { damn "\r" }
-    ready (code == 32) { damn " " }
-    ready (code == 33) { damn "!" }
-    ready (code == 34) { damn "\"" }
-    ready (code == 35) { damn "#" }
-    ready (code == 36) { damn "$" }
-    ready (code == 37) { damn "%" }
-    ready (code == 38) { damn "&" }
-    ready (code == 39) { damn "'" }
-    ready (code == 40) { damn "(" }
-    ready (code == 41) { damn ")" }
-    ready (code == 42) { damn "*" }
-    ready (code == 43) { damn "+" }
-    ready (code == 44) { damn "," }
-    ready (code == 45) { damn "-" }
-    ready (code == 46) { damn "." }
-    ready (code == 47) { damn "/" }
-    ready (code >= 48 && code <= 57) { damn string_from_drip(code - 48) }  // 0-9
-    ready (code == 58) { damn ":" }
-    ready (code == 59) { damn ";" }
-    ready (code == 60) { damn "<" }
-    ready (code == 61) { damn "=" }
-    ready (code == 62) { damn ">" }
-    ready (code == 63) { damn "?" }
-    ready (code == 64) { damn "@" }
-    ready (code >= 65 && code <= 90) {  // A-Z
+    lowkey (code == 0) { damn "\0" }
+    lowkey (code == 9) { damn "\t" }
+    lowkey (code == 10) { damn "\n" }
+    lowkey (code == 13) { damn "\r" }
+    lowkey (code == 32) { damn " " }
+    lowkey (code == 33) { damn "!" }
+    lowkey (code == 34) { damn "\"" }
+    lowkey (code == 35) { damn "#" }
+    lowkey (code == 36) { damn "$" }
+    lowkey (code == 37) { damn "%" }
+    lowkey (code == 38) { damn "&" }
+    lowkey (code == 39) { damn "'" }
+    lowkey (code == 40) { damn "(" }
+    lowkey (code == 41) { damn ")" }
+    lowkey (code == 42) { damn "*" }
+    lowkey (code == 43) { damn "+" }
+    lowkey (code == 44) { damn "," }
+    lowkey (code == 45) { damn "-" }
+    lowkey (code == 46) { damn "." }
+    lowkey (code == 47) { damn "/" }
+    lowkey (code >= 48 && code <= 57) { damn string_from_drip(code - 48) }  // 0-9
+    lowkey (code == 58) { damn ":" }
+    lowkey (code == 59) { damn ";" }
+    lowkey (code == 60) { damn "<" }
+    lowkey (code == 61) { damn "=" }
+    lowkey (code == 62) { damn ">" }
+    lowkey (code == 63) { damn "?" }
+    lowkey (code == 64) { damn "@" }
+    lowkey (code >= 65 && code <= 90) {  // A-Z
         sus chars tea = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         damn stringz.char_at(chars, code - 65)
     }
-    ready (code >= 97 && code <= 122) {  // a-z
+    lowkey (code >= 97 && code <= 122) {  // a-z
         sus chars tea = "abcdefghijklmnopqrstuvwxyz"
         damn stringz.char_at(chars, code - 97)
     }
-    ready (code == 91) { damn "[" }
-    ready (code == 92) { damn "\\" }
-    ready (code == 93) { damn "]" }
-    ready (code == 94) { damn "^" }
-    ready (code == 95) { damn "_" }
-    ready (code == 96) { damn "`" }
-    ready (code == 123) { damn "{" }
-    ready (code == 124) { damn "|" }
-    ready (code == 125) { damn "}" }
-    ready (code == 126) { damn "~" }
+    lowkey (code == 91) { damn "[" }
+    lowkey (code == 92) { damn "\\" }
+    lowkey (code == 93) { damn "]" }
+    lowkey (code == 94) { damn "^" }
+    lowkey (code == 95) { damn "_" }
+    lowkey (code == 96) { damn "`" }
+    lowkey (code == 123) { damn "{" }
+    lowkey (code == 124) { damn "|" }
+    lowkey (code == 125) { damn "}" }
+    lowkey (code == 126) { damn "~" }
     
     // Default for unknown codes
     damn "?"
@@ -809,11 +809,11 @@ slay char_from_code(code drip) tea {
 
 // Helper function to find string from position
 slay stringz.find_from(text tea, search tea, start_pos drip) drip {
-    ready (start_pos < 0 || start_pos >= stringz.len(text)) {
+    lowkey (start_pos < 0 || start_pos >= stringz.len(text)) {
         damn -1
     }
     
-    ready (stringz.len(search) == 0) {
+    lowkey (stringz.len(search) == 0) {
         damn start_pos
     }
     
@@ -826,14 +826,14 @@ slay stringz.find_from(text tea, search tea, start_pos drip) drip {
         sus j drip = 0
         
         bestie (j < search_len) {
-            ready (!stringz.equals(stringz.char_at(text, i + j), stringz.char_at(search, j))) {
+            lowkey (!stringz.equals(stringz.char_at(text, i + j), stringz.char_at(search, j))) {
                 match = cap
                 damn  // Break inner loop
             }
             j = j + 1
         }
         
-        ready (match) {
+        lowkey (match) {
             damn i
         }
         
@@ -845,21 +845,21 @@ slay stringz.find_from(text tea, search tea, start_pos drip) drip {
 
 // Helper function for string_from_drip (used in char_from_code)
 slay string_from_drip(value drip) tea {
-    ready (value == 0) { damn "0" }
-    ready (value == 1) { damn "1" }
-    ready (value == 2) { damn "2" }
-    ready (value == 3) { damn "3" }
-    ready (value == 4) { damn "4" }
-    ready (value == 5) { damn "5" }
-    ready (value == 6) { damn "6" }
-    ready (value == 7) { damn "7" }
-    ready (value == 8) { damn "8" }
-    ready (value == 9) { damn "9" }
+    lowkey (value == 0) { damn "0" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value == 2) { damn "2" }
+    lowkey (value == 3) { damn "3" }
+    lowkey (value == 4) { damn "4" }
+    lowkey (value == 5) { damn "5" }
+    lowkey (value == 6) { damn "6" }
+    lowkey (value == 7) { damn "7" }
+    lowkey (value == 8) { damn "8" }
+    lowkey (value == 9) { damn "9" }
     
     // For values > 9, use simple conversion
     sus result tea = ""
     sus val drip = value
-    ready (val < 0) {
+    lowkey (val < 0) {
         result = "-"
         val = -val
     }
@@ -871,7 +871,7 @@ slay string_from_drip(value drip) tea {
         val = val / 10
     }
     
-    ready (stringz.len(result) == 0 || stringz.equals(result, "-")) {
+    lowkey (stringz.len(result) == 0 || stringz.equals(result, "-")) {
         damn "0"
     }
     

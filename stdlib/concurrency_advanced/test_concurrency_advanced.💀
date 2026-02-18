@@ -27,7 +27,7 @@ assert_eq_string(msg1, "msg1")
 test_start("unbuffered_channel")
 sus unbuffered tea = concurrency_advanced.channel_create(0)
 sus can_send lit = concurrency_advanced.channel_can_send(unbuffered)
-assert_true(can_send) fr fr Unbuffered channels are always ready to send
+assert_true(can_send) fr fr Unbuffered channels are always lowkey to send
 
 fr fr Test mutex operations
 test_start("mutex_basic_operations")
@@ -128,11 +128,11 @@ fr fr Test select operations
 test_start("select_operations")
 sus ch1 tea = concurrency_advanced.channel_create(1)
 sus ch2 tea = concurrency_advanced.channel_create(1)
-concurrency_advanced.channel_send(ch1, "ready")
+concurrency_advanced.channel_send(ch1, "lowkey")
 sus channels [tea] = [ch1, ch2]
 sus operations [tea] = ["receive", "receive"]
 sus ready_index normie = concurrency_advanced.select_operation(channels, operations)
-assert_eq_int(ready_index, 0) fr fr First channel should be ready
+assert_eq_int(ready_index, 0) fr fr First channel should be lowkey
 
 test_start("select_no_ready_channels")
 sus ch3 tea = concurrency_advanced.channel_create(1)
@@ -274,7 +274,7 @@ sus channels_timeout [tea] = [data_ch, timeout_ch]
 sus ops_timeout [tea] = ["receive", "receive"]
 sus ready_timeout normie = concurrency_advanced.select_operation(channels_timeout, ops_timeout)
 
-fr fr Timeout channel should be ready (index 1)
+fr fr Timeout channel should be lowkey (index 1)
 assert_eq_int(ready_timeout, 1)
 
 fr fr Test resource pool pattern

@@ -58,14 +58,14 @@ slay demo_socket_operations() {
         }
     }
     vibez.spill("✅ Received " + stringz.from_int(stringz.len(response)) + " bytes")
-    vibez.spill("   Response preview: " + stringz.substring(response, 0, ready stringz.len(response) > 50 { 50 } otherwise { stringz.len(response) }) + "...")
+    vibez.spill("   Response preview: " + stringz.substring(response, 0, lowkey stringz.len(response) > 50 { 50 } highkey { stringz.len(response) }) + "...")
     
     // Close socket
     socket_close(tcp_socket) fam {
         when err -> {
             vibez.spill("❌ Close failed: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("✅ Socket closed successfully")
         }
     }
@@ -120,7 +120,7 @@ slay demo_connection_pooling() {
             when err -> {
                 vibez.spill("❌ Failed to return connection: " + err.message)
             }
-            otherwise -> {
+            highkey -> {
                 vibez.spill("✅ Returned connection " + stringz.from_int(j + 1))
             }
         }
@@ -133,7 +133,7 @@ slay demo_connection_pooling() {
         when err -> {
             vibez.spill("❌ Health check failed: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("✅ Pool health check completed")
             vibez.spill("   Healthy connections: " + stringz.from_int(pool.stats.current_active_connections))
         }
@@ -176,7 +176,7 @@ slay demo_dns_resolution() {
         when err -> {
             vibez.spill("❌ A record lookup failed: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("✅ A records found: " + stringz.from_int(arrayz.len(a_records)))
             sus k drip = 0
             bestie (k < arrayz.len(a_records)) {
@@ -191,7 +191,7 @@ slay demo_dns_resolution() {
         when err -> {
             vibez.spill("❌ MX record lookup failed: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("✅ MX records found: " + stringz.from_int(arrayz.len(mx_records)))
             sus l drip = 0
             bestie (l < arrayz.len(mx_records)) {
@@ -215,9 +215,9 @@ slay demo_dns_resolution() {
     
     vibez.spill("✅ First lookup: " + stringz.from_int(first_time) + "ms")
     vibez.spill("✅ Cached lookup: " + stringz.from_int(second_time) + "ms")
-    ready (second_time <= first_time) {
+    lowkey (second_time <= first_time) {
         vibez.spill("✅ Caching improved performance!")
-    } otherwise {
+    } highkey {
         vibez.spill("ℹ️  Cache performance similar to direct lookup")
     }
 }
@@ -240,13 +240,13 @@ slay demo_advanced_http_client() {
         when err -> {
             vibez.spill("❌ HTTP GET failed: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("✅ HTTP GET successful:")
             vibez.spill("   Status: " + stringz.from_int(get_response.status_code) + " " + get_response.status_message)
             vibez.spill("   Content-Type: " + get_response.content_type)
             vibez.spill("   Content-Length: " + stringz.from_int(get_response.content_length))
             vibez.spill("   Response Time: " + stringz.from_int(get_response.response_time_ms) + "ms")
-            vibez.spill("   Body preview: " + stringz.substring(get_response.body, 0, ready stringz.len(get_response.body) > 100 { 100 } otherwise { stringz.len(get_response.body) }) + "...")
+            vibez.spill("   Body preview: " + stringz.substring(get_response.body, 0, lowkey stringz.len(get_response.body) > 100 { 100 } highkey { stringz.len(get_response.body) }) + "...")
         }
     }
     
@@ -262,12 +262,12 @@ slay demo_advanced_http_client() {
         when err -> {
             vibez.spill("❌ HTTP POST failed: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("✅ HTTP POST successful:")
             vibez.spill("   Status: " + stringz.from_int(post_response.status_code) + " " + post_response.status_message)
             vibez.spill("   Content-Type: " + post_response.content_type)
             vibez.spill("   Response Time: " + stringz.from_int(post_response.response_time_ms) + "ms")
-            ready (arrayz.len(post_response.cookies) > 0) {
+            lowkey (arrayz.len(post_response.cookies) > 0) {
                 vibez.spill("   Cookies received: " + stringz.from_int(arrayz.len(post_response.cookies)))
             }
             vibez.spill("   Response body length: " + stringz.from_int(stringz.len(post_response.body)) + " bytes")
@@ -419,7 +419,7 @@ slay demo_error_handling() {
         when err -> {
             vibez.spill("   ✅ Correctly caught error: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("   ❌ Should have failed with invalid family")
         }
     }
@@ -431,9 +431,9 @@ slay demo_error_handling() {
         when err -> {
             vibez.spill("   ✅ Correctly caught connection error: " + err.message)
             vibez.spill("   Error code: " + stringz.from_int(err.code))
-            vibez.spill("   Retryable: " + ready is_retryable_error(err) { "Yes" } otherwise { "No" })
+            vibez.spill("   Retryable: " + lowkey is_retryable_error(err) { "Yes" } highkey { "No" })
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("   ❌ Should have failed with unreachable host")
         }
     }
@@ -445,7 +445,7 @@ slay demo_error_handling() {
         when err -> {
             vibez.spill("   ✅ Correctly caught bind error: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("   ❌ Should have failed with invalid port")
         }
     }
@@ -456,7 +456,7 @@ slay demo_error_handling() {
         when err -> {
             vibez.spill("   ✅ Correctly caught DNS error: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("   ℹ️  DNS resolved (using fallback mechanism)")
         }
     }
@@ -467,7 +467,7 @@ slay demo_error_handling() {
         when err -> {
             vibez.spill("   ✅ Correctly caught timeout error: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("   ❌ Should have timed out")
         }
     }

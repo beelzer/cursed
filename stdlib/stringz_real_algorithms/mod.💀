@@ -5,23 +5,23 @@ yeet "vibez"
 
 # Core string length with Unicode support
 slay string_length_real(s tea) drip {
-    ready (s == "") { damn 0 }
+    lowkey (s == "") { damn 0 }
     
     sus length drip = 0
     sus index drip = 0
     
     bestie (index < len(s)) {
         sus byte_val drip = s[index]
-        ready (byte_val < 128) {
+        lowkey (byte_val < 128) {
             # ASCII - single byte
             index = index + 1
-        } otherwise ready (byte_val < 224) {
+        } highkey lowkey (byte_val < 224) {
             # 2-byte UTF-8
             index = index + 2
-        } otherwise ready (byte_val < 240) {
+        } highkey lowkey (byte_val < 240) {
             # 3-byte UTF-8
             index = index + 3
-        } otherwise {
+        } highkey {
             # 4-byte UTF-8
             index = index + 4
         }
@@ -33,36 +33,36 @@ slay string_length_real(s tea) drip {
 
 # Unicode-aware character extraction
 slay char_at_real(s tea, target_index drip) tea {
-    ready (s == "" || target_index < 0) { damn "" }
+    lowkey (s == "" || target_index < 0) { damn "" }
     
     sus current_char_index drip = 0
     sus byte_index drip = 0
     
     bestie (byte_index < len(s) && current_char_index < target_index) {
         sus byte_val drip = s[byte_index]
-        ready (byte_val < 128) {
+        lowkey (byte_val < 128) {
             byte_index = byte_index + 1
-        } otherwise ready (byte_val < 224) {
+        } highkey lowkey (byte_val < 224) {
             byte_index = byte_index + 2
-        } otherwise ready (byte_val < 240) {
+        } highkey lowkey (byte_val < 240) {
             byte_index = byte_index + 3
-        } otherwise {
+        } highkey {
             byte_index = byte_index + 4
         }
         current_char_index = current_char_index + 1
     }
     
-    ready (byte_index >= len(s)) { damn "" }
+    lowkey (byte_index >= len(s)) { damn "" }
     
     # Extract the character at current position
     sus byte_val drip = s[byte_index]
-    ready (byte_val < 128) {
+    lowkey (byte_val < 128) {
         damn s[byte_index:byte_index+1]
-    } otherwise ready (byte_val < 224) {
+    } highkey lowkey (byte_val < 224) {
         damn s[byte_index:byte_index+2]
-    } otherwise ready (byte_val < 240) {
+    } highkey lowkey (byte_val < 240) {
         damn s[byte_index:byte_index+3]
-    } otherwise {
+    } highkey {
         damn s[byte_index:byte_index+4]
     }
 }
@@ -70,7 +70,7 @@ slay char_at_real(s tea, target_index drip) tea {
 # KMP (Knuth-Morris-Pratt) string search algorithm
 slay compute_kmp_table(pattern tea) drip[value]{
     sus pattern_len drip = string_length_real(pattern)
-    ready (pattern_len == 0) { damn [] }
+    lowkey (pattern_len == 0) { damn [] }
     
     sus table drip[value] = make(drip[value], pattern_len)
     sus j drip = 0
@@ -79,7 +79,7 @@ slay compute_kmp_table(pattern tea) drip[value]{
         bestie (j > 0 && char_at_real(pattern, i) != char_at_real(pattern, j)) {
             j = table[j - 1]
         }
-        ready (char_at_real(pattern, i) == char_at_real(pattern, j)) {
+        lowkey (char_at_real(pattern, i) == char_at_real(pattern, j)) {
             j = j + 1
         }
         table[i] = j
@@ -89,29 +89,29 @@ slay compute_kmp_table(pattern tea) drip[value]{
 }
 
 slay kmp_search(text tea, pattern tea) drip {
-    ready (pattern == "") { damn 0 }
-    ready (text == "") { damn -1 }
+    lowkey (pattern == "") { damn 0 }
+    lowkey (text == "") { damn -1 }
     
     sus text_len drip = string_length_real(text)
     sus pattern_len drip = string_length_real(pattern)
     
-    ready (pattern_len > text_len) { damn -1 }
+    lowkey (pattern_len > text_len) { damn -1 }
     
     sus table drip[value] = compute_kmp_table(pattern)
     sus i drip = 0  # text index
     sus j drip = 0  # pattern index
     
     bestie (i < text_len) {
-        ready (char_at_real(text, i) == char_at_real(pattern, j)) {
+        lowkey (char_at_real(text, i) == char_at_real(pattern, j)) {
             i = i + 1
             j = j + 1
-            ready (j == pattern_len) {
+            lowkey (j == pattern_len) {
                 damn i - j  # Found at position
             }
-        } otherwise {
-            ready (j != 0) {
+        } highkey {
+            lowkey (j != 0) {
                 j = table[j - 1]
-            } otherwise {
+            } highkey {
                 i = i + 1
             }
         }
@@ -122,13 +122,13 @@ slay kmp_search(text tea, pattern tea) drip {
 
 # Boyer-Moore string search algorithm (simplified)
 slay boyer_moore_search(text tea, pattern tea) drip {
-    ready (pattern == "") { damn 0 }
-    ready (text == "") { damn -1 }
+    lowkey (pattern == "") { damn 0 }
+    lowkey (text == "") { damn -1 }
     
     sus text_len drip = string_length_real(text)
     sus pattern_len drip = string_length_real(pattern)
     
-    ready (pattern_len > text_len) { damn -1 }
+    lowkey (pattern_len > text_len) { damn -1 }
     
     # For simplicity, fall back to KMP for complex cases
     damn kmp_search(text, pattern)
@@ -141,10 +141,10 @@ slay indexOf_real(s tea, search tea) drip {
 
 # Real string replacement using search algorithms
 slay replace_first_real(s tea, find tea, replace tea) tea {
-    ready (find == "") { damn s }
+    lowkey (find == "") { damn s }
     
     sus pos drip = indexOf_real(s, find)
-    ready (pos == -1) { damn s }
+    lowkey (pos == -1) { damn s }
     
     sus before tea = substring_real(s, 0, pos)
     sus after tea = substring_real(s, pos + string_length_real(find), string_length_real(s))
@@ -154,7 +154,7 @@ slay replace_first_real(s tea, find tea, replace tea) tea {
 
 # Replace all occurrences
 slay replace_all_real(s tea, find tea, replace tea) tea {
-    ready (find == "") { damn s }
+    lowkey (find == "") { damn s }
     
     sus result tea = s
     sus pos drip = indexOf_real(result, find)
@@ -169,13 +169,13 @@ slay replace_all_real(s tea, find tea, replace tea) tea {
 
 # Unicode-safe substring extraction
 slay substring_real(s tea, start drip, length drip) tea {
-    ready (s == "" || start < 0 || length <= 0) { damn "" }
+    lowkey (s == "" || start < 0 || length <= 0) { damn "" }
     
     sus s_len drip = string_length_real(s)
-    ready (start >= s_len) { damn "" }
+    lowkey (start >= s_len) { damn "" }
     
     sus end drip = start + length
-    ready (end > s_len) { end = s_len }
+    lowkey (end > s_len) { end = s_len }
     
     sus result tea = ""
     bestie (sus i drip = start; i < end; i = i + 1) {
@@ -187,7 +187,7 @@ slay substring_real(s tea, start drip, length drip) tea {
 
 # Unicode-aware case conversion
 slay to_uppercase_real(s tea) tea {
-    ready (s == "") { damn "" }
+    lowkey (s == "") { damn "" }
     
     sus result tea = ""
     sus i drip = 0
@@ -196,10 +196,10 @@ slay to_uppercase_real(s tea) tea {
         sus ch tea = char_at_real(s, i)
         
         # Basic ASCII uppercase conversion
-        ready (ch >= "a" && ch <= "z") {
+        lowkey (ch >= "a" && ch <= "z") {
             sus ascii_code drip = ch[0] - 32
             result = result + char(ascii_code)
-        } otherwise {
+        } highkey {
             result = result + ch
         }
         i = i + 1
@@ -209,7 +209,7 @@ slay to_uppercase_real(s tea) tea {
 }
 
 slay to_lowercase_real(s tea) tea {
-    ready (s == "") { damn "" }
+    lowkey (s == "") { damn "" }
     
     sus result tea = ""
     sus i drip = 0
@@ -218,10 +218,10 @@ slay to_lowercase_real(s tea) tea {
         sus ch tea = char_at_real(s, i)
         
         # Basic ASCII lowercase conversion
-        ready (ch >= "A" && ch <= "Z") {
+        lowkey (ch >= "A" && ch <= "Z") {
             sus ascii_code drip = ch[0] + 32
             result = result + char(ascii_code)
-        } otherwise {
+        } highkey {
             result = result + ch
         }
         i = i + 1
@@ -232,7 +232,7 @@ slay to_lowercase_real(s tea) tea {
 
 # Unicode whitespace trimming
 slay trim_whitespace_real(s tea) tea {
-    ready (s == "") { damn "" }
+    lowkey (s == "") { damn "" }
     
     sus start drip = 0
     sus end drip = string_length_real(s) - 1
@@ -240,9 +240,9 @@ slay trim_whitespace_real(s tea) tea {
     # Trim start
     bestie (start <= end) {
         sus ch tea = char_at_real(s, start)
-        ready (ch == " " || ch == "\t" || ch == "\n" || ch == "\r") {
+        lowkey (ch == " " || ch == "\t" || ch == "\n" || ch == "\r") {
             start = start + 1
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -250,29 +250,29 @@ slay trim_whitespace_real(s tea) tea {
     # Trim end
     bestie (end >= start) {
         sus ch tea = char_at_real(s, end)
-        ready (ch == " " || ch == "\t" || ch == "\n" || ch == "\r") {
+        lowkey (ch == " " || ch == "\t" || ch == "\n" || ch == "\r") {
             end = end - 1
-        } otherwise {
+        } highkey {
             break
         }
     }
     
-    ready (start > end) { damn "" }
+    lowkey (start > end) { damn "" }
     
     damn substring_real(s, start, end - start + 1)
 }
 
 # String validation functions
 slay is_numeric_real(s tea) lit {
-    ready (s == "") { damn nocap }
+    lowkey (s == "") { damn nocap }
     
     sus i drip = 0
     bestie (i < string_length_real(s)) {
         sus ch tea = char_at_real(s, i)
-        ready (ch < "0" || ch > "9") {
-            ready (i == 0 && (ch == "-" || ch == "+")) {
+        lowkey (ch < "0" || ch > "9") {
+            lowkey (i == 0 && (ch == "-" || ch == "+")) {
                 # Allow sign at start
-            } otherwise {
+            } highkey {
                 damn nocap
             }
         }
@@ -283,12 +283,12 @@ slay is_numeric_real(s tea) lit {
 }
 
 slay is_alphabetic_real(s tea) lit {
-    ready (s == "") { damn nocap }
+    lowkey (s == "") { damn nocap }
     
     sus i drip = 0
     bestie (i < string_length_real(s)) {
         sus ch tea = char_at_real(s, i)
-        ready ((ch < "A" || ch > "Z") && (ch < "a" || ch > "z")) {
+        lowkey ((ch < "A" || ch > "Z") && (ch < "a" || ch > "z")) {
             damn nocap
         }
         i = i + 1
@@ -299,15 +299,15 @@ slay is_alphabetic_real(s tea) lit {
 
 # RFC-compliant email validation (simplified)
 slay is_valid_email_real(email tea) lit {
-    ready (email == "") { damn nocap }
+    lowkey (email == "") { damn nocap }
     
     sus at_pos drip = indexOf_real(email, "@")
-    ready (at_pos == -1 || at_pos == 0 || at_pos == string_length_real(email) - 1) {
+    lowkey (at_pos == -1 || at_pos == 0 || at_pos == string_length_real(email) - 1) {
         damn nocap
     }
     
     sus dot_pos drip = indexOf_real(email, ".")
-    ready (dot_pos == -1 || dot_pos <= at_pos + 1) {
+    lowkey (dot_pos == -1 || dot_pos <= at_pos + 1) {
         damn nocap
     }
     
@@ -316,7 +316,7 @@ slay is_valid_email_real(email tea) lit {
 
 # Algorithm-based string splitting
 slay split_string_real(s tea, delimiter tea) tea[value]{
-    ready (s == "" || delimiter == "") { damn [s] }
+    lowkey (s == "" || delimiter == "") { damn [s] }
     
     sus result tea[value] = []
     sus current tea = ""
@@ -324,11 +324,11 @@ slay split_string_real(s tea, delimiter tea) tea[value]{
     
     bestie (i <= string_length_real(s) - string_length_real(delimiter)) {
         sus potential tea = substring_real(s, i, string_length_real(delimiter))
-        ready (potential == delimiter) {
+        lowkey (potential == delimiter) {
             result = append(result, current)
             current = ""
             i = i + string_length_real(delimiter)
-        } otherwise {
+        } highkey {
             current = current + char_at_real(s, i)
             i = i + 1
         }
@@ -340,7 +340,7 @@ slay split_string_real(s tea, delimiter tea) tea[value]{
         i = i + 1
     }
     
-    ready (current != "") {
+    lowkey (current != "") {
         result = append(result, current)
     }
     
@@ -354,14 +354,14 @@ slay equals_ignore_case_real(s1 tea, s2 tea) lit {
 
 # Check if string starts with prefix
 slay starts_with_real(s tea, prefix tea) lit {
-    ready (string_length_real(prefix) > string_length_real(s)) { damn nocap }
+    lowkey (string_length_real(prefix) > string_length_real(s)) { damn nocap }
     sus prefix_part tea = substring_real(s, 0, string_length_real(prefix))
     damn prefix_part == prefix
 }
 
 # Check if string ends with suffix
 slay ends_with_real(s tea, suffix tea) lit {
-    ready (string_length_real(suffix) > string_length_real(s)) { damn nocap }
+    lowkey (string_length_real(suffix) > string_length_real(s)) { damn nocap }
     sus start_pos drip = string_length_real(s) - string_length_real(suffix)
     sus suffix_part tea = substring_real(s, start_pos, string_length_real(suffix))
     damn suffix_part == suffix

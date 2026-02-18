@@ -22,7 +22,7 @@ slay is_nan_ieee754(x meal) lit {
     sus exponent drip = (bits & IEEE_754_NAN_EXPONENT_MASK) >> 23
     sus mantissa drip = bits & IEEE_754_NAN_MANTISSA_MASK
     
-    ready (exponent == 255 && mantissa != 0) {
+    lowkey (exponent == 255 && mantissa != 0) {
         damn based
     }
     damn cringe
@@ -34,7 +34,7 @@ slay is_infinite_ieee754(x meal) lit {
     sus exponent drip = (bits & IEEE_754_NAN_EXPONENT_MASK) >> 23
     sus mantissa drip = bits & IEEE_754_NAN_MANTISSA_MASK
     
-    ready (exponent == 255 && mantissa == 0) {
+    lowkey (exponent == 255 && mantissa == 0) {
         damn based
     }
     damn cringe
@@ -54,15 +54,15 @@ slay is_zero_ieee754(x meal) lit {
 slay cast_float_to_bits(x meal) drip {
     fr fr Simulate float to bits conversion for IEEE 754 checking
     fr fr This is a simplified approximation
-    ready (x == 0.0) { damn 0 }
-    ready (x > 0.0 && x < 1e-38) { damn 1 }  fr fr Very small positive
-    ready (x < 0.0 && x > -1e-38) { damn -2147483648 }  fr fr Very small negative
-    ready (x > 1e38) { damn IEEE_754_INFINITY_POSITIVE }
-    ready (x < -1e38) { damn IEEE_754_INFINITY_NEGATIVE }
+    lowkey (x == 0.0) { damn 0 }
+    lowkey (x > 0.0 && x < 1e-38) { damn 1 }  fr fr Very small positive
+    lowkey (x < 0.0 && x > -1e-38) { damn -2147483648 }  fr fr Very small negative
+    lowkey (x > 1e38) { damn IEEE_754_INFINITY_POSITIVE }
+    lowkey (x < -1e38) { damn IEEE_754_INFINITY_NEGATIVE }
     
     fr fr For normal numbers, create a pseudo-representation
     sus sign drip = 0
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         sign = -2147483648
         x = -x
     }
@@ -89,8 +89,8 @@ fr fr ==========================================
 slay gcd_euclidean(a drip, b drip) drip {
     fr fr Classic Euclidean algorithm for Greatest Common Divisor
     fr fr Mathematically proven optimal algorithm
-    ready (a < 0) { a = -a }
-    ready (b < 0) { b = -b }
+    lowkey (a < 0) { a = -a }
+    lowkey (b < 0) { b = -b }
     
     bestie (b != 0) {
         sus temp drip = b
@@ -105,7 +105,7 @@ slay gcd_extended_euclidean(a drip, b drip) drip[value]{
     fr fr Returns [gcd, x, y] such that ax + by = gcd(a, b)
     sus result drip[value] = [0, 0, 0]
     
-    ready (b == 0) {
+    lowkey (b == 0) {
         result[0] = a
         result[1] = 1
         result[2] = 0
@@ -144,7 +144,7 @@ slay gcd_extended_euclidean(a drip, b drip) drip[value]{
 slay lcm_euclidean(a drip, b drip) drip {
     fr fr Least Common Multiple using GCD
     fr fr LCM(a,b) = |a*b| / GCD(a,b)
-    ready (a == 0 || b == 0) {
+    lowkey (a == 0 || b == 0) {
         damn 0
     }
     
@@ -164,7 +164,7 @@ slay quicksort_partition(arr meal[value], low drip, high drip) drip {
     
     sus j drip = low
     bestie (j <= high - 1) {
-        ready (arr[j] <= pivot) {
+        lowkey (arr[j] <= pivot) {
             i = i + 1
             sus temp meal = arr[i]
             arr[i] = arr[j]
@@ -182,7 +182,7 @@ slay quicksort_partition(arr meal[value], low drip, high drip) drip {
 
 slay quicksort_array(arr meal[value], low drip, high drip) lit {
     fr fr Quicksort implementation for proper median calculation
-    ready (low < high) {
+    lowkey (low < high) {
         sus pi drip = quicksort_partition(arr, low, high)
         
         quicksort_array(arr, low, pi - 1)
@@ -194,10 +194,10 @@ slay quicksort_array(arr meal[value], low drip, high drip) lit {
 slay median_proper_sorting(values meal[value], count drip) meal {
     fr fr Proper median calculation using sorting
     fr fr Mathematically correct median definition
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
-    ready (count == 1) {
+    lowkey (count == 1) {
         damn values[0]
     }
     
@@ -208,7 +208,7 @@ slay median_proper_sorting(values meal[value], count drip) meal {
     quicksort_array(sorted_values, 0, count - 1)
     
     fr fr Calculate median based on array size
-    ready (count % 2 == 1) {
+    lowkey (count % 2 == 1) {
         fr fr Odd number of elements: middle element
         damn sorted_values[count / 2]
     }
@@ -232,7 +232,7 @@ slay make_array_copy(original meal[value], count drip) meal[value]{
 slay percentile_proper(values meal[value], count drip, percentile meal) meal {
     fr fr Calculate percentile using proper sorting
     fr fr percentile should be between 0.0 and 100.0
-    ready (count <= 0 || percentile < 0.0 || percentile > 100.0) {
+    lowkey (count <= 0 || percentile < 0.0 || percentile > 100.0) {
         damn 0.0
     }
     
@@ -243,7 +243,7 @@ slay percentile_proper(values meal[value], count drip, percentile meal) meal {
     sus lower_index drip = floor_int(index)
     sus upper_index drip = ceil_int(index)
     
-    ready (lower_index == upper_index) {
+    lowkey (lower_index == upper_index) {
         damn sorted_values[lower_index]
     }
     
@@ -254,7 +254,7 @@ slay percentile_proper(values meal[value], count drip, percentile meal) meal {
 slay quartiles(values meal[value], count drip) meal[value]{
     fr fr Calculate Q1, Q2 (median), Q3 using proper sorting
     sus result meal[value] = [0.0, 0.0, 0.0]
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn result
     }
     
@@ -271,7 +271,7 @@ fr fr ==========================================
 
 slay mean_robust(values meal[value], count drip) meal {
     fr fr Arithmetic mean with overflow protection
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
     
@@ -281,7 +281,7 @@ slay mean_robust(values meal[value], count drip) meal {
     
     sus i drip = 0
     bestie (i < count) {
-        ready (!is_finite_ieee754(values[i])) {
+        lowkey (!is_finite_ieee754(values[i])) {
             fr fr Skip non-finite values
             i = i + 1
             continue
@@ -300,7 +300,7 @@ slay mean_robust(values meal[value], count drip) meal {
 slay variance_robust(values meal[value], count drip) meal {
     fr fr Sample variance using Welford's online algorithm
     fr fr Numerically stable and mathematically correct
-    ready (count <= 1) {
+    lowkey (count <= 1) {
         damn 0.0
     }
     
@@ -310,7 +310,7 @@ slay variance_robust(values meal[value], count drip) meal {
     
     sus i drip = 0
     bestie (i < count) {
-        ready (is_finite_ieee754(values[i])) {
+        lowkey (is_finite_ieee754(values[i])) {
             valid_count = valid_count + 1
             sus delta meal = values[i] - mean_val
             mean_val = mean_val + delta / valid_count.(meal)
@@ -320,7 +320,7 @@ slay variance_robust(values meal[value], count drip) meal {
         i = i + 1
     }
     
-    ready (valid_count <= 1) {
+    lowkey (valid_count <= 1) {
         damn 0.0
     }
     
@@ -329,7 +329,7 @@ slay variance_robust(values meal[value], count drip) meal {
 
 slay standard_deviation_robust(values meal[value], count drip) meal {
     sus variance_val meal = variance_robust(values, count)
-    ready (variance_val <= 0.0) {
+    lowkey (variance_val <= 0.0) {
         damn 0.0
     }
     damn sqrt_newton_raphson(variance_val)
@@ -337,13 +337,13 @@ slay standard_deviation_robust(values meal[value], count drip) meal {
 
 slay skewness(values meal[value], count drip) meal {
     fr fr Sample skewness using the standard formula
-    ready (count <= 2) {
+    lowkey (count <= 2) {
         damn 0.0
     }
     
     sus mean_val meal = mean_robust(values, count)
     sus variance_val meal = variance_robust(values, count)
-    ready (variance_val <= 0.0) {
+    lowkey (variance_val <= 0.0) {
         damn 0.0
     }
     
@@ -353,7 +353,7 @@ slay skewness(values meal[value], count drip) meal {
     
     sus i drip = 0
     bestie (i < count) {
-        ready (is_finite_ieee754(values[i])) {
+        lowkey (is_finite_ieee754(values[i])) {
             sus standardized meal = (values[i] - mean_val) / std_dev
             third_moment = third_moment + standardized * standardized * standardized
             valid_count = valid_count + 1
@@ -361,7 +361,7 @@ slay skewness(values meal[value], count drip) meal {
         i = i + 1
     }
     
-    ready (valid_count <= 2) {
+    lowkey (valid_count <= 2) {
         damn 0.0
     }
     
@@ -370,13 +370,13 @@ slay skewness(values meal[value], count drip) meal {
 
 slay kurtosis(values meal[value], count drip) meal {
     fr fr Sample kurtosis using the standard formula
-    ready (count <= 3) {
+    lowkey (count <= 3) {
         damn 0.0
     }
     
     sus mean_val meal = mean_robust(values, count)
     sus variance_val meal = variance_robust(values, count)
-    ready (variance_val <= 0.0) {
+    lowkey (variance_val <= 0.0) {
         damn 0.0
     }
     
@@ -386,7 +386,7 @@ slay kurtosis(values meal[value], count drip) meal {
     
     sus i drip = 0
     bestie (i < count) {
-        ready (is_finite_ieee754(values[i])) {
+        lowkey (is_finite_ieee754(values[i])) {
             sus standardized meal = (values[i] - mean_val) / std_dev
             sus standardized_squared meal = standardized * standardized
             fourth_moment = fourth_moment + standardized_squared * standardized_squared
@@ -395,7 +395,7 @@ slay kurtosis(values meal[value], count drip) meal {
         i = i + 1
     }
     
-    ready (valid_count <= 3) {
+    lowkey (valid_count <= 3) {
         damn 0.0
     }
     
@@ -409,18 +409,18 @@ fr fr ==========================================
 slay sqrt_newton_raphson(x meal) meal {
     fr fr Newton-Raphson method for square root
     fr fr Mathematically proven quadratic convergence
-    ready (!is_finite_ieee754(x) || x < 0.0) {
+    lowkey (!is_finite_ieee754(x) || x < 0.0) {
         damn 0.0  fr fr Return 0 for invalid input
     }
-    ready (x == 0.0) {
+    lowkey (x == 0.0) {
         damn 0.0
     }
-    ready (x == 1.0) {
+    lowkey (x == 1.0) {
         damn 1.0
     }
     
     sus guess meal = x / 2.0
-    ready (x > 1.0) {
+    lowkey (x > 1.0) {
         guess = x / 2.0
     } sus {
         guess = (x + 1.0) / 2.0
@@ -432,7 +432,7 @@ slay sqrt_newton_raphson(x meal) meal {
     
     bestie (iteration < max_iterations) {
         sus new_guess meal = (guess + x / guess) / 2.0
-        ready (abs_float(new_guess - guess) < epsilon) {
+        lowkey (abs_float(new_guess - guess) < epsilon) {
             damn new_guess
         }
         guess = new_guess
@@ -443,14 +443,14 @@ slay sqrt_newton_raphson(x meal) meal {
 }
 
 slay abs_float(x meal) meal {
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         damn -x
     }
     damn x
 }
 
 slay abs_int(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -x
     }
     damn x
@@ -458,7 +458,7 @@ slay abs_int(x drip) drip {
 
 slay floor_int(x meal) drip {
     sus int_part drip = x.(drip)
-    ready (x >= 0.0 || x == int_part.(meal)) {
+    lowkey (x >= 0.0 || x == int_part.(meal)) {
         damn int_part
     }
     damn int_part - 1
@@ -466,7 +466,7 @@ slay floor_int(x meal) drip {
 
 slay ceil_int(x meal) drip {
     sus int_part drip = x.(drip)
-    ready (x <= 0.0 || x == int_part.(meal)) {
+    lowkey (x <= 0.0 || x == int_part.(meal)) {
         damn int_part
     }
     damn int_part + 1
@@ -478,12 +478,12 @@ fr fr ==========================================
 
 slay coefficient_of_variation(values meal[value], count drip) meal {
     fr fr Coefficient of Variation (CV) = std_dev / mean
-    ready (count <= 1) {
+    lowkey (count <= 1) {
         damn 0.0
     }
     
     sus mean_val meal = mean_robust(values, count)
-    ready (abs_float(mean_val) < 1e-15) {
+    lowkey (abs_float(mean_val) < 1e-15) {
         damn 0.0  fr fr Avoid division by zero
     }
     
@@ -499,7 +499,7 @@ slay interquartile_range(values meal[value], count drip) meal {
 
 slay mad_median_absolute_deviation(values meal[value], count drip) meal {
     fr fr Median Absolute Deviation - robust measure of variability
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
     
@@ -521,7 +521,7 @@ fr fr ==========================================
 
 slay covariance(x_values meal[value], y_values meal[value], count drip) meal {
     fr fr Sample covariance using Welford's method for numerical stability
-    ready (count <= 1) {
+    lowkey (count <= 1) {
         damn 0.0
     }
     
@@ -533,14 +533,14 @@ slay covariance(x_values meal[value], y_values meal[value], count drip) meal {
     
     sus i drip = 0
     bestie (i < count) {
-        ready (is_finite_ieee754(x_values[i]) && is_finite_ieee754(y_values[i])) {
+        lowkey (is_finite_ieee754(x_values[i]) && is_finite_ieee754(y_values[i])) {
             covariance_sum = covariance_sum + (x_values[i] - x_mean) * (y_values[i] - y_mean)
             valid_count = valid_count + 1
         }
         i = i + 1
     }
     
-    ready (valid_count <= 1) {
+    lowkey (valid_count <= 1) {
         damn 0.0
     }
     
@@ -549,7 +549,7 @@ slay covariance(x_values meal[value], y_values meal[value], count drip) meal {
 
 slay correlation_pearson(x_values meal[value], y_values meal[value], count drip) meal {
     fr fr Pearson correlation coefficient
-    ready (count <= 1) {
+    lowkey (count <= 1) {
         damn 0.0
     }
     
@@ -557,7 +557,7 @@ slay correlation_pearson(x_values meal[value], y_values meal[value], count drip)
     sus x_std meal = standard_deviation_robust(x_values, count)
     sus y_std meal = standard_deviation_robust(y_values, count)
     
-    ready (abs_float(x_std) < 1e-15 || abs_float(y_std) < 1e-15) {
+    lowkey (abs_float(x_std) < 1e-15 || abs_float(y_std) < 1e-15) {
         damn 0.0  fr fr No correlation if either variable has no variation
     }
     
@@ -570,14 +570,14 @@ fr fr ==========================================
 
 slay t_statistic_one_sample(values meal[value], count drip, population_mean meal) meal {
     fr fr One-sample t-statistic
-    ready (count <= 1) {
+    lowkey (count <= 1) {
         damn 0.0
     }
     
     sus sample_mean meal = mean_robust(values, count)
     sus sample_std meal = standard_deviation_robust(values, count)
     
-    ready (abs_float(sample_std) < 1e-15) {
+    lowkey (abs_float(sample_std) < 1e-15) {
         damn 0.0  fr fr Avoid division by zero
     }
     
@@ -586,14 +586,14 @@ slay t_statistic_one_sample(values meal[value], count drip, population_mean meal
 
 slay chi_square_goodness_of_fit(observed drip[value], expected drip[value], count drip) meal {
     fr fr Chi-square goodness of fit test statistic
-    ready (count <= 0) {
+    lowkey (count <= 0) {
         damn 0.0
     }
     
     sus chi_square meal = 0.0
     sus i drip = 0
     bestie (i < count) {
-        ready (expected[i] > 0) {
+        lowkey (expected[i] > 0) {
             sus diff meal = observed[i].(meal) - expected[i].(meal)
             chi_square = chi_square + (diff * diff) / expected[i].(meal)
         }
@@ -612,14 +612,14 @@ slay test_enhanced_mathematical_operations() lit {
     
     fr fr Test IEEE 754 functions
     sus test_nan meal = 0.0 / 0.0  fr fr Should be NaN
-    ready (!is_nan_ieee754(test_nan)) {
+    lowkey (!is_nan_ieee754(test_nan)) {
         spill_facts("ERROR: IEEE 754 NaN detection failed")
         damn cringe
     }
     
     fr fr Test Euclidean GCD
     sus gcd_result drip = gcd_euclidean(48, 18)
-    ready (gcd_result != 6) {
+    lowkey (gcd_result != 6) {
         spill_facts("ERROR: Euclidean GCD failed, expected 6, got", gcd_result)
         damn cringe
     }
@@ -627,14 +627,14 @@ slay test_enhanced_mathematical_operations() lit {
     fr fr Test robust statistical functions
     sus test_data meal[value] = [1.0, 2.0, 3.0, 4.0, 5.0]
     sus median_result meal = median_proper_sorting(test_data, 5)
-    ready (abs_float(median_result - 3.0) > 1e-10) {
+    lowkey (abs_float(median_result - 3.0) > 1e-10) {
         spill_facts("ERROR: Proper median calculation failed, expected 3.0, got", median_result)
         damn cringe
     }
     
     fr fr Test Newton-Raphson sqrt
     sus sqrt_result meal = sqrt_newton_raphson(25.0)
-    ready (abs_float(sqrt_result - 5.0) > 1e-10) {
+    lowkey (abs_float(sqrt_result - 5.0) > 1e-10) {
         spill_facts("ERROR: Newton-Raphson sqrt failed, expected 5.0, got", sqrt_result)
         damn cringe
     }

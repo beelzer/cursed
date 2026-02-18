@@ -68,7 +68,7 @@ slay connect_sqlite(database_path tea) tea {
 
 fr fr Universal connection function
 slay connect_database(config DatabaseConfig) tea {
-    ready config.db_type {
+    lowkey config.db_type {
         1 -> {
             damn connect_postgres(config)
         }

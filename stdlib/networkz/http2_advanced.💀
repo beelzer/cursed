@@ -39,11 +39,11 @@ squad Http2PushCacheEntry {
 }
 
 slay create_push_promise_frame(stream_id drip, promised_stream_id drip, headers tea[value]) yikes<Http2Frame> {
-    ready (stream_id == 0 || promised_stream_id == 0) {
+    lowkey (stream_id == 0 || promised_stream_id == 0) {
         yikes create_network_error_advanced("http2_push", "Invalid stream IDs for PUSH_PROMISE", HTTP2_PROTOCOL_ERROR, "")
     }
 
-    ready (stream_id == promised_stream_id) {
+    lowkey (stream_id == promised_stream_id) {
         yikes create_network_error_advanced("http2_push", "Stream ID cannot equal promised stream ID", HTTP2_PROTOCOL_ERROR, "")
     }
 
@@ -62,7 +62,7 @@ slay create_push_promise_frame(stream_id drip, promised_stream_id drip, headers 
         sus header tea = headers[i]
         sus colon_pos drip = stringz.find(header, ": ")
         
-        ready (colon_pos == -1) {
+        lowkey (colon_pos == -1) {
             yikes create_network_error_advanced("http2_push", "Invalid header format", HTTP2_PROTOCOL_ERROR, header)
         }
 
@@ -87,11 +87,11 @@ slay create_push_promise_frame(stream_id drip, promised_stream_id drip, headers 
 }
 
 slay process_push_promise_frame(conn Http2Connection, frame Http2Frame) yikes<Http2PushPromise> {
-    ready (frame.stream_id == 0) {
+    lowkey (frame.stream_id == 0) {
         yikes create_network_error_advanced("http2_push", "PUSH_PROMISE frame with stream ID 0", HTTP2_PROTOCOL_ERROR, "")
     }
 
-    ready (frame.payload_length < 4) {
+    lowkey (frame.payload_length < 4) {
         yikes create_network_error_advanced("http2_push", "PUSH_PROMISE frame too small", HTTP2_FRAME_SIZE_ERROR, "")
     }
 
@@ -144,13 +144,13 @@ slay process_push_promise_frame(conn Http2Connection, frame Http2Frame) yikes<Ht
     sus i drip = 0
     bestie (i < arrayz.len(headers)) {
         sus header tea = headers[i]
-        ready (stringz.starts_with(header, ":authority: ")) {
+        lowkey (stringz.starts_with(header, ":authority: ")) {
             authority = stringz.substring(header, 12, stringz.len(header))
-        } otherwise ready (stringz.starts_with(header, ":method: ")) {
+        } highkey lowkey (stringz.starts_with(header, ":method: ")) {
             method = stringz.substring(header, 9, stringz.len(header))
-        } otherwise ready (stringz.starts_with(header, ":path: ")) {
+        } highkey lowkey (stringz.starts_with(header, ":path: ")) {
             path = stringz.substring(header, 7, stringz.len(header))
-        } otherwise ready (stringz.starts_with(header, ":scheme: ")) {
+        } highkey lowkey (stringz.starts_with(header, ":scheme: ")) {
             scheme = stringz.substring(header, 9, stringz.len(header))
         }
         i = i + 1
@@ -169,11 +169,11 @@ slay process_push_promise_frame(conn Http2Connection, frame Http2Frame) yikes<Ht
 }
 
 slay http2_server_push_resource(conn Http2Connection, parent_stream_id drip, path tea, content_type tea, body tea) yikes<lit> {
-    ready (!conn.is_server) {
+    lowkey (!conn.is_server) {
         yikes create_network_error_advanced("http2_push", "Server push only available for server connections", HTTP2_PROTOCOL_ERROR, "")
     }
 
-    ready (conn.remote_settings.enable_push == 0) {
+    lowkey (conn.remote_settings.enable_push == 0) {
         yikes create_network_error_advanced("http2_push", "Client disabled server push", HTTP2_PROTOCOL_ERROR, "")
     }
 
@@ -224,7 +224,7 @@ slay http2_server_push_resource(conn Http2Connection, parent_stream_id drip, pat
     }
 
     // Send data frame with resource content
-    ready (stringz.len(body) > 0) {
+    lowkey (stringz.len(body) > 0) {
         sus data_frame Http2Frame = create_data_frame(promised_stream_id, body, based) fam {
             when err -> yikes err
         }
@@ -270,24 +270,24 @@ slay create_flow_controller(initial_window_size drip) Http2FlowController {
 }
 
 slay flow_control_consume(controller Http2FlowController, stream_id drip, bytes drip) yikes<lit> {
-    ready (bytes <= 0) {
+    lowkey (bytes <= 0) {
         damn based
     }
 
     // Update connection window
-    ready (bytes > controller.connection_window) {
+    lowkey (bytes > controller.connection_window) {
         yikes create_network_error_advanced("flow_control", "Data exceeds connection window", HTTP2_FLOW_CONTROL_ERROR, "")
     }
     controller.connection_window = controller.connection_window - bytes
 
     // Update stream window (if not connection-level)
-    ready (stream_id != 0) {
-        ready (stream_id > 1000) {
+    lowkey (stream_id != 0) {
+        lowkey (stream_id > 1000) {
             yikes create_network_error_advanced("flow_control", "Stream ID too large", HTTP2_PROTOCOL_ERROR, "")
         }
 
         sus stream_index drip = stream_id - 1
-        ready (bytes > controller.stream_windows[stream_index]) {
+        lowkey (bytes > controller.stream_windows[stream_index]) {
             yikes create_network_error_advanced("flow_control", "Data exceeds stream window", HTTP2_FLOW_CONTROL_ERROR, "")
         }
         
@@ -299,11 +299,11 @@ slay flow_control_consume(controller Http2FlowController, stream_id drip, bytes 
 }
 
 slay flow_control_should_update(controller Http2FlowController, stream_id drip) lit {
-    ready (stream_id == 0) {
+    lowkey (stream_id == 0) {
         damn (controller.default_window_size - controller.connection_window) >= controller.update_threshold
     }
 
-    ready (stream_id > 1000) {
+    lowkey (stream_id > 1000) {
         damn no_cap
     }
 
@@ -313,7 +313,7 @@ slay flow_control_should_update(controller Http2FlowController, stream_id drip) 
 
 slay flow_control_send_updates(conn Http2Connection, controller Http2FlowController) yikes<lit> {
     // Send connection-level window update if needed
-    ready (flow_control_should_update(controller, 0)) {
+    lowkey (flow_control_should_update(controller, 0)) {
         sus increment drip = controller.default_window_size - controller.connection_window
         sus window_update Http2Frame = create_window_update_frame(0, increment) fam {
             when err -> yikes err
@@ -330,7 +330,7 @@ slay flow_control_send_updates(conn Http2Connection, controller Http2FlowControl
     sus i drip = 0
     bestie (i < conn.stream_count) {
         sus stream_id drip = conn.streams[i].stream_id
-        ready (flow_control_should_update(controller, stream_id)) {
+        lowkey (flow_control_should_update(controller, stream_id)) {
             sus stream_index drip = stream_id - 1
             sus increment drip = controller.pending_updates[stream_index]
             
@@ -366,7 +366,7 @@ slay create_priority_frame(stream_id drip, dependency drip, weight drip, exclusi
     sus payload tea = ""
     
     // Stream dependency (31-bit) with exclusive flag in first bit
-    sus dependency_with_flag drip = ready (exclusive) (dependency | 0x80000000) otherwise dependency
+    sus dependency_with_flag drip = lowkey (exclusive) (dependency | 0x80000000) highkey dependency
     payload = stringz.concat([payload, stringz.from_byte((dependency_with_flag >> 24) & 0xFF)])
     payload = stringz.concat([payload, stringz.from_byte((dependency_with_flag >> 16) & 0xFF)])
     payload = stringz.concat([payload, stringz.from_byte((dependency_with_flag >> 8) & 0xFF)])
@@ -385,11 +385,11 @@ slay create_priority_frame(stream_id drip, dependency drip, weight drip, exclusi
 }
 
 slay process_priority_frame(conn Http2Connection, frame Http2Frame) yikes<Http2StreamDependency> {
-    ready (frame.stream_id == 0) {
+    lowkey (frame.stream_id == 0) {
         yikes create_network_error_advanced("http2_priority", "PRIORITY frame with stream ID 0", HTTP2_PROTOCOL_ERROR, "")
     }
 
-    ready (frame.payload_length != 5) {
+    lowkey (frame.payload_length != 5) {
         yikes create_network_error_advanced("http2_priority", "Invalid PRIORITY frame size", HTTP2_FRAME_SIZE_ERROR, "")
     }
 
@@ -399,7 +399,7 @@ slay process_priority_frame(conn Http2Connection, frame Http2Frame) yikes<Http2S
     sus dependency drip = dependency_with_flag & 0x7FFFFFFF
     sus weight drip = bytes[4] + 1  // Weight is stored as weight - 1
 
-    ready (dependency == frame.stream_id) {
+    lowkey (dependency == frame.stream_id) {
         yikes create_network_error_advanced("http2_priority", "Stream cannot depend on itself", HTTP2_PROTOCOL_ERROR, "")
     }
 
@@ -455,12 +455,12 @@ slay multiplex_create_stream(mux_conn Http2MultiplexedConnection) yikes<drip> {
     sus current_time drip = timez.now()
     sus time_since_last drip = current_time - mux_conn.last_stream_created_time
     
-    ready (time_since_last < 10) {  // 10ms minimum between stream creations
+    lowkey (time_since_last < 10) {  // 10ms minimum between stream creations
         mux_conn.stream_creation_rate = mux_conn.stream_creation_rate + 1
-        ready (mux_conn.stream_creation_rate > 100) {  // Max 100 streams per second
+        lowkey (mux_conn.stream_creation_rate > 100) {  // Max 100 streams per second
             yikes create_network_error_advanced("http2_multiplex", "Stream creation rate exceeded", HTTP2_ENHANCE_YOUR_CALM, "")
         }
-    } otherwise {
+    } highkey {
         mux_conn.stream_creation_rate = 0
     }
 
@@ -470,13 +470,13 @@ slay multiplex_create_stream(mux_conn Http2MultiplexedConnection) yikes<drip> {
     sus active_count drip = 0
     sus i drip = 0
     bestie (i < 1000) {
-        ready (mux_conn.active_streams[i]) {
+        lowkey (mux_conn.active_streams[i]) {
             active_count = active_count + 1
         }
         i = i + 1
     }
 
-    ready (active_count >= mux_conn.max_concurrent_streams) {
+    lowkey (active_count >= mux_conn.max_concurrent_streams) {
         yikes create_network_error_advanced("http2_multiplex", "Maximum concurrent streams exceeded", HTTP2_REFUSED_STREAM, "")
     }
 
@@ -490,7 +490,7 @@ slay multiplex_create_stream(mux_conn Http2MultiplexedConnection) yikes<drip> {
     }
 
     // Mark stream as active
-    ready (stream_id <= 1000) {
+    lowkey (stream_id <= 1000) {
         mux_conn.active_streams[stream_id - 1] = based
     }
 
@@ -498,7 +498,7 @@ slay multiplex_create_stream(mux_conn Http2MultiplexedConnection) yikes<drip> {
 }
 
 slay multiplex_close_stream(mux_conn Http2MultiplexedConnection, stream_id drip) yikes<lit> {
-    ready (stream_id <= 1000) {
+    lowkey (stream_id <= 1000) {
         mux_conn.active_streams[stream_id - 1] = no_cap
     }
 
@@ -518,7 +518,7 @@ slay multiplex_send_concurrent(mux_conn Http2MultiplexedConnection, requests Htt
     sus responses HttpResponse[value] = []
     sus request_channels chan[100]<HttpResponse>  // Max 100 concurrent requests
 
-    ready (arrayz.len(requests) > 100) {
+    lowkey (arrayz.len(requests) > 100) {
         yikes create_network_error_advanced("http2_multiplex", "Too many concurrent requests", HTTP2_ENHANCE_YOUR_CALM, "")
     }
 
@@ -577,7 +577,7 @@ slay multiplex_send_concurrent(mux_conn Http2MultiplexedConnection, requests Htt
             }
 
             // Send request body if present
-            ready (stringz.len(request.body) > 0) {
+            lowkey (stringz.len(request.body) > 0) {
                 sus data_frame Http2Frame = create_data_frame(stream_id, request.body, based) fam {
                     when err -> {
                         sus error_response HttpResponse = HttpResponse{
@@ -624,7 +624,7 @@ slay multiplex_send_concurrent(mux_conn Http2MultiplexedConnection, requests Htt
                     }
                 }
 
-                ready (frame.stream_id == stream_id) {
+                lowkey (frame.stream_id == stream_id) {
                     sick frame.frame_type {
                         when HTTP2_FRAME_HEADERS -> {
                             response_headers = process_headers_frame(mux_conn.connection, frame) fam {
@@ -639,7 +639,7 @@ slay multiplex_send_concurrent(mux_conn Http2MultiplexedConnection, requests Htt
                                     damn
                                 }
                             }
-                            ready (frame.flags & HTTP2_FLAG_END_STREAM) {
+                            lowkey (frame.flags & HTTP2_FLAG_END_STREAM) {
                                 response_complete = based
                             }
                         }
@@ -657,7 +657,7 @@ slay multiplex_send_concurrent(mux_conn Http2MultiplexedConnection, requests Htt
                                 }
                             }
                             response_body = stringz.concat([response_body, data])
-                            ready (frame.flags & HTTP2_FLAG_END_STREAM) {
+                            lowkey (frame.flags & HTTP2_FLAG_END_STREAM) {
                                 response_complete = based
                             }
                         }
@@ -669,7 +669,7 @@ slay multiplex_send_concurrent(mux_conn Http2MultiplexedConnection, requests Htt
             sus status_code drip = 200
             sus j drip = 0
             bestie (j < arrayz.len(response_headers)) {
-                ready (stringz.starts_with(response_headers[j], ":status: ")) {
+                lowkey (stringz.starts_with(response_headers[j], ":status: ")) {
                     sus status_str tea = stringz.substring(response_headers[j], 9, stringz.len(response_headers[j]))
                     status_code = mathz.parse_int(status_str) fam {
                         when _ -> 200
@@ -745,14 +745,14 @@ slay pool_get_connection(pool Http2ConnectionPool) yikes<Http2MultiplexedConnect
     sus i drip = 0
     bestie (i < pool.active_connections) {
         sus conn Http2MultiplexedConnection = pool.connections[i]
-        ready (!conn.connection.goaway_sent && !conn.connection.goaway_received) {
+        lowkey (!conn.connection.goaway_sent && !conn.connection.goaway_received) {
             damn conn
         }
         i = i + 1
     }
 
     // Create new connection if pool not full
-    ready (pool.active_connections < pool.max_connections) {
+    lowkey (pool.active_connections < pool.max_connections) {
         sus socket Socket = tcp_connect(pool.host, pool.port) fam {
             when err -> yikes err
         }

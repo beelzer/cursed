@@ -34,26 +34,26 @@ slay setup_test_environment() {
     create_dir(".test_packages")
     
     // Clean up any previous test data
-    ready (file_exists("test_package.💀")) {
+    lowkey (file_exists("test_package.💀")) {
         delete_file("test_package.💀")
     }
     
-    vibez.spill("Test environment ready")
+    vibez.spill("Test environment lowkey")
 }
 
 slay cleanup_test_environment() {
     vibez.spill("Cleaning up test environment...")
     
     // Remove test files and directories
-    ready (dir_exists(".test_cache")) {
+    lowkey (dir_exists(".test_cache")) {
         delete_dir_recursive(".test_cache")
     }
     
-    ready (dir_exists(".test_packages")) {
+    lowkey (dir_exists(".test_packages")) {
         delete_dir_recursive(".test_packages")
     }
     
-    ready (file_exists("test_package.💀")) {
+    lowkey (file_exists("test_package.💀")) {
         delete_file("test_package.💀")
     }
     
@@ -353,7 +353,7 @@ slay test_package_install() {
     
     // Cleanup
     delete_file("package.💀")
-    ready (dir_exists(".cursed")) {
+    lowkey (dir_exists(".cursed")) {
         delete_dir_recursive(".cursed")
     }
     
@@ -473,7 +473,7 @@ slay test_end_to_end_workflow() {
     
     // 7. Cleanup
     delete_file("package.💀")
-    ready (dir_exists(".cursed")) {
+    lowkey (dir_exists(".cursed")) {
         delete_dir_recursive(".cursed")
     }
     

@@ -218,7 +218,7 @@ slay async_http_request(url tea) tea {
     }
     
     fr fr Wait for completion or error
-    ready {
+    lowkey {
         mood response := dm_recv(response_channel):
             damn response
         mood error := dm_recv(error_channel):
@@ -240,7 +240,7 @@ slay async_file_read(filename tea) tea {
         }
     }
     
-    ready {
+    lowkey {
         mood content := dm_recv(content_channel):
             damn content
         mood error := dm_recv(error_channel):
@@ -261,7 +261,7 @@ slay async_file_write(filename tea, content tea) lit {
         }
     }
     
-    ready {
+    lowkey {
         mood dm_recv(success_channel):
             damn based
         mood dm_recv(error_channel):
@@ -487,7 +487,7 @@ fr fr Queue async task for execution
 slay queue_async_task(task_id normie, function_name tea) lit {
     sus task_data tea = string(task_id) + ":" + function_name
     
-    ready {
+    lowkey {
         mood dm_send(pending_tasks_queue, task_data):
             task_queue_size = task_queue_size + 1
             damn based
@@ -504,7 +504,7 @@ slay has_pending_tasks() lit {
 
 fr fr Get next task from queue
 slay get_next_task() tea {
-    ready {
+    lowkey {
         mood task_data := dm_recv(pending_tasks_queue):
             task_queue_size = task_queue_size - 1
             damn task_data
@@ -526,7 +526,7 @@ fr fr Signal task completion
 slay signal_task_completion(task_id normie, result normie) lit {
     lowkey task_id > 0 && task_id <= 100 {
         sus channel dm<normie> = task_completion_channels[task_id - 1]
-        ready {
+        lowkey {
             mood dm_send(channel, result):
                 damn based
             basic:

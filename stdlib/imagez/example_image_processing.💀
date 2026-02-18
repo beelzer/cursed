@@ -28,9 +28,9 @@ slay demo_basic_image_operations() lit {
     
     // Save the processed image
     sus save_success lit = imagez_save_to_file(processed, "processed_output.jpg", 85)
-    ready (save_success) {
+    lowkey (save_success) {
         vibez.print_success("Saved processed image")
-    } otherwise {
+    } highkey {
         vibez.print_error("Failed to save image")
     }
     
@@ -228,10 +228,10 @@ slay demo_performance_testing() lit {
 slay demo_gpu_acceleration() lit {
     vibez.print_header("GPU Acceleration Demo")
     
-    ready (imagez_is_gpu_available()) {
+    lowkey (imagez_is_gpu_available()) {
         vibez.print_success("GPU acceleration available")
         
-        ready (imagez_enable_gpu_acceleration()) {
+        lowkey (imagez_enable_gpu_acceleration()) {
             vibez.print_success("GPU acceleration enabled")
             
             // Perform GPU-accelerated operations
@@ -247,10 +247,10 @@ slay demo_gpu_acceleration() lit {
             
             imagez_disable_gpu_acceleration()
             vibez.print_success("GPU acceleration disabled")
-        } otherwise {
+        } highkey {
             vibez.print_warning("Failed to enable GPU acceleration")
         }
-    } otherwise {
+    } highkey {
         vibez.print_warning("GPU acceleration not available")
     }
     

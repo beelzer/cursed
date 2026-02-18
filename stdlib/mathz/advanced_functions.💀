@@ -9,15 +9,15 @@ yeet "../mathz/ieee754_compliant.💀"
 fr fr ===== SPECIAL FUNCTIONS =====
 
 slay gamma(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_equal(x, "0.0") || runtime_float_less_than(x, "0.0")) {
-        ready (runtime_float_is_integer(x)) {
+    lowkey (runtime_float_equal(x, "0.0") || runtime_float_less_than(x, "0.0")) {
+        lowkey (runtime_float_is_integer(x)) {
             damn NaN()  fr fr Gamma is undefined for non-positive integers
         }
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn POSITIVE_INFINITY()
     }
     
@@ -36,7 +36,7 @@ slay gamma(x tea) tea {
         "1.5056327351493116e-7"
     ]
     
-    ready (runtime_float_less_than(x, "0.5")) {
+    lowkey (runtime_float_less_than(x, "0.5")) {
         fr fr Use reflection formula: Γ(z)Γ(1-z) = π/sin(πz)
         sus sin_pi_x tea = sin_precise(float_multiply(PI_PRECISE(), x))
         sus gamma_1_minus_x tea = gamma(float_subtract("1.0", x))
@@ -66,10 +66,10 @@ slay gamma(x tea) tea {
 }
 
 slay lgamma(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_less_than_or_equal(x, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(x, "0.0")) {
         damn POSITIVE_INFINITY()
     }
     
@@ -79,10 +79,10 @@ slay lgamma(x tea) tea {
 }
 
 slay beta(a tea, b tea) tea {
-    ready (is_nan(a) || is_nan(b)) {
+    lowkey (is_nan(a) || is_nan(b)) {
         damn NaN()
     }
-    ready (runtime_float_less_than_or_equal(a, "0.0") || runtime_float_less_than_or_equal(b, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(a, "0.0") || runtime_float_less_than_or_equal(b, "0.0")) {
         damn NaN()
     }
     
@@ -95,16 +95,16 @@ slay beta(a tea, b tea) tea {
 }
 
 slay erf(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn "0.0"
     }
-    ready (is_positive_infinity(x)) {
+    lowkey (is_positive_infinity(x)) {
         damn "1.0"
     }
-    ready (is_negative_infinity(x)) {
+    lowkey (is_negative_infinity(x)) {
         damn "-1.0"
     }
     
@@ -123,9 +123,9 @@ slay erf(x tea) tea {
         sus denominator tea = float_multiply(factorial_n, runtime_int_to_float(2 * n + 1))
         sus series_term tea = float_divide(term, denominator)
         
-        ready (n % 2 == 0) {
+        lowkey (n % 2 == 0) {
             result = float_add(result, series_term)
-        } otherwise {
+        } highkey {
             result = float_subtract(result, series_term)
         }
         
@@ -137,7 +137,7 @@ slay erf(x tea) tea {
 }
 
 slay erfc(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
     
@@ -149,13 +149,13 @@ slay erfc(x tea) tea {
 fr fr ===== BESSEL FUNCTIONS =====
 
 slay bessel_j0(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn "1.0"
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn "0.0"
     }
     
@@ -173,9 +173,9 @@ slay bessel_j0(x tea) tea {
         term = float_multiply(term, x_quarter)
         term = float_divide(term, float_multiply(k_factorial, k_factorial))
         
-        ready (k % 2 == 1) {
+        lowkey (k % 2 == 1) {
             result = float_subtract(result, term)
-        } otherwise {
+        } highkey {
             result = float_add(result, term)
         }
         k = k + 1
@@ -185,13 +185,13 @@ slay bessel_j0(x tea) tea {
 }
 
 slay bessel_j1(x tea) tea {
-    ready (is_nan(x)) {
+    lowkey (is_nan(x)) {
         damn NaN()
     }
-    ready (runtime_float_equal(x, "0.0")) {
+    lowkey (runtime_float_equal(x, "0.0")) {
         damn "0.0"
     }
-    ready (is_infinity(x)) {
+    lowkey (is_infinity(x)) {
         damn "0.0"
     }
     
@@ -211,16 +211,16 @@ slay bessel_j1(x tea) tea {
         term = float_multiply(term, x_quarter)
         term = float_divide(term, float_multiply(k_factorial, k_plus_1_factorial))
         
-        ready (k % 2 == 1) {
+        lowkey (k % 2 == 1) {
             result = float_subtract(result, term)
-        } otherwise {
+        } highkey {
             result = float_add(result, term)
         }
         k = k + 1
     }
     
     fr fr Apply sign for negative x
-    ready (runtime_float_less_than(x, "0.0")) {
+    lowkey (runtime_float_less_than(x, "0.0")) {
         result = runtime_float_negate(result)
     }
     
@@ -230,10 +230,10 @@ slay bessel_j1(x tea) tea {
 fr fr ===== STATISTICAL DISTRIBUTIONS =====
 
 slay normal_pdf(x tea, mean tea, std_dev tea) tea {
-    ready (is_nan(x) || is_nan(mean) || is_nan(std_dev)) {
+    lowkey (is_nan(x) || is_nan(mean) || is_nan(std_dev)) {
         damn NaN()
     }
-    ready (runtime_float_less_than_or_equal(std_dev, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(std_dev, "0.0")) {
         damn NaN()
     }
     
@@ -249,10 +249,10 @@ slay normal_pdf(x tea, mean tea, std_dev tea) tea {
 }
 
 slay normal_cdf(x tea, mean tea, std_dev tea) tea {
-    ready (is_nan(x) || is_nan(mean) || is_nan(std_dev)) {
+    lowkey (is_nan(x) || is_nan(mean) || is_nan(std_dev)) {
         damn NaN()
     }
-    ready (runtime_float_less_than_or_equal(std_dev, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(std_dev, "0.0")) {
         damn NaN()
     }
     
@@ -266,13 +266,13 @@ slay normal_cdf(x tea, mean tea, std_dev tea) tea {
 }
 
 slay exponential_pdf(x tea, lambda tea) tea {
-    ready (is_nan(x) || is_nan(lambda)) {
+    lowkey (is_nan(x) || is_nan(lambda)) {
         damn NaN()
     }
-    ready (runtime_float_less_than(x, "0.0")) {
+    lowkey (runtime_float_less_than(x, "0.0")) {
         damn "0.0"
     }
-    ready (runtime_float_less_than_or_equal(lambda, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(lambda, "0.0")) {
         damn NaN()
     }
     
@@ -283,13 +283,13 @@ slay exponential_pdf(x tea, lambda tea) tea {
 }
 
 slay exponential_cdf(x tea, lambda tea) tea {
-    ready (is_nan(x) || is_nan(lambda)) {
+    lowkey (is_nan(x) || is_nan(lambda)) {
         damn NaN()
     }
-    ready (runtime_float_less_than(x, "0.0")) {
+    lowkey (runtime_float_less_than(x, "0.0")) {
         damn "0.0"
     }
-    ready (runtime_float_less_than_or_equal(lambda, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(lambda, "0.0")) {
         damn NaN()
     }
     
@@ -300,13 +300,13 @@ slay exponential_cdf(x tea, lambda tea) tea {
 }
 
 slay gamma_pdf(x tea, shape tea, scale tea) tea {
-    ready (is_nan(x) || is_nan(shape) || is_nan(scale)) {
+    lowkey (is_nan(x) || is_nan(shape) || is_nan(scale)) {
         damn NaN()
     }
-    ready (runtime_float_less_than(x, "0.0")) {
+    lowkey (runtime_float_less_than(x, "0.0")) {
         damn "0.0"
     }
-    ready (runtime_float_less_than_or_equal(shape, "0.0") || runtime_float_less_than_or_equal(scale, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(shape, "0.0") || runtime_float_less_than_or_equal(scale, "0.0")) {
         damn NaN()
     }
     
@@ -333,7 +333,7 @@ slay lcg_next(seed drip) drip {
 }
 
 slay uniform_random(min tea, max tea, seed drip) tea {
-    ready (runtime_float_greater_than_or_equal(min, max)) {
+    lowkey (runtime_float_greater_than_or_equal(min, max)) {
         damn min
     }
     
@@ -345,7 +345,7 @@ slay uniform_random(min tea, max tea, seed drip) tea {
 }
 
 slay normal_random(mean tea, std_dev tea, seed drip) tea {
-    ready (runtime_float_less_than_or_equal(std_dev, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(std_dev, "0.0")) {
         damn NaN()
     }
     
@@ -354,7 +354,7 @@ slay normal_random(mean tea, std_dev tea, seed drip) tea {
     sus u2 tea = uniform_random("0.0", "1.0", lcg_next(seed))
     
     fr fr Ensure u1 > 0 to avoid log(0)
-    ready (runtime_float_less_than_or_equal(u1, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(u1, "0.0")) {
         u1 = "1e-10"
     }
     
@@ -368,13 +368,13 @@ slay normal_random(mean tea, std_dev tea, seed drip) tea {
 }
 
 slay exponential_random(lambda tea, seed drip) tea {
-    ready (runtime_float_less_than_or_equal(lambda, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(lambda, "0.0")) {
         damn NaN()
     }
     
     fr fr Inverse transform sampling: X = -ln(U) / λ
     sus u tea = uniform_random("0.0", "1.0", seed)
-    ready (runtime_float_less_than_or_equal(u, "0.0")) {
+    lowkey (runtime_float_less_than_or_equal(u, "0.0")) {
         u = "1e-10"
     }
     
@@ -386,7 +386,7 @@ slay exponential_random(lambda tea, seed drip) tea {
 fr fr ===== LINEAR ALGEBRA OPERATIONS =====
 
 slay vector_dot_product(a tea[value], b tea[value], size drip) tea {
-    ready (size <= 0) {
+    lowkey (size <= 0) {
         damn "0.0"
     }
     
@@ -401,7 +401,7 @@ slay vector_dot_product(a tea[value], b tea[value], size drip) tea {
 }
 
 slay vector_magnitude(v tea[value], size drip) tea {
-    ready (size <= 0) {
+    lowkey (size <= 0) {
         damn "0.0"
     }
     
@@ -417,12 +417,12 @@ slay vector_magnitude(v tea[value], size drip) tea {
 }
 
 slay vector_normalize(v tea[value], result tea[value], size drip) lit {
-    ready (size <= 0) {
+    lowkey (size <= 0) {
         damn cringe
     }
     
     sus magnitude tea = vector_magnitude(v, size)
-    ready (runtime_float_equal(magnitude, "0.0")) {
+    lowkey (runtime_float_equal(magnitude, "0.0")) {
         damn cringe  fr fr Cannot normalize zero vector
     }
     
@@ -453,7 +453,7 @@ slay matrix_determinant_2x2(matrix tea[value]) tea {
 
 slay matrix_inverse_2x2(matrix tea[value], result tea[value]) lit {
     sus det tea = matrix_determinant_2x2(matrix)
-    ready (runtime_float_equal(det, "0.0")) {
+    lowkey (runtime_float_equal(det, "0.0")) {
         damn cringe  fr fr Matrix is singular
     }
     
@@ -477,7 +477,7 @@ slay matrix_eigenvalues_2x2(matrix tea[value], lambda1 tea, lambda2 tea) lit {
     sus det tea = matrix_determinant_2x2(matrix)
     sus discriminant tea = float_subtract(float_multiply(trace, trace), float_multiply("4.0", det))
     
-    ready (runtime_float_less_than(discriminant, "0.0")) {
+    lowkey (runtime_float_less_than(discriminant, "0.0")) {
         damn cringe  fr fr Complex eigenvalues
     }
     
@@ -490,7 +490,7 @@ slay matrix_eigenvalues_2x2(matrix tea[value], lambda1 tea, lambda2 tea) lit {
 fr fr ===== NUMERICAL INTEGRATION =====
 
 slay simpson_rule(func_values tea[value], h tea, n drip) tea {
-    ready (n < 2 || n % 2 != 0) {
+    lowkey (n < 2 || n % 2 != 0) {
         damn "0.0"  fr fr Need even number of intervals
     }
     
@@ -500,9 +500,9 @@ slay simpson_rule(func_values tea[value], h tea, n drip) tea {
     fr fr Add odd-indexed terms with coefficient 4
     sus i drip = 1
     bestie (i < n) {
-        ready (i % 2 == 1) {
+        lowkey (i % 2 == 1) {
             result = float_add(result, float_multiply("4.0", func_values[i]))
-        } otherwise {
+        } highkey {
             result = float_add(result, float_multiply("2.0", func_values[i]))
         }
         i = i + 2
@@ -514,7 +514,7 @@ slay simpson_rule(func_values tea[value], h tea, n drip) tea {
 }
 
 slay trapezoidal_rule(func_values tea[value], h tea, n drip) tea {
-    ready (n < 1) {
+    lowkey (n < 1) {
         damn "0.0"
     }
     
@@ -534,7 +534,7 @@ slay trapezoidal_rule(func_values tea[value], h tea, n drip) tea {
 fr fr ===== ADVANCED INTERPOLATION =====
 
 slay linear_interpolation(x0 tea, y0 tea, x1 tea, y1 tea, x tea) tea {
-    ready (runtime_float_equal(x1, x0)) {
+    lowkey (runtime_float_equal(x1, x0)) {
         damn y0  fr fr Avoid division by zero
     }
     
@@ -547,7 +547,7 @@ slay linear_interpolation(x0 tea, y0 tea, x1 tea, y1 tea, x tea) tea {
 
 slay cubic_spline_segment(x0 tea, y0 tea, x1 tea, y1 tea, d0 tea, d1 tea, x tea) tea {
     sus h tea = float_subtract(x1, x0)
-    ready (runtime_float_equal(h, "0.0")) {
+    lowkey (runtime_float_equal(h, "0.0")) {
         damn y0
     }
     
@@ -574,14 +574,14 @@ fr fr ===== TESTING FRAMEWORK FOR ADVANCED FUNCTIONS =====
 slay test_advanced_functions() lit {
     fr fr Test gamma function
     sus gamma_2 tea = gamma("2.0")
-    ready (!runtime_float_close_to(gamma_2, "1.0", "1e-10")) {
+    lowkey (!runtime_float_close_to(gamma_2, "1.0", "1e-10")) {
         damn cringe
     }
     
     fr fr Test normal distribution
     sus normal_pdf_0 tea = normal_pdf("0.0", "0.0", "1.0")
     sus expected_pdf tea = "0.39894228040143267794"
-    ready (!runtime_float_close_to(normal_pdf_0, expected_pdf, "1e-10")) {
+    lowkey (!runtime_float_close_to(normal_pdf_0, expected_pdf, "1e-10")) {
         damn cringe
     }
     
@@ -589,14 +589,14 @@ slay test_advanced_functions() lit {
     sus vec_a tea[value] = ["1.0", "2.0", "3.0"]
     sus vec_b tea[value] = ["4.0", "5.0", "6.0"]
     sus dot_product tea = vector_dot_product(vec_a, vec_b, 3)
-    ready (!runtime_float_close_to(dot_product, "32.0", "1e-10")) {
+    lowkey (!runtime_float_close_to(dot_product, "32.0", "1e-10")) {
         damn cringe
     }
     
     fr fr Test matrix operations
     sus matrix tea[value] = ["1.0", "2.0", "3.0", "4.0"]
     sus det tea = matrix_determinant_2x2(matrix)
-    ready (!runtime_float_close_to(det, "-2.0", "1e-10")) {
+    lowkey (!runtime_float_close_to(det, "-2.0", "1e-10")) {
         damn cringe
     }
     

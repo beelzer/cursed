@@ -483,95 +483,95 @@ slay test_monitoring_edge_cases() {
 fr fr ===== HELPER FUNCTIONS =====
 
 slay assert_not_null_pointer(ptr interface{}, message tea) {
-    ready (ptr == nil) {
+    lowkey (ptr == nil) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected non-null pointer")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_not_null_interface(value interface{}, message tea) {
-    ready (value == nil) {
+    lowkey (value == nil) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected non-null interface")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_equal_double(actual drip, expected drip, message tea) {
     sus tolerance drip = 0.01
-    ready (mathz.Abs(actual - expected) > tolerance) {
+    lowkey (mathz.Abs(actual - expected) > tolerance) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected: " + double_to_string(expected))
         vibez.spill("   Actual: " + double_to_string(actual))
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_greater_than_double(actual drip, expected drip, message tea) {
-    ready (actual <= expected) {
+    lowkey (actual <= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected greater than: " + double_to_string(expected))
         vibez.spill("   Actual: " + double_to_string(actual))
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_greater_than_int(actual normie, expected normie, message tea) {
-    ready (actual <= expected) {
+    lowkey (actual <= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected greater than: " + int_to_string(expected))
         vibez.spill("   Actual: " + int_to_string(actual))
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_less_than_int(actual normie, expected normie, message tea) {
-    ready (actual >= expected) {
+    lowkey (actual >= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected less than: " + int_to_string(expected))
         vibez.spill("   Actual: " + int_to_string(actual))
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_valid_health_status(status HealthStatus, message tea) {
-    ready (status != HealthyStatus && status != DegradedStatus && status != UnhealthyStatus) {
+    lowkey (status != HealthyStatus && status != DegradedStatus && status != UnhealthyStatus) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Invalid health status")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_not_empty_string(value tea, message tea) {
-    ready (value == "") {
+    lowkey (value == "") {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected non-empty string")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay double_to_string(value drip) tea {
-    ready (value == 0.0) { damn "0.0" }
-    ready (value == 1.0) { damn "1.0" }
-    ready (value < 1.0) { damn "fractional" }
-    ready (value < 10.0) { damn "single_digit" }
+    lowkey (value == 0.0) { damn "0.0" }
+    lowkey (value == 1.0) { damn "1.0" }
+    lowkey (value < 1.0) { damn "fractional" }
+    lowkey (value < 10.0) { damn "single_digit" }
     damn "multi_digit"
 }
 
 slay int_to_string(value normie) tea {
-    ready (value == 0) { damn "0" }
-    ready (value == 1) { damn "1" }
-    ready (value < 10) { damn "single_digit" }
-    ready (value < 100) { damn "double_digit" }
+    lowkey (value == 0) { damn "0" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value < 10) { damn "single_digit" }
+    lowkey (value < 100) { damn "double_digit" }
     damn "large_number"
 }
 

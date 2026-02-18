@@ -95,12 +95,12 @@ slay select_execute(select_id normie, has_default lit) normie {
                     damn i // Return case index
                 }
             } else lowkey operation_type == SELECT_DEFAULT {
-                // Default case - execute if no other case is ready
+                // Default case - execute if no other case is lowkey
                 damn SELECT_DEFAULT_EXECUTED
             }
         }
         
-        // If we have a default case and no other case was ready
+        // If we have a default case and no other case was lowkey
         lowkey has_default == based {
             damn SELECT_DEFAULT_EXECUTED
         }

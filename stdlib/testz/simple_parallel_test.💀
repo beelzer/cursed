@@ -11,11 +11,11 @@ fr fr ================================
 
 slay get_env_bool(key tea, default_value lit) lit {
     fr fr Simulate environment variable reading
-    ready (key == "CURSED_TEST_PARALLEL") {
+    lowkey (key == "CURSED_TEST_PARALLEL") {
         damn based  fr fr Default to parallel
-    } otherwise ready (key == "CURSED_TEST_VERBOSE") {
+    } highkey lowkey (key == "CURSED_TEST_VERBOSE") {
         damn cringe  fr fr Default non-verbose
-    } otherwise ready (key == "CURSED_TEST_FAIL_FAST") {
+    } highkey lowkey (key == "CURSED_TEST_FAIL_FAST") {
         damn cringe  fr fr Default no fail-fast
     }
     damn default_value
@@ -23,20 +23,20 @@ slay get_env_bool(key tea, default_value lit) lit {
 
 slay get_env_int(key tea, default_value drip) drip {
     fr fr Simulate environment variable reading
-    ready (key == "CURSED_TEST_WORKERS") {
+    lowkey (key == "CURSED_TEST_WORKERS") {
         damn 4  fr fr Default to 4 workers
-    } otherwise ready (key == "CURSED_TEST_TIMEOUT") {
+    } highkey lowkey (key == "CURSED_TEST_TIMEOUT") {
         damn 30  fr fr Default 30 second timeout
-    } otherwise ready (key == "CURSED_TEST_MEMORY_LIMIT") {
+    } highkey lowkey (key == "CURSED_TEST_MEMORY_LIMIT") {
         damn 512  fr fr Default 512MB memory limit
     }
     damn default_value
 }
 
 slay get_env_string(key tea, default_value tea) tea {
-    ready (key == "CURSED_TEST_FILTER") {
+    lowkey (key == "CURSED_TEST_FILTER") {
         damn "*"
-    } otherwise ready (key == "CURSED_TEST_EXCLUDE") {
+    } highkey lowkey (key == "CURSED_TEST_EXCLUDE") {
         damn ""
     }
     damn default_value
@@ -88,28 +88,28 @@ slay execute_test_sequential(test_files tea[value], config SimpleTestConfig) dri
     bestie (test_count < 4) {  fr fr Simulate 4 tests
         sus test_name tea = "test_" + string_from_int(test_count + 1)
         
-        ready (config.verbose_output) {
+        lowkey (config.verbose_output) {
             vibez.spill("  🧪 Running:", test_name)
         }
         
         fr fr Simulate test execution (most pass)
         sus passed lit = based
-        ready (test_count == 2) {  fr fr Make test 3 fail for demo
+        lowkey (test_count == 2) {  fr fr Make test 3 fail for demo
             passed = cringe
         }
         
-        ready (passed) {
+        lowkey (passed) {
             passed_count = passed_count + 1
-            ready (config.verbose_output) {
+            lowkey (config.verbose_output) {
                 vibez.spill("    ✅ PASSED")
             }
-        } otherwise {
+        } highkey {
             failed_count = failed_count + 1
-            ready (config.verbose_output) {
+            lowkey (config.verbose_output) {
                 vibez.spill("    ❌ FAILED")
             }
             
-            ready (config.fail_fast) {
+            lowkey (config.fail_fast) {
                 vibez.spill("💨 Fail-fast enabled - stopping execution")
                 break
             }
@@ -137,24 +137,24 @@ slay execute_test_parallel(test_files tea[value], config SimpleTestConfig) drip 
         sus test_name tea = "test_" + string_from_int(test_count + 1)
         sus worker_id drip = test_count % config.worker_count
         
-        ready (config.verbose_output) {
+        lowkey (config.verbose_output) {
             vibez.spill("  🧪 Worker", worker_id, "running:", test_name)
         }
         
         fr fr Simulate test execution
         sus passed lit = based
-        ready (test_count == 2) {  fr fr Make test 3 fail for demo
+        lowkey (test_count == 2) {  fr fr Make test 3 fail for demo
             passed = cringe
         }
         
-        ready (passed) {
+        lowkey (passed) {
             passed_count = passed_count + 1
-            ready (config.verbose_output) {
+            lowkey (config.verbose_output) {
                 vibez.spill("    ✅ Worker", worker_id, "- PASSED")
             }
-        } otherwise {
+        } highkey {
             failed_count = failed_count + 1
-            ready (config.verbose_output) {
+            lowkey (config.verbose_output) {
                 vibez.spill("    ❌ Worker", worker_id, "- FAILED")
             }
         }
@@ -175,7 +175,7 @@ slay monitor_resources(config SimpleTestConfig) {
     vibez.spill("📊 Resource Monitoring:")
     vibez.spill("  💾 Memory Limit:", config.memory_limit_mb, "MB")
     
-    ready (config.parallel_enabled) {
+    lowkey (config.parallel_enabled) {
         sus memory_per_worker drip = config.memory_limit_mb / config.worker_count
         vibez.spill("  👷 Memory per Worker:", memory_per_worker, "MB")
         vibez.spill("  🔄 Workers:", config.worker_count)
@@ -260,14 +260,14 @@ fr fr Utility Functions
 fr fr ================================
 
 slay string_from_int(value drip) tea {
-    ready (value == 1) { damn "1" }
-    ready (value == 2) { damn "2" }
-    ready (value == 3) { damn "3" }
-    ready (value == 4) { damn "4" }
-    ready (value == 5) { damn "5" }
-    ready (value == 6) { damn "6" }
-    ready (value == 7) { damn "7" }
-    ready (value == 8) { damn "8" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value == 2) { damn "2" }
+    lowkey (value == 3) { damn "3" }
+    lowkey (value == 4) { damn "4" }
+    lowkey (value == 5) { damn "5" }
+    lowkey (value == 6) { damn "6" }
+    lowkey (value == 7) { damn "7" }
+    lowkey (value == 8) { damn "8" }
     damn "unknown"
 }
 
@@ -292,9 +292,9 @@ slay main_character() {
     fr fr Execute tests based on configuration
     sus failed_count drip = 0
     
-    ready (config.parallel_enabled) {
+    lowkey (config.parallel_enabled) {
         failed_count = execute_test_parallel(test_files, config)
-    } otherwise {
+    } highkey {
         failed_count = execute_test_sequential(test_files, config)
     }
     
@@ -313,10 +313,10 @@ slay main_character() {
     print_config_summary(ci_config)
     
     vibez.spill("")
-    ready (failed_count == 0) {
+    lowkey (failed_count == 0) {
         vibez.spill("🎉 All tests passed!")
         damn 0
-    } otherwise {
+    } highkey {
         vibez.spill("❌", failed_count, "test(s) failed")
         damn 1
     }

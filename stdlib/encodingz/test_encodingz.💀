@@ -400,46 +400,46 @@ slay test_decode_error(result yikes<tea>, description tea) {
 }
 
 slay test_eq_string(actual tea, expected tea, description tea) {
-    ready actual == expected {
+    lowkey actual == expected {
         vibez.spill("✅ " + description)
-    } otherwise {
+    } highkey {
         vibez.spill("❌ " + description + " - Expected: '" + expected + "', Got: '" + actual + "'")
     }
 }
 
 slay test_eq_int(actual drip, expected drip, description tea) {
-    ready actual == expected {
+    lowkey actual == expected {
         vibez.spill("✅ " + description)
-    } otherwise {
+    } highkey {
         vibez.spill("❌ " + description + " - Expected: " + int_to_string(expected) + ", Got: " + int_to_string(actual))
     }
 }
 
 slay test_true(condition lit, description tea) {
-    ready condition == based {
+    lowkey condition == based {
         vibez.spill("✅ " + description)
-    } otherwise {
+    } highkey {
         vibez.spill("❌ " + description + " - Expected true")
     }
 }
 
 slay test_false(condition lit, description tea) {
-    ready condition == cap {
+    lowkey condition == cap {
         vibez.spill("✅ " + description)
-    } otherwise {
+    } highkey {
         vibez.spill("❌ " + description + " - Expected false")
     }
 }
 
 slay string_starts_with(s tea, prefix tea) lit {
-    ready string_length(prefix) > string_length(s) {
+    lowkey string_length(prefix) > string_length(s) {
         damn cap
     }
     damn substring(s, 0, string_length(prefix)) == prefix
 }
 
 slay string_ends_with(s tea, suffix tea) lit {
-    ready string_length(suffix) > string_length(s) {
+    lowkey string_length(suffix) > string_length(s) {
         damn cap
     }
     sus start drip = string_length(s) - string_length(suffix)
@@ -449,7 +449,7 @@ slay string_ends_with(s tea, suffix tea) lit {
 slay string_contains(s tea, substr tea) lit {
     sus i drip = 0
     bestie i <= string_length(s) - string_length(substr) {
-        ready substring(s, i, i + string_length(substr)) == substr {
+        lowkey substring(s, i, i + string_length(substr)) == substr {
             damn based
         }
         i = i + 1
@@ -459,10 +459,10 @@ slay string_contains(s tea, substr tea) lit {
 
 slay int_to_string(n drip) tea {
     fr fr Mock implementation - replace with real function
-    ready n == 0 { damn "0" }
-    ready n == 1 { damn "1" }
-    ready n == 100 { damn "100" }
-    ready n == 1000 { damn "1000" }
+    lowkey n == 0 { damn "0" }
+    lowkey n == 1 { damn "1" }
+    lowkey n == 100 { damn "100" }
+    lowkey n == 1000 { damn "1000" }
     damn "number"
 }
 

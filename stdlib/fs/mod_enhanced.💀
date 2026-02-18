@@ -146,7 +146,7 @@ slay detect_platform() {
             path_list_separator: ";",
             volume_separator: ":"
         }
-    } otherwise platform_info == "darwin" {
+    } highkey platform_info == "darwin" {
         current_filesystem = FileSystem{
             platform: "darwin", 
             case_sensitive: false,
@@ -161,7 +161,7 @@ slay detect_platform() {
             path_list_separator: ":",
             volume_separator: ""
         }
-    } otherwise {
+    } highkey {
         fr fr Default to Linux/Unix
         current_filesystem = FileSystem{
             platform: "linux",
@@ -213,11 +213,11 @@ slay syscall_stat(path tea) FileMetadata {
     
     lowkey current_filesystem.platform == "linux" {
         metadata = linux_stat(path)
-    } otherwise current_filesystem.platform == "windows" {
+    } highkey current_filesystem.platform == "windows" {
         metadata = windows_get_file_attributes(path)
-    } otherwise current_filesystem.platform == "darwin" {
+    } highkey current_filesystem.platform == "darwin" {
         metadata = darwin_stat(path)
-    } otherwise {
+    } highkey {
         metadata = generic_stat(path)
     }
     
@@ -436,9 +436,9 @@ slay copy_file(source tea, dest tea) lit {
     fr fr Use efficient copy method based on platform
     lowkey current_filesystem.platform == "linux" {
         damn linux_copy_file(source, dest)
-    } otherwise current_filesystem.platform == "windows" {
+    } highkey current_filesystem.platform == "windows" {
         damn windows_copy_file(source, dest)
-    } otherwise {
+    } highkey {
         damn generic_copy_file(source, dest)
     }
 }
@@ -593,7 +593,7 @@ slay remove_dir_recursive(path tea) lit {
             lowkey !remove_dir_recursive(full_path) {
                 damn false
             }
-        } otherwise {
+        } highkey {
             lowkey !delete_file(full_path) {
                 damn false
             }
@@ -624,9 +624,9 @@ slay list_directory_real(path tea) DirEntry[value]{
     fr fr Platform-specific directory reading
     lowkey current_filesystem.platform == "linux" {
         entries = linux_readdir(path)
-    } otherwise current_filesystem.platform == "windows" {
+    } highkey current_filesystem.platform == "windows" {
         entries = windows_find_files(path)
-    } otherwise {
+    } highkey {
         entries = generic_readdir(path)
     }
     
@@ -742,9 +742,9 @@ slay apply_file_lock(fd normie, path tea, lock_type normie, blocking lit) lit {
     sus success lit
     lowkey current_filesystem.platform == "linux" {
         success = linux_fcntl_lock(fd, lock_type, blocking)
-    } otherwise current_filesystem.platform == "windows" {
+    } highkey current_filesystem.platform == "windows" {
         success = windows_lock_file(fd, lock_type, blocking)
-    } otherwise {
+    } highkey {
         success = generic_file_lock(fd, lock_type, blocking)
     }
     
@@ -767,9 +767,9 @@ slay unlock_file_real(path tea) lit {
     sus success lit
     lowkey current_filesystem.platform == "linux" {
         success = linux_fcntl_unlock(lock.file_descriptor)
-    } otherwise current_filesystem.platform == "windows" {
+    } highkey current_filesystem.platform == "windows" {
         success = windows_unlock_file(lock.file_descriptor)
-    } otherwise {
+    } highkey {
         success = generic_file_unlock(lock.file_descriptor)
     }
     
@@ -795,17 +795,17 @@ slay detect_comprehensive_platform() tea {
     
     lowkey stringz.contains(os_name, "linux") || envz.exists("/proc/version") {
         damn "linux"
-    } otherwise stringz.contains(os_name, "darwin") || envz.exists("/System/Library/CoreServices/SystemVersion.plist") {
+    } highkey stringz.contains(os_name, "darwin") || envz.exists("/System/Library/CoreServices/SystemVersion.plist") {
         damn "darwin"  
-    } otherwise stringz.contains(os_name, "windows") || envz.exists("C:\\Windows") {
+    } highkey stringz.contains(os_name, "windows") || envz.exists("C:\\Windows") {
         damn "windows"
-    } otherwise stringz.contains(os_name, "freebsd") {
+    } highkey stringz.contains(os_name, "freebsd") {
         damn "freebsd"
-    } otherwise stringz.contains(os_name, "openbsd") {
+    } highkey stringz.contains(os_name, "openbsd") {
         damn "openbsd"
-    } otherwise stringz.contains(os_name, "netbsd") {
+    } highkey stringz.contains(os_name, "netbsd") {
         damn "netbsd"
-    } otherwise {
+    } highkey {
         damn "unix"  fr fr Default fallback
     }
 }
@@ -840,7 +840,7 @@ slay expand_environment_variables(path tea) tea {
     fr fr Platform-specific expansions
     lowkey current_filesystem.platform == "windows" {
         result = expand_windows_variables(result)
-    } otherwise {
+    } highkey {
         result = expand_unix_variables(result)
     }
     
@@ -934,7 +934,7 @@ slay expand_unix_variables(path tea) tea {
         lowkey home_dir != "" {
             result = home_dir + stringz.substring(result, 1, stringz.length(result))
         }
-    } otherwise result == "~" {
+    } highkey result == "~" {
         sus home_dir tea = envz.get("HOME") 
         lowkey home_dir != "" {
             result = home_dir
@@ -949,18 +949,18 @@ slay get_default_env_value(var_name tea) tea {
     lowkey var_name == "HOME" {
         lowkey current_filesystem.platform == "windows" {
             damn envz.get("USERPROFILE")
-        } otherwise {
+        } highkey {
             damn "/home/" + envz.get("USER")
         }
-    } otherwise var_name == "TMPDIR" || var_name == "TMP" || var_name == "TEMP" {
+    } highkey var_name == "TMPDIR" || var_name == "TMP" || var_name == "TEMP" {
         lowkey current_filesystem.platform == "windows" {
             damn "C:\\Temp"
-        } otherwise {
+        } highkey {
             damn "/tmp"
         }
-    } otherwise var_name == "USER" {
+    } highkey var_name == "USER" {
         damn "user"
-    } otherwise var_name == "PWD" {
+    } highkey var_name == "PWD" {
         damn get_current_directory_real()
     }
     
@@ -1121,9 +1121,9 @@ slay simulate_file_content(path tea) tea {
     fr fr Simulate reading file content based on path
     lowkey stringz.ends_with(path, ".txt") {
         damn "This is content from " + path
-    } otherwise stringz.ends_with(path, ".json") {
+    } highkey stringz.ends_with(path, ".json") {
         damn "{\"message\": \"Hello from " + path + "\"}"
-    } otherwise {
+    } highkey {
         damn "Binary content from " + path
     }
 }
@@ -1219,7 +1219,7 @@ slay get_permissions_real(path tea) normie {
     fr fr Default permissions based on type
     lowkey is_directory_real(path) {
         damn 755  fr fr rwxr-xr-x for directories
-    } otherwise {
+    } highkey {
         damn 644  fr fr rw-r--r-- for files
     }
 }
@@ -1420,23 +1420,23 @@ slay detect_mime_type(path tea) tea {
     
     lowkey extension == ".txt" {
         damn "text/plain"
-    } otherwise extension == ".json" {
+    } highkey extension == ".json" {
         damn "application/json"
-    } otherwise extension == ".html" {
+    } highkey extension == ".html" {
         damn "text/html"
-    } otherwise extension == ".css" {
+    } highkey extension == ".css" {
         damn "text/css"
-    } otherwise extension == ".js" {
+    } highkey extension == ".js" {
         damn "application/javascript"
-    } otherwise extension == ".png" {
+    } highkey extension == ".png" {
         damn "image/png"
-    } otherwise extension == ".jpg" || extension == ".jpeg" {
+    } highkey extension == ".jpg" || extension == ".jpeg" {
         damn "image/jpeg"
-    } otherwise extension == ".gif" {
+    } highkey extension == ".gif" {
         damn "image/gif"
-    } otherwise extension == ".pdf" {
+    } highkey extension == ".pdf" {
         damn "application/pdf"
-    } otherwise {
+    } highkey {
         damn "application/octet-stream"
     }
 }

@@ -148,7 +148,7 @@ fr fr Get current user
 slay Current() (*User, tea) {
     fr fr Get current user from system (no hardcoded responses)
     sus uid tea = get_effective_uid_from_system()
-    ready uid == "" {
+    lowkey uid == "" {
         damn cap, "Unable to determine current user"
     }
     
@@ -156,7 +156,7 @@ slay Current() (*User, tea) {
     sus err tea = ""
     user, err = LookupId(uid)
     
-    ready err != "" {
+    lowkey err != "" {
         damn cap, "Current user not found in system: " + err
     }
     
@@ -166,7 +166,7 @@ slay Current() (*User, tea) {
 fr fr Lookup user by username - REAL IMPLEMENTATION
 slay Lookup(username tea) (*User, tea) {
     // Validate input
-    ready username == "" {
+    lowkey username == "" {
         damn cap, "Username cannot be empty"
     }
     
@@ -181,7 +181,7 @@ slay Lookup(username tea) (*User, tea) {
     }
     
     // Validate required fields are present
-    ready user_data["uid"] == "" || user_data["gid"] == "" {
+    lowkey user_data["uid"] == "" || user_data["gid"] == "" {
         damn cap, "Invalid user data from system"
     }
     
@@ -692,8 +692,8 @@ slay lookup_user_from_passwd(username tea) yikes<map<tea, tea>> {
     
     bestie (entry := range passwd_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 6 {
-            ready fields[0] == username {
+        lowkey len(fields) >= 6 {
+            lowkey fields[0] == username {
                 damn map<tea, tea>{
                     "username": fields[0],
                     "uid": fields[2], 
@@ -712,7 +712,7 @@ slay lookup_user_from_passwd(username tea) yikes<map<tea, tea>> {
 slay read_system_uid() yikes<tea> {
     // Use real system call through FFI
     sus uid_result drip = cursed_get_current_uid()
-    ready uid_result < 0 {
+    lowkey uid_result < 0 {
         yikes "Failed to get system UID"
     }
     damn stringz.from_int(uid_result)
@@ -732,18 +732,18 @@ slay read_passwd_file() yikes<tea[value]> {
         sus user_info_buffer lit[value] = make(lit[value], 1024)
         sus lookup_result drip = cursed_lookup_user(stringz.to_cstring(username), user_info_buffer.ptr)
         
-        ready lookup_result == 0 {
+        lowkey lookup_result == 0 {
             sus user_info_str tea = stringz.from_cstring(user_info_buffer.ptr)
             // Convert format "uid:gid:username:name:home:shell" to passwd format
             sus fields tea[value] = stringz.split(user_info_str, ":")
-            ready len(fields) >= 6 {
+            lowkey len(fields) >= 6 {
                 sus passwd_entry tea = fields[2] + ":" + "x" + ":" + fields[0] + ":" + fields[1] + ":" + fields[3] + ":" + fields[4] + ":" + fields[5]
                 passwd_entries = append(passwd_entries, passwd_entry)
             }
         }
     }
     
-    ready len(passwd_entries) == 0 {
+    lowkey len(passwd_entries) == 0 {
         yikes "No user entries found in system passwd database"
     }
     
@@ -752,7 +752,7 @@ slay read_passwd_file() yikes<tea[value]> {
 
 // Password authentication with proper hashing
 slay authenticate_user(username tea, password tea) yikes<User> {
-    ready username == "" || password == "" {
+    lowkey username == "" || password == "" {
         yikes "Username and password required"
     }
     
@@ -760,7 +760,7 @@ slay authenticate_user(username tea, password tea) yikes<User> {
     sus user *User = nil
     sus err tea = ""
     user, err = Lookup(username)
-    ready err != "" {
+    lowkey err != "" {
         yikes "User not found: " + err
     }
     
@@ -778,7 +778,7 @@ slay authenticate_user(username tea, password tea) yikes<User> {
         when err -> yikes "Password verification failed: " + err
     }
     
-    ready !password_valid {
+    lowkey !password_valid {
         // Introduce random delay to prevent timing attacks
         random_delay_protection()
         yikes "Invalid credentials"
@@ -814,7 +814,7 @@ slay read_shadow_entry(username tea) yikes<map<tea, tea>> {
         },
     }
     
-    ready shadow_db[username] == nil {
+    lowkey shadow_db[username] == nil {
         yikes "User not found in shadow database"
     }
     
@@ -846,13 +846,13 @@ slay verify_password_hash(password tea, stored_hash tea, salt tea, hash_type tea
 
 // Constant-time string comparison to prevent timing attacks
 slay constant_time_string_compare(a tea, b tea) lit {
-    ready len(a) != len(b) {
+    lowkey len(a) != len(b) {
         damn cap
     }
     
     sus result lit = based
     bestie (i := 0; i < len(a); i += 1) {
-        ready a[i] != b[i] {
+        lowkey a[i] != b[i] {
             result = cap
         }
     }
@@ -879,7 +879,7 @@ slay verify_bcrypt_hash(password tea, hash tea) yikes<lit> {
     sus hash_cstr lit[value] = stringz.to_cstring(hash)
     
     sus result drip = cursed_crypto_bcrypt_verify(password_cstr.ptr, hash_cstr.ptr)
-    ready result < 0 {
+    lowkey result < 0 {
         yikes "Bcrypt verification failed"
     }
     
@@ -892,7 +892,7 @@ slay verify_argon2_hash(password tea, hash tea) yikes<lit> {
     sus hash_cstr lit[value] = stringz.to_cstring(hash)
     
     sus result drip = cursed_crypto_argon2_verify(password_cstr.ptr, hash_cstr.ptr)
-    ready result < 0 {
+    lowkey result < 0 {
         yikes "Argon2 verification failed"
     }
     
@@ -908,7 +908,7 @@ slay encode_hex(data lit[value]) tea {
 }
 
 slay hex_digit(digit lit) tea {
-    ready digit < 10 {
+    lowkey digit < 10 {
         damn tea(rune('0' + digit))
     }
     damn tea(rune('a' + digit - 10))
@@ -922,7 +922,7 @@ slay HashPasswordBcrypt(password tea) yikes<tea> {
     sus hash_buffer lit[value] = make(lit[value], 128) // bcrypt hashes are ~60 chars
     
     sus result drip = cursed_crypto_bcrypt_hash(password_cstr.ptr, hash_buffer.ptr, len(hash_buffer))
-    ready result < 0 {
+    lowkey result < 0 {
         yikes "Bcrypt hashing failed"
     }
     
@@ -935,7 +935,7 @@ slay HashPasswordArgon2(password tea) yikes<tea> {
     sus hash_buffer lit[value] = make(lit[value], 256) // Argon2 hashes can be longer
     
     sus result drip = cursed_crypto_argon2_hash(password_cstr.ptr, hash_buffer.ptr, len(hash_buffer))
-    ready result < 0 {
+    lowkey result < 0 {
         yikes "Argon2 hashing failed"
     }
     
@@ -949,7 +949,7 @@ slay HashPasswordPbkdf2Sha512(password tea, salt tea, rounds drip) yikes<tea> {
     sus hash_buffer lit[value] = make(lit[value], 128) // SHA-512 output is 64 bytes + encoding
     
     sus result_len drip = cursed_crypto_sha512_pbkdf2(password_cstr.ptr, salt_cstr.ptr, rounds, hash_buffer.ptr, len(hash_buffer))
-    ready result_len <= 0 {
+    lowkey result_len <= 0 {
         yikes "PBKDF2-SHA512 hashing failed"
     }
     
@@ -970,13 +970,13 @@ slay GenerateSecureSalt(length drip) tea {
 
 fr fr Create user account with secure password hashing
 slay CreateUserSecure(username tea, password tea, full_name tea, home_dir tea) yikes<*User> {
-    ready UserExists(username) {
+    lowkey UserExists(username) {
         yikes "User already exists"
     }
     
     // Validate password strength
     sus validation_error tea = ValidatePasswordStrength(password)
-    ready validation_error != "" {
+    lowkey validation_error != "" {
         yikes "Password validation failed: " + validation_error
     }
     
@@ -1009,11 +1009,11 @@ slay CreateUserSecure(username tea, password tea, full_name tea, home_dir tea) y
 
 fr fr Validate password strength
 slay ValidatePasswordStrength(password tea) tea {
-    ready len(password) < 8 {
+    lowkey len(password) < 8 {
         damn "Password must be at least 8 characters long"
     }
     
-    ready len(password) > 128 {
+    lowkey len(password) > 128 {
         damn "Password must be at most 128 characters long"
     }
     
@@ -1024,30 +1024,30 @@ slay ValidatePasswordStrength(password tea) tea {
     
     bestie (i := 0; i < len(password); i += 1) {
         sus c lit = password[i]
-        ready c >= 'A' && c <= 'Z' {
+        lowkey c >= 'A' && c <= 'Z' {
             has_upper = based
-        } otherwise ready c >= 'a' && c <= 'z' {
+        } highkey lowkey c >= 'a' && c <= 'z' {
             has_lower = based
-        } otherwise ready c >= '0' && c <= '9' {
+        } highkey lowkey c >= '0' && c <= '9' {
             has_digit = based
-        } otherwise ready c == '!' || c == '@' || c == '#' || c == '$' || c == '%' || c == '^' || c == '&' || c == '*' {
+        } highkey lowkey c == '!' || c == '@' || c == '#' || c == '$' || c == '%' || c == '^' || c == '&' || c == '*' {
             has_special = based
         }
     }
     
-    ready !has_upper {
+    lowkey !has_upper {
         damn "Password must contain at least one uppercase letter"
     }
     
-    ready !has_lower {
+    lowkey !has_lower {
         damn "Password must contain at least one lowercase letter"
     }
     
-    ready !has_digit {
+    lowkey !has_digit {
         damn "Password must contain at least one digit"
     }
     
-    ready !has_special {
+    lowkey !has_special {
         damn "Password must contain at least one special character (!@#$%^&*)"
     }
     
@@ -1064,7 +1064,7 @@ slay AuthenticateUserSecure(username tea, password tea, source_ip tea) yikes<*Us
     sus attempt_key tea = username + ":" + source_ip
     sus current_attempts drip = auth_attempts[attempt_key]
     
-    ready current_attempts >= 5 {
+    lowkey current_attempts >= 5 {
         vibez.spill("AUTH_BLOCKED:", timestamp, "user=" + username, "source=" + source_ip, "reason=too_many_attempts")
         yikes "Too many authentication attempts. Account temporarily locked."
     }

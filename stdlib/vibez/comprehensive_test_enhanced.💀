@@ -18,12 +18,12 @@ slay test_start(test_name tea) {
 }
 
 slay test_assert(condition lit, message tea) {
-    ready condition {
+    lowkey condition {
         passed_tests = passed_tests + 1
         spill("  ✅ PASS: ")
         spillln(message)
     }
-    otherwise {
+    highkey {
         failed_tests = failed_tests + 1
         spill("  ❌ FAIL: ")
         spillln(message)
@@ -40,10 +40,10 @@ slay test_summary() {
     spill("Failed: ")
     spillln(number_to_string(failed_tests))
     
-    ready failed_tests == 0 {
+    lowkey failed_tests == 0 {
         spillln("🎉 ALL TESTS PASSED!")
     }
-    otherwise {
+    highkey {
         spillln("💥 SOME TESTS FAILED!")
     }
     spillln("====================================================")
@@ -408,18 +408,18 @@ slay number_to_string(num normie) tea {
 fr fr Run the comprehensive test suite
 sus test_success lit = run_all_tests()
 
-ready test_success {
+lowkey test_success {
     spillln("🎉 VIBEZ MODULE: ALL TESTS PASSED - PRODUCTION READY!")
 }
-otherwise {
+highkey {
     spillln("💥 VIBEZ MODULE: SOME TESTS FAILED - NEEDS ATTENTION!")
 }
 
 fr fr Display final status
 spill("Final Status: ")
-ready test_success {
+lowkey test_success {
     spillln("✅ SUCCESS")
 }
-otherwise {
+highkey {
     spillln("❌ FAILURE")
 }

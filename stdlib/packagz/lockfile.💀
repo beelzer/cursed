@@ -103,19 +103,19 @@ slay save_lock_file(lock_file LockFile, path tea) lit {
 
 # Load lock file from disk
 slay load_lock_file(path tea) (LockFile, lit) {
-    ready (!filez.file_exists(path)) {
+    lowkey (!filez.file_exists(path)) {
         vibez.spill("Lock file not found:", path)
         damn (LockFile{}, cap)
     }
     
     sus content tea = filez.read_file(path)
-    ready (content == "") {
+    lowkey (content == "") {
         vibez.spill("Failed to read lock file:", path)
         damn (LockFile{}, cap)
     }
     
     sus json_obj JsonValue = jsonz.json_parse(content)
-    ready (json_obj.type != "object") {
+    lowkey (json_obj.type != "object") {
         vibez.spill("Invalid lock file format")
         damn (LockFile{}, cap)
     }
@@ -144,7 +144,7 @@ slay load_lock_file(path tea) (LockFile, lit) {
         # Parse dependencies
         sus deps_json JsonValue = jsonz.json_get_object(pkg_json, "dependencies")
         sus deps tea[value] = []
-        ready (deps_json.type == "array") {
+        lowkey (deps_json.type == "array") {
             bestie (sus j drip = 0; j < arrayz.len(deps_json.array_values); j = j + 1) {
                 deps = arrayz.append(deps, deps_json.array_values[j].string_value)
             }
@@ -169,7 +169,7 @@ slay load_lock_file(path tea) (LockFile, lit) {
     
     # Verify checksum integrity
     sus computed_checksum tea = generate_lock_checksum(lock_file)
-    ready (computed_checksum != lock_file.metadata.checksum) {
+    lowkey (computed_checksum != lock_file.metadata.checksum) {
         vibez.spill("Lock file checksum mismatch - file may be corrupted")
         damn (lock_file, cap)
     }
@@ -187,8 +187,8 @@ slay verify_lock_integrity(lock_file LockFile, installed_packages InstalledPacka
         
         bestie (sus j drip = 0; j < arrayz.len(installed_packages); j = j + 1) {
             sus installed InstalledPackage = installed_packages[j]
-            ready (installed.name == locked_pkg.name) {
-                ready (installed.version != locked_pkg.version) {
+            lowkey (installed.name == locked_pkg.name) {
+                lowkey (installed.version != locked_pkg.version) {
                     vibez.spill("Version mismatch for", locked_pkg.name, "- locked:", locked_pkg.version, "installed:", installed.version)
                     damn cap
                 }
@@ -197,7 +197,7 @@ slay verify_lock_integrity(lock_file LockFile, installed_packages InstalledPacka
             }
         }
         
-        ready (!found) {
+        lowkey (!found) {
             vibez.spill("Missing package from lock file:", locked_pkg.name)
             damn cap
         }
@@ -218,13 +218,13 @@ slay update_lock_file(lock_file LockFile, new_packages LockedPackage[value]) Loc
         sus replaced lit = cap
         
         bestie (sus j drip = 0; j < arrayz.len(new_packages); j = j + 1) {
-            ready (new_packages[j].name == existing.name) {
+            lowkey (new_packages[j].name == existing.name) {
                 replaced = based
                 break
             }
         }
         
-        ready (!replaced) {
+        lowkey (!replaced) {
             updated_packages = arrayz.append(updated_packages, existing)
         }
     }
@@ -278,14 +278,14 @@ slay sort_packages_by_name(packages LockedPackage[value]) LockedPackage[value]{
         sus inserted lit = cap
         
         bestie (sus j drip = 0; j < arrayz.len(sorted); j = j + 1) {
-            ready (stringz.compare(current.name, sorted[j].name) < 0) {
+            lowkey (stringz.compare(current.name, sorted[j].name) < 0) {
                 sorted = arrayz.insert(sorted, j, current)
                 inserted = based
                 break
             }
         }
         
-        ready (!inserted) {
+        lowkey (!inserted) {
             sorted = arrayz.append(sorted, current)
         }
     }

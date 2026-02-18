@@ -72,7 +72,7 @@ slay parse_url(url tea) yikes<UrlParts> {
         fragment: ""
     }
     
-    ready (stringz.len(url) == 0) {
+    lowkey (stringz.len(url) == 0) {
         yikes create_network_error("url_parse", "Empty URL provided", 400)
     }
     
@@ -80,42 +80,42 @@ slay parse_url(url tea) yikes<UrlParts> {
     
     // Extract scheme
     sus scheme_pos drip = stringz.find(working_url, "://")
-    ready (scheme_pos != -1) {
+    lowkey (scheme_pos != -1) {
         parts.scheme = stringz.substring(working_url, 0, scheme_pos)
         working_url = stringz.substring(working_url, scheme_pos + 3, stringz.len(working_url))
         
         // Set default ports based on scheme
-        ready (stringz.equals(parts.scheme, "https")) {
+        lowkey (stringz.equals(parts.scheme, "https")) {
             parts.port = 443
-        } otherwise ready (stringz.equals(parts.scheme, "http")) {
+        } highkey lowkey (stringz.equals(parts.scheme, "http")) {
             parts.port = 80
         }
     }
     
     // Extract fragment
     sus fragment_pos drip = stringz.find(working_url, "#")
-    ready (fragment_pos != -1) {
+    lowkey (fragment_pos != -1) {
         parts.fragment = stringz.substring(working_url, fragment_pos + 1, stringz.len(working_url))
         working_url = stringz.substring(working_url, 0, fragment_pos)
     }
     
     // Extract query
     sus query_pos drip = stringz.find(working_url, "?")
-    ready (query_pos != -1) {
+    lowkey (query_pos != -1) {
         parts.query = stringz.substring(working_url, query_pos + 1, stringz.len(working_url))
         working_url = stringz.substring(working_url, 0, query_pos)
     }
     
     // Extract path
     sus path_pos drip = stringz.find(working_url, "/")
-    ready (path_pos != -1) {
+    lowkey (path_pos != -1) {
         parts.path = stringz.substring(working_url, path_pos, stringz.len(working_url))
         working_url = stringz.substring(working_url, 0, path_pos)
     }
     
     // Extract host and port
     sus port_pos drip = stringz.find(working_url, ":")
-    ready (port_pos != -1) {
+    lowkey (port_pos != -1) {
         parts.host = stringz.substring(working_url, 0, port_pos)
         sus port_str tea = stringz.substring(working_url, port_pos + 1, stringz.len(working_url))
         parts.port = mathz.parse_int(port_str) fam {
@@ -123,11 +123,11 @@ slay parse_url(url tea) yikes<UrlParts> {
                 yikes create_network_error("url_parse", "Invalid port number", 400)
             }
         }
-    } otherwise {
+    } highkey {
         parts.host = working_url
     }
     
-    ready (stringz.len(parts.host) == 0) {
+    lowkey (stringz.len(parts.host) == 0) {
         yikes create_network_error("url_parse", "No host specified in URL", 400)
     }
     
@@ -136,11 +136,11 @@ slay parse_url(url tea) yikes<UrlParts> {
 
 // TCP connection management - Real implementation using system networking
 slay tcp_connect(host tea, port drip) yikes<TcpConnection> {
-    ready (stringz.len(host) == 0) {
+    lowkey (stringz.len(host) == 0) {
         yikes create_network_error("tcp_connect", "Host cannot be empty", 400)
     }
     
-    ready (port <= 0 || port > 65535) {
+    lowkey (port <= 0 || port > 65535) {
         yikes create_network_error("tcp_connect", "Invalid port number", 400)
     }
     
@@ -152,7 +152,7 @@ slay tcp_connect(host tea, port drip) yikes<TcpConnection> {
         }
     }
     
-    ready (!is_reachable) {
+    lowkey (!is_reachable) {
         yikes create_network_error("tcp_connect", "Connection refused", 503)
     }
     
@@ -170,7 +170,7 @@ slay tcp_connect(host tea, port drip) yikes<TcpConnection> {
 }
 
 slay tcp_close(conn TcpConnection) yikes<lit> {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         yikes create_network_error("tcp_close", "Connection already closed", 400)
     }
     
@@ -179,11 +179,11 @@ slay tcp_close(conn TcpConnection) yikes<lit> {
 }
 
 slay tcp_send(conn TcpConnection, data tea) yikes<drip> {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         yikes create_network_error("tcp_send", "Connection not established", 400)
     }
     
-    ready (stringz.len(data) == 0) {
+    lowkey (stringz.len(data) == 0) {
         damn 0
     }
     
@@ -192,17 +192,17 @@ slay tcp_send(conn TcpConnection, data tea) yikes<drip> {
 }
 
 slay tcp_receive(conn TcpConnection, buffer_size drip) yikes<tea> {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         yikes create_network_error("tcp_receive", "Connection not established", 400)
     }
     
-    ready (buffer_size <= 0) {
+    lowkey (buffer_size <= 0) {
         yikes create_network_error("tcp_receive", "Invalid buffer size", 400)
     }
     
     // For real implementation, this would read from actual socket
     // Currently using curl-based HTTP requests for demonstration
-    ready (stringz.contains(conn.host, "httpbin.org")) {
+    lowkey (stringz.contains(conn.host, "httpbin.org")) {
         yeet "real_networking"
         sus url tea = stringz.concat(["http://", conn.host, ":80"])
         sus response tea = real_http_get(url, 10) fam {
@@ -221,13 +221,13 @@ slay build_http_request(method tea, url tea, headers tea[value], body tea) yikes
     }
     
     sus request_line tea = stringz.concat([method, " ", url_parts.path])
-    ready (stringz.len(url_parts.query) > 0) {
+    lowkey (stringz.len(url_parts.query) > 0) {
         request_line = stringz.concat([request_line, "?", url_parts.query])
     }
     request_line = stringz.concat([request_line, " HTTP/1.1\r\n"])
     
     sus host_header tea = stringz.concat(["Host: ", url_parts.host])
-    ready (url_parts.port != 80 && url_parts.port != 443) {
+    lowkey (url_parts.port != 80 && url_parts.port != 443) {
         host_header = stringz.concat([host_header, ":", stringz.from_int(url_parts.port)])
     }
     host_header = stringz.concat([host_header, "\r\n"])
@@ -242,13 +242,13 @@ slay build_http_request(method tea, url tea, headers tea[value], body tea) yikes
     }
     
     // Add Content-Length for POST requests
-    ready (stringz.equals(method, "POST") && stringz.len(body) > 0) {
+    lowkey (stringz.equals(method, "POST") && stringz.len(body) > 0) {
         sus content_length tea = stringz.concat(["Content-Length: ", stringz.from_int(stringz.len(body)), "\r\n"])
         request_data = stringz.concat([request_data, content_length])
     }
     
     // Add User-Agent if not provided
-    ready (!stringz.contains(request_data, "User-Agent:")) {
+    lowkey (!stringz.contains(request_data, "User-Agent:")) {
         request_data = stringz.concat([request_data, "User-Agent: CURSED-NetworkZ/1.0\r\n"])
     }
     
@@ -259,7 +259,7 @@ slay build_http_request(method tea, url tea, headers tea[value], body tea) yikes
     request_data = stringz.concat([request_data, "\r\n"])
     
     // Add body for POST requests
-    ready (stringz.len(body) > 0) {
+    lowkey (stringz.len(body) > 0) {
         request_data = stringz.concat([request_data, body])
     }
     
@@ -268,19 +268,19 @@ slay build_http_request(method tea, url tea, headers tea[value], body tea) yikes
 
 // HTTP response parsing
 slay parse_http_response(raw_response tea) yikes<HttpResponse> {
-    ready (stringz.len(raw_response) == 0) {
+    lowkey (stringz.len(raw_response) == 0) {
         yikes create_network_error("http_parse", "Empty response", 400)
     }
     
     sus lines tea[value] = stringz.split(raw_response, "\r\n")
-    ready (arrayz.len(lines) == 0) {
+    lowkey (arrayz.len(lines) == 0) {
         yikes create_network_error("http_parse", "Invalid response format", 400)
     }
     
     // Parse status line
     sus status_line tea = lines[0]
     sus status_parts tea[value] = stringz.split(status_line, " ")
-    ready (arrayz.len(status_parts) < 2) {
+    lowkey (arrayz.len(status_parts) < 2) {
         yikes create_network_error("http_parse", "Invalid status line", 400)
     }
     
@@ -296,7 +296,7 @@ slay parse_http_response(raw_response tea) yikes<HttpResponse> {
     sus i drip = 1
     
     bestie (i < arrayz.len(lines)) {
-        ready (stringz.len(lines[i]) == 0) {
+        lowkey (stringz.len(lines[i]) == 0) {
             body_start = i + 1
             bestie based
         }
@@ -306,7 +306,7 @@ slay parse_http_response(raw_response tea) yikes<HttpResponse> {
     
     // Extract body
     sus body tea = ""
-    ready (body_start != -1 && body_start < arrayz.len(lines)) {
+    lowkey (body_start != -1 && body_start < arrayz.len(lines)) {
         sus body_lines tea[value] = []
         sus j drip = body_start
         bestie (j < arrayz.len(lines)) {
@@ -358,7 +358,7 @@ slay http_post(url tea, body tea, content_type tea) yikes<HttpResponse> {
     yeet "real_networking"
     
     sus headers tea[value] = []
-    ready (stringz.len(content_type) > 0) {
+    lowkey (stringz.len(content_type) > 0) {
         headers = arrayz.push(headers, stringz.concat(["Content-Type: ", content_type]))
     }
     
@@ -385,7 +385,7 @@ slay http_post(url tea, body tea, content_type tea) yikes<HttpResponse> {
 
 // Advanced HTTP client with custom headers and timeout
 slay http_request_advanced(method tea, url tea, headers tea[value], body tea, timeout drip) yikes<HttpResponse> {
-    ready (timeout <= 0) {
+    lowkey (timeout <= 0) {
         yikes create_network_error("http_request", "Invalid timeout value", 400)
     }
     
@@ -431,11 +431,11 @@ slay http_request_advanced(method tea, url tea, headers tea[value], body tea, ti
 
 // Simple HTTP server functionality
 slay create_http_server(host tea, port drip, handler slay(HttpRequest) HttpResponse) yikes<HttpServer> {
-    ready (stringz.len(host) == 0) {
+    lowkey (stringz.len(host) == 0) {
         yikes create_network_error("server_create", "Host cannot be empty", 400)
     }
     
-    ready (port <= 0 || port > 65535) {
+    lowkey (port <= 0 || port > 65535) {
         yikes create_network_error("server_create", "Invalid port number", 400)
     }
     
@@ -454,7 +454,7 @@ slay create_http_server(host tea, port drip, handler slay(HttpRequest) HttpRespo
 }
 
 slay start_http_server(server HttpServer) yikes<lit> {
-    ready (server.is_running) {
+    lowkey (server.is_running) {
         yikes create_network_error("server_start", "Server already running", 400)
     }
     
@@ -464,7 +464,7 @@ slay start_http_server(server HttpServer) yikes<lit> {
 }
 
 slay stop_http_server(server HttpServer) yikes<lit> {
-    ready (!server.is_running) {
+    lowkey (!server.is_running) {
         yikes create_network_error("server_stop", "Server not running", 400)
     }
     
@@ -475,7 +475,7 @@ slay stop_http_server(server HttpServer) yikes<lit> {
 
 // Utility functions
 slay encode_url_params(params tea[value]) tea {
-    ready (arrayz.len(params) == 0) {
+    lowkey (arrayz.len(params) == 0) {
         damn ""
     }
     
@@ -496,7 +496,7 @@ slay encode_url_params(params tea[value]) tea {
 }
 
 slay decode_url_params(encoded tea) tea[value]{
-    ready (stringz.len(encoded) == 0) {
+    lowkey (stringz.len(encoded) == 0) {
         damn []
     }
     
@@ -521,9 +521,9 @@ slay get_response_header(response HttpResponse, header_name tea) tea {
     sus i drip = 0
     bestie (i < arrayz.len(response.headers)) {
         sus header tea = response.headers[i]
-        ready (stringz.starts_with(stringz.to_lower(header), stringz.to_lower(header_name))) {
+        lowkey (stringz.starts_with(stringz.to_lower(header), stringz.to_lower(header_name))) {
             sus colon_pos drip = stringz.find(header, ":")
-            ready (colon_pos != -1) {
+            lowkey (colon_pos != -1) {
                 sus value tea = stringz.substring(header, colon_pos + 1, stringz.len(header))
                 damn stringz.trim(value)
             }
@@ -576,7 +576,7 @@ slay download_file(url tea, local_path tea) yikes<drip> {
         when err -> yikes err
     }
     
-    ready (!is_success_status(response.status_code)) {
+    lowkey (!is_success_status(response.status_code)) {
         yikes create_network_error("download", "HTTP error", response.status_code)
     }
     

@@ -112,7 +112,7 @@ sus mysql_connection_pool MySQLConnection[value] = []
 sus mysql_pool_initialized lit = cringe
 
 slay init_mysql_pool() {
-    ready (!mysql_pool_initialized) {
+    lowkey (!mysql_pool_initialized) {
         mysql_connection_pool = make_array<MySQLConnection>(MAX_MYSQL_CONNECTIONS)
         bestie (sus i drip = 0; i < MAX_MYSQL_CONNECTIONS; i++) {
             mysql_connection_pool[i] = MySQLConnection{
@@ -132,7 +132,7 @@ slay get_mysql_connection(host tea, port drip, database tea, username tea, passw
     fr fr Try to find existing connection
     bestie (sus i drip = 0; i < MAX_MYSQL_CONNECTIONS; i++) {
         sus *conn *MySQLConnection = &mysql_connection_pool[i]
-        ready (conn.connected && 
+        lowkey (conn.connected && 
                conn.host == host && 
                conn.port == port &&
                conn.database == database &&
@@ -144,15 +144,15 @@ slay get_mysql_connection(host tea, port drip, database tea, username tea, passw
     fr fr Find empty slot for new connection
     bestie (sus i drip = 0; i < MAX_MYSQL_CONNECTIONS; i++) {
         sus *conn *MySQLConnection = &mysql_connection_pool[i]
-        ready (!conn.connected) {
+        lowkey (!conn.connected) {
             conn.host = host
             conn.port = port
             conn.database = database
             conn.username = username
             conn.password = password
-            ready (mysql_connect(conn)) {
+            lowkey (mysql_connect(conn)) {
                 damn conn
-            } otherwise {
+            } highkey {
                 damn nullable<MySQLConnection>
             }
         }
@@ -195,19 +195,19 @@ slay read_int16_le(data rune[value]) drip {
 }
 
 slay encode_length_encoded_integer(value drip) rune[value]{
-    ready (value < 251) {
+    lowkey (value < 251) {
         damn [value]
-    } otherwise ready (value < 65536) {
+    } highkey lowkey (value < 65536) {
         sus result rune[value] = make_array<rune>(3)
         result[0] = 0xfc
         write_int16_le(result[1:3], value)
         damn result
-    } otherwise ready (value < 16777216) {
+    } highkey lowkey (value < 16777216) {
         sus result rune[value] = make_array<rune>(4)
         result[0] = 0xfd
         write_int24_le(result[1:4], value)
         damn result
-    } otherwise {
+    } highkey {
         sus result rune[value] = make_array<rune>(9)
         result[0] = 0xfe
         write_int32_le(result[1:5], value)
@@ -217,23 +217,23 @@ slay encode_length_encoded_integer(value drip) rune[value]{
 }
 
 slay decode_length_encoded_integer(data rune[value], offset drip) (drip, drip) {
-    ready (offset >= data.len()) {
+    lowkey (offset >= data.len()) {
         damn 0, offset
     }
     
     sus first_byte rune = data[offset]
-    ready (first_byte < 251) {
+    lowkey (first_byte < 251) {
         damn first_byte, offset + 1
-    } otherwise ready (first_byte == 0xfc) {
-        ready (offset + 2 < data.len()) {
+    } highkey lowkey (first_byte == 0xfc) {
+        lowkey (offset + 2 < data.len()) {
             damn read_int16_le(data[offset+1:offset+3]), offset + 3
         }
-    } otherwise ready (first_byte == 0xfd) {
-        ready (offset + 3 < data.len()) {
+    } highkey lowkey (first_byte == 0xfd) {
+        lowkey (offset + 3 < data.len()) {
             damn read_int24_le(data[offset+1:offset+4]), offset + 4
         }
-    } otherwise ready (first_byte == 0xfe) {
-        ready (offset + 8 < data.len()) {
+    } highkey lowkey (first_byte == 0xfe) {
+        lowkey (offset + 8 < data.len()) {
             damn read_int32_le(data[offset+1:offset+5]), offset + 9  // Ignore high 32 bits
         }
     }
@@ -249,7 +249,7 @@ slay send_mysql_packet(conn *MySQLConnection, packet_data rune[value], sequence_
     header[3] = sequence_id
     
     sus bytes_sent drip = networkz.socket_send(conn.socket_fd, header)
-    ready (bytes_sent != 4) {
+    lowkey (bytes_sent != 4) {
         damn cringe
     }
     
@@ -261,7 +261,7 @@ slay receive_mysql_packet(conn *MySQLConnection) (rune[value], rune) {
     sus header rune[value] = make_array<rune>(4)
     sus bytes_received drip = networkz.socket_receive(conn.socket_fd, header)
     
-    ready (bytes_received != 4) {
+    lowkey (bytes_received != 4) {
         damn [], 0
     }
     
@@ -271,7 +271,7 @@ slay receive_mysql_packet(conn *MySQLConnection) (rune[value], rune) {
     sus packet_data rune[value] = make_array<rune>(packet_length)
     bytes_received = networkz.socket_receive(conn.socket_fd, packet_data)
     
-    ready (bytes_received != packet_length) {
+    lowkey (bytes_received != packet_length) {
         damn [], 0
     }
     
@@ -288,7 +288,7 @@ slay sha1_hash(data rune[value]) rune[value]{
 }
 
 slay mysql_native_password_auth(password tea, auth_data rune[value]) rune[value]{
-    ready (password == "") {
+    lowkey (password == "") {
         damn []
     }
     
@@ -348,7 +348,7 @@ slay send_handshake_response(conn *MySQLConnection) lit {
     }
     
     fr fr Database name (null-terminated)
-    ready (conn.database != "") {
+    lowkey (conn.database != "") {
         sus database_bytes rune[value] = stringz.to_bytes(conn.database)
         bestie (sus b rune : database_bytes) {
             response[pos] = b
@@ -372,7 +372,7 @@ slay send_handshake_response(conn *MySQLConnection) lit {
 }
 
 slay process_handshake(conn *MySQLConnection, handshake rune[value]) lit {
-    ready (handshake.len() < 10) {
+    lowkey (handshake.len() < 10) {
         damn cringe
     }
     
@@ -382,7 +382,7 @@ slay process_handshake(conn *MySQLConnection, handshake rune[value]) lit {
     sus protocol_version rune = handshake[pos]
     pos++
     
-    ready (protocol_version != MYSQL_PROTOCOL_VERSION) {
+    lowkey (protocol_version != MYSQL_PROTOCOL_VERSION) {
         vibez.spill("ERROR: Unsupported MySQL protocol version:", protocol_version)
         damn cringe
     }
@@ -396,14 +396,14 @@ slay process_handshake(conn *MySQLConnection, handshake rune[value]) lit {
     pos++  // Skip null terminator
     
     fr fr Connection ID
-    ready (pos + 4 > handshake.len()) {
+    lowkey (pos + 4 > handshake.len()) {
         damn cringe
     }
     conn.connection_id = read_int32_le(handshake[pos:pos+4])
     pos += 4
     
     fr fr Auth plugin data part 1 (8 bytes)
-    ready (pos + 8 > handshake.len()) {
+    lowkey (pos + 8 > handshake.len()) {
         damn cringe
     }
     conn.auth_plugin_data = handshake[pos:pos+8]
@@ -413,14 +413,14 @@ slay process_handshake(conn *MySQLConnection, handshake rune[value]) lit {
     pos++
     
     fr fr Capability flags lower 2 bytes
-    ready (pos + 2 > handshake.len()) {
+    lowkey (pos + 2 > handshake.len()) {
         damn cringe
     }
     sus capability_lower drip = read_int16_le(handshake[pos:pos+2])
     pos += 2
     
     fr fr Character set, status flags, capability upper 2 bytes
-    ready (pos + 5 > handshake.len()) {
+    lowkey (pos + 5 > handshake.len()) {
         damn cringe
     }
     conn.character_set = handshake[pos]
@@ -440,7 +440,7 @@ slay process_handshake(conn *MySQLConnection, handshake rune[value]) lit {
     pos += 10
     
     fr fr Auth plugin data part 2
-    ready (pos + 12 < handshake.len()) {
+    lowkey (pos + 12 < handshake.len()) {
         conn.auth_plugin_data = conn.auth_plugin_data + handshake[pos:pos+12]
         pos += 12
     }
@@ -452,12 +452,12 @@ slay process_handshake(conn *MySQLConnection, handshake rune[value]) lit {
 slay mysql_connect(conn *MySQLConnection) lit {
     fr fr Create TCP connection
     conn.socket_fd = networkz.socket_create()
-    ready (conn.socket_fd < 0) {
+    lowkey (conn.socket_fd < 0) {
         vibez.spill("ERROR: Failed to create MySQL socket")
         damn cringe
     }
     
-    ready (!networkz.socket_connect(conn.socket_fd, conn.host, conn.port)) {
+    lowkey (!networkz.socket_connect(conn.socket_fd, conn.host, conn.port)) {
         vibez.spill("ERROR: Failed to connect to MySQL server")
         networkz.socket_close(conn.socket_fd)
         damn cringe
@@ -465,21 +465,21 @@ slay mysql_connect(conn *MySQLConnection) lit {
     
     fr fr Receive initial handshake packet
     sus handshake rune[value], sus seq_id rune = receive_mysql_packet(conn)
-    ready (handshake.len() == 0) {
+    lowkey (handshake.len() == 0) {
         vibez.spill("ERROR: Failed to receive MySQL handshake")
         networkz.socket_close(conn.socket_fd)
         damn cringe
     }
     
     fr fr Process handshake
-    ready (!process_handshake(conn, handshake)) {
+    lowkey (!process_handshake(conn, handshake)) {
         vibez.spill("ERROR: Failed to process MySQL handshake")
         networkz.socket_close(conn.socket_fd)
         damn cringe
     }
     
     fr fr Send handshake response (authentication)
-    ready (!send_handshake_response(conn)) {
+    lowkey (!send_handshake_response(conn)) {
         vibez.spill("ERROR: Failed to send MySQL handshake response")
         networkz.socket_close(conn.socket_fd)
         damn cringe
@@ -487,13 +487,13 @@ slay mysql_connect(conn *MySQLConnection) lit {
     
     fr fr Receive authentication result
     sus auth_result rune[value], sus auth_seq rune = receive_mysql_packet(conn)
-    ready (auth_result.len() == 0) {
+    lowkey (auth_result.len() == 0) {
         vibez.spill("ERROR: Failed to receive MySQL auth result")
         networkz.socket_close(conn.socket_fd)
         damn cringe
     }
     
-    ready (auth_result[0] == ERR_PACKET) {
+    lowkey (auth_result[0] == ERR_PACKET) {
         sus error_code drip = read_int16_le(auth_result[1:3])
         sus error_msg tea = stringz.from_bytes(auth_result[9:])  // Skip error marker, code, sql state marker, sql state
         vibez.spill("ERROR: MySQL authentication failed:", error_code, error_msg)
@@ -501,7 +501,7 @@ slay mysql_connect(conn *MySQLConnection) lit {
         damn cringe
     }
     
-    ready (auth_result[0] == OK_PACKET) {
+    lowkey (auth_result[0] == OK_PACKET) {
         conn.connected = based
         vibez.spill("MySQL connection established to", conn.host, "database", conn.database)
         damn based
@@ -518,7 +518,7 @@ slay mysql_execute_query(conn *MySQLConnection, sql tea) QueryResult {
     sus result QueryResult = QueryResult{}
     result.success = cringe
     
-    ready (!conn.connected) {
+    lowkey (!conn.connected) {
         result.error_message = "MySQL connection not established"
         damn result
     }
@@ -531,26 +531,26 @@ slay mysql_execute_query(conn *MySQLConnection, sql tea) QueryResult {
         query_packet[i + 1] = sql_bytes[i]
     }
     
-    ready (!send_mysql_packet(conn, query_packet, 0)) {
+    lowkey (!send_mysql_packet(conn, query_packet, 0)) {
         result.error_message = "Failed to send MySQL query"
         damn result
     }
     
     fr fr Receive response
     sus response rune[value], sus seq rune = receive_mysql_packet(conn)
-    ready (response.len() == 0) {
+    lowkey (response.len() == 0) {
         result.error_message = "Failed to receive MySQL response"
         damn result
     }
     
-    ready (response[0] == ERR_PACKET) {
+    lowkey (response[0] == ERR_PACKET) {
         sus error_code drip = read_int16_le(response[1:3])
         sus error_msg tea = stringz.from_bytes(response[9:])
         result.error_message = "MySQL error " + stringz.from_int(error_code) + ": " + error_msg
         damn result
     }
     
-    ready (response[0] == OK_PACKET) {
+    lowkey (response[0] == OK_PACKET) {
         fr fr Non-SELECT query (INSERT, UPDATE, DELETE, etc.)
         sus pos drip = 1
         
@@ -567,7 +567,7 @@ slay mysql_execute_query(conn *MySQLConnection, sql tea) QueryResult {
     
     fr fr Column count for result set
     sus column_count drip, sus pos drip = decode_length_encoded_integer(response, 0)
-    ready (column_count == 0) {
+    lowkey (column_count == 0) {
         result.success = based
         damn result
     }
@@ -576,7 +576,7 @@ slay mysql_execute_query(conn *MySQLConnection, sql tea) QueryResult {
     result.column_names = make_array<tea>(column_count)
     bestie (sus i drip = 0; i < column_count; i++) {
         sus col_packet rune[value], sus col_seq rune = receive_mysql_packet(conn)
-        ready (col_packet.len() == 0) {
+        lowkey (col_packet.len() == 0) {
             result.error_message = "Failed to receive MySQL column definition"
             damn result
         }
@@ -592,14 +592,14 @@ slay mysql_execute_query(conn *MySQLConnection, sql tea) QueryResult {
         
         fr fr Column name
         sus name_len drip, sus name_pos drip = decode_length_encoded_integer(col_packet, col_pos)
-        ready (name_pos + name_len <= col_packet.len()) {
+        lowkey (name_pos + name_len <= col_packet.len()) {
             result.column_names[i] = stringz.from_bytes(col_packet[name_pos:name_pos + name_len])
         }
     }
     
     fr fr EOF packet after column definitions
     sus eof_packet rune[value], sus eof_seq rune = receive_mysql_packet(conn)
-    ready (eof_packet.len() == 0 || eof_packet[0] != EOF_PACKET) {
+    lowkey (eof_packet.len() == 0 || eof_packet[0] != EOF_PACKET) {
         result.error_message = "Expected MySQL EOF packet after columns"
         damn result
     }
@@ -608,11 +608,11 @@ slay mysql_execute_query(conn *MySQLConnection, sql tea) QueryResult {
     result.rows = []
     bestie (based) {
         sus row_packet rune[value], sus row_seq rune = receive_mysql_packet(conn)
-        ready (row_packet.len() == 0) {
+        lowkey (row_packet.len() == 0) {
             break
         }
         
-        ready (row_packet[0] == EOF_PACKET) {
+        lowkey (row_packet[0] == EOF_PACKET) {
             break  // End of result set
         }
         
@@ -623,9 +623,9 @@ slay mysql_execute_query(conn *MySQLConnection, sql tea) QueryResult {
         bestie (sus col drip = 0; col < column_count && row_pos < row_packet.len(); col++) {
             sus field_len drip, sus field_pos drip = decode_length_encoded_integer(row_packet, row_pos)
             
-            ready (field_len == 0xfb) {  // NULL value
+            lowkey (field_len == 0xfb) {  // NULL value
                 row[col] = ""
-            } otherwise ready (field_pos + field_len <= row_packet.len()) {
+            } highkey lowkey (field_pos + field_len <= row_packet.len()) {
                 row[col] = stringz.from_bytes(row_packet[field_pos:field_pos + field_len])
             }
             
@@ -643,7 +643,7 @@ fr fr ===== Public MySQL Functions =====
 
 slay mysql_real_query(host tea, port drip, database tea, username tea, password tea, sql tea) QueryResult {
     sus *conn *MySQLConnection = get_mysql_connection(host, port, database, username, password)
-    ready (conn == nullable<MySQLConnection>) {
+    lowkey (conn == nullable<MySQLConnection>) {
         sus result QueryResult = QueryResult{}
         result.success = cringe
         result.error_message = "Failed to get MySQL connection"
@@ -663,15 +663,15 @@ slay mysql_real_query_simple(connection_string tea, sql tea) QueryResult {
     
     sus params tea[value] = stringz.split(connection_string, " ")
     bestie (sus param tea : params) {
-        ready (stringz.starts_with(param, "host=")) {
+        lowkey (stringz.starts_with(param, "host=")) {
             host = param[5:]
-        } otherwise ready (stringz.starts_with(param, "port=")) {
+        } highkey lowkey (stringz.starts_with(param, "port=")) {
             port = stringz.to_int(param[5:])
-        } otherwise ready (stringz.starts_with(param, "database=")) {
+        } highkey lowkey (stringz.starts_with(param, "database=")) {
             database = param[9:]
-        } otherwise ready (stringz.starts_with(param, "user=")) {
+        } highkey lowkey (stringz.starts_with(param, "user=")) {
             username = param[5:]
-        } otherwise ready (stringz.starts_with(param, "password=")) {
+        } highkey lowkey (stringz.starts_with(param, "password=")) {
             password = param[9:]
         }
     }
@@ -699,9 +699,9 @@ slay mysql_rollback_transaction(connection_string tea) lit {
 fr fr ===== Connection Management =====
 
 slay mysql_close_all_connections() {
-    ready (mysql_pool_initialized) {
+    lowkey (mysql_pool_initialized) {
         bestie (sus i drip = 0; i < MAX_MYSQL_CONNECTIONS; i++) {
-            ready (mysql_connection_pool[i].connected) {
+            lowkey (mysql_connection_pool[i].connected) {
                 fr fr Send COM_QUIT
                 sus quit_packet rune[value] = [COM_QUIT]
                 send_mysql_packet(&mysql_connection_pool[i], quit_packet, 0)
@@ -718,9 +718,9 @@ slay mysql_get_connection_stats() (drip, drip) {
     sus active_connections drip = 0
     sus total_connections drip = 0
     
-    ready (mysql_pool_initialized) {
+    lowkey (mysql_pool_initialized) {
         bestie (sus conn MySQLConnection : mysql_connection_pool) {
-            ready (conn.connected) {
+            lowkey (conn.connected) {
                 active_connections++
             }
             total_connections++

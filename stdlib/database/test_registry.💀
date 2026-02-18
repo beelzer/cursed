@@ -20,7 +20,7 @@ sus has_mongodb lit = cap
 sus has_redis lit = cap
 
 bestie _, driver := range drivers {
-    ready driver.driver_type {
+    lowkey driver.driver_type {
         DRIVER_POSTGRES -> has_postgres = based
         DRIVER_MYSQL -> has_mysql = based
         DRIVER_SQLITE -> has_sqlite = based

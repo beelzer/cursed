@@ -16,7 +16,7 @@ slay assert_true(condition lit) lit {
     lowkey (condition == based) {
         vibez.spill("✅ PASS: assert_true")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_true")
         fail_test_count = fail_test_count + 1
     }
@@ -27,7 +27,7 @@ slay assert_false(condition lit) lit {
     lowkey (condition == cringe) {
         vibez.spill("✅ PASS: assert_false")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_false")
         fail_test_count = fail_test_count + 1
     }
@@ -38,7 +38,7 @@ slay assert_eq_int(actual drip, expected drip) lit {
     lowkey (actual == expected) {
         vibez.spill("✅ PASS: assert_eq_int")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_eq_int - Expected:", expected, "Got:", actual)
         fail_test_count = fail_test_count + 1
     }
@@ -49,7 +49,7 @@ slay assert_eq_string(actual tea, expected tea) lit {
     lowkey (actual == expected) {
         vibez.spill("✅ PASS: assert_eq_string")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_eq_string - Expected:", expected, "Got:", actual)
         fail_test_count = fail_test_count + 1
     }
@@ -60,7 +60,7 @@ slay assert_not_eq_int(actual drip, expected drip) lit {
     lowkey (actual != expected) {
         vibez.spill("✅ PASS: assert_not_eq_int")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_not_eq_int - Values should not be equal:", actual)
         fail_test_count = fail_test_count + 1
     }
@@ -71,7 +71,7 @@ slay assert_not_eq_string(actual tea, expected tea) lit {
     lowkey (actual != expected) {
         vibez.spill("✅ PASS: assert_not_eq_string")
         pass_test_count = pass_test_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_not_eq_string - Values should not be equal:", actual)
         fail_test_count = fail_test_count + 1
     }
@@ -104,7 +104,7 @@ slay print_test_summary() lit {
     
     lowkey (fail_test_count == 0) {
         vibez.spill("🎉 All tests passed!")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Some tests failed")
     }
     
@@ -197,7 +197,7 @@ slay property_test_start(name tea) lit {
 slay property_assert(condition lit, description tea) lit {
     lowkey (condition == based) {
         property_pass_count = property_pass_count + 1
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Property violation:", description)
         property_fail_count = property_fail_count + 1
     }
@@ -214,7 +214,7 @@ slay print_property_test_summary() lit {
     
     lowkey (property_fail_count == 0) {
         vibez.spill("🎉 All properties hold!")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️ Some properties were violated")
     }
     
@@ -258,7 +258,7 @@ slay print_final_summary() lit {
         vibez.spill("")
         vibez.spill("🎉 ALL TESTS PASSED! 🎉")
         vibez.spill("✨ Code quality: EXCELLENT ✨")
-    } otherwise {
+    } highkey {
         vibez.spill("")
         vibez.spill("❌ SOME TESTS FAILED")
         vibez.spill("🔧 Fix required before release")

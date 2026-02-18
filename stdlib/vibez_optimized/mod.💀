@@ -3,10 +3,10 @@
 
 # Performance-optimized string concatenation using rope data structure
 slay string_concat_optimized(parts tea[value]) tea {
-    ready (len(parts) == 0) {
+    lowkey (len(parts) == 0) {
         damn ""
     }
-    ready (len(parts) == 1) {
+    lowkey (len(parts) == 1) {
         damn parts[0]
     }
     
@@ -22,9 +22,9 @@ slay string_concat_optimized(parts tea[value]) tea {
     
     # Vectorized copy for large strings
     bestie (sus i drip = 0; i < len(parts); i++) {
-        ready (len(parts[i]) > 64) {
+        lowkey (len(parts[i]) > 64) {
             vectorized_string_copy(result, pos, parts[i])
-        } otherwise {
+        } highkey {
             memory_copy_string(result, pos, parts[i])
         }
         pos = pos + len(parts[i])
@@ -35,10 +35,10 @@ slay string_concat_optimized(parts tea[value]) tea {
 
 # High-performance string search with Boyer-Moore algorithm
 slay string_find_optimized(haystack tea, needle tea) drip {
-    ready (len(needle) == 0) {
+    lowkey (len(needle) == 0) {
         damn 0
     }
-    ready (len(needle) > len(haystack)) {
+    lowkey (len(needle) > len(haystack)) {
         damn -1
     }
     
@@ -54,9 +54,9 @@ slay string_find_optimized(haystack tea, needle tea) drip {
             j = j - 1
         }
         
-        ready (j < 0) {
+        lowkey (j < 0) {
             damn i  # Found match
-        } otherwise {
+        } highkey {
             # Use bad character heuristic for skip
             sus skip drip = bad_char[char_code(char_at(haystack, i + j))]
             i = i + max(1, j - skip)
@@ -72,7 +72,7 @@ sus string_pool_sizes drip[value] = []
 sus pool_initialized lit = cap
 
 slay initialize_string_pool() lit {
-    ready (pool_initialized) {
+    lowkey (pool_initialized) {
         damn based
     }
     
@@ -90,13 +90,13 @@ slay initialize_string_pool() lit {
 }
 
 slay get_pooled_string(size drip) tea {
-    ready (!pool_initialized) {
+    lowkey (!pool_initialized) {
         initialize_string_pool()
     }
     
     # Find best fit from pool
     bestie (sus i drip = 0; i < len(string_pool_sizes); i++) {
-        ready (string_pool_sizes[i] >= size) {
+        lowkey (string_pool_sizes[i] >= size) {
             damn string_pool_blocks[i]
         }
     }
@@ -112,7 +112,7 @@ sus format_patterns tea[value] = []
 slay spillf_optimized(format tea, ...args) lit {
     # Check format cache first
     bestie (sus i drip = 0; i < len(format_patterns); i++) {
-        ready (format_patterns[i] == format) {
+        lowkey (format_patterns[i] == format) {
             damn execute_cached_format(format_cache[i], args)
         }
     }
@@ -131,10 +131,10 @@ slay parse_format_string(format tea) tea {
     sus placeholders drip[value] = []
     
     bestie (i < len(format)) {
-        ready (char_at(format, i) == '{') {
+        lowkey (char_at(format, i) == '{') {
             placeholders = append_element(placeholders, i)
             result = result + "PLACEHOLDER_" + to_string(len(placeholders))
-        } otherwise {
+        } highkey {
             result = result + char_at(format, i)
         }
         i = i + 1
@@ -158,7 +158,7 @@ slay execute_cached_format(cached_format tea, args normie[value]) lit {
 
 # High-performance string replacement with KMP algorithm
 slay string_replace_optimized(text tea, pattern tea, replacement tea) tea {
-    ready (len(pattern) == 0) {
+    lowkey (len(pattern) == 0) {
         damn text
     }
     
@@ -170,20 +170,20 @@ slay string_replace_optimized(text tea, pattern tea, replacement tea) tea {
     sus j drip = 0
     
     bestie (i < len(text)) {
-        ready (char_at(text, i) == char_at(pattern, j)) {
+        lowkey (char_at(text, i) == char_at(pattern, j)) {
             i = i + 1
             j = j + 1
             
-            ready (j == len(pattern)) {
+            lowkey (j == len(pattern)) {
                 # Found match - append everything before match and replacement
                 result = result + substring(text, last_pos, i - len(pattern))
                 result = result + replacement
                 last_pos = i
                 j = kmp_table[j - 1]
             }
-        } otherwise ready (j != 0) {
+        } highkey lowkey (j != 0) {
             j = kmp_table[j - 1]
-        } otherwise {
+        } highkey {
             i = i + 1
         }
     }
@@ -201,13 +201,13 @@ slay build_kmp_table(pattern tea) drip[value]{
     sus i drip = 1
     
     bestie (i < len(pattern)) {
-        ready (char_at(pattern, i) == char_at(pattern, j)) {
+        lowkey (char_at(pattern, i) == char_at(pattern, j)) {
             j = j + 1
             set_array_element(table, i, j)
             i = i + 1
-        } otherwise ready (j != 0) {
+        } highkey lowkey (j != 0) {
             j = get_array_element(table, j - 1)
-        } otherwise {
+        } highkey {
             set_array_element(table, i, 0)
             i = i + 1
         }
@@ -236,9 +236,9 @@ slay build_bad_char_table(pattern tea) drip[value]{
 # Vectorized string operations for large data
 slay vectorized_string_copy(dest tea, pos drip, src tea) lit {
     # Use SIMD instructions for large string copies
-    ready (len(src) >= 32) {
+    lowkey (len(src) >= 32) {
         vectorized_memory_copy(dest, pos, src, len(src))
-    } otherwise {
+    } highkey {
         memory_copy_string(dest, pos, src)
     }
     damn based
@@ -259,20 +259,20 @@ sus digit_pairs tea[value] = [
 ]
 
 slay int_to_string_optimized(n drip) tea {
-    ready (n == 0) {
+    lowkey (n == 0) {
         damn "0"
     }
     
     sus negative lit = cap
     sus num drip = n
-    ready (n < 0) {
+    lowkey (n < 0) {
         negative = based
         num = -n
     }
     
     # Estimate required buffer size
     sus digits drip = count_digits(num)
-    sus buffer_size drip = digits + ready negative { 1 } otherwise { 0 }
+    sus buffer_size drip = digits + lowkey negative { 1 } highkey { 0 }
     sus result tea = get_pooled_string(buffer_size)
     
     sus pos drip = buffer_size - 1
@@ -285,15 +285,15 @@ slay int_to_string_optimized(n drip) tea {
         num = num / 100
     }
     
-    ready (num >= 10) {
+    lowkey (num >= 10) {
         result = set_string_range(result, pos - 1, pos, digit_pairs[num])
         pos = pos - 2
-    } otherwise {
+    } highkey {
         result = set_char_at(result, pos, digit_to_char(num))
         pos = pos - 1
     }
     
-    ready (negative) {
+    lowkey (negative) {
         result = set_char_at(result, 0, "-")
     }
     
@@ -309,7 +309,7 @@ slay spill_buffered(text tea) lit {
     output_buffer = output_buffer + text + "\n"
     buffer_size = buffer_size + len(text) + 1
     
-    ready (buffer_size >= max_buffer_size) {
+    lowkey (buffer_size >= max_buffer_size) {
         flush_output_buffer()
     }
     
@@ -317,7 +317,7 @@ slay spill_buffered(text tea) lit {
 }
 
 slay flush_output_buffer() lit {
-    ready (len(output_buffer) > 0) {
+    lowkey (len(output_buffer) > 0) {
         system_write_stdout(output_buffer)
         output_buffer = ""
         buffer_size = 0
@@ -327,10 +327,10 @@ slay flush_output_buffer() lit {
 
 # Core optimized spill function
 slay spill(message tea) lit {
-    ready (len(message) > 1024) {
+    lowkey (len(message) > 1024) {
         # Large messages bypass buffer
         system_write_stdout(message + "\n")
-    } otherwise {
+    } highkey {
         spill_buffered(message)
     }
     damn based
@@ -338,11 +338,11 @@ slay spill(message tea) lit {
 
 # Helper functions for optimization
 slay count_digits(n drip) drip {
-    ready (n == 0) { damn 1 }
+    lowkey (n == 0) { damn 1 }
     
     sus count drip = 0
     sus num drip = n
-    ready (num < 0) { num = -num }
+    lowkey (num < 0) { num = -num }
     
     bestie (num > 0) {
         num = num / 10
@@ -353,56 +353,56 @@ slay count_digits(n drip) drip {
 }
 
 slay max(a drip, b drip) drip {
-    ready (a > b) { damn a } otherwise { damn b }
+    lowkey (a > b) { damn a } highkey { damn b }
 }
 
 slay char_to_ascii(c tea) drip {
     # Convert character to ASCII code (basic implementation)
-    ready (len(c) == 0) { damn 0 }
+    lowkey (len(c) == 0) { damn 0 }
     
     # Map common characters to ASCII values
-    ready (c == "A") { damn 65 }
-    ready (c == "B") { damn 66 }
-    ready (c == "C") { damn 67 }
-    ready (c == "a") { damn 97 }
-    ready (c == "b") { damn 98 }
-    ready (c == "c") { damn 99 }
-    ready (c == "0") { damn 48 }
-    ready (c == "1") { damn 49 }
-    ready (c == "2") { damn 50 }
-    ready (c == "3") { damn 51 }
-    ready (c == "4") { damn 52 }
-    ready (c == "5") { damn 53 }
-    ready (c == "6") { damn 54 }
-    ready (c == "7") { damn 55 }
-    ready (c == "8") { damn 56 }
-    ready (c == "9") { damn 57 }
-    ready (c == " ") { damn 32 }
-    ready (c == "!") { damn 33 }
-    ready (c == "\"") { damn 34 }
-    ready (c == "#") { damn 35 }
-    ready (c == "$") { damn 36 }
-    ready (c == "%") { damn 37 }
-    ready (c == "&") { damn 38 }
-    ready (c == "'") { damn 39 }
-    ready (c == "(") { damn 40 }
-    ready (c == ")") { damn 41 }
+    lowkey (c == "A") { damn 65 }
+    lowkey (c == "B") { damn 66 }
+    lowkey (c == "C") { damn 67 }
+    lowkey (c == "a") { damn 97 }
+    lowkey (c == "b") { damn 98 }
+    lowkey (c == "c") { damn 99 }
+    lowkey (c == "0") { damn 48 }
+    lowkey (c == "1") { damn 49 }
+    lowkey (c == "2") { damn 50 }
+    lowkey (c == "3") { damn 51 }
+    lowkey (c == "4") { damn 52 }
+    lowkey (c == "5") { damn 53 }
+    lowkey (c == "6") { damn 54 }
+    lowkey (c == "7") { damn 55 }
+    lowkey (c == "8") { damn 56 }
+    lowkey (c == "9") { damn 57 }
+    lowkey (c == " ") { damn 32 }
+    lowkey (c == "!") { damn 33 }
+    lowkey (c == "\"") { damn 34 }
+    lowkey (c == "#") { damn 35 }
+    lowkey (c == "$") { damn 36 }
+    lowkey (c == "%") { damn 37 }
+    lowkey (c == "&") { damn 38 }
+    lowkey (c == "'") { damn 39 }
+    lowkey (c == "(") { damn 40 }
+    lowkey (c == ")") { damn 41 }
     
     # Default fallback
     damn 32  # Space character
 }
 
 slay digit_to_char(d drip) tea {
-    ready (d == 0) { damn "0" }
-    ready (d == 1) { damn "1" }
-    ready (d == 2) { damn "2" }
-    ready (d == 3) { damn "3" }
-    ready (d == 4) { damn "4" }
-    ready (d == 5) { damn "5" }
-    ready (d == 6) { damn "6" }
-    ready (d == 7) { damn "7" }
-    ready (d == 8) { damn "8" }
-    ready (d == 9) { damn "9" }
+    lowkey (d == 0) { damn "0" }
+    lowkey (d == 1) { damn "1" }
+    lowkey (d == 2) { damn "2" }
+    lowkey (d == 3) { damn "3" }
+    lowkey (d == 4) { damn "4" }
+    lowkey (d == 5) { damn "5" }
+    lowkey (d == 6) { damn "6" }
+    lowkey (d == 7) { damn "7" }
+    lowkey (d == 8) { damn "8" }
+    lowkey (d == 9) { damn "9" }
     damn "0"  # Default
 }
 
@@ -412,19 +412,19 @@ slay stringify_optimized(value normie) tea {
     
     sus type_name tea = reflectz.type_of(value)
     
-    ready (type_name == "drip") {
+    lowkey (type_name == "drip") {
         # Integer conversion - use optimized int_to_string
         sus int_val drip = cast_to_int(value)
         damn int_to_string_optimized(int_val)
     }
-    ready (type_name == "tea") {
+    lowkey (type_name == "tea") {
         # String value - return as is
         damn cast_to_string(value)
     }
-    ready (type_name == "lit") {
+    lowkey (type_name == "lit") {
         # Boolean conversion
         sus bool_val lit = cast_to_bool(value)
-        ready (bool_val) { damn "based" } otherwise { damn "cap" }
+        lowkey (bool_val) { damn "based" } highkey { damn "cap" }
     }
     
     # Fallback to generic representation
@@ -468,14 +468,14 @@ slay allocate_raw_string(size drip) tea {
 
 slay memory_copy_string(dest tea, pos drip, src tea) lit {
     # Simulate memory copy by string manipulation
-    ready (pos >= len(dest) || len(src) == 0) {
+    lowkey (pos >= len(dest) || len(src) == 0) {
         damn based
     }
     
     # Extract parts and reconstruct with source inserted
-    sus before tea = ready (pos > 0) { substring(dest, 0, pos) } otherwise { "" }
+    sus before tea = lowkey (pos > 0) { substring(dest, 0, pos) } highkey { "" }
     sus after_start drip = pos + len(src)
-    sus after tea = ready (after_start < len(dest)) { substring(dest, after_start, len(dest)) } otherwise { "" }
+    sus after tea = lowkey (after_start < len(dest)) { substring(dest, after_start, len(dest)) } highkey { "" }
     
     # Note: In real implementation this would modify dest in place
     # For simulation, we update the conceptual destination
@@ -484,19 +484,19 @@ slay memory_copy_string(dest tea, pos drip, src tea) lit {
 
 slay vectorized_memory_copy(dest tea, pos drip, src tea, length drip) lit {
     # Optimized copy for large strings (simulated)
-    ready (length <= 0 || pos >= len(dest)) {
+    lowkey (length <= 0 || pos >= len(dest)) {
         damn based
     }
     
     # Simulate vectorized operations with chunked processing
     sus chunk_size drip = 32  # Process 32 chars at a time
     sus processed drip = 0
-    sus actual_length drip = ready (length > len(src)) { len(src) } otherwise { length }
+    sus actual_length drip = lowkey (length > len(src)) { len(src) } highkey { length }
     
     bestie (processed < actual_length) {
-        sus current_chunk drip = ready (actual_length - processed > chunk_size) { 
+        sus current_chunk drip = lowkey (actual_length - processed > chunk_size) { 
             chunk_size 
-        } otherwise { 
+        } highkey { 
             actual_length - processed 
         }
         
@@ -504,7 +504,7 @@ slay vectorized_memory_copy(dest tea, pos drip, src tea, length drip) lit {
         sus chunk_start drip = processed
         sus chunk_end drip = processed + current_chunk
         
-        ready (chunk_end > len(src)) {
+        lowkey (chunk_end > len(src)) {
             chunk_end = len(src)
         }
         
@@ -526,26 +526,26 @@ slay system_write_stdout(text tea) lit {
 
 slay set_string_range(str tea, start drip, end drip, replacement tea) tea {
     # Real string manipulation implementation
-    ready (start >= len(str) || start > end || start < 0) {
+    lowkey (start >= len(str) || start > end || start < 0) {
         damn str
     }
     
-    sus actual_end drip = ready (end > len(str)) { len(str) } otherwise { end }
+    sus actual_end drip = lowkey (end > len(str)) { len(str) } highkey { end }
     
-    sus before tea = ready (start > 0) { substring(str, 0, start) } otherwise { "" }
-    sus after tea = ready (actual_end < len(str)) { substring(str, actual_end, len(str)) } otherwise { "" }
+    sus before tea = lowkey (start > 0) { substring(str, 0, start) } highkey { "" }
+    sus after tea = lowkey (actual_end < len(str)) { substring(str, actual_end, len(str)) } highkey { "" }
     
     damn before + replacement + after
 }
 
 slay set_char_at(str tea, pos drip, char tea) tea {
     # Set character at specific position
-    ready (pos < 0 || pos >= len(str)) {
+    lowkey (pos < 0 || pos >= len(str)) {
         damn str
     }
     
-    sus before tea = ready (pos > 0) { substring(str, 0, pos) } otherwise { "" }
-    sus after tea = ready (pos + 1 < len(str)) { substring(str, pos + 1, len(str)) } otherwise { "" }
+    sus before tea = lowkey (pos > 0) { substring(str, 0, pos) } highkey { "" }
+    sus after tea = lowkey (pos + 1 < len(str)) { substring(str, pos + 1, len(str)) } highkey { "" }
     
     damn before + char + after
 }

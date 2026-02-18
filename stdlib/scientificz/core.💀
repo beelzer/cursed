@@ -111,7 +111,7 @@ squad NumericalResult {
 # Core statistical functions
 slay calculate_statistics(data drip[value]) Statistics {
     sus n drip = len_array(data)
-    ready (n == 0) {
+    lowkey (n == 0) {
         damn create_empty_statistics()
     }
     
@@ -171,9 +171,9 @@ slay calculate_mean(data drip[value]) drip {
 slay calculate_median(sorted_data drip[value]) drip {
     sus n drip = len_array(sorted_data)
     
-    ready (n % 2 == 1) {
+    lowkey (n % 2 == 1) {
         damn sorted_data[n / 2]
-    } otherwise {
+    } highkey {
         sus mid1 drip = sorted_data[(n / 2) - 1]
         sus mid2 drip = sorted_data[n / 2]
         damn (mid1 + mid2) / 2
@@ -189,12 +189,12 @@ slay calculate_mode(data drip[value]) drip {
     bestie (sus i drip = 0; i < n; i = i + 1) {
         sus count drip = 0
         bestie (sus j drip = 0; j < n; j = j + 1) {
-            ready (data[i] == data[j]) {
+            lowkey (data[i] == data[j]) {
                 count = count + 1
             }
         }
         
-        ready (count > max_count) {
+        lowkey (count > max_count) {
             max_count = count
             mode_value = data[i]
         }
@@ -221,9 +221,9 @@ slay calculate_quartile(sorted_data drip[value], percentile drip) drip {
     sus lower_index drip = floor_func(index)
     sus upper_index drip = ceil_func(index)
     
-    ready (lower_index == upper_index) {
+    lowkey (lower_index == upper_index) {
         damn sorted_data[lower_index]
-    } otherwise {
+    } highkey {
         sus weight drip = index - lower_index
         damn sorted_data[lower_index] * (1 - weight) + sorted_data[upper_index] * weight
     }
@@ -257,7 +257,7 @@ slay calculate_kurtosis(data drip[value], mean drip, std_dev drip) drip {
 # Correlation and regression analysis
 slay pearson_correlation(x_data drip[value], y_data drip[value]) drip {
     sus n drip = len_array(x_data)
-    ready (n != len_array(y_data) || n < 2) {
+    lowkey (n != len_array(y_data) || n < 2) {
         damn 0  # Invalid data
     }
     
@@ -278,7 +278,7 @@ slay pearson_correlation(x_data drip[value], y_data drip[value]) drip {
     }
     
     sus denominator drip = sqrt_newton(x_sq_sum * y_sq_sum)
-    ready (denominator == 0) {
+    lowkey (denominator == 0) {
         damn 0
     }
     
@@ -350,7 +350,7 @@ slay create_matrix(rows drip, cols drip, data drip[value]) Matrix {
     sus is_square lit = (rows == cols)
     sus det drip = 0
     
-    ready (is_square && rows <= 3) {
+    lowkey (is_square && rows <= 3) {
         det = calculate_determinant(rows, cols, data)
     }
     
@@ -364,7 +364,7 @@ slay create_matrix(rows drip, cols drip, data drip[value]) Matrix {
 }
 
 slay matrix_multiply(a Matrix, b Matrix) Matrix {
-    ready (a.cols != b.rows) {
+    lowkey (a.cols != b.rows) {
         vibez.spill("[Matrix] Error: Invalid dimensions for multiplication")
         damn create_zero_matrix(1, 1)
     }
@@ -391,15 +391,15 @@ slay matrix_multiply(a Matrix, b Matrix) Matrix {
 }
 
 slay calculate_determinant(rows drip, cols drip, data drip[value]) drip {
-    ready (rows == 1) {
+    lowkey (rows == 1) {
         damn data[0]
     }
     
-    ready (rows == 2) {
+    lowkey (rows == 2) {
         damn (data[0] * data[3]) - (data[1] * data[2])
     }
     
-    ready (rows == 3) {
+    lowkey (rows == 3) {
         sus a drip = data[0]
         sus b drip = data[1]
         sus c drip = data[2]
@@ -417,7 +417,7 @@ slay calculate_determinant(rows drip, cols drip, data drip[value]) drip {
 }
 
 slay matrix_inverse(m Matrix) Matrix {
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: Cannot invert non-square matrix")
         damn create_zero_matrix(1, 1)
     }
@@ -427,7 +427,7 @@ slay matrix_inverse(m Matrix) Matrix {
 }
 
 slay eigenvalues(m Matrix) drip[value]{
-    ready (!m.is_square) {
+    lowkey (!m.is_square) {
         vibez.spill("[Matrix] Error: Eigenvalues only for square matrices")
         damn create_array(0)
     }
@@ -445,7 +445,7 @@ slay numerical_integrate(func_name tea, a drip, b drip, intervals drip) drip {
     bestie (sus i drip = 1; i < intervals; i = i + 1) {
         sus x drip = a + (i * h)
         sus weight drip = 2
-        ready (i % 2 == 1) {
+        lowkey (i % 2 == 1) {
             weight = 4
         }
         sum = sum + (weight * evaluate_function(func_name, x))
@@ -464,7 +464,7 @@ slay find_root(func_name tea, initial drip, tolerance drip) NumericalResult {
         sus f_x drip = evaluate_function(func_name, x)
         sus f_prime_x drip = numerical_derivative(func_name, x)
         
-        ready (abs_val(f_x) < tolerance) {
+        lowkey (abs_val(f_x) < tolerance) {
             damn NumericalResult{
                 value: x,
                 error_estimate: abs_val(f_x),
@@ -473,7 +473,7 @@ slay find_root(func_name tea, initial drip, tolerance drip) NumericalResult {
             }
         }
         
-        ready (abs_val(f_prime_x) < tolerance) {
+        lowkey (abs_val(f_prime_x) < tolerance) {
             break  # Derivative too small
         }
         
@@ -499,11 +499,11 @@ slay numerical_derivative(func_name tea, x drip) drip {
 
 slay evaluate_function(func_name tea, x drip) drip {
     # Simplified function evaluation - in real implementation would be more flexible
-    ready (func_name == "quadratic") {
+    lowkey (func_name == "quadratic") {
         damn (x * x) - 4  # x^2 - 4
-    } otherwise ready (func_name == "sine") {
+    } highkey lowkey (func_name == "sine") {
         damn sin_taylor(x)
-    } otherwise ready (func_name == "exponential") {
+    } highkey lowkey (func_name == "exponential") {
         damn exp_taylor(x) - 10
     }
     
@@ -545,7 +545,7 @@ slay erf_approx(x drip) drip {
     sus p drip = 0.3275911
     
     sus sign drip = 1
-    ready (x < 0) {
+    lowkey (x < 0) {
         sign = -1
         x = -x
     }
@@ -581,7 +581,7 @@ slay t_test_one_sample(sample drip[value], population_mean drip) TTestResult {
 
 slay t_cdf_approx(t drip, df drip) drip {
     # Simplified t-distribution CDF approximation
-    ready (df > 30) {
+    lowkey (df > 30) {
         damn normal_cdf(t, 0, 1)  # Approximate with normal for large df
     }
     
@@ -682,9 +682,9 @@ slay generate_line_plot_svg(plot Plot) tea {
         sus x_pixel drip = margin + ((plot.x_data[i] - x_min) * plot_width / (x_max - x_min))
         sus y_pixel drip = plot.height - margin - ((plot.y_data[i] - y_min) * plot_height / (y_max - y_min))
         
-        ready (i == 0) {
+        lowkey (i == 0) {
             path = path + int_to_string(x_pixel) + "," + int_to_string(y_pixel)
-        } otherwise {
+        } highkey {
             path = path + " L" + int_to_string(x_pixel) + "," + int_to_string(y_pixel)
         }
     }
@@ -762,7 +762,7 @@ slay save_plot(plot Plot, filename tea) {
 
 # Utility functions
 slay sqrt_newton(x drip) drip {
-    ready (x <= 0) {
+    lowkey (x <= 0) {
         damn 0
     }
     
@@ -801,7 +801,7 @@ slay exp_taylor(x drip) drip {
 }
 
 slay abs_val(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -x
     }
     damn x
@@ -814,7 +814,7 @@ slay floor_func(x drip) drip {
 
 slay ceil_func(x drip) drip {
     sus floor_val drip = floor_func(x)
-    ready (x == floor_val) {
+    lowkey (x == floor_val) {
         damn x
     }
     damn floor_val + 1
@@ -828,7 +828,7 @@ slay sort_array(data drip[value]) drip[value]{
     # Bubble sort (simplified)
     bestie (sus i drip = 0; i < n - 1; i = i + 1) {
         bestie (sus j drip = 0; j < n - i - 1; j = j + 1) {
-            ready (sorted[j] > sorted[j + 1]) {
+            lowkey (sorted[j] > sorted[j + 1]) {
                 sus temp drip = sorted[j]
                 sorted[j] = sorted[j + 1]
                 sorted[j + 1] = temp
@@ -842,7 +842,7 @@ slay sort_array(data drip[value]) drip[value]{
 slay min_array(data drip[value]) drip {
     sus min_val drip = data[0]
     bestie (sus i drip = 1; i < len_array(data); i = i + 1) {
-        ready (data[i] < min_val) {
+        lowkey (data[i] < min_val) {
             min_val = data[i]
         }
     }
@@ -852,7 +852,7 @@ slay min_array(data drip[value]) drip {
 slay max_array(data drip[value]) drip {
     sus max_val drip = data[0]
     bestie (sus i drip = 1; i < len_array(data); i = i + 1) {
-        ready (data[i] > max_val) {
+        lowkey (data[i] > max_val) {
             max_val = data[i]
         }
     }
@@ -914,7 +914,7 @@ slay create_zero_matrix(rows drip, cols drip) Matrix {
 
 slay int_to_string(value drip) tea {
     # Simplified conversion
-    ready (value == 0) {
+    lowkey (value == 0) {
         damn "0"
     }
     damn "123"  # Placeholder

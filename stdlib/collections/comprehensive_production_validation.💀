@@ -29,12 +29,12 @@ vibez.spill("===============================================")
 fr fr Validate Robin Hood HashMap
 vibez.spill("\n📊 Testing Robin Hood HashMap Implementation...")
 sus map RobinHoodHashTable = HashMap_new()
-map = HashMap_insert(map, "production", "ready")
+map = HashMap_insert(map, "production", "lowkey")
 map = HashMap_insert(map, "enterprise", "grade")
 map = HashMap_insert(map, "algorithms", "implemented")
 
 validate_test("HashMap insertion works", HashMap_size(map) == 3)
-validate_test("HashMap retrieval works", HashMap_get(map, "production") == "ready")
+validate_test("HashMap retrieval works", HashMap_get(map, "production") == "lowkey")
 validate_test("HashMap contains_key works", HashMap_contains_key(map, "enterprise"))
 validate_test("HashMap proper collision handling", 
     HashMap_get(map, "algorithms") == "implemented")

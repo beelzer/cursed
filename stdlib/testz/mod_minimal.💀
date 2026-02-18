@@ -19,7 +19,7 @@ slay assert_true(condition lit) lit {
         vibez.spill("✅ PASS: assert_true")
         __testz_passed = __testz_passed + 1
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_true")
         __testz_failed = __testz_failed + 1
         damn cringe
@@ -31,7 +31,7 @@ slay assert_false(condition lit) lit {
         vibez.spill("✅ PASS: assert_false")
         __testz_passed = __testz_passed + 1
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_false")
         __testz_failed = __testz_failed + 1
         damn cringe
@@ -43,7 +43,7 @@ slay assert_eq_int(actual drip, expected drip) lit {
         vibez.spill("✅ PASS: assert_eq_int")
         __testz_passed = __testz_passed + 1
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_eq_int - Expected:", expected, "Got:", actual)
         __testz_failed = __testz_failed + 1
         damn cringe
@@ -55,7 +55,7 @@ slay assert_eq_string(actual tea, expected tea) lit {
         vibez.spill("✅ PASS: assert_eq_string")
         __testz_passed = __testz_passed + 1
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_eq_string - Expected:", expected, "Got:", actual)  
         __testz_failed = __testz_failed + 1
         damn cringe
@@ -67,7 +67,7 @@ slay assert_not_eq_int(actual drip, expected drip) lit {
         vibez.spill("✅ PASS: assert_not_eq_int")
         __testz_passed = __testz_passed + 1
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_not_eq_int - Values should not be equal:", actual)
         __testz_failed = __testz_failed + 1
         damn cringe
@@ -79,7 +79,7 @@ slay assert_not_eq_string(actual tea, expected tea) lit {
         vibez.spill("✅ PASS: assert_not_eq_string")
         __testz_passed = __testz_passed + 1
         damn based  
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL: assert_not_eq_string - Values should not be equal:", actual)
         __testz_failed = __testz_failed + 1
         damn cringe
@@ -97,7 +97,7 @@ slay print_test_summary() lit {
     
     lowkey (__testz_failed == 0) {
         vibez.spill("🎉 All tests passed!")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Some tests failed")
     }
     

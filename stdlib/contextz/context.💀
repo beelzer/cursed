@@ -62,9 +62,9 @@ squad CancelContext {
 }
 
 slay (ctx *CancelContext) done() chan<lit> {
-    ready (ctx.done_chan == nil) {
+    lowkey (ctx.done_chan == nil) {
         ctx.mu.lock()
-        ready (ctx.done_chan == nil) {
+        lowkey (ctx.done_chan == nil) {
             ctx.done_chan = make_channel<lit>()
         }
         ctx.mu.unlock()
@@ -88,7 +88,7 @@ slay (ctx *CancelContext) value(key tea) tea {
 
 slay (ctx *CancelContext) cancel(err yikes<tea>) {
     ctx.mu.lock()
-    ready (ctx.cancelled) {
+    lowkey (ctx.cancelled) {
         ctx.mu.unlock()
         damn  # Already cancelled
     }
@@ -97,7 +97,7 @@ slay (ctx *CancelContext) cancel(err yikes<tea>) {
     ctx.err_val = err
     
     # Close done channel to signal cancellation
-    ready (ctx.done_chan != nil) {
+    lowkey (ctx.done_chan != nil) {
         close(ctx.done_chan)
     }
     
@@ -125,7 +125,7 @@ slay with_cancel(parent Context) (Context, CancelFunc) {
     }
     
     # Register with parent if it's cancellable
-    ready (parent_cancel := parent.(*CancelContext); parent_cancel != nil) {
+    lowkey (parent_cancel := parent.(*CancelContext); parent_cancel != nil) {
         parent_cancel.mu.lock()
         parent_cancel.children[ctx] = based
         parent_cancel.mu.unlock()
@@ -157,7 +157,7 @@ slay with_timeout(parent Context, timeout time.Duration) (Context, CancelFunc) {
 # Deadline context - cancels at specific deadline
 slay with_deadline(parent Context, deadline time.Time) (Context, CancelFunc) {
     sus timeout := time.until(deadline)
-    ready (timeout <= 0) {
+    lowkey (timeout <= 0) {
         # Already past deadline
         sus ctx, cancel := with_cancel(parent)
         cancel()
@@ -187,7 +187,7 @@ slay (ctx *ValueContext) deadline() (time.Time, lit) {
 }
 
 slay (ctx *ValueContext) value(key tea) tea {
-    ready (ctx.key == key) {
+    lowkey (ctx.key == key) {
         damn ctx.value
     }
     damn ctx.parent.value(key)
@@ -210,7 +210,7 @@ slay is_cancelled(ctx Context) lit {
         when <-ctx.done() -> {
             damn based
         }
-        otherwise -> {
+        highkey -> {
             damn faux
         }
     }

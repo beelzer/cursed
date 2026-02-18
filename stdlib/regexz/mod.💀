@@ -41,7 +41,7 @@ slay regex_extract_first(pattern tea, text tea) yikes<tea> {
         when error -> yikes error
     }
     
-    ready (!result.matched) {
+    lowkey (!result.matched) {
         yikes "no match found"
     }
     
@@ -107,7 +107,7 @@ slay regex_extract_phone(text tea) yikes<tea> {
         when error -> yikes error
     }
     
-    ready (!result.matched) {
+    lowkey (!result.matched) {
         yikes "no phone number found"
     }
     
@@ -150,30 +150,30 @@ slay regex_validate_password(password tea) yikes<PasswordStrength> {
     }
     
     # Check for lowercase
-    ready (regex_test("[a-z]", password) fam { when _ -> nah }) {
+    lowkey (regex_test("[a-z]", password) fam { when _ -> nah }) {
         strength.has_lowercase = based
         strength.score += 1
     }
     
     # Check for uppercase
-    ready (regex_test("[A-Z]", password) fam { when _ -> nah }) {
+    lowkey (regex_test("[A-Z]", password) fam { when _ -> nah }) {
         strength.has_uppercase = based
         strength.score += 1
     }
     
     # Check for digits
-    ready (regex_test("\\d", password) fam { when _ -> nah }) {
+    lowkey (regex_test("\\d", password) fam { when _ -> nah }) {
         strength.has_digits = based
         strength.score += 1
     }
     
     # Check for special characters
-    ready (regex_test("[!@#$%^&*(),.?\":{}|<>]", password) fam { when _ -> nah }) {
+    lowkey (regex_test("[!@#$%^&*(),.?\":{}|<>]", password) fam { when _ -> nah }) {
         strength.has_special = based
         strength.score += 1
     }
     
-    ready (strength.min_length) {
+    lowkey (strength.min_length) {
         strength.score += 1
     }
     
@@ -268,7 +268,7 @@ slay regex_parse_config_line(line tea) yikes<ConfigPair> {
         when error -> yikes error
     }
     
-    ready (!result.matched) {
+    lowkey (!result.matched) {
         yikes "invalid config line format"
     }
     

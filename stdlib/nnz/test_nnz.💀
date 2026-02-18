@@ -38,9 +38,9 @@ slay generate_classification_data(num_samples drip, num_features drip, num_class
 }
 
 slay test_assert(condition lit, test_name tea) cringe {
-    ready (condition) {
+    lowkey (condition) {
         vibez.spill("✓ ", test_name, " PASSED")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ ", test_name, " FAILED")
     }
 }

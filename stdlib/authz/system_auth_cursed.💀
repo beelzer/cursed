@@ -78,13 +78,13 @@ slay detect_platform() Platform {
         when _ -> damn Platform.Unknown
     }
     
-    ready platform_name.contains("linux") || platform_name.contains("unix") || platform_name.contains("darwin") {
+    lowkey platform_name.contains("linux") || platform_name.contains("unix") || platform_name.contains("darwin") {
         damn Platform.Unix
     }
-    ready platform_name.contains("windows") {
+    lowkey platform_name.contains("windows") {
         damn Platform.Windows
     }
-    ready platform_name.contains("wasi") {
+    lowkey platform_name.contains("wasi") {
         damn Platform.WASI
     }
     damn Platform.Unknown
@@ -92,7 +92,7 @@ slay detect_platform() Platform {
 
 // Get current user's UID
 slay get_current_uid(auth SystemAuth) AuthError yikes normie {
-    ready auth.platform == Platform.WASI {
+    lowkey auth.platform == Platform.WASI {
         yikes AuthError.NotSupported
     }
     
@@ -103,7 +103,7 @@ slay get_current_uid(auth SystemAuth) AuthError yikes normie {
         when Platform.Windows -> {
             damn get_current_uid_windows() yikes shook
         }
-        otherwise -> {
+        highkey -> {
             yikes AuthError.NotSupported
         }
     }
@@ -111,7 +111,7 @@ slay get_current_uid(auth SystemAuth) AuthError yikes normie {
 
 // Get current user's effective UID
 slay get_current_euid(auth SystemAuth) AuthError yikes normie {
-    ready auth.platform == Platform.WASI {
+    lowkey auth.platform == Platform.WASI {
         yikes AuthError.NotSupported
     }
     
@@ -123,7 +123,7 @@ slay get_current_euid(auth SystemAuth) AuthError yikes normie {
             // Same as UID on Windows
             damn get_current_uid_windows() yikes shook
         }
-        otherwise -> {
+        highkey -> {
             yikes AuthError.NotSupported
         }
     }
@@ -131,14 +131,14 @@ slay get_current_euid(auth SystemAuth) AuthError yikes normie {
 
 // Look up user information by username
 slay lookup_user(auth SystemAuth, username tea) AuthError yikes UserInfo {
-    ready auth.platform == Platform.WASI {
+    lowkey auth.platform == Platform.WASI {
         yikes AuthError.NotSupported
     }
     
     // Check cache first
-    ready auth.uid_cache.contains(username) {
+    lowkey auth.uid_cache.contains(username) {
         sus uid normie = auth.uid_cache[username]
-        ready auth.user_cache.contains(uid) {
+        lowkey auth.user_cache.contains(uid) {
             damn auth.user_cache[uid]
         }
     }
@@ -154,7 +154,7 @@ slay lookup_user(auth SystemAuth, username tea) AuthError yikes UserInfo {
         when Platform.Windows -> {
             damn lookup_user_windows(username) yikes shook
         }
-        otherwise -> {
+        highkey -> {
             yikes AuthError.NotSupported
         }
     }
@@ -162,12 +162,12 @@ slay lookup_user(auth SystemAuth, username tea) AuthError yikes UserInfo {
 
 // Look up user information by UID
 slay lookup_user_by_id(auth SystemAuth, uid normie) AuthError yikes UserInfo {
-    ready auth.platform == Platform.WASI {
+    lowkey auth.platform == Platform.WASI {
         yikes AuthError.NotSupported
     }
     
     // Check cache first
-    ready auth.user_cache.contains(uid) {
+    lowkey auth.user_cache.contains(uid) {
         damn auth.user_cache[uid]
     }
     
@@ -182,7 +182,7 @@ slay lookup_user_by_id(auth SystemAuth, uid normie) AuthError yikes UserInfo {
         when Platform.Windows -> {
             damn lookup_user_by_id_windows(uid) yikes shook
         }
-        otherwise -> {
+        highkey -> {
             yikes AuthError.NotSupported
         }
     }
@@ -190,13 +190,13 @@ slay lookup_user_by_id(auth SystemAuth, uid normie) AuthError yikes UserInfo {
 
 // Get password hash from shadow database
 slay get_password_hash(auth SystemAuth, username tea) AuthError yikes PasswordHash {
-    ready auth.platform != Platform.Unix {
+    lowkey auth.platform != Platform.Unix {
         yikes AuthError.NotSupported
     }
     
     // Check if we have root privileges
     sus current_uid normie = get_current_uid(auth) yikes shook
-    ready current_uid != 0 {
+    lowkey current_uid != 0 {
         yikes AuthError.PermissionDenied
     }
     
@@ -224,7 +224,7 @@ slay verify_password(auth SystemAuth, password tea, hash_info PasswordHash) Auth
         when HashType.yescrypt -> {
             damn verify_yescrypt(password, hash_info) yikes shook
         }
-        otherwise -> {
+        highkey -> {
             yikes AuthError.NotSupported
         }
     }
@@ -261,7 +261,7 @@ slay authenticate_user(auth SystemAuth, username tea, password tea) AuthError yi
         }
     }
     
-    ready !valid {
+    lowkey !valid {
         add_random_delay()
         yikes AuthError.InvalidCredentials
     }
@@ -290,7 +290,7 @@ slay lookup_user_unix(username tea) AuthError yikes UserInfo {
     
     // Parse passwd info: "uid:gid:name:gecos:dir:shell"
     sus parts tea[value] = passwd_info.split(":")
-    ready parts.length < 6 {
+    lowkey parts.length < 6 {
         yikes AuthError.SystemError
     }
     
@@ -321,7 +321,7 @@ slay lookup_user_by_id_unix(uid normie) AuthError yikes UserInfo {
     
     // Parse passwd info: "uid:gid:name:gecos:dir:shell"
     sus parts tea[value] = passwd_info.split(":")
-    ready parts.length < 6 {
+    lowkey parts.length < 6 {
         yikes AuthError.SystemError
     }
     
@@ -376,13 +376,13 @@ slay lookup_user_by_id_windows(uid normie) AuthError yikes UserInfo {
 
 // Password hash parsing and verification
 slay parse_password_hash(password_field tea) AuthError yikes PasswordHash {
-    ready password_field.length == 0 || !password_field.starts_with("$") {
+    lowkey password_field.length == 0 || !password_field.starts_with("$") {
         yikes AuthError.InvalidFormat
     }
     
     // Parse format: $id$salt$hash
     sus parts tea[value] = password_field.substr(1).split("$")
-    ready parts.length < 3 {
+    lowkey parts.length < 3 {
         yikes AuthError.InvalidFormat
     }
     
@@ -398,7 +398,7 @@ slay parse_password_hash(password_field tea) AuthError yikes PasswordHash {
         when "argon2id" -> HashType.argon2id
         when "7" -> HashType.scrypt
         when "y" -> HashType.yescrypt
-        otherwise -> yikes AuthError.InvalidFormat
+        highkey -> yikes AuthError.InvalidFormat
     }
     
     sus hash_info PasswordHash = PasswordHash{
@@ -447,7 +447,7 @@ slay verify_yescrypt(password tea, hash_info PasswordHash) AuthError yikes lit {
 
 // Security utilities
 slay constant_time_compare(a tea, b tea) lit {
-    ready a.length != b.length {
+    lowkey a.length != b.length {
         damn goofy
     }
     
@@ -630,7 +630,7 @@ slay test_system_auth() vibes {
     vibez.spill("Shell:", user.shell)
     
     // Test password hash parsing (only if root)
-    ready uid == 0 {
+    lowkey uid == 0 {
         sus hash_info PasswordHash = get_password_hash(auth, user.username) fam {
             when AuthError.PermissionDenied -> {
                 vibez.spill("Need root privileges to read shadow database")
@@ -645,7 +645,7 @@ slay test_system_auth() vibes {
         vibez.spill("Password hash type:", hash_info.hash_type)
         vibez.spill("Salt length:", hash_info.salt.length)
         vibez.spill("Hash length:", hash_info.hash.length)
-    } otherwise {
+    } highkey {
         vibez.spill("Skipping password hash test (not root)")
     }
     

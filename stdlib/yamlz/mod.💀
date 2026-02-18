@@ -160,13 +160,13 @@ slay parse_yaml_stream(yaml_content tea) yikes<YamlStream> {
         # Skip leading whitespace and comments
         position = skip_yaml_whitespace(yaml_content, position, line, column)
         
-        ready (position >= yaml_content.len()) {
+        lowkey (position >= yaml_content.len()) {
             break
         }
         
         # Parse single document
         sus doc_result YamlParserResult = parse_single_document(yaml_content, position, line, column)
-        ready (doc_result.error != "") {
+        lowkey (doc_result.error != "") {
             yikes "Failed to parse YAML document: " + doc_result.error
         }
         
@@ -233,14 +233,14 @@ slay generate_yaml(doc YamlDocument) tea {
     sus output tea = ""
     
     # Add document directives
-    ready (doc.directives.len() > 0) {
+    lowkey (doc.directives.len() > 0) {
         bestie (sus directive YamlDirective in doc.directives) {
             output = output + "%" + directive.name + " " + directive.value + "\n"
         }
     }
     
     # Add document start marker if explicit
-    ready (doc.document_start) {
+    lowkey (doc.document_start) {
         output = output + "---\n"
     }
     
@@ -248,7 +248,7 @@ slay generate_yaml(doc YamlDocument) tea {
     output = output + generate_yaml_node(doc.root, 0, cap)
     
     # Add document end marker if explicit
-    ready (doc.document_end) {
+    lowkey (doc.document_end) {
         output = output + "\n..."
     }
     
@@ -260,7 +260,7 @@ slay generate_yaml_formatted(doc YamlDocument, indent_size drip) tea {
     sus output tea = ""
     
     # Add document directives
-    ready (doc.directives.len() > 0) {
+    lowkey (doc.directives.len() > 0) {
         bestie (sus directive YamlDirective in doc.directives) {
             output = output + "%" + directive.name + " " + directive.value + "\n"
         }
@@ -275,11 +275,11 @@ slay generate_yaml_formatted(doc YamlDocument, indent_size drip) tea {
 
 # Generate YAML node
 slay generate_yaml_node(node YamlNode, depth drip, is_root lit) tea {
-    ready (node.node_type == YamlNodeType.Scalar) {
+    lowkey (node.node_type == YamlNodeType.Scalar) {
         damn generate_yaml_scalar(node)
-    } otherwise ready (node.node_type == YamlNodeType.Sequence) {
+    } highkey lowkey (node.node_type == YamlNodeType.Sequence) {
         damn generate_yaml_sequence(node, depth)
-    } otherwise ready (node.node_type == YamlNodeType.Mapping) {
+    } highkey lowkey (node.node_type == YamlNodeType.Mapping) {
         damn generate_yaml_mapping(node, depth, is_root)
     }
     damn ""
@@ -287,22 +287,22 @@ slay generate_yaml_node(node YamlNode, depth drip, is_root lit) tea {
 
 # Generate YAML scalar value
 slay generate_yaml_scalar(node YamlNode) tea {
-    ready (node.scalar_type == YamlScalarType.String) {
+    lowkey (node.scalar_type == YamlScalarType.String) {
         # Check if string needs quoting
-        ready (needs_yaml_quoting(node.value)) {
+        lowkey (needs_yaml_quoting(node.value)) {
             damn "\"" + escape_yaml_string(node.value) + "\""
         }
         damn node.value
-    } otherwise ready (node.scalar_type == YamlScalarType.Integer) {
+    } highkey lowkey (node.scalar_type == YamlScalarType.Integer) {
         damn node.value
-    } otherwise ready (node.scalar_type == YamlScalarType.Float) {
+    } highkey lowkey (node.scalar_type == YamlScalarType.Float) {
         damn node.value
-    } otherwise ready (node.scalar_type == YamlScalarType.Boolean) {
-        ready (node.value == "true") {
+    } highkey lowkey (node.scalar_type == YamlScalarType.Boolean) {
+        lowkey (node.value == "true") {
             damn "true"
         }
         damn "false"
-    } otherwise ready (node.scalar_type == YamlScalarType.Null) {
+    } highkey lowkey (node.scalar_type == YamlScalarType.Null) {
         damn "null"
     }
     damn node.value
@@ -318,10 +318,10 @@ slay generate_yaml_sequence(node YamlNode, depth drip) tea {
         sus child_content tea = generate_yaml_node(child, depth + 1, cap)
         
         # Handle multi-line values
-        ready (stringz.contains(child_content, "\n")) {
+        lowkey (stringz.contains(child_content, "\n")) {
             sus indented_content tea = indent_yaml_lines(child_content, depth + 1)
             output = output + indented_content
-        } otherwise {
+        } highkey {
             output = output + child_content
         }
     }
@@ -333,12 +333,12 @@ slay generate_yaml_sequence(node YamlNode, depth drip) tea {
 slay generate_yaml_mapping(node YamlNode, depth drip, is_root lit) tea {
     sus output tea = ""
     sus indent tea = ""
-    ready (!is_root) {
+    lowkey (!is_root) {
         indent = generate_yaml_indent(depth)
     }
     
     bestie (sus mapping YamlMapping in node.mappings) {
-        ready (!is_root || output != "") {
+        lowkey (!is_root || output != "") {
             output = output + "\n"
         }
         
@@ -350,9 +350,9 @@ slay generate_yaml_mapping(node YamlNode, depth drip, is_root lit) tea {
         
         # Generate value
         sus value_content tea = generate_yaml_node(mapping.value, depth + 1, cap)
-        ready (mapping.value.node_type == YamlNodeType.Scalar) {
+        lowkey (mapping.value.node_type == YamlNodeType.Scalar) {
             output = output + " " + value_content
-        } otherwise {
+        } highkey {
             sus indented_value tea = indent_yaml_lines(value_content, depth + 1)
             output = output + indented_value
         }
@@ -372,25 +372,25 @@ slay yaml_to_value(doc YamlDocument) tea {
 
 # Convert YAML node to native value
 slay yaml_node_to_value(node YamlNode) tea {
-    ready (node.node_type == YamlNodeType.Scalar) {
-        ready (node.scalar_type == YamlScalarType.String) {
+    lowkey (node.node_type == YamlNodeType.Scalar) {
+        lowkey (node.scalar_type == YamlScalarType.String) {
             damn node.value
-        } otherwise ready (node.scalar_type == YamlScalarType.Integer) {
+        } highkey lowkey (node.scalar_type == YamlScalarType.Integer) {
             damn mathz.string_to_int(node.value)
-        } otherwise ready (node.scalar_type == YamlScalarType.Float) {
+        } highkey lowkey (node.scalar_type == YamlScalarType.Float) {
             damn mathz.string_to_float(node.value)
-        } otherwise ready (node.scalar_type == YamlScalarType.Boolean) {
+        } highkey lowkey (node.scalar_type == YamlScalarType.Boolean) {
             damn (node.value == "true")
-        } otherwise ready (node.scalar_type == YamlScalarType.Null) {
+        } highkey lowkey (node.scalar_type == YamlScalarType.Null) {
             damn cap
         }
-    } otherwise ready (node.node_type == YamlNodeType.Sequence) {
+    } highkey lowkey (node.node_type == YamlNodeType.Sequence) {
         sus array tea[value] = []
         bestie (sus child YamlNode in node.children) {
             array = arrayz.append(array, yaml_node_to_value(child))
         }
         damn array
-    } otherwise ready (node.node_type == YamlNodeType.Mapping) {
+    } highkey lowkey (node.node_type == YamlNodeType.Mapping) {
         sus object map[tea]tea = make(map[tea]tea)
         bestie (sus mapping YamlMapping in node.mappings) {
             sus key tea = yaml_node_to_value(mapping.key)
@@ -415,7 +415,7 @@ slay validate_yaml_schema(doc YamlDocument, schema_doc YamlDocument) YamlValidat
     }
     
     # Validate root node type
-    ready (doc.root.node_type != schema_doc.root.node_type) {
+    lowkey (doc.root.node_type != schema_doc.root.node_type) {
         result.valid = cap
         result.errors = arrayz.append(result.errors, "Root node type mismatch")
     }
@@ -455,25 +455,25 @@ slay yaml_query(doc YamlDocument, path tea) yikes<YamlNode[value]> {
     sus current_nodes YamlNode[value] = [doc.root]
     
     bestie (sus part tea in path_parts) {
-        ready (part == "") {
+        lowkey (part == "") {
             continue
         }
         
         sus next_nodes YamlNode[value] = []
         
         bestie (sus node YamlNode in current_nodes) {
-            ready (node.node_type == YamlNodeType.Mapping) {
+            lowkey (node.node_type == YamlNodeType.Mapping) {
                 bestie (sus mapping YamlMapping in node.mappings) {
                     sus key_value tea = yaml_node_to_value(mapping.key)
-                    ready (key_value == part) {
+                    lowkey (key_value == part) {
                         next_nodes = arrayz.append(next_nodes, mapping.value)
                     }
                 }
-            } otherwise ready (node.node_type == YamlNodeType.Sequence) {
+            } highkey lowkey (node.node_type == YamlNodeType.Sequence) {
                 # Handle array index access
-                ready (stringz.is_numeric(part)) {
+                lowkey (stringz.is_numeric(part)) {
                     sus index drip = mathz.string_to_int(part)
-                    ready (index >= 0 && index < node.children.len()) {
+                    lowkey (index >= 0 && index < node.children.len()) {
                         next_nodes = arrayz.append(next_nodes, node.children[index])
                     }
                 }
@@ -492,7 +492,7 @@ slay yaml_query_first(doc YamlDocument, path tea) yikes<tea> {
         when err -> yikes err
     }
     
-    ready (nodes.len() == 0) {
+    lowkey (nodes.len() == 0) {
         yikes "No values found for path: " + path
     }
     
@@ -509,7 +509,7 @@ slay needs_yaml_quoting(value tea) lit {
     sus indicators tea = "[]{}|>*&!%@`"
     sus i drip = 0
     bestie (i < indicators.len()) {
-        ready (stringz.contains(value, stringz.char_at(indicators, i))) {
+        lowkey (stringz.contains(value, stringz.char_at(indicators, i))) {
             damn based
         }
         i = i + 1
@@ -517,12 +517,12 @@ slay needs_yaml_quoting(value tea) lit {
     
     # Check for leading/trailing whitespace
     sus trimmed tea = stringz.trim(value)
-    ready (trimmed != value) {
+    lowkey (trimmed != value) {
         damn based
     }
     
     # Check for special values that need quoting
-    ready (value == "true" || value == "false" || value == "null" || 
+    lowkey (value == "true" || value == "false" || value == "null" || 
           stringz.is_numeric(value)) {
         damn based
     }
@@ -560,10 +560,10 @@ slay indent_yaml_lines(content tea, depth drip) tea {
     
     sus i drip = 0
     bestie (i < lines.len()) {
-        ready (i > 0) {
+        lowkey (i > 0) {
             result = result + "\n"
         }
-        ready (lines[i] != "") {
+        lowkey (lines[i] != "") {
             result = result + indent + lines[i]
         }
         i = i + 1
@@ -654,19 +654,19 @@ squad YamlParserResult {
 slay skip_yaml_whitespace(content tea, position drip, line drip, column drip) drip {
     bestie (position < content.len()) {
         sus ch tea = stringz.char_at(content, position)
-        ready (ch == " " || ch == "\t") {
+        lowkey (ch == " " || ch == "\t") {
             position = position + 1
             column = column + 1
-        } otherwise ready (ch == "\n") {
+        } highkey lowkey (ch == "\n") {
             position = position + 1
             line = line + 1
             column = 1
-        } otherwise ready (ch == "#") {
+        } highkey lowkey (ch == "#") {
             # Skip comment line
             bestie (position < content.len() && stringz.char_at(content, position) != "\n") {
                 position = position + 1
             }
-        } otherwise {
+        } highkey {
             break
         }
     }

@@ -1076,7 +1076,7 @@ slay demo_http_server() {
     
     fr fr Add routes
     router.GET("/", slay(w ResponderVibe, r *VibeRequest) {
-        w.JSON(map[tea]tea{"message": "Welcome to the vibe!", "status": "ready"})
+        w.JSON(map[tea]tea{"message": "Welcome to the vibe!", "status": "lowkey"})
     })
     
     router.GET("/users/:id", slay(w ResponderVibe, r *VibeRequest) {

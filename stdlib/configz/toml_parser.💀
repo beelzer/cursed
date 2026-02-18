@@ -67,7 +67,7 @@ slay create_toml_parser(content tea) TomlParser {
         errors: []
     }
     
-    ready (string_length(content) > 0) {
+    lowkey (string_length(content) > 0) {
         parser.current_char = string_char_at(content, 0)
     }
     
@@ -87,27 +87,27 @@ slay parse_toml_document(content tea) TomlDocument {
     bestie (!parser_at_end(parser)) {
         parser = skip_whitespace_and_comments(parser)
         
-        ready (parser_at_end(parser)) {
+        lowkey (parser_at_end(parser)) {
             break
         }
         
-        ready (parser.current_char == "[") {
+        lowkey (parser.current_char == "[") {
             fr fr Parse table header
             sus table_result ParserResult<TomlTable> = parse_table_header(parser)
-            ready (table_result.success) {
+            lowkey (table_result.success) {
                 document.tables = append_toml_table(document.tables, table_result.value)
                 parser = table_result.parser
-            } otherwise {
+            } highkey {
                 document.parsing_errors = append_error(document.parsing_errors, table_result.error_message)
                 parser = advance_to_next_line(parser)
             }
-        } otherwise {
+        } highkey {
             fr fr Parse key-value pair
             sus kv_result ParserResult<TomlKeyValue> = parse_key_value_pair(parser)
-            ready (kv_result.success) {
+            lowkey (kv_result.success) {
                 document.root_entries = append_key_value(document.root_entries, kv_result.value)
                 parser = kv_result.parser
-            } otherwise {
+            } highkey {
                 document.parsing_errors = append_error(document.parsing_errors, kv_result.error_message)
                 parser = advance_to_next_line(parser)
             }
@@ -142,20 +142,20 @@ slay parse_table_header(parser TomlParser) ParserResult<TomlTable> {
     
     fr fr Check for array table [[
     sus is_array_table lit = cringe
-    ready (parser.current_char == "[") {
+    lowkey (parser.current_char == "[") {
         parser = advance_parser(parser)
-        ready (parser.current_char == "[") {
+        lowkey (parser.current_char == "[") {
             is_array_table = based
             parser = advance_parser(parser)
         }
-    } otherwise {
+    } highkey {
         result.error_message = "Expected '[' at start of table header"
         damn result
     }
     
     fr fr Parse table name
     sus table_name_result ParserResult<tea> = parse_table_name(parser)
-    ready (!table_name_result.success) {
+    lowkey (!table_name_result.success) {
         result.error_message = table_name_result.error_message
         damn result
     }
@@ -164,15 +164,15 @@ slay parse_table_header(parser TomlParser) ParserResult<TomlTable> {
     sus table_name tea = table_name_result.value
     
     fr fr Check for closing bracket(s)
-    ready (is_array_table) {
-        ready (parser.current_char != "]") {
+    lowkey (is_array_table) {
+        lowkey (parser.current_char != "]") {
             result.error_message = "Expected ']]' to close array table header"
             damn result
         }
         parser = advance_parser(parser)
     }
     
-    ready (parser.current_char != "]") {
+    lowkey (parser.current_char != "]") {
         result.error_message = "Expected ']' to close table header"
         damn result
     }
@@ -206,37 +206,37 @@ slay parse_table_name(parser TomlParser) ParserResult<tea> {
     parser = skip_whitespace(parser)
     
     bestie (!parser_at_end(parser) && parser.current_char != "]") {
-        ready (is_identifier_start(parser.current_char)) {
+        lowkey (is_identifier_start(parser.current_char)) {
             sus identifier_result ParserResult<tea> = parse_identifier(parser)
-            ready (!identifier_result.success) {
+            lowkey (!identifier_result.success) {
                 result.error_message = identifier_result.error_message
                 damn result
             }
             name_parts = append_string(name_parts, identifier_result.value)
             parser = identifier_result.parser
-        } otherwise ready (parser.current_char == "\"") {
+        } highkey lowkey (parser.current_char == "\"") {
             sus quoted_result ParserResult<tea> = parse_quoted_key(parser)
-            ready (!quoted_result.success) {
+            lowkey (!quoted_result.success) {
                 result.error_message = quoted_result.error_message
                 damn result
             }
             name_parts = append_string(name_parts, quoted_result.value)
             parser = quoted_result.parser
-        } otherwise {
+        } highkey {
             result.error_message = "Invalid character in table name"
             damn result
         }
         
         parser = skip_whitespace(parser)
-        ready (parser.current_char == ".") {
+        lowkey (parser.current_char == ".") {
             parser = advance_parser(parser)
             parser = skip_whitespace(parser)
-        } otherwise {
+        } highkey {
             break
         }
     }
     
-    ready (len(name_parts) == 0) {
+    lowkey (len(name_parts) == 0) {
         result.error_message = "Empty table name"
         damn result
     }
@@ -265,7 +265,7 @@ slay parse_key_value_pair(parser TomlParser) ParserResult<TomlKeyValue> {
     
     fr fr Parse key (can be dotted like database.host)
     sus key_result ParserResult<tea> = parse_key(parser)
-    ready (!key_result.success) {
+    lowkey (!key_result.success) {
         result.error_message = key_result.error_message
         damn result
     }
@@ -275,7 +275,7 @@ slay parse_key_value_pair(parser TomlParser) ParserResult<TomlKeyValue> {
     
     fr fr Expect equals sign
     parser = skip_whitespace(parser)
-    ready (parser.current_char != "=") {
+    lowkey (parser.current_char != "=") {
         result.error_message = "Expected '=' after key"
         damn result
     }
@@ -284,7 +284,7 @@ slay parse_key_value_pair(parser TomlParser) ParserResult<TomlKeyValue> {
     
     fr fr Parse value
     sus value_result ParserResult<TomlValue> = parse_value(parser)
-    ready (!value_result.success) {
+    lowkey (!value_result.success) {
         result.error_message = value_result.error_message
         damn result
     }
@@ -314,44 +314,44 @@ slay parse_key(parser TomlParser) ParserResult<tea> {
     sus key_parts tea[value] = []
     
     bestie (!parser_at_end(parser) && parser.current_char != "=" && parser.current_char != " " && parser.current_char != "\t") {
-        ready (is_identifier_start(parser.current_char)) {
+        lowkey (is_identifier_start(parser.current_char)) {
             sus identifier_result ParserResult<tea> = parse_identifier(parser)
-            ready (!identifier_result.success) {
+            lowkey (!identifier_result.success) {
                 result.error_message = identifier_result.error_message
                 damn result
             }
             key_parts = append_string(key_parts, identifier_result.value)
             parser = identifier_result.parser
-        } otherwise ready (parser.current_char == "\"") {
+        } highkey lowkey (parser.current_char == "\"") {
             sus quoted_result ParserResult<tea> = parse_quoted_key(parser)
-            ready (!quoted_result.success) {
+            lowkey (!quoted_result.success) {
                 result.error_message = quoted_result.error_message
                 damn result
             }
             key_parts = append_string(key_parts, quoted_result.value)
             parser = quoted_result.parser
-        } otherwise ready (parser.current_char == "'") {
+        } highkey lowkey (parser.current_char == "'") {
             sus literal_result ParserResult<tea> = parse_literal_string_key(parser)
-            ready (!literal_result.success) {
+            lowkey (!literal_result.success) {
                 result.error_message = literal_result.error_message
                 damn result
             }
             key_parts = append_string(key_parts, literal_result.value)
             parser = literal_result.parser
-        } otherwise {
+        } highkey {
             break
         }
         
         parser = skip_whitespace(parser)
-        ready (parser.current_char == ".") {
+        lowkey (parser.current_char == ".") {
             parser = advance_parser(parser)
             parser = skip_whitespace(parser)
-        } otherwise {
+        } highkey {
             break
         }
     }
     
-    ready (len(key_parts) == 0) {
+    lowkey (len(key_parts) == 0) {
         result.error_message = "Empty key"
         damn result
     }
@@ -378,39 +378,39 @@ slay parse_value(parser TomlParser) ParserResult<TomlValue> {
     
     parser = skip_whitespace(parser)
     
-    ready (parser_at_end(parser)) {
+    lowkey (parser_at_end(parser)) {
         result.error_message = "Unexpected end of input while parsing value"
         damn result
     }
     
     fr fr Determine value type and parse accordingly
-    ready (parser.current_char == "\"") {
+    lowkey (parser.current_char == "\"") {
         fr fr Basic string or multiline string
-        ready (peek_chars(parser, 3) == "\"\"\"") {
+        lowkey (peek_chars(parser, 3) == "\"\"\"") {
             damn parse_multiline_basic_string(parser)
-        } otherwise {
+        } highkey {
             damn parse_basic_string(parser)
         }
-    } otherwise ready (parser.current_char == "'") {
+    } highkey lowkey (parser.current_char == "'") {
         fr fr Literal string or multiline literal string
-        ready (peek_chars(parser, 3) == "'''") {
+        lowkey (peek_chars(parser, 3) == "'''") {
             damn parse_multiline_literal_string(parser)
-        } otherwise {
+        } highkey {
             damn parse_literal_string(parser)
         }
-    } otherwise ready (parser.current_char == "[") {
+    } highkey lowkey (parser.current_char == "[") {
         fr fr Array
         damn parse_array(parser)
-    } otherwise ready (parser.current_char == "{") {
+    } highkey lowkey (parser.current_char == "{") {
         fr fr Inline table
         damn parse_inline_table(parser)
-    } otherwise ready (is_digit(parser.current_char) || parser.current_char == "+" || parser.current_char == "-") {
+    } highkey lowkey (is_digit(parser.current_char) || parser.current_char == "+" || parser.current_char == "-") {
         fr fr Number (integer, float, or datetime)
         damn parse_number_or_datetime(parser)
-    } otherwise ready (parser.current_char == "t" || parser.current_char == "f") {
+    } highkey lowkey (parser.current_char == "t" || parser.current_char == "f") {
         fr fr Boolean
         damn parse_boolean(parser)
-    } otherwise {
+    } highkey {
         result.error_message = "Invalid value type"
         damn result
     }
@@ -429,7 +429,7 @@ slay parse_basic_string(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (parser.current_char != "\"") {
+    lowkey (parser.current_char != "\"") {
         result.error_message = "Expected '\"' at start of basic string"
         damn result
     }
@@ -438,32 +438,32 @@ slay parse_basic_string(parser TomlParser) ParserResult<TomlValue> {
     sus string_value tea = ""
     
     bestie (!parser_at_end(parser) && parser.current_char != "\"") {
-        ready (parser.current_char == "\\") {
+        lowkey (parser.current_char == "\\") {
             fr fr Handle escape sequence
             parser = advance_parser(parser)
-            ready (parser_at_end(parser)) {
+            lowkey (parser_at_end(parser)) {
                 result.error_message = "Incomplete escape sequence"
                 damn result
             }
             
             sus escaped_char tea = get_escaped_character(parser.current_char)
-            ready (escaped_char == "") {
+            lowkey (escaped_char == "") {
                 result.error_message = "Invalid escape sequence: \\" + parser.current_char
                 damn result
             }
             
             string_value = string_value + escaped_char
             parser = advance_parser(parser)
-        } otherwise ready (parser.current_char == "\n") {
+        } highkey lowkey (parser.current_char == "\n") {
             result.error_message = "Unescaped newline in basic string"
             damn result
-        } otherwise {
+        } highkey {
             string_value = string_value + parser.current_char
             parser = advance_parser(parser)
         }
     }
     
-    ready (parser.current_char != "\"") {
+    lowkey (parser.current_char != "\"") {
         result.error_message = "Unterminated basic string"
         damn result
     }
@@ -493,7 +493,7 @@ slay parse_literal_string(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (parser.current_char != "'") {
+    lowkey (parser.current_char != "'") {
         result.error_message = "Expected \"'\" at start of literal string"
         damn result
     }
@@ -502,7 +502,7 @@ slay parse_literal_string(parser TomlParser) ParserResult<TomlValue> {
     sus string_value tea = ""
     
     bestie (!parser_at_end(parser) && parser.current_char != "'") {
-        ready (parser.current_char == "\n") {
+        lowkey (parser.current_char == "\n") {
             result.error_message = "Unescaped newline in literal string"
             damn result
         }
@@ -510,7 +510,7 @@ slay parse_literal_string(parser TomlParser) ParserResult<TomlValue> {
         parser = advance_parser(parser)
     }
     
-    ready (parser.current_char != "'") {
+    lowkey (parser.current_char != "'") {
         result.error_message = "Unterminated literal string"
         damn result
     }
@@ -548,7 +548,7 @@ slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
     sus start_parser TomlParser = parser
     
     fr fr Parse sign
-    ready (parser.current_char == "+" || parser.current_char == "-") {
+    lowkey (parser.current_char == "+" || parser.current_char == "-") {
         number_string = number_string + parser.current_char
         parser = advance_parser(parser)
     }
@@ -559,13 +559,13 @@ slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
         parser = advance_parser(parser)
     }
     
-    ready (string_length(number_string) == 0) {
+    lowkey (string_length(number_string) == 0) {
         result.error_message = "Empty number"
         damn result
     }
     
     fr fr Determine if it's integer, float, or datetime
-    ready (contains_datetime_pattern(number_string)) {
+    lowkey (contains_datetime_pattern(number_string)) {
         sus value TomlValue = TomlValue{
             value_type: "datetime",
             string_value: number_string,
@@ -575,7 +575,7 @@ slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
         result.success = based
         result.value = value
         result.parser = parser
-    } otherwise ready (string_contains(number_string, ".") || string_contains(number_string, "e") || string_contains(number_string, "E")) {
+    } highkey lowkey (string_contains(number_string, ".") || string_contains(number_string, "e") || string_contains(number_string, "E")) {
         fr fr Float
         sus float_value sus = parse_float_value(number_string)
         sus value TomlValue = TomlValue{
@@ -587,7 +587,7 @@ slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
         result.success = based
         result.value = value
         result.parser = parser
-    } otherwise {
+    } highkey {
         fr fr Integer
         sus integer_value drip = parse_integer_value(number_string)
         sus value TomlValue = TomlValue{
@@ -613,7 +613,7 @@ slay parse_boolean(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (peek_chars(parser, 4) == "true") {
+    lowkey (peek_chars(parser, 4) == "true") {
         parser = advance_parser_by(parser, 4)
         sus value TomlValue = TomlValue{
             value_type: "boolean",
@@ -624,7 +624,7 @@ slay parse_boolean(parser TomlParser) ParserResult<TomlValue> {
         result.success = based
         result.value = value
         result.parser = parser
-    } otherwise ready (peek_chars(parser, 5) == "false") {
+    } highkey lowkey (peek_chars(parser, 5) == "false") {
         parser = advance_parser_by(parser, 5)
         sus value TomlValue = TomlValue{
             value_type: "boolean",
@@ -635,7 +635,7 @@ slay parse_boolean(parser TomlParser) ParserResult<TomlValue> {
         result.success = based
         result.value = value
         result.parser = parser
-    } otherwise {
+    } highkey {
         result.error_message = "Invalid boolean value"
     }
     
@@ -655,7 +655,7 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (parser.current_char != "[") {
+    lowkey (parser.current_char != "[") {
         result.error_message = "Expected '[' at start of array"
         damn result
     }
@@ -666,7 +666,7 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
     sus array_values TomlValue[value] = []
     
     fr fr Handle empty array
-    ready (parser.current_char == "]") {
+    lowkey (parser.current_char == "]") {
         parser = advance_parser(parser)
         sus value TomlValue = TomlValue{
             value_type: "array",
@@ -683,7 +683,7 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
     fr fr Parse array elements
     bestie (!parser_at_end(parser)) {
         sus element_result ParserResult<TomlValue> = parse_value(parser)
-        ready (!element_result.success) {
+        lowkey (!element_result.success) {
             result.error_message = element_result.error_message
             damn result
         }
@@ -692,23 +692,23 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
         parser = element_result.parser
         parser = skip_whitespace_and_comments(parser)
         
-        ready (parser.current_char == "]") {
+        lowkey (parser.current_char == "]") {
             break
-        } otherwise ready (parser.current_char == ",") {
+        } highkey lowkey (parser.current_char == ",") {
             parser = advance_parser(parser)
             parser = skip_whitespace_and_comments(parser)
             
             fr fr Allow trailing comma
-            ready (parser.current_char == "]") {
+            lowkey (parser.current_char == "]") {
                 break
             }
-        } otherwise {
+        } highkey {
             result.error_message = "Expected ',' or ']' in array"
             damn result
         }
     }
     
-    ready (parser.current_char != "]") {
+    lowkey (parser.current_char != "]") {
         result.error_message = "Unterminated array"
         damn result
     }
@@ -735,22 +735,22 @@ fr fr ==========================================
 
 slay advance_parser(parser TomlParser) TomlParser {
     fr fr Advance parser by one character
-    ready (parser_at_end(parser)) {
+    lowkey (parser_at_end(parser)) {
         damn parser
     }
     
-    ready (parser.current_char == "\n") {
+    lowkey (parser.current_char == "\n") {
         parser.line_number = parser.line_number + 1
         parser.column_number = 1
-    } otherwise {
+    } highkey {
         parser.column_number = parser.column_number + 1
     }
     
     parser.position = parser.position + 1
     
-    ready (parser.position < string_length(parser.content)) {
+    lowkey (parser.position < string_length(parser.content)) {
         parser.current_char = string_char_at(parser.content, parser.position)
-    } otherwise {
+    } highkey {
         parser.current_char = ""
     }
     
@@ -783,16 +783,16 @@ slay skip_whitespace(parser TomlParser) TomlParser {
 slay skip_whitespace_and_comments(parser TomlParser) TomlParser {
     fr fr Skip whitespace, newlines, and comments
     bestie (!parser_at_end(parser)) {
-        ready (parser.current_char == " " || parser.current_char == "\t") {
+        lowkey (parser.current_char == " " || parser.current_char == "\t") {
             parser = advance_parser(parser)
-        } otherwise ready (parser.current_char == "\n" || parser.current_char == "\r") {
+        } highkey lowkey (parser.current_char == "\n" || parser.current_char == "\r") {
             parser = advance_parser(parser)
-        } otherwise ready (parser.current_char == "#") {
+        } highkey lowkey (parser.current_char == "#") {
             fr fr Skip comment until end of line
             bestie (!parser_at_end(parser) && parser.current_char != "\n") {
                 parser = advance_parser(parser)
             }
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -847,19 +847,19 @@ fr fr ==========================================
 
 slay get_escaped_character(char tea) tea {
     fr fr Convert escape sequence to actual character
-    ready (char == "n") { damn "\n" }
-    ready (char == "r") { damn "\r" }
-    ready (char == "t") { damn "\t" }
-    ready (char == "\\") { damn "\\" }
-    ready (char == "\"") { damn "\"" }
-    ready (char == "b") { damn "\b" }
-    ready (char == "f") { damn "\f" }
+    lowkey (char == "n") { damn "\n" }
+    lowkey (char == "r") { damn "\r" }
+    lowkey (char == "t") { damn "\t" }
+    lowkey (char == "\\") { damn "\\" }
+    lowkey (char == "\"") { damn "\"" }
+    lowkey (char == "b") { damn "\b" }
+    lowkey (char == "f") { damn "\f" }
     damn ""  fr fr Invalid escape sequence
 }
 
 slay parse_integer_value(number_string tea) drip {
     fr fr Parse string to integer - real implementation with underscores
-    ready (number_string == "") { damn 0 }
+    lowkey (number_string == "") { damn 0 }
     
     fr fr Remove underscores first
     sus clean_string tea = remove_underscores(number_string)
@@ -868,10 +868,10 @@ slay parse_integer_value(number_string tea) drip {
     sus start_pos drip = 0
     sus result drip = 0
     
-    ready (string_char_at(clean_string, 0) == "-") {
+    lowkey (string_char_at(clean_string, 0) == "-") {
         is_negative = based
         start_pos = 1
-    } otherwise ready (string_char_at(clean_string, 0) == "+") {
+    } highkey lowkey (string_char_at(clean_string, 0) == "+") {
         start_pos = 1
     }
     
@@ -880,7 +880,7 @@ slay parse_integer_value(number_string tea) drip {
     
     bestie (i < length) {
         sus char tea = string_char_at(clean_string, i)
-        ready (!is_digit(char)) {
+        lowkey (!is_digit(char)) {
             fr fr Invalid character in integer
             damn 0
         }
@@ -890,12 +890,12 @@ slay parse_integer_value(number_string tea) drip {
         i = i + 1
     }
     
-    ready (is_negative) { damn -result } otherwise { damn result }
+    lowkey (is_negative) { damn -result } highkey { damn result }
 }
 
 slay parse_float_value(number_string tea) sus {
     fr fr Parse string to float - real implementation with scientific notation
-    ready (number_string == "") { damn 0.0 }
+    lowkey (number_string == "") { damn 0.0 }
     
     fr fr Remove underscores first
     sus clean_string tea = remove_underscores(number_string)
@@ -903,26 +903,26 @@ slay parse_float_value(number_string tea) sus {
     sus is_negative lit = cringe
     sus start_pos drip = 0
     
-    ready (string_char_at(clean_string, 0) == "-") {
+    lowkey (string_char_at(clean_string, 0) == "-") {
         is_negative = based
         start_pos = 1
-    } otherwise ready (string_char_at(clean_string, 0) == "+") {
+    } highkey lowkey (string_char_at(clean_string, 0) == "+") {
         start_pos = 1
     }
     
     fr fr Check for scientific notation
     sus e_pos drip = find_char_in_range(clean_string, "e", start_pos)
-    ready (e_pos == -1) {
+    lowkey (e_pos == -1) {
         e_pos = find_char_in_range(clean_string, "E", start_pos)
     }
     
     sus base_part tea = ""
     sus exponent_part tea = ""
     
-    ready (e_pos != -1) {
+    lowkey (e_pos != -1) {
         base_part = substring(clean_string, start_pos, e_pos - start_pos)
         exponent_part = substring(clean_string, e_pos + 1, string_length(clean_string) - e_pos - 1)
-    } otherwise {
+    } highkey {
         base_part = substring(clean_string, start_pos, string_length(clean_string) - start_pos)
     }
     
@@ -931,10 +931,10 @@ slay parse_float_value(number_string tea) sus {
     sus integer_part drip = 0
     sus fractional_part sus = 0.0
     
-    ready (decimal_pos == -1) {
+    lowkey (decimal_pos == -1) {
         fr fr No decimal point - integer
         integer_part = parse_integer_part(base_part)
-    } otherwise {
+    } highkey {
         sus int_str tea = substring(base_part, 0, decimal_pos)
         sus frac_str tea = substring(base_part, decimal_pos + 1, string_length(base_part) - decimal_pos - 1)
         
@@ -945,13 +945,13 @@ slay parse_float_value(number_string tea) sus {
     sus result sus = sus(integer_part) + fractional_part
     
     fr fr Apply exponent if present
-    ready (exponent_part != "") {
+    lowkey (exponent_part != "") {
         sus exponent drip = parse_integer_value(exponent_part)
         sus multiplier sus = power_of_ten(exponent)
         result = result * multiplier
     }
     
-    ready (is_negative) { damn -result } otherwise { damn result }
+    lowkey (is_negative) { damn -result } highkey { damn result }
 }
 
 slay contains_datetime_pattern(str tea) lit {
@@ -1017,21 +1017,21 @@ slay append_error(errors tea[value], error tea) tea[value]{
 slay split_dotted_key(key tea) tea[value]{
     fr fr Split "database.host" into ["database", "host"]
     sus parts tea[value] = []
-    ready (string_contains(key, ".")) {
+    lowkey (string_contains(key, ".")) {
         fr fr Simple implementation for common cases
-        ready (key == "database.host") {
+        lowkey (key == "database.host") {
             parts = append_string(parts, "database")
             parts = append_string(parts, "host")
-        } otherwise ready (key == "app.name") {
+        } highkey lowkey (key == "app.name") {
             parts = append_string(parts, "app")
             parts = append_string(parts, "name")
-        } otherwise ready (key == "server.port") {
+        } highkey lowkey (key == "server.port") {
             parts = append_string(parts, "server")
             parts = append_string(parts, "port")
-        } otherwise {
+        } highkey {
             parts = append_string(parts, key)  fr fr Fallback
         }
-    } otherwise {
+    } highkey {
         parts = append_string(parts, key)
     }
     damn parts
@@ -1039,10 +1039,10 @@ slay split_dotted_key(key tea) tea[value]{
 
 slay join_strings_with_dot(parts tea[value]) tea {
     fr fr Join ["database", "host"] into "database.host"
-    ready (len(parts) == 0) { damn "" }
-    ready (len(parts) == 1) { damn parts[0] }
-    ready (len(parts) == 2) { damn parts[0] + "." + parts[1] }
-    ready (len(parts) == 3) { damn parts[0] + "." + parts[1] + "." + parts[2] }
+    lowkey (len(parts) == 0) { damn "" }
+    lowkey (len(parts) == 1) { damn parts[0] }
+    lowkey (len(parts) == 2) { damn parts[0] + "." + parts[1] }
+    lowkey (len(parts) == 3) { damn parts[0] + "." + parts[1] + "." + parts[2] }
     damn parts[0]  fr fr Fallback for longer arrays
 }
 
@@ -1064,7 +1064,7 @@ slay parse_toml_file(filepath tea) TomlDocument {
         parsing_errors: []
     }
     
-    ready (!handle.is_open) {
+    lowkey (!handle.is_open) {
         document.parsing_errors = append_error(document.parsing_errors, "Failed to open file: " + filepath)
         damn document
     }
@@ -1072,7 +1072,7 @@ slay parse_toml_file(filepath tea) TomlDocument {
     sus content tea = file_read_all(handle)
     file_close(handle)
     
-    ready (string_length(content) == 0) {
+    lowkey (string_length(content) == 0) {
         document.parsing_errors = append_error(document.parsing_errors, "Empty file: " + filepath)
         damn document
     }
@@ -1097,7 +1097,7 @@ fr fr ==========================================
 slay toml_get_string(document TomlDocument, key tea) tea {
     fr fr Get string value by key
     sus value TomlValue = find_value_by_key(document, key)
-    ready (value.value_type == "string") {
+    lowkey (value.value_type == "string") {
         damn value.string_value
     }
     damn ""
@@ -1106,7 +1106,7 @@ slay toml_get_string(document TomlDocument, key tea) tea {
 slay toml_get_integer(document TomlDocument, key tea) drip {
     fr fr Get integer value by key
     sus value TomlValue = find_value_by_key(document, key)
-    ready (value.value_type == "integer") {
+    lowkey (value.value_type == "integer") {
         damn value.integer_value
     }
     damn 0
@@ -1115,7 +1115,7 @@ slay toml_get_integer(document TomlDocument, key tea) drip {
 slay toml_get_boolean(document TomlDocument, key tea) lit {
     fr fr Get boolean value by key
     sus value TomlValue = find_value_by_key(document, key)
-    ready (value.value_type == "boolean") {
+    lowkey (value.value_type == "boolean") {
         damn value.boolean_value
     }
     damn cringe
@@ -1128,7 +1128,7 @@ slay find_value_by_key(document TomlDocument, key tea) TomlValue {
     fr fr Search in root entries first
     sus i drip = 0
     bestie (i < len(document.root_entries)) {
-        ready (document.root_entries[i].key == key) {
+        lowkey (document.root_entries[i].key == key) {
             damn document.root_entries[i].value
         }
         i = i + 1
@@ -1140,7 +1140,7 @@ slay find_value_by_key(document TomlDocument, key tea) TomlValue {
         sus k drip = 0
         bestie (k < len(document.tables[j].entries)) {
             sus full_key tea = document.tables[j].name + "." + document.tables[j].entries[k].key
-            ready (full_key == key) {
+            lowkey (full_key == key) {
                 damn document.tables[j].entries[k].value
             }
             k = k + 1
@@ -1157,7 +1157,7 @@ fr fr ==========================================
 
 slay convert_toml_to_config_json(document TomlDocument) tea {
     fr fr Convert TOML document to JSON-like configuration format
-    ready (toml_document_has_errors(document)) {
+    lowkey (toml_document_has_errors(document)) {
         damn "{\"error\":\"TOML parsing failed\"}"
     }
     
@@ -1167,7 +1167,7 @@ slay convert_toml_to_config_json(document TomlDocument) tea {
     fr fr Add root entries
     sus i drip = 0
     bestie (i < len(document.root_entries)) {
-        ready (!first) { json = json + "," }
+        lowkey (!first) { json = json + "," }
         json = json + "\"" + document.root_entries[i].key + "\":"
         json = json + toml_value_to_json_string(document.root_entries[i].value)
         first = cringe
@@ -1177,13 +1177,13 @@ slay convert_toml_to_config_json(document TomlDocument) tea {
     fr fr Add table entries
     sus j drip = 0
     bestie (j < len(document.tables)) {
-        ready (!first) { json = json + "," }
+        lowkey (!first) { json = json + "," }
         json = json + "\"" + document.tables[j].name + "\":{"
         
         sus k drip = 0
         sus table_first lit = based
         bestie (k < len(document.tables[j].entries)) {
-            ready (!table_first) { json = json + "," }
+            lowkey (!table_first) { json = json + "," }
             json = json + "\"" + document.tables[j].entries[k].key + "\":"
             json = json + toml_value_to_json_string(document.tables[j].entries[k].value)
             table_first = cringe
@@ -1201,22 +1201,22 @@ slay convert_toml_to_config_json(document TomlDocument) tea {
 
 slay toml_value_to_json_string(value TomlValue) tea {
     fr fr Convert TOML value to JSON string representation
-    ready (value.value_type == "string") {
+    lowkey (value.value_type == "string") {
         damn "\"" + value.string_value + "\""
     }
-    ready (value.value_type == "integer") {
+    lowkey (value.value_type == "integer") {
         damn integer_to_string(value.integer_value)
     }
-    ready (value.value_type == "boolean") {
-        ready (value.boolean_value) { damn "true" } otherwise { damn "false" }
+    lowkey (value.value_type == "boolean") {
+        lowkey (value.boolean_value) { damn "true" } highkey { damn "false" }
     }
-    ready (value.value_type == "float") {
+    lowkey (value.value_type == "float") {
         damn float_to_string(value.float_value)
     }
-    ready (value.value_type == "array") {
+    lowkey (value.value_type == "array") {
         damn "[array]"  fr fr Simplified for now
     }
-    ready (value.value_type == "datetime") {
+    lowkey (value.value_type == "datetime") {
         damn "\"" + value.string_value + "\""
     }
     damn "null"
@@ -1228,25 +1228,25 @@ fr fr ==========================================
 
 slay string_char_at(str tea, index drip) tea {
     fr fr Get character at index - real implementation using UTF-8 indexing
-    ready (str == "") { damn "" }
-    ready (index < 0) { damn "" }
+    lowkey (str == "") { damn "" }
+    lowkey (index < 0) { damn "" }
     
     sus length drip = strlen_utf8(str)
-    ready (index >= length) { damn "" }
+    lowkey (index >= length) { damn "" }
     
     fr fr Convert to byte offset for UTF-8 string
     sus byte_offset drip = utf8_char_to_byte_offset(str, index)
-    ready (byte_offset < 0) { damn "" }
+    lowkey (byte_offset < 0) { damn "" }
     
     sus next_offset drip = utf8_char_to_byte_offset(str, index + 1)
-    ready (next_offset < 0) { next_offset = strlen_bytes(str) }
+    lowkey (next_offset < 0) { next_offset = strlen_bytes(str) }
     
     damn substring_bytes(str, byte_offset, next_offset - byte_offset)
 }
 
 slay string_length(str tea) drip {
     fr fr Get string length - real UTF-8 character count
-    ready (str == "") { damn 0 }
+    lowkey (str == "") { damn 0 }
     
     sus byte_length drip = strlen_bytes(str)
     sus char_count drip = 0
@@ -1256,16 +1256,16 @@ slay string_length(str tea) drip {
         sus byte_value drip = byte_at(str, byte_pos)
         
         fr fr UTF-8 byte sequence analysis
-        ready (byte_value < 128) {
+        lowkey (byte_value < 128) {
             fr fr ASCII character (1 byte)
             byte_pos = byte_pos + 1
-        } otherwise ready (byte_value < 224) {
+        } highkey lowkey (byte_value < 224) {
             fr fr 2-byte UTF-8 sequence
             byte_pos = byte_pos + 2
-        } otherwise ready (byte_value < 240) {
+        } highkey lowkey (byte_value < 240) {
             fr fr 3-byte UTF-8 sequence  
             byte_pos = byte_pos + 3
-        } otherwise {
+        } highkey {
             fr fr 4-byte UTF-8 sequence
             byte_pos = byte_pos + 4
         }
@@ -1278,13 +1278,13 @@ slay string_length(str tea) drip {
 
 slay string_contains(str tea, substr tea) lit {
     fr fr Check if string contains substring - Boyer-Moore-like implementation
-    ready (str == "" || substr == "") { damn cringe }
+    lowkey (str == "" || substr == "") { damn cringe }
     
     sus str_len drip = string_length(str)
     sus substr_len drip = string_length(substr)
     
-    ready (substr_len > str_len) { damn cringe }
-    ready (substr_len == str_len) { damn (str == substr) }
+    lowkey (substr_len > str_len) { damn cringe }
+    lowkey (substr_len == str_len) { damn (str == substr) }
     
     sus search_limit drip = str_len - substr_len + 1
     sus i drip = 0
@@ -1297,14 +1297,14 @@ slay string_contains(str tea, substr tea) lit {
             sus str_char tea = string_char_at(str, i + j)
             sus substr_char tea = string_char_at(substr, j)
             
-            ready (str_char != substr_char) {
+            lowkey (str_char != substr_char) {
                 match = cringe
                 break
             }
             j = j + 1
         }
         
-        ready (match) { damn based }
+        lowkey (match) { damn based }
         i = i + 1
     }
     
@@ -1313,12 +1313,12 @@ slay string_contains(str tea, substr tea) lit {
 
 slay integer_to_string(value drip) tea {
     fr fr Convert integer to string - real implementation
-    ready (value == 0) { damn "0" }
+    lowkey (value == 0) { damn "0" }
     
     sus is_negative lit = cringe
     sus abs_value drip = value
     
-    ready (value < 0) {
+    lowkey (value < 0) {
         is_negative = based
         abs_value = -value
     }
@@ -1327,10 +1327,10 @@ slay integer_to_string(value drip) tea {
     sus digits tea[value] = []
     sus digit_count drip = 0
     
-    ready (abs_value == 0) {
+    lowkey (abs_value == 0) {
         digits[0] = "0"
         digit_count = 1
-    } otherwise {
+    } highkey {
         bestie (abs_value > 0) {
             sus digit drip = abs_value % 10
             digits[digit_count] = digit_to_char(digit)
@@ -1341,7 +1341,7 @@ slay integer_to_string(value drip) tea {
     
     fr fr Build final string
     sus result tea = ""
-    ready (is_negative) {
+    lowkey (is_negative) {
         result = result + "-"
     }
     
@@ -1356,20 +1356,20 @@ slay integer_to_string(value drip) tea {
 
 slay float_to_string(value sus) tea {
     fr fr Convert float to string - IEEE 754 compliant implementation
-    ready (value == 0.0) { damn "0.0" }
+    lowkey (value == 0.0) { damn "0.0" }
     
     sus is_negative lit = cringe
     sus abs_value sus = value
     
-    ready (value < 0.0) {
+    lowkey (value < 0.0) {
         is_negative = based
         abs_value = -value
     }
     
     fr fr Handle special cases
-    ready (is_nan(abs_value)) { damn "NaN" }
-    ready (is_infinite(abs_value)) { 
-        ready (is_negative) { damn "-Infinity" } otherwise { damn "Infinity" }
+    lowkey (is_nan(abs_value)) { damn "NaN" }
+    lowkey (is_infinite(abs_value)) { 
+        lowkey (is_negative) { damn "-Infinity" } highkey { damn "Infinity" }
     }
     
     fr fr Extract integer and fractional parts
@@ -1378,7 +1378,7 @@ slay float_to_string(value sus) tea {
     
     fr fr Build result
     sus result tea = ""
-    ready (is_negative) {
+    lowkey (is_negative) {
         result = result + "-"
     }
     
@@ -1397,7 +1397,7 @@ slay float_to_string(value sus) tea {
     }
     
     fr fr Ensure at least one decimal place
-    ready (i == 0) {
+    lowkey (i == 0) {
         result = result + "0"
     }
     
@@ -1446,7 +1446,7 @@ fr fr ==========================================
 
 slay file_read_all(handle FileHandle) tea {
     fr fr Read entire file content - buffered reading for large files
-    ready (!handle.is_open) { damn "" }
+    lowkey (!handle.is_open) { damn "" }
     
     sus content tea = ""
     sus buffer_size drip = 4096
@@ -1454,13 +1454,13 @@ slay file_read_all(handle FileHandle) tea {
     
     bestie (!file_eof(handle)) {
         sus chunk tea = file_read_bytes(handle, buffer_size)
-        ready (string_length(chunk) == 0) { break }
+        lowkey (string_length(chunk) == 0) { break }
         
         content = content + chunk
         bytes_read = bytes_read + string_length(chunk)
         
         fr fr Safety limit to prevent memory exhaustion
-        ready (bytes_read > 100_000_000) {  fr fr 100MB limit
+        lowkey (bytes_read > 100_000_000) {  fr fr 100MB limit
             vibez.spill("Warning: File size exceeds 100MB limit")
             break
         }
@@ -1482,7 +1482,7 @@ slay parse_identifier(parser TomlParser) ParserResult<tea> {
         error_message: ""
     }
     
-    ready (!is_identifier_start(parser.current_char)) {
+    lowkey (!is_identifier_start(parser.current_char)) {
         result.error_message = "Invalid identifier start character: " + parser.current_char
         damn result
     }
@@ -1509,7 +1509,7 @@ slay parse_quoted_key(parser TomlParser) ParserResult<tea> {
         error_message: ""
     }
     
-    ready (parser.current_char != "\"") {
+    lowkey (parser.current_char != "\"") {
         result.error_message = "Expected '\"' at start of quoted key"
         damn result
     }
@@ -1518,29 +1518,29 @@ slay parse_quoted_key(parser TomlParser) ParserResult<tea> {
     sus key_value tea = ""
     
     bestie (!parser_at_end(parser) && parser.current_char != "\"") {
-        ready (parser.current_char == "\\") {
+        lowkey (parser.current_char == "\\") {
             fr fr Handle escape sequences in quoted keys
             parser = advance_parser(parser)
-            ready (parser_at_end(parser)) {
+            lowkey (parser_at_end(parser)) {
                 result.error_message = "Incomplete escape sequence in quoted key"
                 damn result
             }
             
             sus escaped tea = get_escaped_character(parser.current_char)
-            ready (escaped == "") {
+            lowkey (escaped == "") {
                 result.error_message = "Invalid escape sequence in quoted key"
                 damn result
             }
             
             key_value = key_value + escaped
             parser = advance_parser(parser)
-        } otherwise {
+        } highkey {
             key_value = key_value + parser.current_char
             parser = advance_parser(parser)
         }
     }
     
-    ready (parser.current_char != "\"") {
+    lowkey (parser.current_char != "\"") {
         result.error_message = "Unterminated quoted key"
         damn result
     }
@@ -1562,7 +1562,7 @@ slay parse_literal_string_key(parser TomlParser) ParserResult<tea> {
         error_message: ""
     }
     
-    ready (parser.current_char != "'") {
+    lowkey (parser.current_char != "'") {
         result.error_message = "Expected \"'\" at start of literal string key"
         damn result
     }
@@ -1575,7 +1575,7 @@ slay parse_literal_string_key(parser TomlParser) ParserResult<tea> {
         parser = advance_parser(parser)
     }
     
-    ready (parser.current_char != "'") {
+    lowkey (parser.current_char != "'") {
         result.error_message = "Unterminated literal string key"
         damn result
     }
@@ -1597,7 +1597,7 @@ slay parse_multiline_basic_string(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (peek_chars(parser, 3) != "\"\"\"") {
+    lowkey (peek_chars(parser, 3) != "\"\"\"") {
         result.error_message = "Expected '\"\"\"' for multiline basic string"
         damn result
     }
@@ -1605,47 +1605,47 @@ slay parse_multiline_basic_string(parser TomlParser) ParserResult<TomlValue> {
     parser = advance_parser_by(parser, 3)  fr fr Skip opening """
     
     fr fr Skip leading newline if present
-    ready (parser.current_char == "\n") {
+    lowkey (parser.current_char == "\n") {
         parser = advance_parser(parser)
-    } otherwise ready (parser.current_char == "\r" && peek_chars(parser, 2) == "\r\n") {
+    } highkey lowkey (parser.current_char == "\r" && peek_chars(parser, 2) == "\r\n") {
         parser = advance_parser_by(parser, 2)
     }
     
     sus string_value tea = ""
     
     bestie (!parser_at_end(parser)) {
-        ready (peek_chars(parser, 3) == "\"\"\"") {
+        lowkey (peek_chars(parser, 3) == "\"\"\"") {
             break  fr fr Found closing delimiter
         }
         
-        ready (parser.current_char == "\\") {
+        lowkey (parser.current_char == "\\") {
             fr fr Handle escape sequences
             parser = advance_parser(parser)
-            ready (parser_at_end(parser)) {
+            lowkey (parser_at_end(parser)) {
                 result.error_message = "Incomplete escape sequence"
                 damn result
             }
             
-            ready (parser.current_char == "\n") {
+            lowkey (parser.current_char == "\n") {
                 fr fr Line ending backslash - skip whitespace on next line
                 parser = advance_parser(parser)
                 parser = skip_whitespace(parser)
-            } otherwise {
+            } highkey {
                 sus escaped tea = get_escaped_character(parser.current_char)
-                ready (escaped == "") {
+                lowkey (escaped == "") {
                     result.error_message = "Invalid escape sequence"
                     damn result
                 }
                 string_value = string_value + escaped
                 parser = advance_parser(parser)
             }
-        } otherwise {
+        } highkey {
             string_value = string_value + parser.current_char
             parser = advance_parser(parser)
         }
     }
     
-    ready (peek_chars(parser, 3) != "\"\"\"") {
+    lowkey (peek_chars(parser, 3) != "\"\"\"") {
         result.error_message = "Unterminated multiline basic string"
         damn result
     }
@@ -1674,7 +1674,7 @@ slay parse_multiline_literal_string(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (peek_chars(parser, 3) != "'''") {
+    lowkey (peek_chars(parser, 3) != "'''") {
         result.error_message = "Expected \"'''\" for multiline literal string"
         damn result
     }
@@ -1682,16 +1682,16 @@ slay parse_multiline_literal_string(parser TomlParser) ParserResult<TomlValue> {
     parser = advance_parser_by(parser, 3)  fr fr Skip opening '''
     
     fr fr Skip leading newline if present
-    ready (parser.current_char == "\n") {
+    lowkey (parser.current_char == "\n") {
         parser = advance_parser(parser)
-    } otherwise ready (parser.current_char == "\r" && peek_chars(parser, 2) == "\r\n") {
+    } highkey lowkey (parser.current_char == "\r" && peek_chars(parser, 2) == "\r\n") {
         parser = advance_parser_by(parser, 2)
     }
     
     sus string_value tea = ""
     
     bestie (!parser_at_end(parser)) {
-        ready (peek_chars(parser, 3) == "'''") {
+        lowkey (peek_chars(parser, 3) == "'''") {
             break  fr fr Found closing delimiter
         }
         
@@ -1699,7 +1699,7 @@ slay parse_multiline_literal_string(parser TomlParser) ParserResult<TomlValue> {
         parser = advance_parser(parser)
     }
     
-    ready (peek_chars(parser, 3) != "'''") {
+    lowkey (peek_chars(parser, 3) != "'''") {
         result.error_message = "Unterminated multiline literal string"
         damn result
     }
@@ -1728,7 +1728,7 @@ slay parse_inline_table(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (parser.current_char != "{") {
+    lowkey (parser.current_char != "{") {
         result.error_message = "Expected '{' for inline table"
         damn result
     }
@@ -1744,10 +1744,10 @@ slay parse_inline_table(parser TomlParser) ParserResult<TomlValue> {
     }
     
     fr fr Parse key-value pairs
-    ready (parser.current_char != "}") {
+    lowkey (parser.current_char != "}") {
         bestie (based) {
             sus kv_result ParserResult<TomlKeyValue> = parse_key_value_pair(parser)
-            ready (!kv_result.success) {
+            lowkey (!kv_result.success) {
                 result.error_message = kv_result.error_message
                 damn result
             }
@@ -1756,19 +1756,19 @@ slay parse_inline_table(parser TomlParser) ParserResult<TomlValue> {
             parser = kv_result.parser
             parser = skip_whitespace(parser)
             
-            ready (parser.current_char == ",") {
+            lowkey (parser.current_char == ",") {
                 parser = advance_parser(parser)
                 parser = skip_whitespace(parser)
-            } otherwise ready (parser.current_char == "}") {
+            } highkey lowkey (parser.current_char == "}") {
                 break
-            } otherwise {
+            } highkey {
                 result.error_message = "Expected ',' or '}' in inline table"
                 damn result
             }
         }
     }
     
-    ready (parser.current_char != "}") {
+    lowkey (parser.current_char != "}") {
         result.error_message = "Expected '}' to close inline table"
         damn result
     }
@@ -1793,7 +1793,7 @@ slay advance_to_next_line(parser TomlParser) TomlParser {
     bestie (!parser_at_end(parser) && parser.current_char != "\n") {
         parser = advance_parser(parser)
     }
-    ready (!parser_at_end(parser) && parser.current_char == "\n") {
+    lowkey (!parser_at_end(parser) && parser.current_char == "\n") {
         parser = advance_parser(parser)
     }
     damn parser
@@ -1835,13 +1835,13 @@ slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
         parser = advance_parser(parser)
     }
     
-    ready (number_string == "") {
+    lowkey (number_string == "") {
         result.error_message = "Empty number"
         damn result
     }
     
     fr fr Check if it's a datetime
-    ready (contains_datetime_pattern(number_string)) {
+    lowkey (contains_datetime_pattern(number_string)) {
         sus value TomlValue = TomlValue{
             value_type: "datetime",
             string_value: number_string,
@@ -1856,7 +1856,7 @@ slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
     }
     
     fr fr Determine if integer or float
-    ready (string_contains(number_string, ".") || 
+    lowkey (string_contains(number_string, ".") || 
            string_contains(number_string, "e") || 
            string_contains(number_string, "E")) {
         fr fr Float
@@ -1873,7 +1873,7 @@ slay parse_number_or_datetime(parser TomlParser) ParserResult<TomlValue> {
         result.value = value
         result.parser = parser
         damn result
-    } otherwise {
+    } highkey {
         fr fr Integer
         sus int_val drip = parse_integer_value(number_string)
         
@@ -1900,7 +1900,7 @@ slay parse_boolean(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (peek_chars(parser, 4) == "true") {
+    lowkey (peek_chars(parser, 4) == "true") {
         parser = advance_parser_by(parser, 4)
         
         sus value TomlValue = TomlValue{
@@ -1914,7 +1914,7 @@ slay parse_boolean(parser TomlParser) ParserResult<TomlValue> {
         result.value = value
         result.parser = parser
         damn result
-    } otherwise ready (peek_chars(parser, 5) == "false") {
+    } highkey lowkey (peek_chars(parser, 5) == "false") {
         parser = advance_parser_by(parser, 5)
         
         sus value TomlValue = TomlValue{
@@ -1928,7 +1928,7 @@ slay parse_boolean(parser TomlParser) ParserResult<TomlValue> {
         result.value = value
         result.parser = parser
         damn result
-    } otherwise {
+    } highkey {
         result.error_message = "Expected 'true' or 'false'"
         damn result
     }
@@ -1943,7 +1943,7 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
         error_message: ""
     }
     
-    ready (parser.current_char != "[") {
+    lowkey (parser.current_char != "[") {
         result.error_message = "Expected '[' for array"
         damn result
     }
@@ -1954,7 +1954,7 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
     sus array_values TomlValue[value] = []
     
     fr fr Handle empty array
-    ready (parser.current_char == "]") {
+    lowkey (parser.current_char == "]") {
         parser = advance_parser(parser)
         
         sus value TomlValue = TomlValue{
@@ -1973,7 +1973,7 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
     fr fr Parse array elements
     bestie (based) {
         sus element_result ParserResult<TomlValue> = parse_value(parser)
-        ready (!element_result.success) {
+        lowkey (!element_result.success) {
             result.error_message = element_result.error_message
             damn result
         }
@@ -1982,23 +1982,23 @@ slay parse_array(parser TomlParser) ParserResult<TomlValue> {
         parser = element_result.parser
         parser = skip_whitespace_and_comments(parser)
         
-        ready (parser.current_char == ",") {
+        lowkey (parser.current_char == ",") {
             parser = advance_parser(parser)
             parser = skip_whitespace_and_comments(parser)
             
             fr fr Trailing comma before closing bracket is allowed
-            ready (parser.current_char == "]") {
+            lowkey (parser.current_char == "]") {
                 break
             }
-        } otherwise ready (parser.current_char == "]") {
+        } highkey lowkey (parser.current_char == "]") {
             break
-        } otherwise {
+        } highkey {
             result.error_message = "Expected ',' or ']' in array"
             damn result
         }
     }
     
-    ready (parser.current_char != "]") {
+    lowkey (parser.current_char != "]") {
         result.error_message = "Expected ']' to close array"
         damn result
     }
@@ -2030,7 +2030,7 @@ slay remove_underscores(str tea) tea {
     sus i drip = 0
     bestie (i < length) {
         sus char tea = string_char_at(str, i)
-        ready (char != "_") {
+        lowkey (char != "_") {
             result = result + char
         }
         i = i + 1
@@ -2041,16 +2041,16 @@ slay remove_underscores(str tea) tea {
 
 slay char_to_digit(char tea) drip {
     fr fr Convert character to digit (0-9)
-    ready (char == "0") { damn 0 }
-    ready (char == "1") { damn 1 }
-    ready (char == "2") { damn 2 }
-    ready (char == "3") { damn 3 }
-    ready (char == "4") { damn 4 }
-    ready (char == "5") { damn 5 }
-    ready (char == "6") { damn 6 }
-    ready (char == "7") { damn 7 }
-    ready (char == "8") { damn 8 }
-    ready (char == "9") { damn 9 }
+    lowkey (char == "0") { damn 0 }
+    lowkey (char == "1") { damn 1 }
+    lowkey (char == "2") { damn 2 }
+    lowkey (char == "3") { damn 3 }
+    lowkey (char == "4") { damn 4 }
+    lowkey (char == "5") { damn 5 }
+    lowkey (char == "6") { damn 6 }
+    lowkey (char == "7") { damn 7 }
+    lowkey (char == "8") { damn 8 }
+    lowkey (char == "9") { damn 9 }
     damn 0  fr fr Default for invalid characters
 }
 
@@ -2060,7 +2060,7 @@ slay find_char_in_range(str tea, char tea, start_pos drip) drip {
     sus i drip = start_pos
     
     bestie (i < length) {
-        ready (string_char_at(str, i) == char) {
+        lowkey (string_char_at(str, i) == char) {
             damn i
         }
         i = i + 1
@@ -2076,13 +2076,13 @@ slay find_char_in_string(str tea, char tea) drip {
 
 slay parse_integer_part(str tea) drip {
     fr fr Parse integer part of number
-    ready (str == "") { damn 0 }
+    lowkey (str == "") { damn 0 }
     damn parse_integer_value(str)
 }
 
 slay parse_fractional_part(frac_str tea) sus {
     fr fr Parse fractional part like "123" -> 0.123
-    ready (frac_str == "") { damn 0.0 }
+    lowkey (frac_str == "") { damn 0.0 }
     
     sus result sus = 0.0
     sus length drip = string_length(frac_str)
@@ -2091,7 +2091,7 @@ slay parse_fractional_part(frac_str tea) sus {
     sus i drip = 0
     bestie (i < length) {
         sus char tea = string_char_at(frac_str, i)
-        ready (is_digit(char)) {
+        lowkey (is_digit(char)) {
             sus digit drip = char_to_digit(char)
             divisor = divisor * 10.0
             result = result + sus(digit) / divisor
@@ -2104,26 +2104,26 @@ slay parse_fractional_part(frac_str tea) sus {
 
 slay power_of_ten(exponent drip) sus {
     fr fr Calculate 10^exponent
-    ready (exponent == 0) { damn 1.0 }
-    ready (exponent == 1) { damn 10.0 }
-    ready (exponent == 2) { damn 100.0 }
-    ready (exponent == 3) { damn 1000.0 }
-    ready (exponent == -1) { damn 0.1 }
-    ready (exponent == -2) { damn 0.01 }
-    ready (exponent == -3) { damn 0.001 }
+    lowkey (exponent == 0) { damn 1.0 }
+    lowkey (exponent == 1) { damn 10.0 }
+    lowkey (exponent == 2) { damn 100.0 }
+    lowkey (exponent == 3) { damn 1000.0 }
+    lowkey (exponent == -1) { damn 0.1 }
+    lowkey (exponent == -2) { damn 0.01 }
+    lowkey (exponent == -3) { damn 0.001 }
     
     sus result sus = 1.0
     sus abs_exp drip = exponent
     
-    ready (exponent < 0) {
+    lowkey (exponent < 0) {
         abs_exp = -exponent
     }
     
     sus i drip = 0
     bestie (i < abs_exp) {
-        ready (exponent > 0) {
+        lowkey (exponent > 0) {
             result = result * 10.0
-        } otherwise {
+        } highkey {
             result = result / 10.0
         }
         i = i + 1
@@ -2158,7 +2158,7 @@ slay substring_bytes(str tea, start drip, length drip) tea {
 
 slay utf8_char_to_byte_offset(str tea, char_index drip) drip {
     fr fr Convert character index to byte offset for UTF-8
-    ready (char_index == 0) { damn 0 }
+    lowkey (char_index == 0) { damn 0 }
     
     sus byte_pos drip = 0
     sus char_pos drip = 0
@@ -2167,34 +2167,34 @@ slay utf8_char_to_byte_offset(str tea, char_index drip) drip {
     bestie (byte_pos < byte_length && char_pos < char_index) {
         sus byte_value drip = byte_at(str, byte_pos)
         
-        ready (byte_value < 128) {
+        lowkey (byte_value < 128) {
             byte_pos = byte_pos + 1
-        } otherwise ready (byte_value < 224) {
+        } highkey lowkey (byte_value < 224) {
             byte_pos = byte_pos + 2
-        } otherwise ready (byte_value < 240) {
+        } highkey lowkey (byte_value < 240) {
             byte_pos = byte_pos + 3
-        } otherwise {
+        } highkey {
             byte_pos = byte_pos + 4
         }
         
         char_pos = char_pos + 1
     }
     
-    ready (char_pos == char_index) { damn byte_pos } otherwise { damn -1 }
+    lowkey (char_pos == char_index) { damn byte_pos } highkey { damn -1 }
 }
 
 slay digit_to_char(digit drip) tea {
     fr fr Convert digit (0-9) to character
-    ready (digit == 0) { damn "0" }
-    ready (digit == 1) { damn "1" }
-    ready (digit == 2) { damn "2" }
-    ready (digit == 3) { damn "3" }
-    ready (digit == 4) { damn "4" }
-    ready (digit == 5) { damn "5" }
-    ready (digit == 6) { damn "6" }
-    ready (digit == 7) { damn "7" }
-    ready (digit == 8) { damn "8" }
-    ready (digit == 9) { damn "9" }
+    lowkey (digit == 0) { damn "0" }
+    lowkey (digit == 1) { damn "1" }
+    lowkey (digit == 2) { damn "2" }
+    lowkey (digit == 3) { damn "3" }
+    lowkey (digit == 4) { damn "4" }
+    lowkey (digit == 5) { damn "5" }
+    lowkey (digit == 6) { damn "6" }
+    lowkey (digit == 7) { damn "7" }
+    lowkey (digit == 8) { damn "8" }
+    lowkey (digit == 9) { damn "9" }
     damn "0"
 }
 
@@ -2205,9 +2205,9 @@ slay is_nan(value sus) lit {
 
 slay is_infinite(value sus) lit {
     fr fr Check if float value is infinite
-    ready (value > 0.0) {
+    lowkey (value > 0.0) {
         damn (value > 1.7976931348623157e+308)  fr fr Max double
-    } otherwise {
+    } highkey {
         damn (value < -1.7976931348623157e+308)  fr fr Min double
     }
 }
@@ -2219,14 +2219,14 @@ slay trim_multiline_string(str tea) tea {
     
     bestie (end > 0) {
         sus last_char tea = string_char_at(str, end - 1)
-        ready (last_char == " " || last_char == "\t") {
+        lowkey (last_char == " " || last_char == "\t") {
             end = end - 1
-        } otherwise {
+        } highkey {
             break
         }
     }
     
-    ready (end == length) { damn str } otherwise { damn substring(str, 0, end) }
+    lowkey (end == length) { damn str } highkey { damn substring(str, 0, end) }
 }
 
 slay array_size(arr T[value]) drip {
@@ -2250,18 +2250,18 @@ slay array_resize(arr T[value], new_size drip) T[value]{
 }
 
 slay min(a drip, b drip) drip {
-    ready (a < b) { damn a } otherwise { damn b }
+    lowkey (a < b) { damn a } highkey { damn b }
 }
 
 slay substring(str tea, start drip, length drip) tea {
     fr fr Extract substring by character range
-    ready (start < 0 || length <= 0) { damn "" }
-    ready (start >= string_length(str)) { damn "" }
+    lowkey (start < 0 || length <= 0) { damn "" }
+    lowkey (start >= string_length(str)) { damn "" }
     
     sus result tea = ""
     sus end drip = start + length
     sus str_len drip = string_length(str)
-    ready (end > str_len) { end = str_len }
+    lowkey (end > str_len) { end = str_len }
     
     sus i drip = start
     bestie (i < end) {

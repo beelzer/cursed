@@ -44,11 +44,11 @@ slay numa_topology_init() *NUMATopology {
     fr fr Detect NUMA topology using platform-specific methods
     yo platform_is_linux() {
         detect_linux_numa_topology(topology)
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         detect_windows_numa_topology(topology)
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         detect_darwin_numa_topology(topology)
-    } otherwise {
+    } highkey {
         detect_generic_numa_topology(topology)
     }
     
@@ -215,7 +215,7 @@ slay parse_linux_node_range(range_str tea) normie {
                     max_node = end_node
                 }
             }
-        } otherwise {
+        } highkey {
             sus node normie = parse_int(part)
             yo node > max_node {
                 max_node = node
@@ -244,7 +244,7 @@ slay discover_linux_numa_node(node_id normie) NUMANode {
     yo cpulist_content != "" {
         node.local_cpus = parse_cpu_list(cpulist_content)
         node.cpu_mask = cpu_list_to_mask(node.local_cpus)
-    } otherwise {
+    } highkey {
         fr fr Fallback: try alternative CPU detection
         node.local_cpus = detect_node_cpus_fallback(node_id)
         node.cpu_mask = cpu_list_to_mask(node.local_cpus)
@@ -255,7 +255,7 @@ slay discover_linux_numa_node(node_id normie) NUMANode {
     sus meminfo_content tea = real_read_file_content(meminfo_path)
     yo meminfo_content != "" {
         node.memory_size, node.free_memory = parse_node_meminfo(meminfo_content)
-    } otherwise {
+    } highkey {
         fr fr Fallback: try /proc/meminfo and estimate
         node.memory_size, node.free_memory = estimate_node_memory(node_id)
     }
@@ -265,7 +265,7 @@ slay discover_linux_numa_node(node_id normie) NUMANode {
     sus online_content tea = real_read_file_content(online_path)
     yo online_content != "" {
         node.online = (online_content.trim() == "1")
-    } otherwise {
+    } highkey {
         fr fr Assume node is online if directory exists
         node.online = real_directory_exists("/sys/devices/system/node/node" + tea(node_id))
     }
@@ -289,7 +289,7 @@ slay parse_cpu_list(cpulist_str tea) normie[value]{
                     cpus.push(cpu)
                 }
             }
-        } otherwise {
+        } highkey {
             sus cpu normie = parse_int(part)
             cpus.push(cpu)
         }
@@ -317,7 +317,7 @@ slay parse_node_meminfo(meminfo_content tea) (thicc, thicc) {
         sus line tea = lines[i].trim()
         yo line.starts_with("Node " + "MemTotal:") {
             total_memory = parse_memory_size(line)
-        } otherwise yo line.starts_with("Node " + "MemFree:") {
+        } highkey yo line.starts_with("Node " + "MemFree:") {
             free_memory = parse_memory_size(line)
         }
     }
@@ -347,7 +347,7 @@ slay build_linux_numa_distance_matrix(topology *NUMATopology) lit {
         bestie j := 0; j < topology.nodes.len(); j = j + 1 {
             yo i == j {
                 distances.push(10)  fr fr Local distance
-            } otherwise {
+            } highkey {
                 sus distance normie = read_linux_numa_distance(topology.nodes[i].node_id, topology.nodes[j].node_id)
                 distances.push(distance)
             }
@@ -378,9 +378,9 @@ slay read_linux_numa_distance(from_node normie, to_node normie) normie {
     fr fr Default distance calculations based on node separation
     yo from_node == to_node {
         damn 10  fr fr Local node
-    } otherwise yo abs_diff(from_node, to_node) == 1 {
+    } highkey yo abs_diff(from_node, to_node) == 1 {
         damn 20  fr fr Adjacent nodes
-    } otherwise {
+    } highkey {
         damn 30  fr fr Distant nodes
     }
 }
@@ -476,7 +476,7 @@ slay build_windows_numa_distance_matrix(topology *NUMATopology) lit {
         bestie j := 0; j < topology.nodes.len(); j = j + 1 {
             yo i == j {
                 distances.push(10)
-            } otherwise {
+            } highkey {
                 distances.push(20)  fr fr Typical inter-node distance
             }
         }
@@ -601,9 +601,9 @@ slay real_file_exists(path tea) lit {
     fr fr For NUMA files, we need actual filesystem checks
     yo path == "/sys/devices/system/node" {
         damn check_sys_node_directory()
-    } otherwise yo path == "/proc/sys/vm/nr_hugepages" {
+    } highkey yo path == "/proc/sys/vm/nr_hugepages" {
         damn check_hugepages_support()
-    } otherwise yo path == "/proc/self/numa_maps" {
+    } highkey yo path == "/proc/self/numa_maps" {
         damn check_numa_maps_file()
     }
     
@@ -626,17 +626,17 @@ slay real_read_file_content(path tea) tea {
     fr fr REAL file content reading - not simulation
     yo path == "/sys/devices/system/node/possible" {
         damn read_numa_possible_nodes()
-    } otherwise yo path.contains("/cpulist") {
+    } highkey yo path.contains("/cpulist") {
         damn read_node_cpulist(path)
-    } otherwise yo path.contains("/meminfo") {
+    } highkey yo path.contains("/meminfo") {
         damn read_node_meminfo_real(path)
-    } otherwise yo path.contains("/distance") {
+    } highkey yo path.contains("/distance") {
         damn read_numa_distances_real(path)
-    } otherwise yo path.contains("/online") {
+    } highkey yo path.contains("/online") {
         damn read_node_online_status(path)
-    } otherwise yo path == "/proc/self/numa_maps" {
+    } highkey yo path == "/proc/self/numa_maps" {
         damn read_numa_maps_real()
-    } otherwise yo path == "/proc/meminfo" {
+    } highkey yo path == "/proc/meminfo" {
         damn read_system_meminfo()
     }
     
@@ -765,7 +765,7 @@ slay detect_current_node_by_cpu() normie {
 slay abs_diff(a normie, b normie) normie {
     yo a >= b {
         damn a - b
-    } otherwise {
+    } highkey {
         damn b - a
     }
 }
@@ -817,11 +817,11 @@ slay generic_file_exists(path tea) lit {
     fr fr Real implementation would use stat() system call
     yo path.starts_with("/sys/devices/system/node") {
         damn based  fr fr Assume NUMA nodes exist
-    } otherwise yo path.starts_with("/proc/sys/vm/") {
+    } highkey yo path.starts_with("/proc/sys/vm/") {
         damn based  fr fr Assume kernel VM support
-    } otherwise yo path.starts_with("/proc/self/") {
+    } highkey yo path.starts_with("/proc/self/") {
         damn based  fr fr Assume proc filesystem
-    } otherwise yo path.starts_with("/sys/devices/system/cpu/") {
+    } highkey yo path.starts_with("/sys/devices/system/cpu/") {
         damn based  fr fr Assume CPU topology exists
     }
     damn cap  fr fr Conservative default
@@ -839,9 +839,9 @@ slay read_numa_possible_nodes() tea {
     sus node_count normie = count_real_numa_nodes()
     yo node_count == 1 {
         damn "0"
-    } otherwise yo node_count <= 4 {
+    } highkey yo node_count <= 4 {
         damn "0-" + tea(node_count - 1)
-    } otherwise {
+    } highkey {
         damn "0-7"  fr fr Reasonable default for multi-socket systems
     }
 }
@@ -861,7 +861,7 @@ slay read_node_cpulist(path tea) tea {
     
     yo start_cpu == end_cpu {
         damn tea(start_cpu)
-    } otherwise {
+    } highkey {
         damn tea(start_cpu) + "-" + tea(end_cpu)
     }
 }
@@ -895,9 +895,9 @@ slay read_numa_distances_real(path tea) tea {
         
         yo from_node == to_node {
             distances = distances + "10"  fr fr Local distance
-        } otherwise yo abs_diff(from_node, to_node) == 1 {
+        } highkey yo abs_diff(from_node, to_node) == 1 {
             distances = distances + "20"  fr fr Adjacent nodes
-        } otherwise {
+        } highkey {
             distances = distances + "30"  fr fr Distant nodes
         }
     }
@@ -937,7 +937,7 @@ slay extract_node_id_from_path(path tea) normie {
         yo end_pos == -1 {
             sus node_str tea = path.substring(start_pos)
             damn parse_int(node_str)
-        } otherwise {
+        } highkey {
             sus node_str tea = path.substring(start_pos, end_pos)
             damn parse_int(node_str)
         }

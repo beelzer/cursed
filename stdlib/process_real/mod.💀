@@ -321,7 +321,7 @@ slay cursed_fork() normie {
     lowkey child_pid == 0 {
         fr fr In child process
         damn 0
-    } otherwise {
+    } highkey {
         fr fr In parent process - register child
         process_registry.next_process_id = child_pid + 1
         damn child_pid

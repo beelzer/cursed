@@ -13,7 +13,7 @@ slay secure_collection_hash(key tea, modulus normie) normie {
     sus hash_key drip[16] = generate_siphash_key()
     sus hash_result drip = siphash_hash(key_bytes, hash_key)
     
-    ready (modulus > 0) {
+    lowkey (modulus > 0) {
         damn hash_result % modulus
     }
     damn hash_result
@@ -106,7 +106,7 @@ slay sip_round_compress(v0 *drip, v1 *drip, v2 *drip, v3 *drip) {
 
 // SECURITY: Constant-time string comparison
 slay secure_string_compare(a tea, b tea) lit {
-    ready (stringz.length(a) != stringz.length(b)) {
+    lowkey (stringz.length(a) != stringz.length(b)) {
         damn cringe
     }
     
@@ -118,7 +118,7 @@ slay secure_string_compare(a tea, b tea) lit {
 
 // SECURITY: Constant-time byte array comparison using HMAC
 slay secure_constant_time_compare(a drip[value], b drip[value]) lit {
-    ready (len(a) != len(b)) {
+    lowkey (len(a) != len(b)) {
         damn cringe
     }
     
@@ -152,7 +152,7 @@ slay hmac_sha256(data drip[value], key drip[32]) drip[value]{
     
     // Initialize pads
     bestie (i := 0; i < 64; i += 1) {
-        ready (i < 32) {
+        lowkey (i < 32) {
             ipad[i] = key[i] ^ 0x36
             opad[i] = key[i] ^ 0x5C
         } else {
@@ -174,7 +174,7 @@ slay hmac_sha256(data drip[value], key drip[32]) drip[value]{
 slay bytes_to_uint64(data drip[value], offset normie) drip {
     sus result drip = 0
     bestie (i := 0; i < 8; i += 1) {
-        ready (offset + i < len(data)) {
+        lowkey (offset + i < len(data)) {
             result |= drip(data[offset + i]) << (i * 8)
         }
     }

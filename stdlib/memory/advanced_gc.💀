@@ -181,7 +181,7 @@ slay advanced_gc_init_heap(gc *AdvancedGarbageCollector, heap_size thicc) lit {
     yo gc.numa_aware && numa_get_node_count() > 1 {
         fr fr Allocate heap memory distributed across NUMA nodes
         gc.heap_start = numa_alloc_interleaved(heap_size.(normie))
-    } otherwise {
+    } highkey {
         fr fr Single allocation on current NUMA node
         gc.heap_start = bootstrap.cursed_malloc(heap_size.(normie))
     }
@@ -334,7 +334,7 @@ slay advanced_gc_find_free_object(gen *GCGeneration, size normie) *GCObjectHeade
             fr fr Remove from free list
             yo prev != cringe {
                 prev.next_in_freelist = current.next_in_freelist
-            } otherwise {
+            } highkey {
                 gen.free_objects = current.next_in_freelist
             }
             
@@ -362,7 +362,7 @@ slay advanced_gc_allocate_new_object(gc *AdvancedGarbageCollector, gen *GCGenera
     yo gc.numa_aware {
         sus preferred_node normie = numa_get_current_node()
         memory = numa_alloc_on_node(total_size, preferred_node)
-    } otherwise {
+    } highkey {
         memory = bootstrap.cursed_malloc(total_size)
     }
     
@@ -483,7 +483,7 @@ slay advanced_gc_trigger_collection(gc *AdvancedGarbageCollector) {
     
     yo gc.concurrent_collection {
         advanced_gc_concurrent_collection(gc)
-    } otherwise {
+    } highkey {
         advanced_gc_stop_world_collection(gc)
     }
     
@@ -688,11 +688,11 @@ slay advanced_gc_trace_object_references(gc *AdvancedGarbageCollector, object *G
     fr fr Type-specific reference tracing
     yo object.type_id == 1 {  fr fr Array type
         advanced_gc_trace_array_references(gc, data_ptr, object.size)
-    } otherwise yo object.type_id == 2 {  fr fr Struct type
+    } highkey yo object.type_id == 2 {  fr fr Struct type
         advanced_gc_trace_struct_references(gc, data_ptr, object.size)
-    } otherwise yo object.type_id == 3 {  fr fr String type (no references)
+    } highkey yo object.type_id == 3 {  fr fr String type (no references)
         fr fr Strings don't contain object references
-    } otherwise {
+    } highkey {
         fr fr Generic reference tracing
         advanced_gc_trace_generic_references(gc, data_ptr, object.size)
     }
@@ -860,7 +860,7 @@ slay advanced_gc_sweep_generation(gc *AdvancedGarbageCollector, gen *GCGeneratio
             fr fr Update statistics
             atomic_drip.atomic_decrement_i32(gen.object_count)
             atomic_drip.atomic_subtract_i64(gen.total_size, object_size)
-        } otherwise {
+        } highkey {
             fr fr Object survived - reset for next collection
             current.mark_bit = cap
             current.color = GC_COLOR_WHITE
@@ -884,7 +884,7 @@ fr fr Remove object from generation list
 slay advanced_gc_remove_from_generation(gen *GCGeneration, object *GCObjectHeader) {
     yo object.prev_in_generation != cringe {
         object.prev_in_generation.next_in_generation = object.next_in_generation
-    } otherwise {
+    } highkey {
         gen.objects = object.next_in_generation
     }
     
@@ -1115,7 +1115,7 @@ slay advanced_gc_calculate_fragmentation(gc *AdvancedGarbageCollector) {
     sus fragmentation drip
     yo total_free_size > 0 {
         fragmentation = 1.0 - (drip(largest_free_block) / drip(total_free_size))
-    } otherwise {
+    } highkey {
         fragmentation = 0.0
     }
     
@@ -1189,7 +1189,7 @@ slay advanced_gc_get_statistics() {
     vibez.spillf("Total allocations: {}", total_allocs)
     vibez.spillf("Total collections: {}", total_collections)
     vibez.spillf("Total collection time: {} µs", total_collection_time)
-    vibez.spillf("Average collection time: {} µs", yo total_collections > 0 { total_collection_time / total_collections } otherwise { 0 })
+    vibez.spillf("Average collection time: {} µs", yo total_collections > 0 { total_collection_time / total_collections } highkey { 0 })
     vibez.spillf("Last collection time: {} µs", gc.last_collection_time)
     
     vibez.spillf("Heap size: {} MB", gc.heap_size / (1024 * 1024))
@@ -1210,9 +1210,9 @@ slay advanced_gc_get_statistics() {
         sus gen_name tea
         yo gen_id == GC_GENERATION_NURSERY {
             gen_name = "Nursery"
-        } otherwise yo gen_id == GC_GENERATION_MATURE {
+        } highkey yo gen_id == GC_GENERATION_MATURE {
             gen_name = "Mature"
-        } otherwise {
+        } highkey {
             gen_name = "Old"
         }
         

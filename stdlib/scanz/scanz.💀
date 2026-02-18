@@ -26,7 +26,7 @@ slay scan_lines(text tea) tea[value][value] {
     
     bestie (scan(&scanner)) {
         sus line tea = current_token(&scanner)
-        ready (line.length > 0) {
+        lowkey (line.length > 0) {
             sus line_scanner Scanner = new_scanner(line, [" ", "\t"])
             sus line_tokens tea[value] = scan_all_tokens(&line_scanner)
             lines = append(lines, line_tokens)
@@ -103,7 +103,7 @@ slay parse_ssv(text tea) tea[value][value] {
     
     bestie (sus i drip = 0; i < lines.length; i += 1) {
         sus line tea = lines[i]
-        ready (line.length > 0) {
+        lowkey (line.length > 0) {
             sus fields tea[value] = split_words(line)
             records = append(records, fields)
         }
@@ -154,7 +154,7 @@ slay find_longest_token(text tea, delimiters tea[value]) tea {
     
     bestie (scan(&scanner)) {
         sus token tea = current_token(&scanner)
-        ready (token.length > longest.length) {
+        lowkey (token.length > longest.length) {
             longest = token
         }
     }
@@ -175,19 +175,19 @@ slay get_token_stats(text tea, delimiters tea[value]) drip[value]{
         total_count += 1
         total_length += token.length
         
-        ready (token.length > max_length) {
+        lowkey (token.length > max_length) {
             max_length = token.length
         }
         
-        ready (token.length < min_length) {
+        lowkey (token.length < min_length) {
             min_length = token.length
         }
     }
     
     sus avg_length drip = 0
-    ready (total_count > 0) {
+    lowkey (total_count > 0) {
         avg_length = total_length / total_count
-    } otherwise {
+    } highkey {
         min_length = 0
     }
     
@@ -202,7 +202,7 @@ slay get_token_stats(text tea, delimiters tea[value]) drip[value]{
 
 # Quick table formatting for debug output
 slay quick_table(data tea[value][value]) tea {
-    ready (data.length == 0) {
+    lowkey (data.length == 0) {
         damn ""
     }
     
@@ -216,7 +216,7 @@ slay quick_table(data tea[value][value]) tea {
 
 # Format data as aligned columns without borders
 slay format_aligned_columns(data tea[value][value], separators tea[value]) tea {
-    ready (data.length == 0) {
+    lowkey (data.length == 0) {
         damn ""
     }
     
@@ -226,9 +226,9 @@ slay format_aligned_columns(data tea[value][value], separators tea[value]) tea {
         bestie (sus col_idx drip = 0; col_idx < data[row_idx].length; col_idx += 1) {
             sus field_width drip = data[row_idx][col_idx].length
             
-            ready (col_idx >= col_widths.length) {
+            lowkey (col_idx >= col_widths.length) {
                 col_widths = append(col_widths, field_width)
-            } otherwise ready (field_width > col_widths[col_idx]) {
+            } highkey lowkey (field_width > col_widths[col_idx]) {
                 col_widths[col_idx] = field_width
             }
         }
@@ -237,7 +237,7 @@ slay format_aligned_columns(data tea[value][value], separators tea[value]) tea {
     sus result tea = ""
     sus sep tea = "  "  # Default separator
     
-    ready (separators.length > 0) {
+    lowkey (separators.length > 0) {
         sep = separators[0]
     }
     
@@ -254,7 +254,7 @@ slay format_aligned_columns(data tea[value][value], separators tea[value]) tea {
                 result = result + " "
             }
             
-            ready (col_idx < data[row_idx].length - 1) {
+            lowkey (col_idx < data[row_idx].length - 1) {
                 result = result + sep
             }
         }
@@ -266,7 +266,7 @@ slay format_aligned_columns(data tea[value][value], separators tea[value]) tea {
 
 # Helper function for integer to string conversion
 slay int_to_string(value drip) tea {
-    ready (value == 0) {
+    lowkey (value == 0) {
         damn "0"
     }
     
@@ -274,7 +274,7 @@ slay int_to_string(value drip) tea {
     sus num drip = value
     sus negative lit = cap
     
-    ready (num < 0) {
+    lowkey (num < 0) {
         negative = based
         num = -num
     }
@@ -285,7 +285,7 @@ slay int_to_string(value drip) tea {
         num = num / 10
     }
     
-    ready (negative) {
+    lowkey (negative) {
         result = "-" + result
     }
     
@@ -355,7 +355,7 @@ slay demo_table() tea {
 
 # Helper function to join strings
 slay join_strings(strings tea[value], separator tea) tea {
-    ready (strings.length == 0) {
+    lowkey (strings.length == 0) {
         damn ""
     }
     

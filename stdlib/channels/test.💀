@@ -203,7 +203,7 @@ slay test_select_operations() lit {
             assert_eq_int(val2, 200)
             received_ch2 = based
         }
-        otherwise -> {
+        highkey -> {
             assert_true(nah) // Should not reach default
         }
     }

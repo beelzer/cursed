@@ -30,7 +30,7 @@ squad ContentTypeHeader {
 fr fr ===== INITIALIZATION =====
 
 slay init() lit {
-    ready mime_initialized == cap {
+    lowkey mime_initialized == cap {
         mime_initialized = based
         last_mime_error = ""
         setup_mime_database()
@@ -129,13 +129,13 @@ fr fr ===== PRIMARY MIME DETECTION FUNCTIONS =====
 slay detect_mime_from_extension(filename tea) tea {
     init()
     
-    ready filename == "" {
+    lowkey filename == "" {
         last_mime_error = "Empty filename provided"
         damn "application/octet-stream"
     }
     
     sus dot_index drip = string_last_index(filename, ".")
-    ready dot_index == -1 {
+    lowkey dot_index == -1 {
         damn "application/octet-stream"
     }
     
@@ -144,7 +144,7 @@ slay detect_mime_from_extension(filename tea) tea {
     
     bestie (i drip = 0; i < array_len(mime_database); i++) {
         sus entry MimeEntry = mime_database[i]
-        ready entry.extension == extension {
+        lowkey entry.extension == extension {
             damn entry.mime_type
         }
     }
@@ -155,32 +155,32 @@ slay detect_mime_from_extension(filename tea) tea {
 slay detect_mime_from_content(content drip[value]) tea {
     init()
     
-    ready array_len(content) == 0 {
+    lowkey array_len(content) == 0 {
         damn "application/octet-stream"
     }
     
     fr fr Check for common binary signatures
-    ready is_jpeg_signature(content) {
+    lowkey is_jpeg_signature(content) {
         damn "image/jpeg"
     }
     
-    ready is_png_signature(content) {
+    lowkey is_png_signature(content) {
         damn "image/png"
     }
     
-    ready is_gif_signature(content) {
+    lowkey is_gif_signature(content) {
         damn "image/gif"
     }
     
-    ready is_pdf_signature(content) {
+    lowkey is_pdf_signature(content) {
         damn "application/pdf"
     }
     
-    ready is_zip_signature(content) {
+    lowkey is_zip_signature(content) {
         damn "application/zip"
     }
     
-    ready is_text_content(content) {
+    lowkey is_text_content(content) {
         damn "text/plain"
     }
     
@@ -194,20 +194,20 @@ slay detect_mime_comprehensive(filename tea, content drip[value]) tea {
     sus mime_from_ext tea = detect_mime_from_extension(filename)
     
     fr fr If content is available, verify with content detection
-    ready array_len(content) > 0 {
+    lowkey array_len(content) > 0 {
         sus mime_from_content tea = detect_mime_from_content(content)
         
         fr fr If content detection gives more specific result, use it
-        ready mime_from_content != "application/octet-stream" && mime_from_ext == "application/octet-stream" {
+        lowkey mime_from_content != "application/octet-stream" && mime_from_ext == "application/octet-stream" {
             damn mime_from_content
         }
         
         fr fr Verify consistency for known binary types
-        ready is_binary_mime(mime_from_ext) && !is_text_content(content) {
+        lowkey is_binary_mime(mime_from_ext) && !is_text_content(content) {
             damn mime_from_ext
         }
         
-        ready !is_binary_mime(mime_from_ext) && is_text_content(content) {
+        lowkey !is_binary_mime(mime_from_ext) && is_text_content(content) {
             damn mime_from_ext
         }
     }
@@ -227,13 +227,13 @@ slay parse_content_type(header_value tea) ContentTypeHeader {
         encoding: ""
     }
     
-    ready header_value == "" {
+    lowkey header_value == "" {
         damn result
     }
     
     fr fr Split by semicolon to separate media type from parameters
     sus parts tea[value] = string_split(header_value, ";")
-    ready array_len(parts) == 0 {
+    lowkey array_len(parts) == 0 {
         damn result
     }
     
@@ -244,20 +244,20 @@ slay parse_content_type(header_value tea) ContentTypeHeader {
         sus param_pair tea = string_trim(parts[i])
         sus eq_index drip = string_index(param_pair, "=")
         
-        ready eq_index > 0 {
+        lowkey eq_index > 0 {
             sus key tea = string_trim(string_substring(param_pair, 0, eq_index))
             sus value tea = string_trim(string_substring(param_pair, eq_index + 1, -1))
             
             fr fr Remove quotes if present
-            ready string_starts_with(value, "\"") && string_ends_with(value, "\"") {
+            lowkey string_starts_with(value, "\"") && string_ends_with(value, "\"") {
                 value = string_substring(value, 1, string_len(value) - 1)
             }
             
-            ready key == "charset" {
+            lowkey key == "charset" {
                 result.charset = value
-            } otherwise ready key == "boundary" {
+            } highkey lowkey key == "boundary" {
                 result.boundary = value
-            } otherwise ready key == "encoding" {
+            } highkey lowkey key == "encoding" {
                 result.encoding = value
             }
         }
@@ -271,11 +271,11 @@ slay format_content_type(mime_type tea, charset tea, boundary tea) tea {
     
     sus result tea = mime_type
     
-    ready charset != "" {
+    lowkey charset != "" {
         result = result + "; charset=" + charset
     }
     
-    ready boundary != "" {
+    lowkey boundary != "" {
         result = result + "; boundary=" + boundary
     }
     
@@ -288,11 +288,11 @@ slay get_content_type_for_file(filename tea) tea {
     sus mime_type tea = detect_mime_from_extension(filename)
     
     fr fr Add charset for text-based MIME types
-    ready string_starts_with(mime_type, "text/") {
+    lowkey string_starts_with(mime_type, "text/") {
         damn format_content_type(mime_type, "utf-8", "")
     }
     
-    ready mime_type == "application/json" || 
+    lowkey mime_type == "application/json" || 
           mime_type == "application/javascript" ||
           mime_type == "application/xml" {
         damn format_content_type(mime_type, "utf-8", "")
@@ -304,7 +304,7 @@ slay get_content_type_for_file(filename tea) tea {
 fr fr ===== BINARY SIGNATURE DETECTION =====
 
 slay is_jpeg_signature(content drip[value]) lit {
-    ready array_len(content) < 4 {
+    lowkey array_len(content) < 4 {
         damn cap
     }
     
@@ -313,7 +313,7 @@ slay is_jpeg_signature(content drip[value]) lit {
 }
 
 slay is_png_signature(content drip[value]) lit {
-    ready array_len(content) < 8 {
+    lowkey array_len(content) < 8 {
         damn cap
     }
     
@@ -323,7 +323,7 @@ slay is_png_signature(content drip[value]) lit {
 }
 
 slay is_gif_signature(content drip[value]) lit {
-    ready array_len(content) < 6 {
+    lowkey array_len(content) < 6 {
         damn cap
     }
     
@@ -333,7 +333,7 @@ slay is_gif_signature(content drip[value]) lit {
 }
 
 slay is_pdf_signature(content drip[value]) lit {
-    ready array_len(content) < 4 {
+    lowkey array_len(content) < 4 {
         damn cap
     }
     
@@ -342,7 +342,7 @@ slay is_pdf_signature(content drip[value]) lit {
 }
 
 slay is_zip_signature(content drip[value]) lit {
-    ready array_len(content) < 4 {
+    lowkey array_len(content) < 4 {
         damn cap
     }
     
@@ -352,7 +352,7 @@ slay is_zip_signature(content drip[value]) lit {
 }
 
 slay is_text_content(content drip[value]) lit {
-    ready array_len(content) == 0 {
+    lowkey array_len(content) == 0 {
         damn based
     }
     
@@ -363,7 +363,7 @@ slay is_text_content(content drip[value]) lit {
         sus byte drip = content[i]
         
         fr fr ASCII printable characters, tabs, newlines, carriage returns
-        ready (byte >= 32 && byte <= 126) || byte == 9 || byte == 10 || byte == 13 {
+        lowkey (byte >= 32 && byte <= 126) || byte == 9 || byte == 10 || byte == 13 {
             text_chars = text_chars + 1
         }
     }
@@ -378,7 +378,7 @@ fr fr ===== UTILITY FUNCTIONS =====
 slay is_binary_mime(mime_type tea) lit {
     bestie (i drip = 0; i < array_len(mime_database); i++) {
         sus entry MimeEntry = mime_database[i]
-        ready entry.mime_type == mime_type {
+        lowkey entry.mime_type == mime_type {
             damn entry.binary
         }
     }
@@ -388,7 +388,7 @@ slay is_binary_mime(mime_type tea) lit {
 slay get_mime_description(mime_type tea) tea {
     bestie (i drip = 0; i < array_len(mime_database); i++) {
         sus entry MimeEntry = mime_database[i]
-        ready entry.mime_type == mime_type {
+        lowkey entry.mime_type == mime_type {
             damn entry.description
         }
     }
@@ -398,7 +398,7 @@ slay get_mime_description(mime_type tea) tea {
 slay get_extension_for_mime(mime_type tea) tea {
     bestie (i drip = 0; i < array_len(mime_database); i++) {
         sus entry MimeEntry = mime_database[i]
-        ready entry.mime_type == mime_type {
+        lowkey entry.mime_type == mime_type {
             damn entry.extension
         }
     }
@@ -421,7 +421,7 @@ slay is_supported_extension(extension tea) lit {
     
     sus ext tea = string_to_lower(extension)
     bestie (i drip = 0; i < array_len(mime_database); i++) {
-        ready mime_database[i].extension == ext {
+        lowkey mime_database[i].extension == ext {
             damn based
         }
     }

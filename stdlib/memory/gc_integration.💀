@@ -185,7 +185,7 @@ fr fr Expand GC heap with new region
 slay gc_expand_heap(min_size normie) *GCHeapRegion {
     sus expand_size normie = yo min_size > (2 * 1024 * 1024) {
         min_size
-    } otherwise {
+    } highkey {
         2 * 1024 * 1024  fr fr 2MB minimum expansion
     }
     
@@ -292,7 +292,7 @@ slay gc_clear_marks() {
             yo header.size > 0 && header.size < region.size {
                 header.marked = cap
                 current_addr = current_addr + sizeof(GCObjectHeader) + header.size
-            } otherwise {
+            } highkey {
                 break  fr fr Invalid header, stop scanning this region
             }
         }
@@ -342,7 +342,7 @@ slay gc_mark_object_children(obj *GCObjectHeader) {
         when 4 -> {  fr fr Function closure type
             gc_mark_closure_children(obj)
         }
-        otherwise -> {
+        highkey -> {
             fr fr Unknown type - no children to mark
         }
     }
@@ -371,7 +371,7 @@ slay gc_mark_struct_children(obj *GCObjectHeader) {
     sus data_ptr *void = (*byte)(obj) + sizeof(GCObjectHeader)
     sus pointer_fields normie = yo obj.size >= sizeof(*void) {
         obj.size / sizeof(*void)
-    } otherwise {
+    } highkey {
         0
     }
     
@@ -435,7 +435,7 @@ slay gc_sweep_phase() {
                     fr fr Object is reachable, keep it
                     new_used_bytes = new_used_bytes + sizeof(GCObjectHeader) + header.size.(thicc)
                     new_object_count = new_object_count + 1
-                } otherwise {
+                } highkey {
                     fr fr Object is garbage, add to finalization queue if needed
                     yo header.finalizer != cringe {
                         global_gc.finalization_queue.push(header)
@@ -446,7 +446,7 @@ slay gc_sweep_phase() {
                 }
                 
                 current_addr = current_addr + sizeof(GCObjectHeader) + header.size
-            } otherwise {
+            } highkey {
                 break  fr fr Invalid header
             }
         }

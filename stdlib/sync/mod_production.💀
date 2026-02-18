@@ -30,19 +30,19 @@ fr fr ==========================================================================
 
 fr fr Get actual OS thread ID using platform-specific system calls
 slay get_real_thread_id() normie {
-    ready sysz.platform_is_linux() {
+    lowkey sysz.platform_is_linux() {
         fr fr Linux: Use gettid() system call
         damn sysz.syscall_gettid()
     }
-    otherwise ready sysz.platform_is_windows() {
+    highkey lowkey sysz.platform_is_windows() {
         fr fr Windows: Use GetCurrentThreadId()
         damn sysz.windows_get_current_thread_id()
     }
-    otherwise ready sysz.platform_is_darwin() {
+    highkey lowkey sysz.platform_is_darwin() {
         fr fr macOS: Use pthread_threadid_np()
         damn sysz.darwin_pthread_threadid_np()
     }
-    otherwise {
+    highkey {
         fr fr Fallback: Use pthread_self() hash
         damn sysz.pthread_self_hash()
     }
@@ -50,45 +50,45 @@ slay get_real_thread_id() normie {
 
 fr fr Get actual CPU count from OS
 slay get_cpu_count() normie {
-    ready sysz.platform_is_linux() {
+    lowkey sysz.platform_is_linux() {
         fr fr Parse /proc/cpuinfo or use sysconf(_SC_NPROCESSORS_ONLN)
         damn sysz.linux_get_nproc()
     }
-    otherwise ready sysz.platform_is_windows() {
+    highkey lowkey sysz.platform_is_windows() {
         fr fr Use GetSystemInfo()
         damn sysz.windows_get_processor_count()
     }
-    otherwise ready sysz.platform_is_darwin() {
+    highkey lowkey sysz.platform_is_darwin() {
         fr fr Use sysctl(CTL_HW, HW_NCPU)
         damn sysz.darwin_sysctl_hw_ncpu()
     }
-    otherwise {
+    highkey {
         damn 1  // Safe fallback
     }
 }
 
 fr fr High-precision timing using OS-specific monotonic clocks
 slay get_monotonic_time_ns() thicc {
-    ready sysz.platform_is_linux() || sysz.platform_is_darwin() {
+    lowkey sysz.platform_is_linux() || sysz.platform_is_darwin() {
         fr fr Use clock_gettime(CLOCK_MONOTONIC)
         damn sysz.clock_gettime_monotonic_ns()
     }
-    otherwise ready sysz.platform_is_windows() {
+    highkey lowkey sysz.platform_is_windows() {
         fr fr Use QueryPerformanceCounter()
         damn sysz.windows_query_performance_counter_ns()
     }
-    otherwise {
+    highkey {
         damn 0  // Fallback
     }
 }
 
 fr fr CPU yield using OS scheduler primitives
 slay yield_cpu() {
-    ready sysz.platform_is_linux() || sysz.platform_is_darwin() {
+    lowkey sysz.platform_is_linux() || sysz.platform_is_darwin() {
         fr fr Use sched_yield() system call
         sysz.sched_yield()
     }
-    otherwise ready sysz.platform_is_windows() {
+    highkey lowkey sysz.platform_is_windows() {
         fr fr Use SwitchToThread() or Sleep(0)
         sysz.windows_switch_to_thread()
     }
@@ -121,7 +121,7 @@ slay create_production_mutex() *ProductionMutex {
 
 fr fr Lock mutex using futex system calls for true blocking
 slay production_mutex_lock(mutex *ProductionMutex) lit {
-    ready mutex == 0 {
+    lowkey mutex == 0 {
         damn cap
     }
     
@@ -132,7 +132,7 @@ slay production_mutex_lock(mutex *ProductionMutex) lit {
     
     fr fr Fast path: try to acquire lock without contention
     sus expected normie = 0
-    ready atomic_drip.compare_and_swap_i32(&mutex.futex_word, expected, 1, ACQUIRE) {
+    lowkey atomic_drip.compare_and_swap_i32(&mutex.futex_word, expected, 1, ACQUIRE) {
         mutex.owner_tid = current_tid
         damn based
     }
@@ -143,8 +143,8 @@ slay production_mutex_lock(mutex *ProductionMutex) lit {
     periodt {
         fr fr Adaptive spinning phase - avoid syscall overhead for short waits
         bestie spins < max_spins {
-            ready atomic_drip.atomic_load_i32(&mutex.futex_word, ACQUIRE) == 0 {
-                ready atomic_drip.compare_and_swap_i32(&mutex.futex_word, 0, 1, ACQUIRE) {
+            lowkey atomic_drip.atomic_load_i32(&mutex.futex_word, ACQUIRE) == 0 {
+                lowkey atomic_drip.compare_and_swap_i32(&mutex.futex_word, 0, 1, ACQUIRE) {
                     mutex.owner_tid = current_tid
                     sus wait_time thicc = get_monotonic_time_ns() - start_time
                     atomic_drip.atomic_add_i64(&mutex.total_wait_time_ns, wait_time, RELAXED)
@@ -158,7 +158,7 @@ slay production_mutex_lock(mutex *ProductionMutex) lit {
         
         fr fr Set contended bit (futex_word = 2) to signal waiters
         sus old_val normie = atomic_drip.atomic_exchange_i32(&mutex.futex_word, 2, ACQUIRE)
-        ready old_val == 0 {
+        lowkey old_val == 0 {
             fr fr Lock became free during exchange
             mutex.owner_tid = current_tid
             sus wait_time thicc = get_monotonic_time_ns() - start_time
@@ -167,19 +167,19 @@ slay production_mutex_lock(mutex *ProductionMutex) lit {
         }
         
         fr fr Block on futex - true OS-level blocking with kernel scheduler
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             fr fr Linux futex system call
             sysz.futex(&mutex.futex_word, FUTEX_WAIT | FUTEX_PRIVATE, 2, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             fr fr Windows WaitOnAddress API
             sysz.windows_wait_on_address(&mutex.futex_word, 2, 4, -1)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             fr fr macOS ulock_wait system call
             sysz.darwin_ulock_wait(0, &mutex.futex_word, 2, 0)
         }
-        otherwise {
+        highkey {
             fr fr Fallback: short sleep
             yield_cpu()
         }
@@ -193,12 +193,12 @@ slay production_mutex_lock(mutex *ProductionMutex) lit {
 
 fr fr Unlock mutex using futex wake operations
 slay production_mutex_unlock(mutex *ProductionMutex) lit {
-    ready mutex == 0 {
+    lowkey mutex == 0 {
         damn cap
     }
     
     sus current_tid normie = get_real_thread_id()
-    ready mutex.owner_tid != current_tid {
+    lowkey mutex.owner_tid != current_tid {
         vibez.spill("🚨 FATAL: Unlocking mutex not owned by current thread!")
         damn cap
     }
@@ -207,17 +207,17 @@ slay production_mutex_unlock(mutex *ProductionMutex) lit {
     
     fr fr Release lock and wake waiters if any
     sus old_val normie = atomic_drip.atomic_exchange_i32(&mutex.futex_word, 0, RELEASE)
-    ready old_val == 2 {
+    lowkey old_val == 2 {
         fr fr There were waiters - wake one waiter using OS primitives
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             fr fr Linux futex wake
             sysz.futex(&mutex.futex_word, FUTEX_WAKE | FUTEX_PRIVATE, 1, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             fr fr Windows WakeByAddressSingle API
             sysz.windows_wake_by_address_single(&mutex.futex_word)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             fr fr macOS ulock_wake system call
             sysz.darwin_ulock_wake(0, &mutex.futex_word, 0)
         }
@@ -228,14 +228,14 @@ slay production_mutex_unlock(mutex *ProductionMutex) lit {
 
 fr fr Try lock (non-blocking) using atomic compare-and-swap
 slay production_mutex_trylock(mutex *ProductionMutex) lit {
-    ready mutex == 0 {
+    lowkey mutex == 0 {
         damn cap
     }
     
     sus current_tid normie = get_real_thread_id()
     sus expected normie = 0
     
-    ready atomic_drip.compare_and_swap_i32(&mutex.futex_word, expected, 1, ACQUIRE) {
+    lowkey atomic_drip.compare_and_swap_i32(&mutex.futex_word, expected, 1, ACQUIRE) {
         mutex.owner_tid = current_tid
         damn based
     }
@@ -283,12 +283,12 @@ slay create_production_waitgroup() *ProductionWaitGroup {
 
 fr fr Add tasks to waitgroup using atomic operations
 slay production_waitgroup_add(wg *ProductionWaitGroup, delta normie) lit {
-    ready wg == 0 {
+    lowkey wg == 0 {
         damn cap
     }
     
     sus old_counter normie = atomic_drip.atomic_add_i32(&wg.counter, delta, SEQCST)
-    ready old_counter + delta < 0 {
+    lowkey old_counter + delta < 0 {
         vibez.spill("🚨 FATAL: WaitGroup counter went negative!")
         damn cap
     }
@@ -299,34 +299,34 @@ slay production_waitgroup_add(wg *ProductionWaitGroup, delta normie) lit {
 
 fr fr Mark task as done with completion detection
 slay production_waitgroup_done(wg *ProductionWaitGroup) lit {
-    ready wg == 0 {
+    lowkey wg == 0 {
         damn cap
     }
     
     sus old_counter normie = atomic_drip.atomic_sub_i32(&wg.counter, 1, SEQCST)
-    ready old_counter <= 0 {
+    lowkey old_counter <= 0 {
         vibez.spill("🚨 FATAL: WaitGroup done() called more than add()!")
         damn cap
     }
     
     atomic_drip.atomic_add_i64(&wg.stats.total_dones, 1, RELAXED)
     
-    ready old_counter == 1 {
+    lowkey old_counter == 1 {
         fr fr Last task completed - wake all waiters
         atomic_drip.atomic_store_i32(&wg.completion_futex, 1, RELEASE)
         atomic_drip.atomic_add_i32(&wg.generation, 1, RELEASE)
         wg.stats.completion_time_ns = get_monotonic_time_ns()
         
         fr fr Wake all waiters using OS primitives
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             fr fr Wake all waiters (INT_MAX = wake all)
             sysz.futex(&wg.completion_futex, FUTEX_WAKE | FUTEX_PRIVATE, 2147483647, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             fr fr Windows WakeByAddressAll API
             sysz.windows_wake_by_address_all(&wg.completion_futex)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             fr fr macOS ulock_wake with ULF_WAKE_ALL flag
             sysz.darwin_ulock_wake(1, &wg.completion_futex, 0)  // ULF_WAKE_ALL = 1
         }
@@ -337,7 +337,7 @@ slay production_waitgroup_done(wg *ProductionWaitGroup) lit {
 
 fr fr Wait for all tasks using futex blocking
 slay production_waitgroup_wait(wg *ProductionWaitGroup) lit {
-    ready wg == 0 {
+    lowkey wg == 0 {
         damn cap
     }
     
@@ -345,13 +345,13 @@ slay production_waitgroup_wait(wg *ProductionWaitGroup) lit {
     sus current_generation normie = atomic_drip.atomic_load_i32(&wg.generation, ACQUIRE)
     
     fr fr Fast path: already completed
-    ready atomic_drip.atomic_load_i32(&wg.counter, ACQUIRE) == 0 {
+    lowkey atomic_drip.atomic_load_i32(&wg.counter, ACQUIRE) == 0 {
         damn based
     }
     
     fr fr Track waiter statistics
     sus waiter_count normie = atomic_drip.atomic_add_i32(&wg.waiters, 1, RELAXED)
-    ready waiter_count > atomic_drip.atomic_load_i32(&wg.stats.max_waiters, RELAXED) {
+    lowkey waiter_count > atomic_drip.atomic_load_i32(&wg.stats.max_waiters, RELAXED) {
         atomic_drip.atomic_store_i32(&wg.stats.max_waiters, waiter_count, RELAXED)
     }
     atomic_drip.atomic_add_i64(&wg.stats.total_waits, 1, RELAXED)
@@ -361,17 +361,17 @@ slay production_waitgroup_wait(wg *ProductionWaitGroup) lit {
            atomic_drip.atomic_load_i32(&wg.generation, ACQUIRE) == current_generation {
         
         fr fr True OS-level blocking using futex
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             sysz.futex(&wg.completion_futex, FUTEX_WAIT | FUTEX_PRIVATE, 0, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             sus expected_val normie = 0
             sysz.windows_wait_on_address(&wg.completion_futex, expected_val, 4, -1)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             sysz.darwin_ulock_wait(0, &wg.completion_futex, 0, 0)
         }
-        otherwise {
+        highkey {
             fr fr Fallback: brief sleep
             yield_cpu()
         }
@@ -408,12 +408,12 @@ slay create_production_once() *ProductionOnce {
 
 fr fr Execute function exactly once using proper double-checked locking
 slay production_once_do(once *ProductionOnce, func_ptr thicc) lit {
-    ready once == 0 {
+    lowkey once == 0 {
         damn cap
     }
     
     fr fr Fast path: already executed (load-acquire for proper ordering)
-    ready atomic_drip.atomic_load_i32(&once.done, ACQUIRE) == 1 {
+    lowkey atomic_drip.atomic_load_i32(&once.done, ACQUIRE) == 1 {
         damn based
     }
     
@@ -422,7 +422,7 @@ slay production_once_do(once *ProductionOnce, func_ptr thicc) lit {
     
     fr fr Try to become the executor
     sus expected normie = 0
-    ready atomic_drip.compare_and_swap_i32(&once.in_progress, expected, 1, ACQUIRE) {
+    lowkey atomic_drip.compare_and_swap_i32(&once.in_progress, expected, 1, ACQUIRE) {
         fr fr We won the race - we execute
         once.executor_tid = current_tid
         sus start_time thicc = get_monotonic_time_ns()
@@ -439,13 +439,13 @@ slay production_once_do(once *ProductionOnce, func_ptr thicc) lit {
         atomic_drip.atomic_store_i32(&once.in_progress, 0, RELEASE)
         
         fr fr Wake all waiting threads
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             sysz.futex(&once.futex_word, FUTEX_WAKE | FUTEX_PRIVATE, 2147483647, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             sysz.windows_wake_by_address_all(&once.futex_word)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             sysz.darwin_ulock_wake(1, &once.futex_word, 0)
         }
         
@@ -454,17 +454,17 @@ slay production_once_do(once *ProductionOnce, func_ptr thicc) lit {
     
     fr fr Someone else is executing - wait for completion
     bestie atomic_drip.atomic_load_i32(&once.done, ACQUIRE) == 0 {
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             sysz.futex(&once.futex_word, FUTEX_WAIT | FUTEX_PRIVATE, 0, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             sus expected_val normie = 0
             sysz.windows_wait_on_address(&once.futex_word, expected_val, 4, -1)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             sysz.darwin_ulock_wait(0, &once.futex_word, 0, 0)
         }
-        otherwise {
+        highkey {
             yield_cpu()
         }
     }
@@ -499,7 +499,7 @@ slay create_production_condvar() *ProductionCondVar {
 
 fr fr Wait on condition variable (must hold mutex)
 slay production_condvar_wait(cond *ProductionCondVar, mutex *ProductionMutex) lit {
-    ready cond == 0 || mutex == 0 {
+    lowkey cond == 0 || mutex == 0 {
         damn cap
     }
     
@@ -512,17 +512,17 @@ slay production_condvar_wait(cond *ProductionCondVar, mutex *ProductionMutex) li
     
     fr fr Block on condition variable using futex
     bestie atomic_drip.atomic_load_i32(&cond.generation, ACQUIRE) == current_generation {
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             sysz.futex(&cond.futex_word, FUTEX_WAIT | FUTEX_PRIVATE, 0, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             sus expected_val normie = 0
             sysz.windows_wait_on_address(&cond.futex_word, expected_val, 4, -1)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             sysz.darwin_ulock_wait(0, &cond.futex_word, 0, 0)
         }
-        otherwise {
+        highkey {
             yield_cpu()
         }
     }
@@ -535,22 +535,22 @@ slay production_condvar_wait(cond *ProductionCondVar, mutex *ProductionMutex) li
 
 fr fr Signal one waiting thread
 slay production_condvar_signal(cond *ProductionCondVar) lit {
-    ready cond == 0 {
+    lowkey cond == 0 {
         damn cap
     }
     
-    ready atomic_drip.atomic_load_i32(&cond.waiters, ACQUIRE) > 0 {
+    lowkey atomic_drip.atomic_load_i32(&cond.waiters, ACQUIRE) > 0 {
         atomic_drip.atomic_add_i32(&cond.generation, 1, RELEASE)
         atomic_drip.atomic_add_i64(&cond.total_signals, 1, RELAXED)
         
         fr fr Wake one waiter
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             sysz.futex(&cond.futex_word, FUTEX_WAKE | FUTEX_PRIVATE, 1, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             sysz.windows_wake_by_address_single(&cond.futex_word)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             sysz.darwin_ulock_wake(0, &cond.futex_word, 0)
         }
     }
@@ -560,22 +560,22 @@ slay production_condvar_signal(cond *ProductionCondVar) lit {
 
 fr fr Broadcast signal to all waiting threads
 slay production_condvar_broadcast(cond *ProductionCondVar) lit {
-    ready cond == 0 {
+    lowkey cond == 0 {
         damn cap
     }
     
-    ready atomic_drip.atomic_load_i32(&cond.waiters, ACQUIRE) > 0 {
+    lowkey atomic_drip.atomic_load_i32(&cond.waiters, ACQUIRE) > 0 {
         atomic_drip.atomic_add_i32(&cond.generation, 1, RELEASE)
         atomic_drip.atomic_add_i64(&cond.total_broadcasts, 1, RELAXED)
         
         fr fr Wake all waiters
-        ready sysz.platform_is_linux() {
+        lowkey sysz.platform_is_linux() {
             sysz.futex(&cond.futex_word, FUTEX_WAKE | FUTEX_PRIVATE, 2147483647, 0, 0, 0)
         }
-        otherwise ready sysz.platform_is_windows() {
+        highkey lowkey sysz.platform_is_windows() {
             sysz.windows_wake_by_address_all(&cond.futex_word)
         }
-        otherwise ready sysz.platform_is_darwin() {
+        highkey lowkey sysz.platform_is_darwin() {
             sysz.darwin_ulock_wake(1, &cond.futex_word, 0)
         }
     }
@@ -591,7 +591,7 @@ fr fr Get memory statistics using real OS calls
 slay get_memory_stats() {
     vibez.spill("🔍 Production Memory Statistics:")
     
-    ready sysz.platform_is_linux() {
+    lowkey sysz.platform_is_linux() {
         fr fr Parse /proc/self/status for VmRSS, VmSize, VmPeak
         sus rss_kb normie = sysz.linux_parse_proc_status("VmRSS")
         sus size_kb normie = sysz.linux_parse_proc_status("VmSize") 
@@ -601,12 +601,12 @@ slay get_memory_stats() {
         vibez.spill("Virtual Memory Size:", size_kb, "KB")
         vibez.spill("Peak Memory Usage:", peak_kb, "KB")
     }
-    otherwise ready sysz.platform_is_windows() {
+    highkey lowkey sysz.platform_is_windows() {
         fr fr Use GetProcessMemoryInfo()
         sus memory_info normie = sysz.windows_get_process_memory_info()
         vibez.spill("Working Set Size:", memory_info, "bytes")
     }
-    otherwise ready sysz.platform_is_darwin() {
+    highkey lowkey sysz.platform_is_darwin() {
         fr fr Use task_info(TASK_BASIC_INFO)
         sus resident_size normie = sysz.darwin_get_resident_memory()
         vibez.spill("Resident Memory:", resident_size, "bytes")
@@ -615,19 +615,19 @@ slay get_memory_stats() {
 
 fr fr Get precise CPU usage from OS
 slay get_cpu_usage() drip {
-    ready sysz.platform_is_linux() {
+    lowkey sysz.platform_is_linux() {
         fr fr Parse /proc/stat for system-wide CPU usage
         damn sysz.linux_parse_cpu_usage()
     }
-    otherwise ready sysz.platform_is_windows() {
+    highkey lowkey sysz.platform_is_windows() {
         fr fr Use GetSystemTimes()
         damn sysz.windows_get_cpu_usage()
     }
-    otherwise ready sysz.platform_is_darwin() {
+    highkey lowkey sysz.platform_is_darwin() {
         fr fr Use host_processor_info()
         damn sysz.darwin_get_cpu_usage()
     }
-    otherwise {
+    highkey {
         damn 0.0  // Unknown platform
     }
 }

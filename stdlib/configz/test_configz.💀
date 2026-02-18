@@ -40,7 +40,7 @@ slay test_config_manager_creation() lit {
     sus all_keys tea[value] = config_get_all_keys(config)
     sus key_count drip = array_length(all_keys)
     
-    ready (key_count != 0) {
+    lowkey (key_count != 0) {
         vibez.spill("ERROR: New config manager should have no keys")
         damn cringe
     }
@@ -77,17 +77,17 @@ slay test_default_values() lit {
     sus port normie = config_get_number(config, "database.port", 0.0)
     sus debug lit = config_get_boolean(config, "app.debug", based)
     
-    ready (host != "default-host") {
+    lowkey (host != "default-host") {
         vibez.spill("ERROR: Expected default host 'default-host', got: " + host)
         damn cringe
     }
     
-    ready (port != 5432.0) {
+    lowkey (port != 5432.0) {
         vibez.spill("ERROR: Expected default port 5432, got: " + number_to_string(port))
         damn cringe
     }
     
-    ready (debug != cringe) {
+    lowkey (debug != cringe) {
         vibez.spill("ERROR: Expected default debug false, got: " + (debug ? "true" : "false"))
         damn cringe
     }
@@ -118,27 +118,27 @@ slay test_json_configuration_loading() lit {
     sus ssl_enabled lit = config_get_boolean(config, "database.ssl", cringe)
     sus debug_mode lit = config_get_boolean(config, "server.debug", based)
     
-    ready (db_host != "test-db.example.com") {
+    lowkey (db_host != "test-db.example.com") {
         vibez.spill("ERROR: Expected JSON db host 'test-db.example.com', got: " + db_host)
         damn cringe
     }
     
-    ready (db_port != 5432.0) {
+    lowkey (db_port != 5432.0) {
         vibez.spill("ERROR: Expected JSON db port 5432, got: " + number_to_string(db_port))
         damn cringe  
     }
     
-    ready (server_port != 8080.0) {
+    lowkey (server_port != 8080.0) {
         vibez.spill("ERROR: Expected JSON server port 8080, got: " + number_to_string(server_port))
         damn cringe
     }
     
-    ready (!ssl_enabled) {
+    lowkey (!ssl_enabled) {
         vibez.spill("ERROR: Expected SSL enabled from JSON")
         damn cringe
     }
     
-    ready (debug_mode) {
+    lowkey (debug_mode) {
         vibez.spill("ERROR: Expected debug disabled from JSON")
         damn cringe
     }
@@ -166,27 +166,27 @@ slay test_toml_configuration_loading() lit {
     sus ssl_enabled lit = config_get_boolean(config, "database.ssl", based)
     sus debug_mode lit = config_get_boolean(config, "server.debug", cringe)
     
-    ready (db_host != "toml-db.example.com") {
+    lowkey (db_host != "toml-db.example.com") {
         vibez.spill("ERROR: Expected TOML db host 'toml-db.example.com', got: " + db_host)
         damn cringe
     }
     
-    ready (db_port != 3306.0) {
+    lowkey (db_port != 3306.0) {
         vibez.spill("ERROR: Expected TOML db port 3306, got: " + number_to_string(db_port))
         damn cringe
     }
     
-    ready (server_port != 9090.0) {
+    lowkey (server_port != 9090.0) {
         vibez.spill("ERROR: Expected TOML server port 9090, got: " + number_to_string(server_port))
         damn cringe
     }
     
-    ready (ssl_enabled) {
+    lowkey (ssl_enabled) {
         vibez.spill("ERROR: Expected SSL disabled from TOML")
         damn cringe
     }
     
-    ready (!debug_mode) {
+    lowkey (!debug_mode) {
         vibez.spill("ERROR: Expected debug enabled from TOML")
         damn cringe
     }
@@ -213,22 +213,22 @@ slay test_yaml_configuration_loading() lit {
     sus server_port normie = config_get_number(config, "server.port", 0.0)
     sus rate_limit normie = config_get_number(config, "features.rate_limit", 0.0)
     
-    ready (db_host != "yaml-db.example.com") {
+    lowkey (db_host != "yaml-db.example.com") {
         vibez.spill("ERROR: Expected YAML db host 'yaml-db.example.com', got: " + db_host)
         damn cringe
     }
     
-    ready (db_port != 5433.0) {
+    lowkey (db_port != 5433.0) {
         vibez.spill("ERROR: Expected YAML db port 5433, got: " + number_to_string(db_port))
         damn cringe
     }
     
-    ready (server_port != 7070.0) {
+    lowkey (server_port != 7070.0) {
         vibez.spill("ERROR: Expected YAML server port 7070, got: " + number_to_string(server_port))
         damn cringe
     }
     
-    ready (rate_limit != 2000.0) {
+    lowkey (rate_limit != 2000.0) {
         vibez.spill("ERROR: Expected YAML rate limit 2000, got: " + number_to_string(rate_limit))
         damn cringe
     }
@@ -257,32 +257,32 @@ slay test_ini_configuration_loading() lit {
     sus debug_mode lit = config_get_boolean(config, "server.debug", based)
     sus cache_enabled lit = config_get_boolean(config, "features.cache", cringe)
     
-    ready (db_host != "ini-db.example.com") {
+    lowkey (db_host != "ini-db.example.com") {
         vibez.spill("ERROR: Expected INI db host 'ini-db.example.com', got: " + db_host)
         damn cringe
     }
     
-    ready (db_port != 1433.0) {
+    lowkey (db_port != 1433.0) {
         vibez.spill("ERROR: Expected INI db port 1433, got: " + number_to_string(db_port))
         damn cringe
     }
     
-    ready (server_port != 6060.0) {
+    lowkey (server_port != 6060.0) {
         vibez.spill("ERROR: Expected INI server port 6060, got: " + number_to_string(server_port))
         damn cringe
     }
     
-    ready (!ssl_enabled) {
+    lowkey (!ssl_enabled) {
         vibez.spill("ERROR: Expected SSL enabled from INI (yes)")
         damn cringe
     }
     
-    ready (debug_mode) {
+    lowkey (debug_mode) {
         vibez.spill("ERROR: Expected debug disabled from INI (no)")
         damn cringe
     }
     
-    ready (!cache_enabled) {
+    lowkey (!cache_enabled) {
         vibez.spill("ERROR: Expected cache enabled from INI (on)")
         damn cringe
     }
@@ -311,21 +311,21 @@ slay test_environment_variable_loading() lit {
     sus has_home lit = config_has_key(config, "home")
     sus has_user lit = config_has_key(config, "user")
     
-    ready (!has_path) {
+    lowkey (!has_path) {
         vibez.spill("WARNING: PATH environment variable not found")
-    } otherwise {
+    } highkey {
         vibez.spill("✓ PATH environment variable loaded")
     }
     
-    ready (!has_home) {
+    lowkey (!has_home) {
         vibez.spill("WARNING: HOME environment variable not found")
-    } otherwise {
+    } highkey {
         vibez.spill("✓ HOME environment variable loaded")
     }
     
-    ready (!has_user) {
+    lowkey (!has_user) {
         vibez.spill("WARNING: USER environment variable not found")
-    } otherwise {
+    } highkey {
         vibez.spill("✓ USER environment variable loaded")
     }
     
@@ -341,17 +341,17 @@ slay test_env_key_conversion() lit {
     sus result2 tea = env_key_to_config_key("APP_SERVER_PORT")
     sus result3 tea = env_key_to_config_key("CACHE__ENABLED")
     
-    ready (result1 != "database.host") {
+    lowkey (result1 != "database.host") {
         vibez.spill("ERROR: Expected 'database.host', got: " + result1)
         damn cringe
     }
     
-    ready (result2 != "app.server.port") {
+    lowkey (result2 != "app.server.port") {
         vibez.spill("ERROR: Expected 'app.server.port', got: " + result2)
         damn cringe
     }
     
-    ready (result3 != "cache_enabled") {
+    lowkey (result3 != "cache_enabled") {
         vibez.spill("ERROR: Expected 'cache_enabled', got: " + result3)
         damn cringe
     }
@@ -389,27 +389,27 @@ slay test_auto_type_detection() lit {
     float_value.string_value = "3.14"
     float_value = auto_detect_type(float_value)
     
-    ready (string_value.type != "string") {
+    lowkey (string_value.type != "string") {
         vibez.spill("ERROR: String should remain string type")
         damn cringe
     }
     
-    ready (boolean_true.type != "boolean" || !boolean_true.boolean_value) {
+    lowkey (boolean_true.type != "boolean" || !boolean_true.boolean_value) {
         vibez.spill("ERROR: 'true' should be detected as boolean true")
         damn cringe
     }
     
-    ready (boolean_yes.type != "boolean" || !boolean_yes.boolean_value) {
+    lowkey (boolean_yes.type != "boolean" || !boolean_yes.boolean_value) {
         vibez.spill("ERROR: 'yes' should be detected as boolean true")
         damn cringe
     }
     
-    ready (number_value.type != "number" || number_value.number_value != 42.0) {
+    lowkey (number_value.type != "number" || number_value.number_value != 42.0) {
         vibez.spill("ERROR: '42' should be detected as number")
         damn cringe
     }
     
-    ready (float_value.type != "number" || float_value.number_value != 3.14) {
+    lowkey (float_value.type != "number" || float_value.number_value != 3.14) {
         vibez.spill("ERROR: '3.14' should be detected as number")
         damn cringe
     }
@@ -443,23 +443,23 @@ slay test_source_priority_ordering() lit {
     
     fr fr Test that sources were ordered correctly by priority
     sus source_count drip = array_length(config.sources)
-    ready (source_count != 3) {
+    lowkey (source_count != 3) {
         vibez.spill("ERROR: Expected 3 sources, got: " + number_to_string(normie(source_count)))
         damn cringe
     }
     
     fr fr Sources should be ordered by priority (high to low when applied)
-    ready (config.sources[0].priority != 10) {
+    lowkey (config.sources[0].priority != 10) {
         vibez.spill("ERROR: First source should have priority 10")
         damn cringe
     }
     
-    ready (config.sources[1].priority != 20) {
+    lowkey (config.sources[1].priority != 20) {
         vibez.spill("ERROR: Second source should have priority 20")
         damn cringe
     }
     
-    ready (config.sources[2].priority != 30) {
+    lowkey (config.sources[2].priority != 30) {
         vibez.spill("ERROR: Third source should have priority 30") 
         damn cringe
     }
@@ -498,7 +498,7 @@ slay test_configuration_override() lit {
     
     sus final_port normie = config_get_number(config, "server.port", 0.0)
     
-    ready (final_port != 9090.0) {
+    lowkey (final_port != 9090.0) {
         vibez.spill("ERROR: Expected final port 9090 (from higher priority source), got: " + number_to_string(final_port))
         damn cringe
     }
@@ -558,27 +558,27 @@ slay test_pattern_matching() lit {
     sus result4 lit = key_matches_pattern("exact.match", "exact.match")
     sus result5 lit = key_matches_pattern("no.match", "different.*")
     
-    ready (!result1) {
+    lowkey (!result1) {
         vibez.spill("ERROR: 'database.host' should match 'database.*'")
         damn cringe
     }
     
-    ready (!result2) {
+    lowkey (!result2) {
         vibez.spill("ERROR: 'server.port' should match '*.port'")
         damn cringe
     }
     
-    ready (!result3) {
+    lowkey (!result3) {
         vibez.spill("ERROR: 'any.key' should match '*'")
         damn cringe
     }
     
-    ready (!result4) {
+    lowkey (!result4) {
         vibez.spill("ERROR: 'exact.match' should match 'exact.match'")
         damn cringe
     }
     
-    ready (result5) {
+    lowkey (result5) {
         vibez.spill("ERROR: 'no.match' should not match 'different.*'")
         damn cringe
     }
@@ -597,27 +597,27 @@ slay test_url_email_validation() lit {
     sus url4 lit = is_valid_url("invalid-url")
     sus url5 lit = is_valid_url("example.com")
     
-    ready (!url1) {
+    lowkey (!url1) {
         vibez.spill("ERROR: 'https://example.com' should be valid URL")
         damn cringe
     }
     
-    ready (!url2) {
+    lowkey (!url2) {
         vibez.spill("ERROR: 'http://api.example.com/v1' should be valid URL")
         damn cringe
     }
     
-    ready (!url3) {
+    lowkey (!url3) {
         vibez.spill("ERROR: 'ftp://files.example.com' should be valid URL")
         damn cringe
     }
     
-    ready (url4) {
+    lowkey (url4) {
         vibez.spill("ERROR: 'invalid-url' should not be valid URL")
         damn cringe
     }
     
-    ready (url5) {
+    lowkey (url5) {
         vibez.spill("ERROR: 'example.com' should not be valid URL")
         damn cringe
     }
@@ -629,27 +629,27 @@ slay test_url_email_validation() lit {
     sus email4 lit = is_valid_email("@example.com")
     sus email5 lit = is_valid_email("user@")
     
-    ready (!email1) {
+    lowkey (!email1) {
         vibez.spill("ERROR: 'user@example.com' should be valid email")
         damn cringe
     }
     
-    ready (!email2) {
+    lowkey (!email2) {
         vibez.spill("ERROR: 'admin@company.org' should be valid email")
         damn cringe
     }
     
-    ready (email3) {
+    lowkey (email3) {
         vibez.spill("ERROR: 'invalid-email' should not be valid email")
         damn cringe
     }
     
-    ready (email4) {
+    lowkey (email4) {
         vibez.spill("ERROR: '@example.com' should not be valid email")
         damn cringe
     }
     
-    ready (email5) {
+    lowkey (email5) {
         vibez.spill("ERROR: 'user@' should not be valid email")
         damn cringe
     }
@@ -669,22 +669,22 @@ slay test_string_utilities() lit {
     sus trimmed3 tea = trim_string("no-trim-needed")
     sus trimmed4 tea = trim_string("   ")
     
-    ready (trimmed1 != "hello world") {
+    lowkey (trimmed1 != "hello world") {
         vibez.spill("ERROR: Expected 'hello world', got: '" + trimmed1 + "'")
         damn cringe
     }
     
-    ready (trimmed2 != "test") {
+    lowkey (trimmed2 != "test") {
         vibez.spill("ERROR: Expected 'test', got: '" + trimmed2 + "'")
         damn cringe
     }
     
-    ready (trimmed3 != "no-trim-needed") {
+    lowkey (trimmed3 != "no-trim-needed") {
         vibez.spill("ERROR: Expected 'no-trim-needed', got: '" + trimmed3 + "'")
         damn cringe
     }
     
-    ready (trimmed4 != "") {
+    lowkey (trimmed4 != "") {
         vibez.spill("ERROR: Expected empty string, got: '" + trimmed4 + "'")
         damn cringe
     }
@@ -695,22 +695,22 @@ slay test_string_utilities() lit {
     sus ends1 lit = ends_with("hello world", "world")
     sus ends2 lit = ends_with("test", "testing")
     
-    ready (!starts1) {
+    lowkey (!starts1) {
         vibez.spill("ERROR: 'hello world' should start with 'hello'")
         damn cringe
     }
     
-    ready (starts2) {
+    lowkey (starts2) {
         vibez.spill("ERROR: 'test' should not start with 'testing'")
         damn cringe
     }
     
-    ready (!ends1) {
+    lowkey (!ends1) {
         vibez.spill("ERROR: 'hello world' should end with 'world'")
         damn cringe
     }
     
-    ready (ends2) {
+    lowkey (ends2) {
         vibez.spill("ERROR: 'test' should not end with 'testing'")
         damn cringe
     }
@@ -719,12 +719,12 @@ slay test_string_utilities() lit {
     sus replaced1 tea = string_replace_all("hello_world_test", "_", ".")
     sus replaced2 tea = string_replace_all("no__double__underscore", "__", "_")
     
-    ready (replaced1 != "hello.world.test") {
+    lowkey (replaced1 != "hello.world.test") {
         vibez.spill("ERROR: Expected 'hello.world.test', got: '" + replaced1 + "'")
         damn cringe
     }
     
-    ready (replaced2 != "no_double_underscore") {
+    lowkey (replaced2 != "no_double_underscore") {
         vibez.spill("ERROR: Expected 'no_double_underscore', got: '" + replaced2 + "'")
         damn cringe
     }
@@ -744,32 +744,32 @@ slay test_numeric_conversion() lit {
     sus is_num5 lit = is_numeric_string("")
     sus is_num6 lit = is_numeric_string("123.456.789")  fr fr Multiple decimals
     
-    ready (!is_num1) {
+    lowkey (!is_num1) {
         vibez.spill("ERROR: '42' should be detected as numeric")
         damn cringe
     }
     
-    ready (!is_num2) {
+    lowkey (!is_num2) {
         vibez.spill("ERROR: '3.14' should be detected as numeric")
         damn cringe
     }
     
-    ready (!is_num3) {
+    lowkey (!is_num3) {
         vibez.spill("ERROR: '-123' should be detected as numeric")
         damn cringe
     }
     
-    ready (is_num4) {
+    lowkey (is_num4) {
         vibez.spill("ERROR: 'not-a-number' should not be detected as numeric")
         damn cringe
     }
     
-    ready (is_num5) {
+    lowkey (is_num5) {
         vibez.spill("ERROR: empty string should not be detected as numeric")
         damn cringe
     }
     
-    ready (is_num6) {
+    lowkey (is_num6) {
         vibez.spill("ERROR: '123.456.789' should not be detected as numeric (multiple decimals)")
         damn cringe
     }
@@ -779,17 +779,17 @@ slay test_numeric_conversion() lit {
     sus float2 normie = string_to_float("3.14")
     sus float3 normie = string_to_float("-123")
     
-    ready (float1 != 42.0) {
+    lowkey (float1 != 42.0) {
         vibez.spill("ERROR: Expected 42.0, got: " + number_to_string(float1))
         damn cringe
     }
     
-    ready (float2 != 3.14) {
+    lowkey (float2 != 3.14) {
         vibez.spill("ERROR: Expected 3.14, got: " + number_to_string(float2))
         damn cringe
     }
     
-    ready (float3 != -123.0) {
+    lowkey (float3 != -123.0) {
         vibez.spill("ERROR: Expected -123.0, got: " + number_to_string(float3))
         damn cringe
     }
@@ -834,12 +834,12 @@ slay test_multi_format_integration() lit {
     sus final_port normie = config_get_number(config, "server.port", 0.0)
     sus final_host tea = config_get_string(config, "database.host", "")
     
-    ready (final_port != 9090.0) {
+    lowkey (final_port != 9090.0) {
         vibez.spill("ERROR: Expected port 9090 from TOML (highest priority), got: " + number_to_string(final_port))
         damn cringe
     }
     
-    ready (final_host != "toml-db") {
+    lowkey (final_host != "toml-db") {
         vibez.spill("ERROR: Expected host 'toml-db' from TOML (highest priority), got: " + final_host)
         damn cringe
     }
@@ -873,17 +873,17 @@ slay test_configuration_export() lit {
     sus json_export tea = config_export_json(config)
     
     fr fr Verify export contains expected values
-    ready (!contains_string(json_export, "test-value")) {
+    lowkey (!contains_string(json_export, "test-value")) {
         vibez.spill("ERROR: JSON export should contain 'test-value'")
         damn cringe
     }
     
-    ready (!contains_string(json_export, "42")) {
+    lowkey (!contains_string(json_export, "42")) {
         vibez.spill("ERROR: JSON export should contain '42'")
         damn cringe
     }
     
-    ready (!contains_string(json_export, "true")) {
+    lowkey (!contains_string(json_export, "true")) {
         vibez.spill("ERROR: JSON export should contain 'true'")
         damn cringe
     }
@@ -946,13 +946,13 @@ slay contains_string(haystack tea, needle tea) lit {
     sus haystack_len drip = string_length(haystack)
     sus needle_len drip = string_length(needle)
     
-    ready (needle_len > haystack_len) {
+    lowkey (needle_len > haystack_len) {
         damn cringe
     }
     
     sus i drip = 0
     bestie (i <= haystack_len - needle_len) {
-        ready (substring(haystack, i, needle_len) == needle) {
+        lowkey (substring(haystack, i, needle_len) == needle) {
             damn based
         }
         i = i + 1
@@ -971,123 +971,123 @@ slay run_comprehensive_configz_tests() lit {
     sus failed drip = 0
     
     fr fr Basic functionality tests
-    ready (test_config_manager_creation()) {
+    lowkey (test_config_manager_creation()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_default_values()) {
+    lowkey (test_default_values()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
     fr fr Configuration format tests
-    ready (test_json_configuration_loading()) {
+    lowkey (test_json_configuration_loading()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_toml_configuration_loading()) {
+    lowkey (test_toml_configuration_loading()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_yaml_configuration_loading()) {
+    lowkey (test_yaml_configuration_loading()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_ini_configuration_loading()) {
+    lowkey (test_ini_configuration_loading()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
     fr fr Environment variable tests
-    ready (test_environment_variable_loading()) {
+    lowkey (test_environment_variable_loading()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_env_key_conversion()) {
+    lowkey (test_env_key_conversion()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_auto_type_detection()) {
+    lowkey (test_auto_type_detection()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
     fr fr Priority and source management tests
-    ready (test_source_priority_ordering()) {
+    lowkey (test_source_priority_ordering()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_configuration_override()) {
+    lowkey (test_configuration_override()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
     fr fr Validation tests
-    ready (test_validation_rules()) {
+    lowkey (test_validation_rules()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_pattern_matching()) {
+    lowkey (test_pattern_matching()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_url_email_validation()) {
+    lowkey (test_url_email_validation()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
     fr fr Utility function tests
-    ready (test_string_utilities()) {
+    lowkey (test_string_utilities()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_numeric_conversion()) {
+    lowkey (test_numeric_conversion()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
     fr fr Integration tests
-    ready (test_multi_format_integration()) {
+    lowkey (test_multi_format_integration()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_configuration_export()) {
+    lowkey (test_configuration_export()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
-    ready (test_key_operations()) {
+    lowkey (test_key_operations()) {
         passed = passed + 1
-    } otherwise {
+    } highkey {
         failed = failed + 1
     }
     
@@ -1098,11 +1098,11 @@ slay run_comprehensive_configz_tests() lit {
     vibez.spill("Failed: " + number_to_string(normie(failed)))
     vibez.spill("Total:  " + number_to_string(normie(passed + failed)))
     
-    ready (failed == 0) {
+    lowkey (failed == 0) {
         vibez.spill("")
         vibez.spill("🎉 ALL CONFIGZ TESTS PASSED! Configuration management system is production-ready.")
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("")
         vibez.spill("❌ Some tests failed. Configuration system needs attention.")
         damn cringe

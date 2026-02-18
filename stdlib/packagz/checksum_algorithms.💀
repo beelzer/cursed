@@ -265,16 +265,16 @@ slay compute_md5(data tea) ChecksumResult {
             sus f drip = 0
             sus g drip = 0
             
-            ready (i < 16) {
+            lowkey (i < 16) {
                 f = (b & c) | ((~b) & d)
                 g = i
-            } ready (i < 32) {
+            } lowkey (i < 32) {
                 f = (d & b) | ((~d) & c)
                 g = (5 * i + 1) % 16
-            } ready (i < 48) {
+            } lowkey (i < 48) {
                 f = b ^ c ^ d
                 g = (3 * i + 5) % 16
-            } otherwise {
+            } highkey {
                 f = c ^ (b | (~d))
                 g = (7 * i) % 16
             }
@@ -358,16 +358,16 @@ slay compute_sha1(data tea) ChecksumResult {
             sus f drip = 0
             sus k_val drip = 0
             
-            ready (i < 20) {
+            lowkey (i < 20) {
                 f = (b & c) | ((~b) & d)
                 k_val = 0x5A827999
-            } ready (i < 40) {
+            } lowkey (i < 40) {
                 f = b ^ c ^ d
                 k_val = 0x6ED9EBA1
-            } ready (i < 60) {
+            } lowkey (i < 60) {
                 f = (b & c) | (b & d) | (c & d)
                 k_val = 0x8F1BBCDC
-            } otherwise {
+            } highkey {
                 f = b ^ c ^ d
                 k_val = 0xCA62C1D6
             }
@@ -629,7 +629,7 @@ slay format_hex_digest(bytes drip[value]) tea {
     sus result tea = ""
     bestie (sus i drip = 0; i < arrayz.len(bytes); i = i + 1) {
         sus hex_str tea = stringz.to_hex_lower(bytes[i])
-        ready (stringz.len(hex_str) == 1) {
+        lowkey (stringz.len(hex_str) == 1) {
             hex_str = "0" + hex_str
         }
         result = result + hex_str
@@ -665,7 +665,7 @@ slay uint32_to_bytes_be(value drip) drip[value]{
 }
 
 slay bytes_to_uint32_le(bytes tea) drip {
-    ready (stringz.len(bytes) < 4) {
+    lowkey (stringz.len(bytes) < 4) {
         damn 0
     }
     
@@ -678,7 +678,7 @@ slay bytes_to_uint32_le(bytes tea) drip {
 }
 
 slay bytes_to_uint32_be(bytes tea) drip {
-    ready (stringz.len(bytes) < 4) {
+    lowkey (stringz.len(bytes) < 4) {
         damn 0
     }
     

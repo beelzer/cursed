@@ -238,7 +238,7 @@ test_case("File System Watching") {
     
     sus found_create lit = false
     bestie (sus i normie = 0; i < len(events); i += 1) {
-        ready (events[i].event_type == FS_EVENT_CREATE) {
+        lowkey (events[i].event_type == FS_EVENT_CREATE) {
             found_create = based
             assert(string_contains(events[i].path, "watched_file.txt"))
         }

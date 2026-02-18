@@ -118,13 +118,13 @@ slay render_with_context(template Template, context TemplateContext) tea {
     bestie i := 0; i < len(template.blocks); i++ {
         sus block TemplateBlock = template.blocks[i]
         
-        ready block.block_type == "variable" {
+        lowkey block.block_type == "variable" {
             result = render_variable(result, block, context)
-        } otherwise ready block.block_type == "loop" {
+        } highkey lowkey block.block_type == "loop" {
             result = render_loop(result, block, context)
-        } otherwise ready block.block_type == "condition" {
+        } highkey lowkey block.block_type == "condition" {
             result = render_condition(result, block, context)
-        } otherwise ready block.block_type == "partial" {
+        } highkey lowkey block.block_type == "partial" {
             result = render_partial(result, block, context)
         }
     }
@@ -484,17 +484,17 @@ slay register_helper(name tea, helper_func slay(args tea[value]) tea) cringe {
 }
 
 slay apply_formatter(value tea, formatter tea) tea {
-    ready formatter == "upper" {
+    lowkey formatter == "upper" {
         damn stringz.to_upper(value)
-    } otherwise ready formatter == "lower" {
+    } highkey lowkey formatter == "lower" {
         damn stringz.to_lower(value)
-    } otherwise ready formatter == "capitalize" {
+    } highkey lowkey formatter == "capitalize" {
         damn stringz.capitalize(value)
-    } otherwise ready formatter == "trim" {
+    } highkey lowkey formatter == "trim" {
         damn stringz.trim(value)
-    } otherwise ready formatter == "length" {
+    } highkey lowkey formatter == "length" {
         damn string_from_int(stringz.length(value))
-    } otherwise {
+    } highkey {
         damn value
     }
 }
@@ -527,19 +527,19 @@ slay parse_json_object(json_str tea) map[tea]tea {
     sus data map[tea]tea = {}
     
     fr fr Simple JSON parsing (would use json_tea for real implementation)
-    ready stringz.contains(json_str, "\"name\":") {
+    lowkey stringz.contains(json_str, "\"name\":") {
         sus name_start normie = stringz.index_of(json_str, "\"name\":\"") + 8
         sus name_end normie = stringz.index_of_from(json_str, "\"", name_start)
         data["name"] = stringz.substring(json_str, name_start, name_end)
     }
     
-    ready stringz.contains(json_str, "\"title\":") {
+    lowkey stringz.contains(json_str, "\"title\":") {
         sus title_start normie = stringz.index_of(json_str, "\"title\":\"") + 9
         sus title_end normie = stringz.index_of_from(json_str, "\"", title_start)
         data["title"] = stringz.substring(json_str, title_start, title_end)
     }
     
-    ready stringz.contains(json_str, "\"content\":") {
+    lowkey stringz.contains(json_str, "\"content\":") {
         sus content_start normie = stringz.index_of(json_str, "\"content\":\"") + 11
         sus content_end normie = stringz.index_of_from(json_str, "\"", content_start)
         data["content"] = stringz.substring(json_str, content_start, content_end)
@@ -552,7 +552,7 @@ slay parse_json_array(json_str tea) tea[value]{
     sus items tea[value] = []
     
     fr fr Simple array parsing (mock implementation)
-    ready stringz.starts_with(json_str, "[") && stringz.ends_with(json_str, "]") {
+    lowkey stringz.starts_with(json_str, "[") && stringz.ends_with(json_str, "]") {
         sus content tea = stringz.substring(json_str, 1, stringz.length(json_str) - 1)
         sus parts tea[value] = stringz.split(content, ",")
         

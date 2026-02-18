@@ -279,7 +279,7 @@ slay string_contains_boyer_moore(haystack tea, needle tea) lit {
         fr fr If pattern found
         lowkey (j < 0) {
             damn based  fr fr Pattern found at current position
-        } otherwise {
+        } highkey {
             fr fr Calculate shift using bad character heuristic
             sus bad_char tea = char_at_advanced(haystack, shift + j)
             sus bad_char_shift drip = get_bad_char_shift(bad_char_table, bad_char, needle_len)

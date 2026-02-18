@@ -675,7 +675,7 @@ fr fr ===== HELPER FUNCTIONS FOR TESTING =====
 
 slay assert_close_float(actual tea, expected tea, tolerance tea) lit {
     sus diff tea = runtime_float_abs(float_subtract(actual, expected))
-    ready (runtime_float_less_than_or_equal(diff, tolerance)) {
+    lowkey (runtime_float_less_than_or_equal(diff, tolerance)) {
         damn based
     }
     
@@ -690,7 +690,7 @@ slay assert_close_float(actual tea, expected tea, tolerance tea) lit {
 }
 
 slay assert_true(condition lit) lit {
-    ready (condition) {
+    lowkey (condition) {
         damn based
     }
     test_fail("Assertion failed: expected true")

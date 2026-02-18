@@ -128,29 +128,29 @@ slay parse_toml_with_config(toml_content tea, config TomlParserConfig) yikes<Tom
     bestie (state.position < state.content.len()) {
         skip_toml_whitespace(state)
         
-        ready (state.position >= state.content.len()) {
+        lowkey (state.position >= state.content.len()) {
             break
         }
         
         sus ch tea = stringz.char_at(state.content, state.position)
         
         # Handle comments
-        ready (ch == "#") {
+        lowkey (ch == "#") {
             sus comment tea = parse_toml_comment(state)
-            ready (config.preserve_comments) {
+            lowkey (config.preserve_comments) {
                 document.comments[state.line] = comment
             }
         # Handle table headers
-        } otherwise ready (ch == "[") {
+        } highkey lowkey (ch == "[") {
             parse_toml_table_header(state, document) fam {
                 when err -> yikes "Failed to parse table header: " + err
             }
         # Handle key-value pairs
-        } otherwise ready (is_toml_key_start(ch)) {
+        } highkey lowkey (is_toml_key_start(ch)) {
             parse_toml_key_value_pair(state, document) fam {
                 when err -> yikes "Failed to parse key-value pair: " + err
             }
-        } otherwise {
+        } highkey {
             yikes "Unexpected character '" + ch + "' at line " + mathz.int_to_string(state.line)
         }
     }
@@ -176,13 +176,13 @@ slay generate_toml(doc TomlDocument) tea {
     
     # Generate top-level key-value pairs first
     bestie (sus key tea, sus value TomlValue in doc.values) {
-        ready (value.key_path.len() == 1) {  # Top-level only
+        lowkey (value.key_path.len() == 1) {  # Top-level only
             output = output + generate_toml_key_value(key, value) + "\n"
         }
     }
     
     # Add blank line before tables
-    ready (doc.tables.len() > 0 && output != "") {
+    lowkey (doc.tables.len() > 0 && output != "") {
         output = output + "\n"
     }
     
@@ -200,7 +200,7 @@ slay generate_toml_formatted(doc TomlDocument, table_spacing drip) tea {
     
     # Generate top-level key-value pairs
     bestie (sus key tea, sus value TomlValue in doc.values) {
-        ready (value.key_path.len() == 1) {
+        lowkey (value.key_path.len() == 1) {
             output = output + generate_toml_key_value(key, value) + "\n"
         }
     }
@@ -208,7 +208,7 @@ slay generate_toml_formatted(doc TomlDocument, table_spacing drip) tea {
     # Generate tables with custom spacing
     sus table_count drip = 0
     bestie (sus table_name tea, sus table TomlTable in doc.tables) {
-        ready (table_count > 0 || output != "") {
+        lowkey (table_count > 0 || output != "") {
             sus i drip = 0
             bestie (i < table_spacing) {
                 output = output + "\n"
@@ -231,33 +231,33 @@ slay generate_toml_key_value(key tea, value TomlValue) tea {
 
 # Generate TOML value
 slay generate_toml_value(value TomlValue) tea {
-    ready (value.value_type == TomlValueType.String) {
-        ready (value.string_type == TomlStringType.Basic) {
+    lowkey (value.value_type == TomlValueType.String) {
+        lowkey (value.string_type == TomlStringType.Basic) {
             damn "\"" + escape_toml_string(value.value) + "\""
-        } otherwise ready (value.string_type == TomlStringType.MultiLineBasic) {
+        } highkey lowkey (value.string_type == TomlStringType.MultiLineBasic) {
             damn "\"\"\"\n" + escape_toml_multiline_string(value.value) + "\n\"\"\""
-        } otherwise ready (value.string_type == TomlStringType.Literal) {
+        } highkey lowkey (value.string_type == TomlStringType.Literal) {
             damn "'" + value.value + "'"
-        } otherwise ready (value.string_type == TomlStringType.MultiLineLiteral) {
+        } highkey lowkey (value.string_type == TomlStringType.MultiLineLiteral) {
             damn "'''\n" + value.value + "\n'''"
         }
-    } otherwise ready (value.value_type == TomlValueType.Integer) {
+    } highkey lowkey (value.value_type == TomlValueType.Integer) {
         damn value.value
-    } otherwise ready (value.value_type == TomlValueType.Float) {
+    } highkey lowkey (value.value_type == TomlValueType.Float) {
         damn value.value
-    } otherwise ready (value.value_type == TomlValueType.Boolean) {
+    } highkey lowkey (value.value_type == TomlValueType.Boolean) {
         damn value.value
-    } otherwise ready (value.value_type == TomlValueType.Datetime) {
+    } highkey lowkey (value.value_type == TomlValueType.Datetime) {
         damn value.value
-    } otherwise ready (value.value_type == TomlValueType.LocalDatetime) {
+    } highkey lowkey (value.value_type == TomlValueType.LocalDatetime) {
         damn value.value
-    } otherwise ready (value.value_type == TomlValueType.LocalDate) {
+    } highkey lowkey (value.value_type == TomlValueType.LocalDate) {
         damn value.value
-    } otherwise ready (value.value_type == TomlValueType.LocalTime) {
+    } highkey lowkey (value.value_type == TomlValueType.LocalTime) {
         damn value.value
-    } otherwise ready (value.value_type == TomlValueType.Array) {
+    } highkey lowkey (value.value_type == TomlValueType.Array) {
         damn generate_toml_array(value)
-    } otherwise ready (value.value_type == TomlValueType.InlineTable) {
+    } highkey lowkey (value.value_type == TomlValueType.InlineTable) {
         damn generate_toml_inline_table(value)
     }
     damn value.value
@@ -269,7 +269,7 @@ slay generate_toml_array(value TomlValue) tea {
     
     sus i drip = 0
     bestie (i < value.array_values.len()) {
-        ready (i > 0) {
+        lowkey (i > 0) {
             output = output + ", "
         }
         output = output + generate_toml_value(value.array_values[i])
@@ -286,7 +286,7 @@ slay generate_toml_inline_table(value TomlValue) tea {
     sus first lit = based
     
     bestie (sus key tea, sus table_value TomlValue in value.table_values) {
-        ready (!first) {
+        lowkey (!first) {
             output = output + ", "
         }
         output = output + escape_toml_key(key) + " = " + generate_toml_value(table_value)
@@ -302,9 +302,9 @@ slay generate_toml_table(table_name tea, table TomlTable) tea {
     sus output tea = ""
     
     # Table header
-    ready (table.is_array_table) {
+    lowkey (table.is_array_table) {
         output = output + "[[" + table_name + "]]\n"
-    } otherwise {
+    } highkey {
         output = output + "[" + table_name + "]\n"
     }
     
@@ -326,7 +326,7 @@ slay get_toml_string(doc TomlDocument, key tea) yikes<tea> {
         when err -> yikes err
     }
     
-    ready (value.value_type != TomlValueType.String) {
+    lowkey (value.value_type != TomlValueType.String) {
         yikes "Value at key '" + key + "' is not a string"
     }
     
@@ -339,7 +339,7 @@ slay get_toml_integer(doc TomlDocument, key tea) yikes<drip> {
         when err -> yikes err
     }
     
-    ready (value.value_type != TomlValueType.Integer) {
+    lowkey (value.value_type != TomlValueType.Integer) {
         yikes "Value at key '" + key + "' is not an integer"
     }
     
@@ -352,7 +352,7 @@ slay get_toml_float(doc TomlDocument, key tea) yikes<meal> {
         when err -> yikes err
     }
     
-    ready (value.value_type != TomlValueType.Float) {
+    lowkey (value.value_type != TomlValueType.Float) {
         yikes "Value at key '" + key + "' is not a float"
     }
     
@@ -365,7 +365,7 @@ slay get_toml_boolean(doc TomlDocument, key tea) yikes<lit> {
         when err -> yikes err
     }
     
-    ready (value.value_type != TomlValueType.Boolean) {
+    lowkey (value.value_type != TomlValueType.Boolean) {
         yikes "Value at key '" + key + "' is not a boolean"
     }
     
@@ -378,7 +378,7 @@ slay get_toml_array(doc TomlDocument, key tea) yikes<TomlValue[value]> {
         when err -> yikes err
     }
     
-    ready (value.value_type != TomlValueType.Array) {
+    lowkey (value.value_type != TomlValueType.Array) {
         yikes "Value at key '" + key + "' is not an array"
     }
     
@@ -387,7 +387,7 @@ slay get_toml_array(doc TomlDocument, key tea) yikes<TomlValue[value]> {
 
 # Get table value from TOML document
 slay get_toml_table(doc TomlDocument, table_name tea) yikes<TomlTable> {
-    ready (!map_contains(doc.tables, table_name)) {
+    lowkey (!map_contains(doc.tables, table_name)) {
         yikes "Table '" + table_name + "' not found"
     }
     
@@ -398,16 +398,16 @@ slay get_toml_table(doc TomlDocument, table_name tea) yikes<TomlTable> {
 slay get_toml_nested(doc TomlDocument, path tea) yikes<TomlValue> {
     sus path_parts tea[value] = stringz.split(path, ".")
     
-    ready (path_parts.len() == 0) {
+    lowkey (path_parts.len() == 0) {
         yikes "Invalid path: " + path
     }
     
     # Check if first part is a table
-    ready (path_parts.len() > 1 && map_contains(doc.tables, path_parts[0])) {
+    lowkey (path_parts.len() > 1 && map_contains(doc.tables, path_parts[0])) {
         sus table TomlTable = doc.tables[path_parts[0]]
         sus nested_key tea = stringz.join(arrayz.slice(path_parts, 1), ".")
         
-        ready (!map_contains(table.values, nested_key)) {
+        lowkey (!map_contains(table.values, nested_key)) {
             yikes "Key '" + nested_key + "' not found in table '" + path_parts[0] + "'"
         }
         
@@ -415,7 +415,7 @@ slay get_toml_nested(doc TomlDocument, path tea) yikes<TomlValue> {
     }
     
     # Check top-level values
-    ready (map_contains(doc.values, path)) {
+    lowkey (map_contains(doc.values, path)) {
         damn doc.values[path]
     }
     
@@ -456,7 +456,7 @@ slay validate_toml_structure(doc TomlDocument) TomlValidationResult {
     # Check for duplicate table definitions
     sus table_names tea[value] = []
     bestie (sus table_name tea, sus table TomlTable in doc.tables) {
-        ready (arrayz.contains(table_names, table_name)) {
+        lowkey (arrayz.contains(table_names, table_name)) {
             result.valid = cap
             result.errors = arrayz.append(result.errors, "Duplicate table definition: " + table_name)
         }
@@ -465,7 +465,7 @@ slay validate_toml_structure(doc TomlDocument) TomlValidationResult {
     
     # Check for invalid key names
     bestie (sus key tea, sus value TomlValue in doc.values) {
-        ready (!is_valid_toml_key(key)) {
+        lowkey (!is_valid_toml_key(key)) {
             result.valid = cap
             result.errors = arrayz.append(result.errors, "Invalid key name: " + key)
         }
@@ -502,7 +502,7 @@ slay escape_toml_multiline_string(value tea) tea {
 # Escape TOML key
 slay escape_toml_key(key tea) tea {
     # Check if key needs quoting
-    ready (needs_toml_key_quotes(key)) {
+    lowkey (needs_toml_key_quotes(key)) {
         damn "\"" + escape_toml_string(key) + "\""
     }
     damn key
@@ -511,7 +511,7 @@ slay escape_toml_key(key tea) tea {
 # Check if TOML key needs quotes
 slay needs_toml_key_quotes(key tea) lit {
     # Empty key needs quotes
-    ready (key == "") {
+    lowkey (key == "") {
         damn based
     }
     
@@ -519,7 +519,7 @@ slay needs_toml_key_quotes(key tea) lit {
     sus i drip = 0
     bestie (i < key.len()) {
         sus ch tea = stringz.char_at(key, i)
-        ready (!is_toml_key_char(ch)) {
+        lowkey (!is_toml_key_char(ch)) {
             damn based
         }
         i = i + 1
@@ -530,7 +530,7 @@ slay needs_toml_key_quotes(key tea) lit {
 
 # Check if character is valid in unquoted TOML key
 slay is_toml_key_char(ch tea) lit {
-    ready ((ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z") || 
+    lowkey ((ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z") || 
           (ch >= "0" && ch <= "9") || ch == "_" || ch == "-") {
         damn based
     }
@@ -539,7 +539,7 @@ slay is_toml_key_char(ch tea) lit {
 
 # Check if character can start a TOML key
 slay is_toml_key_start(ch tea) lit {
-    ready ((ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z") || 
+    lowkey ((ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z") || 
           (ch >= "0" && ch <= "9") || ch == "_" || ch == "\"") {
         damn based
     }
@@ -548,11 +548,11 @@ slay is_toml_key_start(ch tea) lit {
 
 # Check if TOML key is valid
 slay is_valid_toml_key(key tea) lit {
-    ready (key == "") {
+    lowkey (key == "") {
         damn cap
     }
     
-    ready (key.len() > 256) {  # Reasonable limit
+    lowkey (key.len() > 256) {  # Reasonable limit
         damn cap
     }
     
@@ -560,7 +560,7 @@ slay is_valid_toml_key(key tea) lit {
     sus i drip = 0
     bestie (i < key.len()) {
         sus ch tea = stringz.char_at(key, i)
-        ready (!is_toml_key_char(ch) && ch != "." && ch != " ") {
+        lowkey (!is_toml_key_char(ch) && ch != "." && ch != " ") {
             damn cap
         }
         i = i + 1
@@ -614,7 +614,7 @@ slay create_toml_float(value meal) TomlValue {
 # Create TOML boolean value
 slay create_toml_boolean(value lit) TomlValue {
     sus bool_str tea = "false"
-    ready (value) {
+    lowkey (value) {
         bool_str = "true"
     }
     
@@ -662,23 +662,23 @@ squad TomlParserState {
 slay skip_toml_whitespace(state sus TomlParserState) {
     bestie (state.position < state.content.len()) {
         sus ch tea = stringz.char_at(state.content, state.position)
-        ready (ch == " " || ch == "\t") {
+        lowkey (ch == " " || ch == "\t") {
             state.position = state.position + 1
             state.column = state.column + 1
-        } otherwise ready (ch == "\n") {
+        } highkey lowkey (ch == "\n") {
             state.position = state.position + 1
             state.line = state.line + 1
             state.column = 1
-        } otherwise ready (ch == "\r") {
+        } highkey lowkey (ch == "\r") {
             state.position = state.position + 1
             # Handle CRLF
-            ready (state.position < state.content.len() && 
+            lowkey (state.position < state.content.len() && 
                   stringz.char_at(state.content, state.position) == "\n") {
                 state.position = state.position + 1
             }
             state.line = state.line + 1
             state.column = 1
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -686,7 +686,7 @@ slay skip_toml_whitespace(state sus TomlParserState) {
 
 # Get TOML value by key (internal helper)
 slay get_toml_value(doc TomlDocument, key tea) yikes<TomlValue> {
-    ready (map_contains(doc.values, key)) {
+    lowkey (map_contains(doc.values, key)) {
         damn doc.values[key]
     }
     yikes "Key '" + key + "' not found"

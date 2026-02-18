@@ -171,7 +171,7 @@ slay get_pooled_connection(
 ) yikes<PooledTLSConnection> {
     fr fr Get or create TLS connection from pool
     
-    ready (!pool.enabled) {
+    lowkey (!pool.enabled) {
         fr fr Pool disabled, create new connection directly
         damn create_new_tls_connection(hostname, port, security_policy, pool.connection_factory)
     }
@@ -182,8 +182,8 @@ slay get_pooled_connection(
     sus host_pool HostConnectionPool = get_or_create_host_pool(pool, hostname, port)
     
     fr fr Check circuit breaker
-    ready (host_pool.circuit_breaker.enabled && host_pool.circuit_breaker.state == "OPEN") {
-        ready (!should_attempt_connection(host_pool.circuit_breaker)) {
+    lowkey (host_pool.circuit_breaker.enabled && host_pool.circuit_breaker.state == "OPEN") {
+        lowkey (!should_attempt_connection(host_pool.circuit_breaker)) {
             yikes "CIRCUIT_BREAKER_OPEN: Connection attempts blocked for " + hostname
         }
         fr fr Transition to HALF_OPEN
@@ -197,7 +197,7 @@ slay get_pooled_connection(
         }
     }
     
-    ready (idle_connection.connection_id != "") {
+    lowkey (idle_connection.connection_id != "") {
         fr fr Found reusable connection
         idle_connection.is_active = based
         idle_connection.last_used = timez.current_timestamp()
@@ -212,7 +212,7 @@ slay get_pooled_connection(
         host_pool.host_stats.connections_reused = host_pool.host_stats.connections_reused + 1
         
         fr fr Update circuit breaker on success
-        ready (host_pool.circuit_breaker.enabled) {
+        lowkey (host_pool.circuit_breaker.enabled) {
             host_pool.circuit_breaker = record_success(host_pool.circuit_breaker)
         }
         
@@ -220,16 +220,16 @@ slay get_pooled_connection(
     }
     
     fr fr Check if we can create new connection
-    ready (host_pool.current_connection_count >= host_pool.max_connections) {
+    lowkey (host_pool.current_connection_count >= host_pool.max_connections) {
         fr fr Host pool is full, check global limits
-        ready (pool.global_stats.active_connection_count + pool.global_stats.idle_connection_count >= pool.max_total_connections) {
+        lowkey (pool.global_stats.active_connection_count + pool.global_stats.idle_connection_count >= pool.max_total_connections) {
             fr fr Need to evict connections or queue request
             sus evicted lit = try_evict_connection(pool)
-            ready (!evicted) {
+            lowkey (!evicted) {
                 fr fr Queue request for later processing
                 damn queue_connection_request(pool, hostname, port, security_policy)
             }
-        } otherwise {
+        } highkey {
             fr fr Evict connection from this host pool
             try_evict_from_host_pool(host_pool)
         }
@@ -241,7 +241,7 @@ slay get_pooled_connection(
     ) fam {
         when _ -> {
             fr fr Record failure in circuit breaker
-            ready (host_pool.circuit_breaker.enabled) {
+            lowkey (host_pool.circuit_breaker.enabled) {
                 host_pool.circuit_breaker = record_failure(host_pool.circuit_breaker)
             }
             host_pool.host_stats.connections_failed = host_pool.host_stats.connections_failed + 1
@@ -261,12 +261,12 @@ slay get_pooled_connection(
     
     fr fr Update peak connection count
     sus total_connections drip = pool.global_stats.active_connection_count + pool.global_stats.idle_connection_count
-    ready (total_connections > pool.global_stats.peak_connection_count) {
+    lowkey (total_connections > pool.global_stats.peak_connection_count) {
         pool.global_stats.peak_connection_count = total_connections
     }
     
     fr fr Record success in circuit breaker
-    ready (host_pool.circuit_breaker.enabled) {
+    lowkey (host_pool.circuit_breaker.enabled) {
         host_pool.circuit_breaker = record_success(host_pool.circuit_breaker)
     }
     
@@ -278,7 +278,7 @@ slay return_connection_to_pool(pool TLSConnectionPool, connection PooledTLSConne
     
     sus pool_key tea = connection.hostname + ":" + stringz.from_int(connection.port)
     
-    ready (!mapz.has_key(pool.pools, pool_key)) {
+    lowkey (!mapz.has_key(pool.pools, pool_key)) {
         fr fr Host pool doesn't exist, close connection
         close_pooled_connection(connection)
         damn pool
@@ -291,12 +291,12 @@ slay return_connection_to_pool(pool TLSConnectionPool, connection PooledTLSConne
     pool.global_stats.active_connection_count = pool.global_stats.active_connection_count - 1
     
     fr fr Check if connection should be reused
-    ready (should_reuse_connection(connection, pool)) {
+    lowkey (should_reuse_connection(connection, pool)) {
         fr fr Move to idle pool
         connection.is_active = cringe
         host_pool.idle_connections = arrayz.append(host_pool.idle_connections, connection)
         pool.global_stats.idle_connection_count = pool.global_stats.idle_connection_count + 1
-    } otherwise {
+    } highkey {
         fr fr Close connection
         close_pooled_connection(connection)
         host_pool.current_connection_count = host_pool.current_connection_count - 1
@@ -359,22 +359,22 @@ slay should_reuse_connection(connection PooledTLSConnection, pool TLSConnectionP
     sus idle_time drip = current_time - connection.last_used
     
     fr fr Check if connection is too old or has been idle too long
-    ready (idle_time > pool.idle_timeout_seconds) {
+    lowkey (idle_time > pool.idle_timeout_seconds) {
         damn cringe
     }
     
     fr fr Check connection health
-    ready (!connection.is_healthy) {
+    lowkey (!connection.is_healthy) {
         damn cringe
     }
     
     fr fr Check error count
-    ready (connection.error_count > 5) {
+    lowkey (connection.error_count > 5) {
         damn cringe
     }
     
     fr fr Check if certificate is still valid
-    ready (is_certificate_expiring_soon(connection.connection_metadata.peer_certificate)) {
+    lowkey (is_certificate_expiring_soon(connection.connection_metadata.peer_certificate)) {
         damn cringe
     }
     
@@ -413,9 +413,9 @@ slay cleanup_expired_connections(pool TLSConnectionPool) TLSConnectionPool {
             sus connection PooledTLSConnection = host_pool.idle_connections[j]
             sus idle_time drip = current_time - connection.last_used
             
-            ready (idle_time <= pool.idle_timeout_seconds && connection.is_healthy) {
+            lowkey (idle_time <= pool.idle_timeout_seconds && connection.is_healthy) {
                 cleaned_idle = arrayz.append(cleaned_idle, connection)
-            } otherwise {
+            } highkey {
                 close_pooled_connection(connection)
                 cleanup_count = cleanup_count + 1
                 host_pool.current_connection_count = host_pool.current_connection_count - 1
@@ -431,9 +431,9 @@ slay cleanup_expired_connections(pool TLSConnectionPool) TLSConnectionPool {
         bestie (k < arrayz.length(host_pool.active_connections)) {
             sus connection PooledTLSConnection = host_pool.active_connections[k]
             
-            ready (connection.is_healthy && connection.error_count < 10) {
+            lowkey (connection.is_healthy && connection.error_count < 10) {
                 cleaned_active = arrayz.append(cleaned_active, connection)
-            } otherwise {
+            } highkey {
                 close_pooled_connection(connection)
                 cleanup_count = cleanup_count + 1
                 host_pool.current_connection_count = host_pool.current_connection_count - 1
@@ -459,7 +459,7 @@ slay cleanup_expired_connections(pool TLSConnectionPool) TLSConnectionPool {
 slay perform_health_checks(pool TLSConnectionPool) TLSConnectionPool {
     fr fr Perform health checks on pooled connections
     
-    ready (!pool.health_check_enabled) {
+    lowkey (!pool.health_check_enabled) {
         damn pool
     }
     
@@ -472,7 +472,7 @@ slay perform_health_checks(pool TLSConnectionPool) TLSConnectionPool {
         sus host_pool HostConnectionPool = mapz.get(pool.pools, pool_key)
         
         fr fr Check if health check is due
-        ready (current_time - host_pool.last_health_check < pool.health_check_interval) {
+        lowkey (current_time - host_pool.last_health_check < pool.health_check_interval) {
             continue
         }
         
@@ -484,7 +484,7 @@ slay perform_health_checks(pool TLSConnectionPool) TLSConnectionPool {
             sus health_check_result lit = perform_connection_health_check(connection)
             connection.is_healthy = health_check_result
             
-            ready (!health_check_result) {
+            lowkey (!health_check_result) {
                 connection.error_count = connection.error_count + 1
             }
             
@@ -509,11 +509,11 @@ fr fr ===== CONNECTION EVICTION STRATEGIES =====
 slay try_evict_connection(pool TLSConnectionPool) lit {
     fr fr Try to evict a connection based on eviction policy
     
-    ready (pool.eviction_policy == "lru") {
+    lowkey (pool.eviction_policy == "lru") {
         damn evict_least_recently_used(pool)
-    } otherwise ready (pool.eviction_policy == "fifo") {
+    } highkey lowkey (pool.eviction_policy == "fifo") {
         damn evict_first_in_first_out(pool)
-    } otherwise ready (pool.eviction_policy == "least_used") {
+    } highkey lowkey (pool.eviction_policy == "least_used") {
         damn evict_least_used_connection(pool)
     }
     
@@ -538,7 +538,7 @@ slay evict_least_recently_used(pool TLSConnectionPool) lit {
         sus j drip = 0
         bestie (j < arrayz.length(host_pool.idle_connections)) {
             sus connection PooledTLSConnection = host_pool.idle_connections[j]
-            ready (connection.last_used < oldest_time) {
+            lowkey (connection.last_used < oldest_time) {
                 oldest_time = connection.last_used
                 target_connection = connection
                 target_pool_key = pool_key
@@ -550,7 +550,7 @@ slay evict_least_recently_used(pool TLSConnectionPool) lit {
         i = i + 1
     }
     
-    ready (found_target) {
+    lowkey (found_target) {
         evict_specific_connection(pool, target_pool_key, target_connection.connection_id)
         damn based
     }
@@ -575,7 +575,7 @@ slay evict_least_used_connection(pool TLSConnectionPool) lit {
         sus j drip = 0
         bestie (j < arrayz.length(host_pool.idle_connections)) {
             sus connection PooledTLSConnection = host_pool.idle_connections[j]
-            ready (connection.times_used < lowest_usage) {
+            lowkey (connection.times_used < lowest_usage) {
                 lowest_usage = connection.times_used
                 target_connection = connection
                 target_pool_key = pool_key
@@ -587,7 +587,7 @@ slay evict_least_used_connection(pool TLSConnectionPool) lit {
         i = i + 1
     }
     
-    ready (found_target) {
+    lowkey (found_target) {
         evict_specific_connection(pool, target_pool_key, target_connection.connection_id)
         damn based
     }
@@ -598,7 +598,7 @@ slay evict_least_used_connection(pool TLSConnectionPool) lit {
 slay evict_specific_connection(pool TLSConnectionPool, pool_key tea, connection_id tea) {
     fr fr Evict specific connection from pool
     
-    ready (mapz.has_key(pool.pools, pool_key)) {
+    lowkey (mapz.has_key(pool.pools, pool_key)) {
         sus host_pool HostConnectionPool = mapz.get(pool.pools, pool_key)
         
         fr fr Remove from idle connections
@@ -636,10 +636,10 @@ slay record_failure(breaker CircuitBreaker) CircuitBreaker {
     breaker.failure_count = breaker.failure_count + 1
     breaker.last_failure_time = timez.current_timestamp()
     
-    ready (breaker.state == "CLOSED" && breaker.failure_count >= breaker.failure_threshold) {
+    lowkey (breaker.state == "CLOSED" && breaker.failure_count >= breaker.failure_threshold) {
         breaker.state = "OPEN"
         breaker.last_state_change = timez.current_timestamp()
-    } otherwise ready (breaker.state == "HALF_OPEN") {
+    } highkey lowkey (breaker.state == "HALF_OPEN") {
         breaker.state = "OPEN"
         breaker.last_state_change = timez.current_timestamp()
     }
@@ -652,7 +652,7 @@ slay record_success(breaker CircuitBreaker) CircuitBreaker {
     
     breaker.success_count = breaker.success_count + 1
     
-    ready (breaker.state == "HALF_OPEN" && breaker.success_count >= breaker.success_threshold) {
+    lowkey (breaker.state == "HALF_OPEN" && breaker.success_count >= breaker.success_threshold) {
         breaker.state = "CLOSED"
         breaker.failure_count = 0
         breaker.success_count = 0
@@ -665,11 +665,11 @@ slay record_success(breaker CircuitBreaker) CircuitBreaker {
 slay should_attempt_connection(breaker CircuitBreaker) lit {
     fr fr Check if connection should be attempted based on circuit breaker state
     
-    ready (breaker.state == "CLOSED") {
+    lowkey (breaker.state == "CLOSED") {
         damn based
     }
     
-    ready (breaker.state == "OPEN") {
+    lowkey (breaker.state == "OPEN") {
         sus current_time drip = timez.current_timestamp()
         sus time_since_open drip = current_time - breaker.last_state_change
         damn time_since_open >= breaker.timeout_seconds
@@ -686,7 +686,7 @@ slay get_or_create_host_pool(pool TLSConnectionPool, hostname tea, port drip) Ho
     
     sus pool_key tea = hostname + ":" + stringz.from_int(port)
     
-    ready (mapz.has_key(pool.pools, pool_key)) {
+    lowkey (mapz.has_key(pool.pools, pool_key)) {
         damn mapz.get(pool.pools, pool_key)
     }
     
@@ -713,7 +713,7 @@ slay get_or_create_host_pool(pool TLSConnectionPool, hostname tea, port drip) Ho
 slay try_get_idle_connection(host_pool HostConnectionPool) yikes<PooledTLSConnection> {
     fr fr Try to get reusable idle connection
     
-    ready (arrayz.length(host_pool.idle_connections) == 0) {
+    lowkey (arrayz.length(host_pool.idle_connections) == 0) {
         yikes "NO_IDLE_CONNECTIONS"
     }
     
@@ -730,7 +730,7 @@ slay try_get_idle_connection(host_pool HostConnectionPool) yikes<PooledTLSConnec
         
         fr fr Check if connection is still usable
         sus idle_time drip = current_time - connection.last_used
-        ready (idle_time <= 300 && connection.is_healthy && connection.last_used > latest_use) {  fr fr 5 minutes max idle
+        lowkey (idle_time <= 300 && connection.is_healthy && connection.last_used > latest_use) {  fr fr 5 minutes max idle
             best_connection = connection
             best_index = i
             latest_use = connection.last_used
@@ -739,7 +739,7 @@ slay try_get_idle_connection(host_pool HostConnectionPool) yikes<PooledTLSConnec
         i = i + 1
     }
     
-    ready (best_index == -1) {
+    lowkey (best_index == -1) {
         yikes "NO_USABLE_IDLE_CONNECTIONS"
     }
     
@@ -752,7 +752,7 @@ slay remove_connection_from_list(connections PooledTLSConnection[value], connect
     sus filtered PooledTLSConnection[value] = []
     sus i drip = 0
     bestie (i < arrayz.length(connections)) {
-        ready (connections[i].connection_id != connection_id) {
+        lowkey (connections[i].connection_id != connection_id) {
             filtered = arrayz.append(filtered, connections[i])
         }
         i = i + 1
@@ -790,7 +790,7 @@ slay perform_connection_health_check(connection PooledTLSConnection) lit {
     sus connection_age drip = current_time - connection.created_at
     
     fr fr Consider connection unhealthy if too old or has too many errors
-    ready (connection_age > 3600 || connection.error_count > 3) {  fr fr 1 hour max age
+    lowkey (connection_age > 3600 || connection.error_count > 3) {  fr fr 1 hour max age
         damn cringe
     }
     
@@ -803,13 +803,13 @@ slay calculate_host_pool_health(host_pool HostConnectionPool) lit {
     sus healthy_count drip = 0
     sus total_count drip = arrayz.length(host_pool.idle_connections) + arrayz.length(host_pool.active_connections)
     
-    ready (total_count == 0) {
+    lowkey (total_count == 0) {
         damn based  fr fr Empty pool is healthy
     }
     
     sus i drip = 0
     bestie (i < arrayz.length(host_pool.idle_connections)) {
-        ready (host_pool.idle_connections[i].is_healthy) {
+        lowkey (host_pool.idle_connections[i].is_healthy) {
             healthy_count = healthy_count + 1
         }
         i = i + 1
@@ -817,7 +817,7 @@ slay calculate_host_pool_health(host_pool HostConnectionPool) lit {
     
     sus j drip = 0
     bestie (j < arrayz.length(host_pool.active_connections)) {
-        ready (host_pool.active_connections[j].is_healthy) {
+        lowkey (host_pool.active_connections[j].is_healthy) {
             healthy_count = healthy_count + 1
         }
         j = j + 1
@@ -836,7 +836,7 @@ slay get_pool_statistics(pool TLSConnectionPool) PoolStatistics {
     
     fr fr Calculate hit ratio
     sus total_requests drip = stats.total_connections_created + stats.total_connections_reused
-    ready (total_requests > 0) {
+    lowkey (total_requests > 0) {
         stats.pool_hit_ratio = (stats.total_connections_reused * 100) / total_requests
     }
     
@@ -870,7 +870,7 @@ slay get_pool_statistics(pool TLSConnectionPool) PoolStatistics {
         i = i + 1
     }
     
-    ready (connection_count > 0) {
+    lowkey (connection_count > 0) {
         stats.average_connection_age = total_connection_age / connection_count
     }
     
@@ -883,7 +883,7 @@ slay generate_pool_report(pool TLSConnectionPool) tea {
     sus stats PoolStatistics = get_pool_statistics(pool)
     
     sus report tea = "=== TLS Connection Pool Report ===\n"
-    report = report + "Pool Status: " + ready (pool.enabled) { damn "ENABLED" } otherwise { damn "DISABLED" } + "\n"
+    report = report + "Pool Status: " + lowkey (pool.enabled) { damn "ENABLED" } highkey { damn "DISABLED" } + "\n"
     report = report + "Total Connections Created: " + stringz.from_int(stats.total_connections_created) + "\n"
     report = report + "Total Connections Reused: " + stringz.from_int(stats.total_connections_reused) + "\n"
     report = report + "Pool Hit Ratio: " + stringz.from_int(stats.pool_hit_ratio) + "%\n"

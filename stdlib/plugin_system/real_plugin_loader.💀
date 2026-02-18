@@ -252,14 +252,14 @@ slay call_plugin_function(plugin Plug, function_name tea, ...args) tea {
             damn "ERROR: Function call failed"
         }
         damn cursed_cstring_to_tea(result_ptr)
-    } otherwise lowkey len(args) == 1 {
+    } highkey lowkey len(args) == 1 {
         fr fr Single argument case
         sus result_ptr vibes = cursed_plugin_call_function_1(plugin_manager_handle, plugin_id, function_name, args[0])
         lowkey result_ptr == null {
             damn "ERROR: Function call failed"
         }
         damn cursed_cstring_to_tea(result_ptr)
-    } otherwise {
+    } highkey {
         damn "ERROR: Multiple arguments not yet supported"
     }
 }

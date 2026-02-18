@@ -90,7 +90,7 @@ slay windows_create_file(path tea, access FileAccess, share ShareMode, dispositi
     }
     
     // Check for INVALID_HANDLE_VALUE (-1)
-    ready handle_value == -1 {
+    lowkey handle_value == -1 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -105,7 +105,7 @@ slay windows_create_file(path tea, access FileAccess, share ShareMode, dispositi
 
 // Close a Windows handle
 slay windows_close_handle(handle WindowsHandle) WindowsError yikes vibes {
-    ready !handle.valid {
+    lowkey !handle.valid {
         damn // Already closed or invalid
     }
     
@@ -113,7 +113,7 @@ slay windows_close_handle(handle WindowsHandle) WindowsError yikes vibes {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -123,7 +123,7 @@ slay windows_close_handle(handle WindowsHandle) WindowsError yikes vibes {
 
 // Read from a file handle
 slay windows_read_file(handle WindowsHandle, buffer smol[value], size normie) WindowsError yikes normie {
-    ready !handle.valid {
+    lowkey !handle.valid {
         yikes WindowsError.InvalidHandle
     }
     
@@ -138,7 +138,7 @@ slay windows_read_file(handle WindowsHandle, buffer smol[value], size normie) Wi
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -148,7 +148,7 @@ slay windows_read_file(handle WindowsHandle, buffer smol[value], size normie) Wi
 
 // Write to a file handle
 slay windows_write_file(handle WindowsHandle, buffer smol[value], size normie) WindowsError yikes normie {
-    ready !handle.valid {
+    lowkey !handle.valid {
         yikes WindowsError.InvalidHandle
     }
     
@@ -163,7 +163,7 @@ slay windows_write_file(handle WindowsHandle, buffer smol[value], size normie) W
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -182,7 +182,7 @@ slay windows_get_file_attributes(path tea) WindowsError yikes FileAttributes {
     }
     
     // Check for INVALID_FILE_ATTRIBUTES (0xFFFFFFFF)
-    ready attributes == 0xFFFFFFFF {
+    lowkey attributes == 0xFFFFFFFF {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -200,7 +200,7 @@ slay windows_create_directory(path tea) WindowsError yikes vibes {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -216,7 +216,7 @@ slay windows_remove_directory(path tea) WindowsError yikes vibes {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -232,7 +232,7 @@ slay windows_delete_file(path tea) WindowsError yikes vibes {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -252,7 +252,7 @@ slay windows_move_file(old_path tea, new_path tea) WindowsError yikes vibes {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -266,7 +266,7 @@ slay windows_get_current_directory() WindowsError yikes tea {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -287,7 +287,7 @@ slay windows_set_current_directory(path tea) WindowsError yikes vibes {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -301,7 +301,7 @@ slay windows_get_temp_path() WindowsError yikes tea {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)  
     }
@@ -339,7 +339,7 @@ slay windows_find_first_file(pattern tea) WindowsError yikes {FindHandle, FindDa
     }
     
     // Check for INVALID_HANDLE_VALUE
-    ready handle_value == -1 {
+    lowkey handle_value == -1 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -358,7 +358,7 @@ slay windows_find_first_file(pattern tea) WindowsError yikes {FindHandle, FindDa
 
 // Find next file in directory
 slay windows_find_next_file(find_handle FindHandle) WindowsError yikes FindData {
-    ready !find_handle.valid {
+    lowkey !find_handle.valid {
         yikes WindowsError.InvalidHandle
     }
     
@@ -368,7 +368,7 @@ slay windows_find_next_file(find_handle FindHandle) WindowsError yikes FindData 
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -380,7 +380,7 @@ slay windows_find_next_file(find_handle FindHandle) WindowsError yikes FindData 
 
 // Close find handle
 slay windows_find_close(find_handle FindHandle) WindowsError yikes vibes {
-    ready !find_handle.valid {
+    lowkey !find_handle.valid {
         damn // Already closed
     }
     
@@ -388,7 +388,7 @@ slay windows_find_close(find_handle FindHandle) WindowsError yikes vibes {
         when _ -> yikes WindowsError.SystemError
     }
     
-    ready result == 0 {
+    lowkey result == 0 {
         sus error_code normie = windows_get_last_error()
         yikes WindowsError(error_code)
     }
@@ -422,7 +422,7 @@ slay utf16_to_utf8(utf16_buffer smol[value], length normie) tea yikes WindowsErr
     sus result tea = ""
     sus i normie = 0
     bestie i < length {
-        ready utf16_buffer[i] != 0 {
+        lowkey utf16_buffer[i] != 0 {
             result = result + utf16_buffer[i].to_string()
         }
         i = i + 2  // Skip null byte in wide character
@@ -455,16 +455,16 @@ slay windows_ffi_call(func_name tea, ...args) normie yikes WindowsError {
 
 // Check if path is absolute
 slay is_absolute_path(path tea) lit {
-    ready path.length >= 3 {
+    lowkey path.length >= 3 {
         // Check for C:\ pattern
-        ready path.char_at(1) == ':' && (path.char_at(2) == '\\' || path.char_at(2) == '/') {
+        lowkey path.char_at(1) == ':' && (path.char_at(2) == '\\' || path.char_at(2) == '/') {
             damn based
         }
     }
     
-    ready path.length >= 2 {
+    lowkey path.length >= 2 {
         // Check for UNC path \\server\share
-        ready path.char_at(0) == '\\' && path.char_at(1) == '\\' {
+        lowkey path.char_at(0) == '\\' && path.char_at(1) == '\\' {
             damn based
         }
     }
@@ -488,7 +488,7 @@ slay get_file_extension(path tea) tea {
         when _ -> 0
     }
     
-    ready last_dot > last_separator {
+    lowkey last_dot > last_separator {
         damn path.substr(last_dot + 1)
     }
     
@@ -500,7 +500,7 @@ slay join_paths(base tea, ...components) tea {
     sus result tea = normalize_path(base)
     
     bestie component tea in components {
-        ready !result.ends_with("\\") {
+        lowkey !result.ends_with("\\") {
             result = result + "\\"
         }
         result = result + normalize_path(component)
@@ -514,38 +514,38 @@ slay test_windows_platform() vibes {
     vibez.spill("=== Testing Windows Platform Implementation ===")
     
     // Test path utilities
-    ready is_absolute_path("C:\\Windows") {
+    lowkey is_absolute_path("C:\\Windows") {
         vibez.spill("✓ Absolute path detection working")
     }
     
-    ready !is_absolute_path("relative\\path") {
+    lowkey !is_absolute_path("relative\\path") {
         vibez.spill("✓ Relative path detection working")
     }
     
     sus normalized tea = normalize_path("path/with/forward/slashes")
-    ready normalized == "path\\with\\forward\\slashes" {
+    lowkey normalized == "path\\with\\forward\\slashes" {
         vibez.spill("✓ Path normalization working")
     }
     
     sus extension tea = get_file_extension("document.txt")
-    ready extension == "txt" {
+    lowkey extension == "txt" {
         vibez.spill("✓ File extension extraction working")
     }
     
     sus joined tea = join_paths("C:\\base", "sub", "file.txt")
-    ready joined == "C:\\base\\sub\\file.txt" {
+    lowkey joined == "C:\\base\\sub\\file.txt" {
         vibez.spill("✓ Path joining working")
     }
     
     // Test error code handling
     sus error WindowsError = WindowsError.AccessDenied
-    ready error == WindowsError.AccessDenied {
+    lowkey error == WindowsError.AccessDenied {
         vibez.spill("✓ Windows error codes working")
     }
     
     // Test handle structure
     sus handle WindowsHandle = WindowsHandle{handle: 123, valid: based}
-    ready handle.valid {
+    lowkey handle.valid {
         vibez.spill("✓ Windows handle structure working")
     }
     

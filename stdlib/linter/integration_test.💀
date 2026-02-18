@@ -13,10 +13,10 @@ slay test_linter_integration() {
     vibez.spill("");
     vibez.spill("Test 1: Naming Convention Detection");
     sus naming_code tea = "sus myVariable drip = 42";
-    ready (contains_str(naming_code, "myVariable")) {
+    lowkey (contains_str(naming_code, "myVariable")) {
         vibez.spill("✅ PASS - Detected camelCase variable");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Did not detect naming issue");
     }
     
@@ -24,21 +24,21 @@ slay test_linter_integration() {
     vibez.spill("");
     vibez.spill("Test 2: Security Issue Detection");
     sus security_code tea = "sus api_key tea = \"abc123def\"";
-    ready (contains_str(security_code, "api_key") && contains_str(security_code, "\"")) {
+    lowkey (contains_str(security_code, "api_key") && contains_str(security_code, "\"")) {
         vibez.spill("✅ PASS - Detected hardcoded API key");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Did not detect security issue");
     }
     
     // Test 3: Gen Z Syntax Detection
     vibez.spill("");
     vibez.spill("Test 3: Gen Z Syntax Detection");
-    sus gen_z_code tea = "ready (true) { print(\"hello\") }";
-    ready (contains_str(gen_z_code, "true") && contains_str(gen_z_code, "print")) {
+    sus gen_z_code tea = "lowkey (true) { print(\"hello\") }";
+    lowkey (contains_str(gen_z_code, "true") && contains_str(gen_z_code, "print")) {
         vibez.spill("✅ PASS - Detected non-Gen Z syntax");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Did not detect Gen Z issues");
     }
     
@@ -46,10 +46,10 @@ slay test_linter_integration() {
     vibez.spill("");
     vibez.spill("Test 4: Line Length Detection");
     sus long_line tea = "sus very_long_variable_name_that_definitely_exceeds_reasonable_length_limits_and_should_trigger_a_warning drip = 42";
-    ready (len_str(long_line) > 100) {
+    lowkey (len_str(long_line) > 100) {
         vibez.spill("✅ PASS - Detected line length issue (length: " + int_to_str(len_str(long_line)) + ")");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Did not detect line length issue");
     }
     
@@ -57,10 +57,10 @@ slay test_linter_integration() {
     vibez.spill("");
     vibez.spill("Test 5: Performance Issue Detection");
     sus perf_code tea = "bestie (i < 100) { result = result + \"data\" }";
-    ready (contains_str(perf_code, "bestie") && contains_str(perf_code, "+") && contains_str(perf_code, "\"")) {
+    lowkey (contains_str(perf_code, "bestie") && contains_str(perf_code, "+") && contains_str(perf_code, "\"")) {
         vibez.spill("✅ PASS - Detected string concatenation in loop");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Did not detect performance issue");
     }
     
@@ -68,10 +68,10 @@ slay test_linter_integration() {
     vibez.spill("");
     vibez.spill("Test 6: SQL Injection Detection");
     sus sql_code tea = "sus query tea = \"SELECT * FROM users WHERE id = \" + user_id";
-    ready (contains_str(sql_code, "query") && contains_str(sql_code, "+") && contains_str(sql_code, "SELECT")) {
+    lowkey (contains_str(sql_code, "query") && contains_str(sql_code, "+") && contains_str(sql_code, "SELECT")) {
         vibez.spill("✅ PASS - Detected potential SQL injection");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Did not detect SQL injection risk");
     }
     
@@ -79,12 +79,12 @@ slay test_linter_integration() {
     vibez.spill("");
     vibez.spill("Test 7: Clean Code Validation");
     sus clean_code tea = "sus my_variable drip = based";
-    ready (!contains_str(clean_code, "Variable") && 
+    lowkey (!contains_str(clean_code, "Variable") && 
            !contains_str(clean_code, "true") && 
            !contains_str(clean_code, "password")) {
         vibez.spill("✅ PASS - Clean code produces no issues");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Clean code flagged incorrectly");
     }
     
@@ -92,10 +92,10 @@ slay test_linter_integration() {
     vibez.spill("");
     vibez.spill("Test 8: Function Naming Detection");
     sus func_code tea = "slay myFunction() { vibez.spill(\"test\") }";
-    ready (contains_str(func_code, "myFunction")) {
+    lowkey (contains_str(func_code, "myFunction")) {
         vibez.spill("✅ PASS - Detected camelCase function name");
         tests_passed = tests_passed + 1;
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAIL - Did not detect function naming issue");
     }
     
@@ -105,8 +105,8 @@ slay test_linter_integration() {
     vibez.spill("=======================");
     vibez.spill("Tests Passed: " + int_to_str(tests_passed) + "/" + int_to_str(total_tests));
     
-    ready (tests_passed == total_tests) {
-        vibez.spill("🎉 ALL TESTS PASSED! CURSED Linter is production-ready! 🔥");
+    lowkey (tests_passed == total_tests) {
+        vibez.spill("🎉 ALL TESTS PASSED! CURSED Linter is production-lowkey! 🔥");
         vibez.spill("");
         vibez.spill("✅ Features Validated:");
         vibez.spill("   • Naming convention enforcement");
@@ -117,7 +117,7 @@ slay test_linter_integration() {
         vibez.spill("   • SQL injection prevention");
         vibez.spill("   • Function naming standards");
         vibez.spill("   • Clean code recognition");
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️  Some tests failed. Review implementation.");
     }
 }
@@ -131,7 +131,7 @@ slay test_linter_configuration() {
     sus test_code tea = "sus flag lit = true";
     
     vibez.spill("Production Mode (strict):");
-    ready (contains_str(test_code, "true")) {
+    lowkey (contains_str(test_code, "true")) {
         vibez.spill("   ✅ Would flag Gen Z syntax in production mode");
     }
     
@@ -188,7 +188,7 @@ slay main_character() {
     vibez.spill("   • Performance optimization hints");
     vibez.spill("   • Naming convention validation");
     vibez.spill("   • Configuration flexibility");
-    vibez.spill("   • AST integration ready");
+    vibez.spill("   • AST integration lowkey");
     
     vibez.spill("");
     vibez.spill("💯 Ready to replace Rust tooling! The future is CURSED! ✨");

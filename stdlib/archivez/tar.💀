@@ -63,11 +63,11 @@ slay init_tar() {
 
 # Add file to TAR archive
 slay tar_add_file(local_path tea, archive_path tea, data tea) yikes<lit> {
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         yikes "archive path cannot be empty"
     }
     
-    ready (len(archive_path) >= TAR_NAME_SIZE) {
+    lowkey (len(archive_path) >= TAR_NAME_SIZE) {
         yikes "filename too long for TAR format: " + archive_path
     }
     
@@ -95,17 +95,17 @@ slay tar_add_file(local_path tea, archive_path tea, data tea) yikes<lit> {
 
 # Add directory to TAR archive
 slay tar_add_directory(local_path tea, archive_path tea) yikes<lit> {
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         yikes "archive path cannot be empty"
     }
     
     # Ensure directory path ends with slash
     sus dir_path tea = archive_path
-    ready (!ends_with(dir_path, "/")) {
+    lowkey (!ends_with(dir_path, "/")) {
         dir_path = dir_path + "/"
     }
     
-    ready (len(dir_path) >= TAR_NAME_SIZE) {
+    lowkey (len(dir_path) >= TAR_NAME_SIZE) {
         yikes "directory name too long for TAR format: " + dir_path
     }
     
@@ -137,7 +137,7 @@ slay tar_extract_file(archive_path tea, output_path tea) yikes<tea> {
         when _ -> yikes "file not found in archive: " + archive_path
     }
     
-    ready (entry.header.typeflag == TAR_DIRECTORY) {
+    lowkey (entry.header.typeflag == TAR_DIRECTORY) {
         yikes "cannot extract directory as file: " + archive_path
     }
     
@@ -167,7 +167,7 @@ slay tar_get_entry_count() drip {
 slay find_tar_entry(filename tea) yikes<TarEntry> {
     bestie (drip i = 0; i < len(tar_entries); i = i + 1) {
         sus entry TarEntry = tar_entries[i]
-        ready (entry.header.name == filename) {
+        lowkey (entry.header.name == filename) {
             damn entry
         }
     }
@@ -198,7 +198,7 @@ slay tar_get_file_info(filename tea) yikes<tea> {
     info = info + "Group: " + header.gname + " (" + header.gid + ")\n"
     info = info + "Modified: " + to_string(header.mtime) + "\n"
     
-    ready (header.linkname != "") {
+    lowkey (header.linkname != "") {
         info = info + "Link Target: " + header.linkname + "\n"
     }
     
@@ -207,25 +207,25 @@ slay tar_get_file_info(filename tea) yikes<tea> {
 
 # Get TAR file type name
 slay get_tar_type_name(typeflag tea) tea {
-    ready (typeflag == TAR_REGULAR_FILE) {
+    lowkey (typeflag == TAR_REGULAR_FILE) {
         damn "Regular File"
     }
-    ready (typeflag == TAR_DIRECTORY) {
+    lowkey (typeflag == TAR_DIRECTORY) {
         damn "Directory"
     }
-    ready (typeflag == TAR_LINK) {
+    lowkey (typeflag == TAR_LINK) {
         damn "Hard Link"
     }
-    ready (typeflag == TAR_SYMLINK) {
+    lowkey (typeflag == TAR_SYMLINK) {
         damn "Symbolic Link"
     }
-    ready (typeflag == TAR_CHARACTER_DEVICE) {
+    lowkey (typeflag == TAR_CHARACTER_DEVICE) {
         damn "Character Device"
     }
-    ready (typeflag == TAR_BLOCK_DEVICE) {
+    lowkey (typeflag == TAR_BLOCK_DEVICE) {
         damn "Block Device"
     }
-    ready (typeflag == TAR_FIFO) {
+    lowkey (typeflag == TAR_FIFO) {
         damn "FIFO"
     }
     damn "Unknown"
@@ -260,12 +260,12 @@ slay create_tar_header(name tea, size drip, typeflag tea) TarHeader {
 
 # Calculate number of 512-byte blocks needed for data
 slay calculate_tar_blocks(size drip) drip {
-    ready (size == 0) {
+    lowkey (size == 0) {
         damn 0
     }
     
     sus blocks drip = size / TAR_BLOCK_SIZE
-    ready (size % TAR_BLOCK_SIZE > 0) {
+    lowkey (size % TAR_BLOCK_SIZE > 0) {
         blocks = blocks + 1  # Round up for partial block
     }
     
@@ -309,7 +309,7 @@ slay tar_validate() lit {
     vibez.spill("TAR: Validating archive structure")
     
     # Check for valid entries
-    ready (len(tar_entries) == 0) {
+    lowkey (len(tar_entries) == 0) {
         vibez.spill("TAR: Warning - empty archive")
         damn based
     }
@@ -320,24 +320,24 @@ slay tar_validate() lit {
         sus header TarHeader = entry.header
         
         # Basic validation checks
-        ready (header.name == "") {
+        lowkey (header.name == "") {
             vibez.spill("TAR: Invalid entry - empty filename")
             damn cap
         }
         
-        ready (header.magic != "ustar") {
+        lowkey (header.magic != "ustar") {
             vibez.spill("TAR: Invalid entry - bad magic number")
             damn cap
         }
         
-        ready (entry.data_size < 0) {
+        lowkey (entry.data_size < 0) {
             vibez.spill("TAR: Invalid entry - negative size")
             damn cap
         }
         
         # Validate checksum
         sus calculated_checksum drip = calculate_tar_checksum(header)
-        ready (calculated_checksum != header.checksum) {
+        lowkey (calculated_checksum != header.checksum) {
             vibez.spill("TAR: Invalid entry - checksum mismatch for " + header.name)
             damn cap
         }
@@ -363,18 +363,18 @@ slay tar_get_stats() tea {
         
         total_size = total_size + entry.data_size
         
-        ready (header.typeflag == TAR_DIRECTORY) {
+        lowkey (header.typeflag == TAR_DIRECTORY) {
             directory_count = directory_count + 1
-        } otherwise ready (header.typeflag == TAR_REGULAR_FILE) {
+        } highkey lowkey (header.typeflag == TAR_REGULAR_FILE) {
             file_count = file_count + 1
-        } otherwise ready (header.typeflag == TAR_LINK || header.typeflag == TAR_SYMLINK) {
+        } highkey lowkey (header.typeflag == TAR_LINK || header.typeflag == TAR_SYMLINK) {
             link_count = link_count + 1
         }
         
-        ready (header.mtime < oldest_mtime) {
+        lowkey (header.mtime < oldest_mtime) {
             oldest_mtime = header.mtime
         }
-        ready (header.mtime > newest_mtime) {
+        lowkey (header.mtime > newest_mtime) {
             newest_mtime = header.mtime
         }
     }
@@ -396,15 +396,15 @@ slay tar_get_stats() tea {
 
 # Create symbolic link entry in TAR
 slay tar_add_symlink(link_path tea, target_path tea) yikes<lit> {
-    ready (link_path == "") {
+    lowkey (link_path == "") {
         yikes "link path cannot be empty"
     }
     
-    ready (target_path == "") {
+    lowkey (target_path == "") {
         yikes "target path cannot be empty"
     }
     
-    ready (len(link_path) >= TAR_NAME_SIZE) {
+    lowkey (len(link_path) >= TAR_NAME_SIZE) {
         yikes "link name too long for TAR format: " + link_path
     }
     
@@ -432,15 +432,15 @@ slay tar_add_symlink(link_path tea, target_path tea) yikes<lit> {
 
 # Create hard link entry in TAR
 slay tar_add_hardlink(link_path tea, target_path tea) yikes<lit> {
-    ready (link_path == "") {
+    lowkey (link_path == "") {
         yikes "link path cannot be empty"
     }
     
-    ready (target_path == "") {
+    lowkey (target_path == "") {
         yikes "target path cannot be empty"
     }
     
-    ready (len(link_path) >= TAR_NAME_SIZE) {
+    lowkey (len(link_path) >= TAR_NAME_SIZE) {
         yikes "link name too long for TAR format: " + link_path
     }
     
@@ -507,12 +507,12 @@ slay tar_repair() lit {
         sus entry TarEntry = tar_entries[i]
         
         # Check if entry can be repaired
-        ready (entry.header.name != "" && entry.data_size >= 0) {
+        lowkey (entry.header.name != "" && entry.data_size >= 0) {
             # Recalculate checksum
             entry.header.checksum = calculate_tar_checksum(entry.header)
             append_tar_entry(entry)
             repair_count = repair_count + 1
-        } otherwise {
+        } highkey {
             vibez.spill("TAR: Discarding corrupted entry at index " + to_string(i))
         }
     }

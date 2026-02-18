@@ -168,19 +168,19 @@ slay validate_environment_config(env_config EnvironmentConfig) lit {
     vibez.spill("✅ Validating environment configuration...")
     
     fr fr Validate worker count
-    ready (env_config.cursed_test_workers <= 0 || env_config.cursed_test_workers > 32) {
+    lowkey (env_config.cursed_test_workers <= 0 || env_config.cursed_test_workers > 32) {
         vibez.spill("❌ Invalid worker count:", env_config.cursed_test_workers)
         damn cringe
     }
     
     fr fr Validate timeout
-    ready (env_config.cursed_test_timeout <= 0 || env_config.cursed_test_timeout > 3600) {
+    lowkey (env_config.cursed_test_timeout <= 0 || env_config.cursed_test_timeout > 3600) {
         vibez.spill("❌ Invalid timeout:", env_config.cursed_test_timeout)
         damn cringe
     }
     
     fr fr Validate memory limit
-    ready (env_config.cursed_test_memory_limit <= 0 || env_config.cursed_test_memory_limit > 8192) {
+    lowkey (env_config.cursed_test_memory_limit <= 0 || env_config.cursed_test_memory_limit > 8192) {
         vibez.spill("❌ Invalid memory limit:", env_config.cursed_test_memory_limit)
         damn cringe
     }
@@ -193,7 +193,7 @@ slay validate_parallelism_config(parallel_config ParallelismConfig) lit {
     vibez.spill("✅ Validating parallelism configuration...")
     
     fr fr Validate execution mode
-    ready (parallel_config.execution_mode != "sequential" && 
+    lowkey (parallel_config.execution_mode != "sequential" && 
            parallel_config.execution_mode != "parallel" && 
            parallel_config.execution_mode != "adaptive") {
         vibez.spill("❌ Invalid execution mode:", parallel_config.execution_mode)
@@ -201,7 +201,7 @@ slay validate_parallelism_config(parallel_config ParallelismConfig) lit {
     }
     
     fr fr Validate worker pool size
-    ready (parallel_config.worker_pool_size != parallel_config.max_workers) {
+    lowkey (parallel_config.worker_pool_size != parallel_config.max_workers) {
         vibez.spill("❌ Worker pool size mismatch")
         damn cringe
     }

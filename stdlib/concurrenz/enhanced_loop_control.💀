@@ -73,7 +73,7 @@ struct ExponentialBackoff {
 
 fr fr Initialize exponential backoff
 slay init_exponential_backoff(backoff *ExponentialBackoff, initial_us normie, max_us normie) {
-    ready backoff == 0 {
+    lowkey backoff == 0 {
         damn
     }
     
@@ -86,17 +86,17 @@ slay init_exponential_backoff(backoff *ExponentialBackoff, initial_us normie, ma
 
 fr fr Perform exponential backoff with timing
 slay exponential_backoff_delay(backoff *ExponentialBackoff) {
-    ready backoff == 0 {
+    lowkey backoff == 0 {
         damn
     }
     
     sus delay_us normie = backoff.current_delay
     
     fr fr Add random jitter if enabled (±25%)
-    ready backoff.jitter_enabled {
+    lowkey backoff.jitter_enabled {
         sus jitter normie = (get_random_number() % (delay_us / 2)) - (delay_us / 4)
         delay_us = delay_us + jitter
-        ready delay_us < 1 {
+        lowkey delay_us < 1 {
             delay_us = 1
         }
     }
@@ -106,14 +106,14 @@ slay exponential_backoff_delay(backoff *ExponentialBackoff) {
     
     fr fr Update backoff delay for next iteration
     backoff.current_delay = backoff.current_delay * backoff.multiplier
-    ready backoff.current_delay > backoff.max_delay {
+    lowkey backoff.current_delay > backoff.max_delay {
         backoff.current_delay = backoff.max_delay
     }
 }
 
 fr fr Reset exponential backoff to initial state
 slay reset_exponential_backoff(backoff *ExponentialBackoff) {
-    ready backoff != 0 {
+    lowkey backoff != 0 {
         backoff.current_delay = backoff.initial_delay
     }
 }
@@ -126,7 +126,7 @@ fr fr Create advanced loop context with comprehensive configuration
 slay create_advanced_loop_context(max_iterations thicc, timeout_ms normie, 
                                   backoff_strategy normie) *AdvancedLoopContext {
     sus context *AdvancedLoopContext = memory.allocate(AdvancedLoopContext)
-    ready context == 0 {
+    lowkey context == 0 {
         damn 0
     }
     
@@ -160,36 +160,36 @@ slay create_advanced_loop_context(max_iterations thicc, timeout_ms normie,
 
 fr fr Check if loop should continue with comprehensive condition checking
 slay should_loop_continue(context *AdvancedLoopContext) normie {
-    ready context == 0 {
+    lowkey context == 0 {
         damn LOOP_ERROR
     }
     
     fr fr Check for error state
-    ready context.loop_state == LOOP_ERROR {
+    lowkey context.loop_state == LOOP_ERROR {
         damn LOOP_ERROR
     }
     
     fr fr Check for explicit break or return
-    ready context.loop_state == LOOP_BREAK {
+    lowkey context.loop_state == LOOP_BREAK {
         damn LOOP_BREAK
     }
-    ready context.loop_state == LOOP_RETURN {
+    lowkey context.loop_state == LOOP_RETURN {
         damn LOOP_RETURN
     }
     
     fr fr Check iteration limit
-    ready context.control_context.max_iterations > 0 && 
+    lowkey context.control_context.max_iterations > 0 && 
           context.control_context.current_iteration >= context.control_context.max_iterations {
         context.loop_state = LOOP_BREAK
         damn LOOP_BREAK
     }
     
     fr fr Check timeout
-    ready context.control_context.timeout_ns > 0 {
+    lowkey context.control_context.timeout_ns > 0 {
         sus current_time thicc = os_primitives.get_real_time_ns()
         sus elapsed_time thicc = current_time - context.control_context.start_time
         
-        ready elapsed_time >= context.control_context.timeout_ns {
+        lowkey elapsed_time >= context.control_context.timeout_ns {
             context.loop_state = LOOP_TIMEOUT
             context.metrics.timeout_count = context.metrics.timeout_count + 1
             damn LOOP_TIMEOUT
@@ -201,7 +201,7 @@ slay should_loop_continue(context *AdvancedLoopContext) normie {
 
 fr fr Update loop iteration with performance tracking and yielding
 slay update_loop_iteration(context *AdvancedLoopContext, iteration_start_time thicc) {
-    ready context == 0 {
+    lowkey context == 0 {
         damn
     }
     
@@ -209,26 +209,26 @@ slay update_loop_iteration(context *AdvancedLoopContext, iteration_start_time th
     context.metrics.total_iterations = context.metrics.total_iterations + 1
     
     fr fr Calculate iteration time if metrics enabled
-    ready context.control_context.metrics_enabled {
+    lowkey context.control_context.metrics_enabled {
         sus current_time thicc = os_primitives.get_real_time_ns()
         sus iteration_time thicc = current_time - iteration_start_time
         
         context.metrics.total_time_ns = context.metrics.total_time_ns + iteration_time
         
         fr fr Update peak iteration time
-        ready iteration_time > context.metrics.peak_iteration_time {
+        lowkey iteration_time > context.metrics.peak_iteration_time {
             context.metrics.peak_iteration_time = iteration_time
         }
         
         fr fr Update average iteration time
-        ready context.metrics.total_iterations > 0 {
+        lowkey context.metrics.total_iterations > 0 {
             context.metrics.average_iteration_time = 
                 context.metrics.total_time_ns / context.metrics.total_iterations
         }
     }
     
     fr fr Perform CPU yield if configured
-    ready context.control_context.should_yield && 
+    lowkey context.control_context.should_yield && 
           (context.control_context.current_iteration % context.control_context.yield_frequency) == 0 {
         
         fr fr Record yield in goroutine tracking
@@ -244,7 +244,7 @@ slay update_loop_iteration(context *AdvancedLoopContext, iteration_start_time th
 
 fr fr Set loop error state with error handling
 slay set_loop_error(context *AdvancedLoopContext, error_code normie, error_message tea) {
-    ready context == 0 {
+    lowkey context == 0 {
         damn
     }
     
@@ -254,21 +254,21 @@ slay set_loop_error(context *AdvancedLoopContext, error_code normie, error_messa
     context.metrics.error_count = context.metrics.error_count + 1
     
     fr fr Call error handler if configured
-    ready context.control_context.error_handler != 0 {
+    lowkey context.control_context.error_handler != 0 {
         call_error_handler(context.control_context.error_handler, error_code, error_message)
     }
 }
 
 fr fr Signal loop break
 slay signal_loop_break(context *AdvancedLoopContext) {
-    ready context != 0 {
+    lowkey context != 0 {
         context.loop_state = LOOP_BREAK
     }
 }
 
 fr fr Signal loop return
 slay signal_loop_return(context *AdvancedLoopContext) {
-    ready context != 0 {
+    lowkey context != 0 {
         context.loop_state = LOOP_RETURN
     }
 }
@@ -281,7 +281,7 @@ fr fr Production spin loop with backoff and timeout for mutex operations
 slay enhanced_mutex_spin_loop(mutex_ptr thicc, timeout_ms normie, 
                               acquire_function thicc, context_data thicc) normie {
     sus loop_context *AdvancedLoopContext = create_advanced_loop_context(0, timeout_ms, BACKOFF_EXPONENTIAL)
-    ready loop_context == 0 {
+    lowkey loop_context == 0 {
         damn LOOP_ERROR
     }
     
@@ -293,7 +293,7 @@ slay enhanced_mutex_spin_loop(mutex_ptr thicc, timeout_ms normie,
         
         fr fr Try to acquire mutex
         sus acquire_result normie = call_acquire_function(acquire_function, mutex_ptr, context_data)
-        ready acquire_result == 0 {
+        lowkey acquire_result == 0 {
             fr fr Successfully acquired mutex
             cleanup_advanced_loop_context(loop_context)
             damn LOOP_BREAK
@@ -305,7 +305,7 @@ slay enhanced_mutex_spin_loop(mutex_ptr thicc, timeout_ms normie,
         update_loop_iteration(loop_context, iteration_start)
         
         fr fr Reset backoff occasionally to prevent excessive delays
-        ready (loop_context.control_context.current_iteration % 100) == 0 {
+        lowkey (loop_context.control_context.current_iteration % 100) == 0 {
             reset_exponential_backoff(&backoff)
         }
     }
@@ -318,7 +318,7 @@ slay enhanced_mutex_spin_loop(mutex_ptr thicc, timeout_ms normie,
 fr fr Enhanced channel send loop with proper timeout and yielding
 slay enhanced_channel_send_loop(channel_ptr thicc, data normie, timeout_ms normie) normie {
     sus loop_context *AdvancedLoopContext = create_advanced_loop_context(0, timeout_ms, BACKOFF_LINEAR)
-    ready loop_context == 0 {
+    lowkey loop_context == 0 {
         damn LOOP_ERROR
     }
     
@@ -328,8 +328,8 @@ slay enhanced_channel_send_loop(channel_ptr thicc, data normie, timeout_ms normi
         sus iteration_start thicc = os_primitives.get_real_time_ns()
         
         fr fr Try to send to channel
-        ready channel_has_space(channel_ptr) {
-            ready channel_send_nowait(channel_ptr, data) {
+        lowkey channel_has_space(channel_ptr) {
+            lowkey channel_send_nowait(channel_ptr, data) {
                 cleanup_advanced_loop_context(loop_context)
                 damn LOOP_BREAK
             }
@@ -337,14 +337,14 @@ slay enhanced_channel_send_loop(channel_ptr thicc, data normie, timeout_ms normi
         
         fr fr No space available - perform linear backoff
         os_primitives.microsleep_precise(linear_backoff)
-        ready linear_backoff < 500 {  fr fr Max 500µs backoff
+        lowkey linear_backoff < 500 {  fr fr Max 500µs backoff
             linear_backoff = linear_backoff + 1
         }
         
         update_loop_iteration(loop_context, iteration_start)
         
         fr fr Check if channel was closed
-        ready channel_is_closed(channel_ptr) {
+        lowkey channel_is_closed(channel_ptr) {
             set_loop_error(loop_context, -1, "channel closed during send")
             break
         }
@@ -358,7 +358,7 @@ slay enhanced_channel_send_loop(channel_ptr thicc, data normie, timeout_ms normi
 fr fr Enhanced channel receive loop with timeout and state tracking
 slay enhanced_channel_receive_loop(channel_ptr thicc, timeout_ms normie) normie {
     sus loop_context *AdvancedLoopContext = create_advanced_loop_context(0, timeout_ms, BACKOFF_ADAPTIVE)
-    ready loop_context == 0 {
+    lowkey loop_context == 0 {
         damn LOOP_ERROR
     }
     
@@ -369,9 +369,9 @@ slay enhanced_channel_receive_loop(channel_ptr thicc, timeout_ms normie) normie 
         sus iteration_start thicc = os_primitives.get_real_time_ns()
         
         fr fr Try to receive from channel
-        ready channel_has_data(channel_ptr) {
+        lowkey channel_has_data(channel_ptr) {
             sus data normie = channel_receive_nowait(channel_ptr)
-            ready data != 0 {  fr fr Assume 0 is invalid data
+            lowkey data != 0 {  fr fr Assume 0 is invalid data
                 cleanup_advanced_loop_context(loop_context)
                 damn data
             }
@@ -379,9 +379,9 @@ slay enhanced_channel_receive_loop(channel_ptr thicc, timeout_ms normie) normie 
         
         fr fr No data available - adaptive backoff based on contention
         contention_count = contention_count + 1
-        ready contention_count > 10 {
+        lowkey contention_count > 10 {
             adaptive_delay = adaptive_delay * 2  fr fr Increase delay under high contention
-            ready adaptive_delay > 100 {
+            lowkey adaptive_delay > 100 {
                 adaptive_delay = 100  fr fr Cap at 100µs
             }
         }
@@ -391,7 +391,7 @@ slay enhanced_channel_receive_loop(channel_ptr thicc, timeout_ms normie) normie 
         update_loop_iteration(loop_context, iteration_start)
         
         fr fr Check if channel was closed
-        ready channel_is_closed(channel_ptr) && !channel_has_data(channel_ptr) {
+        lowkey channel_is_closed(channel_ptr) && !channel_has_data(channel_ptr) {
             cleanup_advanced_loop_context(loop_context)
             damn 0  fr fr Channel closed and empty
         }
@@ -408,12 +408,12 @@ fr fr ==========================================================================
 fr fr Enhanced barrier wait with timeout and proper loop termination
 slay enhanced_barrier_wait_loop(barrier_ptr thicc, participant_id normie, timeout_ms normie) normie {
     sus loop_context *AdvancedLoopContext = create_advanced_loop_context(0, timeout_ms, BACKOFF_EXPONENTIAL)
-    ready loop_context == 0 {
+    lowkey loop_context == 0 {
         damn LOOP_ERROR
     }
     
     fr fr Record barrier arrival
-    ready !barrier_record_arrival(barrier_ptr, participant_id) {
+    lowkey !barrier_record_arrival(barrier_ptr, participant_id) {
         set_loop_error(loop_context, -1, "failed to record barrier arrival")
         cleanup_advanced_loop_context(loop_context)
         damn LOOP_ERROR
@@ -426,13 +426,13 @@ slay enhanced_barrier_wait_loop(barrier_ptr thicc, participant_id normie, timeou
         sus iteration_start thicc = os_primitives.get_real_time_ns()
         
         fr fr Check if all participants have arrived
-        ready barrier_all_arrived(barrier_ptr) {
+        lowkey barrier_all_arrived(barrier_ptr) {
             cleanup_advanced_loop_context(loop_context)
             damn LOOP_BREAK
         }
         
         fr fr Check for barrier error state
-        ready barrier_has_error(barrier_ptr) {
+        lowkey barrier_has_error(barrier_ptr) {
             set_loop_error(loop_context, -2, "barrier error occurred")
             break
         }
@@ -455,7 +455,7 @@ fr fr ==========================================================================
 fr fr Enhanced semaphore acquire with timeout and contention handling
 slay enhanced_semaphore_acquire_loop(semaphore_ptr thicc, timeout_ms normie) normie {
     sus loop_context *AdvancedLoopContext = create_advanced_loop_context(0, timeout_ms, BACKOFF_RANDOM)
-    ready loop_context == 0 {
+    lowkey loop_context == 0 {
         damn LOOP_ERROR
     }
     
@@ -463,7 +463,7 @@ slay enhanced_semaphore_acquire_loop(semaphore_ptr thicc, timeout_ms normie) nor
         sus iteration_start thicc = os_primitives.get_real_time_ns()
         
         fr fr Try to acquire semaphore permit
-        ready semaphore_try_acquire(semaphore_ptr) {
+        lowkey semaphore_try_acquire(semaphore_ptr) {
             cleanup_advanced_loop_context(loop_context)
             damn LOOP_BREAK
         }
@@ -475,7 +475,7 @@ slay enhanced_semaphore_acquire_loop(semaphore_ptr thicc, timeout_ms normie) nor
         update_loop_iteration(loop_context, iteration_start)
         
         fr fr Check semaphore health
-        ready semaphore_is_destroyed(semaphore_ptr) {
+        lowkey semaphore_is_destroyed(semaphore_ptr) {
             set_loop_error(loop_context, -1, "semaphore was destroyed")
             break
         }
@@ -498,13 +498,13 @@ slay generate_loop_id() thicc {
 
 fr fr Copy string helper
 slay copy_string(source tea) tea {
-    ready source == 0 {
+    lowkey source == 0 {
         damn 0
     }
     
     sus len normie = string_length(source)
     sus copy tea = memory.allocate(len + 1)
-    ready copy != 0 {
+    lowkey copy != 0 {
         memory_copy(copy, source, len)
         copy[len] = 0
     }
@@ -513,11 +513,11 @@ slay copy_string(source tea) tea {
 
 fr fr Cleanup advanced loop context
 slay cleanup_advanced_loop_context(context *AdvancedLoopContext) {
-    ready context == 0 {
+    lowkey context == 0 {
         damn
     }
     
-    ready context.error_message != 0 {
+    lowkey context.error_message != 0 {
         memory.free(context.error_message)
     }
     
@@ -546,7 +546,7 @@ fr fr CHANNEL HELPER FUNCTIONS (PLACEHOLDERS)
 fr fr =============================================================================
 
 slay channel_has_space(channel_ptr thicc) lit {
-    ready (channel_ptr == 0) {
+    lowkey (channel_ptr == 0) {
         damn cap
     }
     sus channel_data normie = load_channel_metadata(channel_ptr)
@@ -556,10 +556,10 @@ slay channel_has_space(channel_ptr thicc) lit {
 }
 
 slay channel_send_nowait(channel_ptr thicc, data normie) lit {
-    ready (channel_ptr == 0) {
+    lowkey (channel_ptr == 0) {
         damn cap
     }
-    ready (!channel_has_space(channel_ptr)) {
+    lowkey (!channel_has_space(channel_ptr)) {
         damn cap
     }
     sus channel_data normie = load_channel_metadata(channel_ptr)
@@ -570,7 +570,7 @@ slay channel_send_nowait(channel_ptr thicc, data normie) lit {
 }
 
 slay channel_has_data(channel_ptr thicc) lit {
-    ready (channel_ptr == 0) {
+    lowkey (channel_ptr == 0) {
         damn cap
     }
     sus channel_data normie = load_channel_metadata(channel_ptr)
@@ -579,10 +579,10 @@ slay channel_has_data(channel_ptr thicc) lit {
 }
 
 slay channel_receive_nowait(channel_ptr thicc) normie {
-    ready (channel_ptr == 0) {
+    lowkey (channel_ptr == 0) {
         damn 0
     }
-    ready (!channel_has_data(channel_ptr)) {
+    lowkey (!channel_has_data(channel_ptr)) {
         damn 0
     }
     sus channel_data normie = load_channel_metadata(channel_ptr)
@@ -593,7 +593,7 @@ slay channel_receive_nowait(channel_ptr thicc) normie {
 }
 
 slay channel_is_closed(channel_ptr thicc) lit {
-    ready (channel_ptr == 0) {
+    lowkey (channel_ptr == 0) {
         damn based
     }
     sus channel_data normie = load_channel_metadata(channel_ptr)
@@ -606,13 +606,13 @@ fr fr BARRIER HELPER FUNCTIONS (PLACEHOLDERS)
 fr fr =============================================================================
 
 slay barrier_record_arrival(barrier_ptr thicc, participant_id normie) lit {
-    ready (barrier_ptr == 0) {
+    lowkey (barrier_ptr == 0) {
         damn cap
     }
     sus barrier_data normie = load_barrier_metadata(barrier_ptr)
     sus arrived_count normie = (barrier_data >> 16) & 0xFFFF
     sus total_participants normie = barrier_data & 0xFFFF
-    ready (arrived_count >= total_participants) {
+    lowkey (arrived_count >= total_participants) {
         damn cap
     }
     store_barrier_metadata(barrier_ptr, ((arrived_count + 1) << 16) | total_participants)
@@ -620,7 +620,7 @@ slay barrier_record_arrival(barrier_ptr thicc, participant_id normie) lit {
 }
 
 slay barrier_all_arrived(barrier_ptr thicc) lit {
-    ready (barrier_ptr == 0) {
+    lowkey (barrier_ptr == 0) {
         damn cap
     }
     sus barrier_data normie = load_barrier_metadata(barrier_ptr)
@@ -630,7 +630,7 @@ slay barrier_all_arrived(barrier_ptr thicc) lit {
 }
 
 slay barrier_has_error(barrier_ptr thicc) lit {
-    ready (barrier_ptr == 0) {
+    lowkey (barrier_ptr == 0) {
         damn based
     }
     sus barrier_data normie = load_barrier_metadata(barrier_ptr)
@@ -643,12 +643,12 @@ fr fr SEMAPHORE HELPER FUNCTIONS (PLACEHOLDERS)
 fr fr =============================================================================
 
 slay semaphore_try_acquire(semaphore_ptr thicc) lit {
-    ready (semaphore_ptr == 0) {
+    lowkey (semaphore_ptr == 0) {
         damn cap
     }
     sus semaphore_data normie = load_semaphore_metadata(semaphore_ptr)
     sus current_permits normie = (semaphore_data >> 16) & 0xFFFF
-    ready (current_permits == 0) {
+    lowkey (current_permits == 0) {
         damn cap
     }
     store_semaphore_metadata(semaphore_ptr, ((current_permits - 1) << 16) | (semaphore_data & 0xFFFF))
@@ -656,7 +656,7 @@ slay semaphore_try_acquire(semaphore_ptr thicc) lit {
 }
 
 slay semaphore_is_destroyed(semaphore_ptr thicc) lit {
-    ready (semaphore_ptr == 0) {
+    lowkey (semaphore_ptr == 0) {
         damn based
     }
     sus semaphore_data normie = load_semaphore_metadata(semaphore_ptr)
@@ -669,7 +669,7 @@ fr fr STRING UTILITY FUNCTIONS
 fr fr =============================================================================
 
 slay string_length(str tea) normie {
-    ready str == 0 {
+    lowkey str == 0 {
         damn 0
     }
     

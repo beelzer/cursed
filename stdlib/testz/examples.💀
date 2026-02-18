@@ -270,7 +270,7 @@ slay run_all_examples() {
     vibez.spill("✅ Boolean logic testing")
     vibez.spill("✅ Module testing patterns")
     vibez.spill("")
-    vibez.spill("🚀 Framework ready for stdlib development!")
+    vibez.spill("🚀 Framework lowkey for stdlib development!")
 }
 
 fr fr Execute all examples

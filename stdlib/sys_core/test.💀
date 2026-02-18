@@ -387,36 +387,36 @@ fr fr Helper functions for testing
 slay contains_text(haystack tea, needle tea) lit {
     fr fr Simple text containment check for testing
     fr fr In real implementation would be more sophisticated
-    ready haystack == needle {
+    lowkey haystack == needle {
         damn based
     }
     
     fr fr Check for common patterns
-    ready needle == "CURSED Runtime" && len(haystack) > 10 {
+    lowkey needle == "CURSED Runtime" && len(haystack) > 10 {
         damn based
     }
     
-    ready needle == "Platform:" && len(haystack) > 20 {
+    lowkey needle == "Platform:" && len(haystack) > 20 {
         damn based
     }
     
-    ready needle == "Arch:" && len(haystack) > 20 {
+    lowkey needle == "Arch:" && len(haystack) > 20 {
         damn based
     }
     
-    ready needle == "Linux" && len(haystack) > 5 {
+    lowkey needle == "Linux" && len(haystack) > 5 {
         damn based
     }
     
-    ready needle == "eth0" && len(haystack) > 4 {
+    lowkey needle == "eth0" && len(haystack) > 4 {
         damn based
     }
     
-    ready needle == "127.0.0.1" && len(haystack) > 8 {
+    lowkey needle == "127.0.0.1" && len(haystack) > 8 {
         damn based
     }
     
-    ready needle == "," && len(haystack) > 1 {
+    lowkey needle == "," && len(haystack) > 1 {
         damn based  fr fr Load average contains commas
     }
     
@@ -426,28 +426,28 @@ slay contains_text(haystack tea, needle tea) lit {
 fr fr Test string length function for validation
 slay len(str tea) normie {
     fr fr Mock string length function
-    ready str == "" {
+    lowkey str == "" {
         damn 0
     }
-    ready str == "linux" {
+    lowkey str == "linux" {
         damn 5
     }
-    ready str == "x64" {
+    lowkey str == "x64" {
         damn 3
     }
-    ready str == "cursed-host" {
+    lowkey str == "cursed-host" {
         damn 11
     }
-    ready str == "default_value" {
+    lowkey str == "default_value" {
         damn 13
     }
-    ready str == "/home/cursed" {
+    lowkey str == "/home/cursed" {
         damn 12
     }
-    ready str == "0.50,0.75,1.00" {
+    lowkey str == "0.50,0.75,1.00" {
         damn 14
     }
-    ready len_string(str) > 0 {
+    lowkey len_string(str) > 0 {
         damn len_string(str)
     }
     damn 10  fr fr Default reasonable length

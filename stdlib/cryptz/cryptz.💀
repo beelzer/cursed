@@ -98,7 +98,7 @@ slay secure_random_init() SecureRandom {
 
 slay generate_random_bytes(length drip) drip[value]{
     fr fr Generate cryptographically secure random bytes using ChaCha20-based CSPRNG
-    ready (length <= 0) {
+    lowkey (length <= 0) {
         damn []
     }
     
@@ -118,7 +118,7 @@ slay generate_random_bytes(length drip) drip[value]{
 
 slay generate_secure_key(key_size drip) drip[value]{
     fr fr Generate cryptographically secure encryption key
-    ready (key_size < 16) {
+    lowkey (key_size < 16) {
         vibez.spill("WARNING: Key size too small. Minimum 16 bytes recommended.")
         damn generate_random_bytes(16)
     }
@@ -128,17 +128,17 @@ slay generate_secure_key(key_size drip) drip[value]{
 
 slay random_password(length drip, complexity tea) tea {
     fr fr Generate secure random password with specified complexity
-    ready (length < 8) {
+    lowkey (length < 8) {
         vibez.spill("WARNING: Password too short. Minimum 8 characters recommended.")
         length = 8
     }
     
     sus charset tea = ""
-    ready (complexity == "simple") {
+    lowkey (complexity == "simple") {
         charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    } otherwise ready (complexity == "complex") {
+    } highkey lowkey (complexity == "complex") {
         charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
-    } otherwise {
+    } highkey {
         charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
     }
     
@@ -170,7 +170,7 @@ slay sha256_init() HashState {
 }
 
 slay sha256_update(state HashState, data tea) HashState {
-    ready (state.finalized) {
+    lowkey (state.finalized) {
         vibez.spill("ERROR: Cannot update finalized hash state")
         damn state
     }
@@ -191,7 +191,7 @@ slay sha256_update(state HashState, data tea) HashState {
 }
 
 slay sha256_final(state HashState) drip[value]{
-    ready (state.finalized) {
+    lowkey (state.finalized) {
         damn bytes_from_hex("0000000000000000000000000000000000000000000000000000000000000000")
     }
     
@@ -212,7 +212,7 @@ slay sha256_final(state HashState) drip[value]{
     bestie stringz.length(msg) > 0 {
         sus block tea = stringz.substring(msg, 0, 64)
         final_h = sha256_process_block(final_h, block)
-        ready stringz.length(msg) > 64 {
+        lowkey stringz.length(msg) > 64 {
             sus second_block tea = stringz.substring(msg, 64, 64)
             final_h = sha256_process_block(final_h, second_block)
         }
@@ -274,7 +274,7 @@ slay blake3_hash(data tea) drip[value]{
         h = blake3_compress(h, chunk, chunk_counter, 0)
         chunk_counter = chunk_counter + 1
         
-        ready chunk_size >= stringz.length(processed_data) {
+        lowkey chunk_size >= stringz.length(processed_data) {
             break
         }
         processed_data = stringz.substring(processed_data, chunk_size, stringz.length(processed_data) - chunk_size)
@@ -314,12 +314,12 @@ slay aes_key_schedule(key drip[value], rounds drip) drip[value]{
             schedule[len(schedule) - 1]
         ]
         
-        ready (len(schedule) / 4) % (key_size / 4) == 0 {
+        lowkey (len(schedule) / 4) % (key_size / 4) == 0 {
             fr fr Apply SubBytes and RotWord transformations
             temp = aes_sub_word(aes_rot_word(temp))
             temp[0] = temp[0] ^ aes_rcon(rcon_index)
             rcon_index = rcon_index + 1
-        } otherwise ready key_size > 24 && (len(schedule) / 4) % (key_size / 4) == 4 {
+        } highkey lowkey key_size > 24 && (len(schedule) / 4) % (key_size / 4) == 4 {
             temp = aes_sub_word(temp)
         }
         
@@ -334,7 +334,7 @@ slay aes_key_schedule(key drip[value], rounds drip) drip[value]{
 
 slay aes_encrypt_block(plaintext_block drip[value], key_schedule drip[value], rounds drip) drip[value]{
     fr fr Encrypt single AES block (16 bytes)
-    ready len(plaintext_block) != AES_BLOCK_SIZE {
+    lowkey len(plaintext_block) != AES_BLOCK_SIZE {
         vibez.spill("ERROR: Invalid AES block size")
         damn []
     }
@@ -362,13 +362,13 @@ slay aes_encrypt_block(plaintext_block drip[value], key_schedule drip[value], ro
 
 slay aes_gcm_encrypt(plaintext tea, key drip[value], additional_data tea) drip[value]{
     fr fr AES-GCM authenticated encryption
-    ready len(key) != AES128_KEY_SIZE && len(key) != AES256_KEY_SIZE {
+    lowkey len(key) != AES128_KEY_SIZE && len(key) != AES256_KEY_SIZE {
         vibez.spill("ERROR: Invalid AES key size for GCM")
         damn []
     }
     
     sus rounds drip = 10
-    ready len(key) == AES256_KEY_SIZE {
+    lowkey len(key) == AES256_KEY_SIZE {
         rounds = 14
     }
     
@@ -398,7 +398,7 @@ slay aes_gcm_encrypt(plaintext tea, key drip[value], additional_data tea) drip[v
 
 slay aes_gcm_decrypt(encrypted_data drip[value], key drip[value], additional_data tea) drip[value]{
     fr fr AES-GCM authenticated decryption
-    ready len(encrypted_data) < GCM_IV_SIZE + GCM_TAG_SIZE {
+    lowkey len(encrypted_data) < GCM_IV_SIZE + GCM_TAG_SIZE {
         vibez.spill("ERROR: Invalid GCM ciphertext size")
         damn []
     }
@@ -410,7 +410,7 @@ slay aes_gcm_decrypt(encrypted_data drip[value], key drip[value], additional_dat
     sus tag drip[value] = slice(encrypted_data, tag_start, GCM_TAG_SIZE)
     
     sus rounds drip = 10
-    ready len(key) == AES256_KEY_SIZE {
+    lowkey len(key) == AES256_KEY_SIZE {
         rounds = 14
     }
     
@@ -419,7 +419,7 @@ slay aes_gcm_decrypt(encrypted_data drip[value], key drip[value], additional_dat
     sus h_subkey drip[value] = aes_encrypt_block(make_zero_block(), key_schedule, rounds)
     sus computed_tag drip[value] = gcm_compute_tag(h_subkey, iv, ciphertext, stringz.bytes(additional_data))
     
-    ready !constant_time_bytes_equal(tag, computed_tag) {
+    lowkey !constant_time_bytes_equal(tag, computed_tag) {
         vibez.spill("ERROR: GCM authentication failed")
         secure_zero_memory(key_schedule)
         damn []
@@ -435,12 +435,12 @@ slay aes_gcm_decrypt(encrypted_data drip[value], key drip[value], additional_dat
 
 slay chacha20_encrypt(plaintext tea, key drip[value], nonce drip[value]) drip[value]{
     fr fr ChaCha20 stream cipher encryption/decryption
-    ready len(key) != CHACHA20_KEY_SIZE {
+    lowkey len(key) != CHACHA20_KEY_SIZE {
         vibez.spill("ERROR: Invalid ChaCha20 key size")
         damn []
     }
     
-    ready len(nonce) != CHACHA20_NONCE_SIZE {
+    lowkey len(nonce) != CHACHA20_NONCE_SIZE {
         vibez.spill("ERROR: Invalid ChaCha20 nonce size")
         damn []
     }
@@ -481,7 +481,7 @@ slay ed25519_generate_keypair() KeyPair {
 
 slay ed25519_sign(message tea, private_key drip[value]) drip[value]{
     fr fr Ed25519 digital signature generation
-    ready len(private_key) != ED25519_KEY_SIZE {
+    lowkey len(private_key) != ED25519_KEY_SIZE {
         vibez.spill("ERROR: Invalid Ed25519 private key size")
         damn []
     }
@@ -489,7 +489,7 @@ slay ed25519_sign(message tea, private_key drip[value]) drip[value]{
     sus message_bytes drip[value] = stringz.bytes(message)
     sus signature drip[value] = ed25519_sign_internal(message_bytes, private_key)
     
-    ready len(signature) != ED25519_SIGNATURE_SIZE {
+    lowkey len(signature) != ED25519_SIGNATURE_SIZE {
         vibez.spill("ERROR: Ed25519 signature generation failed")
         damn []
     }
@@ -499,12 +499,12 @@ slay ed25519_sign(message tea, private_key drip[value]) drip[value]{
 
 slay ed25519_verify(message tea, signature drip[value], public_key drip[value]) lit {
     fr fr Ed25519 signature verification
-    ready len(signature) != ED25519_SIGNATURE_SIZE {
+    lowkey len(signature) != ED25519_SIGNATURE_SIZE {
         vibez.spill("ERROR: Invalid Ed25519 signature size")
         damn cringe
     }
     
-    ready len(public_key) != ED25519_KEY_SIZE {
+    lowkey len(public_key) != ED25519_KEY_SIZE {
         vibez.spill("ERROR: Invalid Ed25519 public key size")
         damn cringe
     }
@@ -517,7 +517,7 @@ slay ed25519_verify(message tea, signature drip[value], public_key drip[value]) 
 
 slay rsa_generate_keypair(key_size drip) KeyPair {
     fr fr Generate RSA key pair with specified size
-    ready key_size < RSA_MIN_KEY_SIZE {
+    lowkey key_size < RSA_MIN_KEY_SIZE {
         vibez.spill("ERROR: RSA key size too small. Minimum 2048 bits required.")
         sus empty_keypair KeyPair = KeyPair{}
         damn empty_keypair
@@ -556,11 +556,11 @@ fr fr ===== KEY DERIVATION FUNCTIONS =====
 
 slay pbkdf2_derive_key(password tea, salt drip[value], iterations drip, output_length drip) drip[value]{
     fr fr PBKDF2 key derivation with HMAC-SHA256
-    ready iterations < PBKDF2_MIN_ITERATIONS {
+    lowkey iterations < PBKDF2_MIN_ITERATIONS {
         vibez.spill("WARNING: PBKDF2 iteration count too low. Minimum 100,000 recommended for security.")
     }
     
-    ready len(salt) < 16 {
+    lowkey len(salt) < 16 {
         vibez.spill("WARNING: Salt too short. Minimum 16 bytes recommended.")
     }
     
@@ -585,7 +585,7 @@ slay pbkdf2_derive_key(password tea, salt drip[value], iterations drip, output_l
     }
     
     fr fr Truncate to desired length
-    ready len(derived_key) > output_length {
+    lowkey len(derived_key) > output_length {
         derived_key = slice(derived_key, 0, output_length)
     }
     
@@ -595,12 +595,12 @@ slay pbkdf2_derive_key(password tea, salt drip[value], iterations drip, output_l
 
 slay argon2_derive_key(password tea, salt drip[value], memory_cost drip, time_cost drip, parallelism drip, output_length drip) drip[value]{
     fr fr Argon2id key derivation (memory-hard function)
-    ready memory_cost < ARGON2_MIN_MEMORY {
+    lowkey memory_cost < ARGON2_MIN_MEMORY {
         vibez.spill("WARNING: Argon2 memory cost too low. Minimum 64 MB recommended.")
         memory_cost = ARGON2_MIN_MEMORY
     }
     
-    ready time_cost < 3 {
+    lowkey time_cost < 3 {
         vibez.spill("WARNING: Argon2 time cost too low. Minimum 3 recommended.")
         time_cost = 3
     }
@@ -637,7 +637,7 @@ slay argon2_derive_key(password tea, salt drip[value], memory_cost drip, time_co
             sus slice_end drip = (lane + 1) * (memory_cost / parallelism)
             
             bestie block := slice_start; block < slice_end; block++ {
-                ready pass == 0 && block < 2 {
+                lowkey pass == 0 && block < 2 {
                     continue
                 }
                 
@@ -672,7 +672,7 @@ slay hmac_sha256(key drip[value], message drip[value]) drip[value]{
     sus actual_key drip[value] = key
     
     fr fr Hash key if longer than block size
-    ready len(key) > block_size {
+    lowkey len(key) > block_size {
         actual_key = sha256_hash(stringz.from_bytes(key))
     }
     
@@ -706,7 +706,7 @@ slay hmac_sha512(key drip[value], message drip[value]) drip[value]{
     sus block_size drip = 128
     sus actual_key drip[value] = key
     
-    ready len(key) > block_size {
+    lowkey len(key) > block_size {
         actual_key = sha512_hash(stringz.from_bytes(key))
     }
     
@@ -736,7 +736,7 @@ fr fr ===== CONSTANT-TIME SECURITY OPERATIONS =====
 
 slay constant_time_bytes_equal(a drip[value], b drip[value]) lit {
     fr fr Constant-time comparison to prevent timing attacks
-    ready len(a) != len(b) {
+    lowkey len(a) != len(b) {
         damn cringe
     }
     
@@ -751,7 +751,7 @@ slay constant_time_bytes_equal(a drip[value], b drip[value]) lit {
 slay constant_time_select(condition drip, true_val drip, false_val drip) drip {
     fr fr Constant-time conditional selection
     sus mask drip = 0
-    ready condition != 0 {
+    lowkey condition != 0 {
         mask = 0xffffffff
     }
     
@@ -760,13 +760,13 @@ slay constant_time_select(condition drip, true_val drip, false_val drip) drip {
 
 slay constant_time_copy(condition drip, src drip[value], dst drip[value]) {
     fr fr Constant-time conditional copy
-    ready len(src) != len(dst) {
+    lowkey len(src) != len(dst) {
         vibez.spill("ERROR: Array sizes must match for constant-time copy")
         damn
     }
     
     sus mask drip = 0
-    ready condition != 0 {
+    lowkey condition != 0 {
         mask = 0xff
     }
     
@@ -806,7 +806,7 @@ slay bytes_to_hex(data drip[value]) tea {
 
 slay hex_to_bytes(hex_string tea) drip[value]{
     fr fr Convert hex string to bytes
-    ready (stringz.length(hex_string) % 2) != 0 {
+    lowkey (stringz.length(hex_string) % 2) != 0 {
         vibez.spill("ERROR: Hex string must have even length")
         damn []
     }
@@ -821,7 +821,7 @@ slay hex_to_bytes(hex_string tea) drip[value]{
         sus high_nibble drip = hex_char_to_value(high_char)
         sus low_nibble drip = hex_char_to_value(low_char)
         
-        ready high_nibble < 0 || low_nibble < 0 {
+        lowkey high_nibble < 0 || low_nibble < 0 {
             vibez.spill("ERROR: Invalid hex character")
             damn []
         }
@@ -846,10 +846,10 @@ slay base64_encode(data drip[value]) tea {
         sus byte2 drip = 0
         sus byte3 drip = 0
         
-        ready i + 1 < len(data) {
+        lowkey i + 1 < len(data) {
             byte2 = data[i + 1]
         }
-        ready i + 2 < len(data) {
+        lowkey i + 2 < len(data) {
             byte3 = data[i + 2]
         }
         
@@ -889,20 +889,20 @@ slay base64_decode(encoded tea) drip[value]{
         sus val3 drip = stringz.index_of(alphabet, char3)
         sus val4 drip = stringz.index_of(alphabet, char4)
         
-        ready char3 == "=" {
+        lowkey char3 == "=" {
             val3 = 0
         }
-        ready char4 == "=" {
+        lowkey char4 == "=" {
             val4 = 0
         }
         
         sus combined drip = (val1 << 18) | (val2 << 12) | (val3 << 6) | val4
         
         result = append(result, (combined >> 16) & 0xff)
-        ready char3 != "=" {
+        lowkey char3 != "=" {
             result = append(result, (combined >> 8) & 0xff)
         }
-        ready char4 != "=" {
+        lowkey char4 != "=" {
             result = append(result, combined & 0xff)
         }
         
@@ -931,7 +931,7 @@ slay hash_password(password tea) tea {
 slay verify_password(stored_hash tea, password tea) lit {
     fr fr Verify password against stored Argon2id hash
     sus parts tea[value] = stringz.split(stored_hash, "$")
-    ready len(parts) != 3 || parts[0] != "argon2id" {
+    lowkey len(parts) != 3 || parts[0] != "argon2id" {
         vibez.spill("ERROR: Invalid password hash format")
         damn cringe
     }
@@ -968,7 +968,7 @@ slay encrypt_data(plaintext tea, password tea) tea {
 slay decrypt_data(encrypted_data tea, password tea) tea {
     fr fr High-level data decryption with password
     sus parts tea[value] = stringz.split(encrypted_data, ":")
-    ready len(parts) != 2 {
+    lowkey len(parts) != 2 {
         vibez.spill("ERROR: Invalid encrypted data format")
         damn ""
     }
@@ -979,7 +979,7 @@ slay decrypt_data(encrypted_data tea, password tea) tea {
     sus key drip[value] = pbkdf2_derive_key(password, salt, 100000, 32)
     
     sus decrypted drip[value] = aes_gcm_decrypt(ciphertext, key, "")
-    ready len(decrypted) == 0 {
+    lowkey len(decrypted) == 0 {
         vibez.spill("ERROR: Decryption failed - invalid password or corrupted data")
         secure_zero_memory(key)
         damn ""
@@ -1066,7 +1066,7 @@ fr fr ===== EXTENDED EUCLIDEAN ALGORITHM =====
 
 slay extended_gcd(a drip, b drip, x drip, y drip) drip {
     fr fr Extended Euclidean Algorithm - returns gcd(a,b) and finds x,y such that ax + by = gcd(a,b)
-    ready a == 0 {
+    lowkey a == 0 {
         x = 0
         y = 1
         damn b
@@ -1088,7 +1088,7 @@ slay modular_inverse_secure(a drip, m drip) drip {
     sus y drip = 0
     sus gcd drip = extended_gcd(a, m, x, y)
     
-    ready gcd != 1 {
+    lowkey gcd != 1 {
         damn 0 fr fr Modular inverse doesn't exist
     }
     
@@ -1107,7 +1107,7 @@ slay complex_multiply(ar drip, ai drip, br drip, bi drip, cr drip, ci drip) {
 
 slay fft_recursive(data_real drip[value], data_imag drip[value], n drip, inverse lit) {
     fr fr Cooley-Tukey FFT algorithm (proper implementation)
-    ready n <= 1 {
+    lowkey n <= 1 {
         damn
     }
     
@@ -1132,7 +1132,7 @@ slay fft_recursive(data_real drip[value], data_imag drip[value], n drip, inverse
     fr fr Combine
     sus pi drip = 3.141592653589793
     sus angle_multiplier drip = -2.0 * pi / n
-    ready inverse {
+    lowkey inverse {
         angle_multiplier = -angle_multiplier
     }
     
@@ -1151,7 +1151,7 @@ slay fft_recursive(data_real drip[value], data_imag drip[value], n drip, inverse
         data_imag[i + half_n] = even_imag[i] - t_imag
     }
     
-    ready inverse {
+    lowkey inverse {
         bestie i := 0; i < n; i++ {
             data_real[i] = data_real[i] / n
             data_imag[i] = data_imag[i] / n
@@ -1315,12 +1315,12 @@ slay scrypt_ro_mix(b drip[value], n drip, r drip) {
 
 slay scrypt_derive_key_complete(password tea, salt drip[value], N drip, r drip, p drip, dk_len drip) drip[value]{
     fr fr Complete scrypt implementation - memory-hard function
-    ready N <= 1 || (N & (N - 1)) != 0 {
+    lowkey N <= 1 || (N & (N - 1)) != 0 {
         vibez.spill("ERROR: N must be a power of 2 and greater than 1")
         damn []
     }
     
-    ready r < 1 || p < 1 {
+    lowkey r < 1 || p < 1 {
         vibez.spill("ERROR: r and p must be positive")
         damn []
     }
@@ -1634,7 +1634,7 @@ slay chacha20_keystream(key drip[value], nonce drip[value], length drip) drip[va
         fr fr Add original state
         bestie i := 0; i < 16; i++ {
             working_state[i] = working_state[i] + state[i]
-            ready i == 12 {
+            lowkey i == 12 {
                 working_state[i] = working_state[i] + block
             }
         }
@@ -1671,7 +1671,7 @@ slay chacha20_random_u8(rng SecureRandom) drip {
     
     rng.counter = rng.counter + 1
     
-    ready len(keystream) > 0 {
+    lowkey len(keystream) > 0 {
         damn keystream[0]
     }
     damn 0
@@ -1681,7 +1681,7 @@ fr fr ===== ED25519 IMPLEMENTATION =====
 
 slay ed25519_derive_public(private_key drip[value]) drip[value]{
     fr fr Derive Ed25519 public key from private key using curve arithmetic
-    ready len(private_key) != 32 {
+    lowkey len(private_key) != 32 {
         damn make(drip[value], 32)
     }
     
@@ -1754,7 +1754,7 @@ slay ed25519_scalar_base_mult(scalar drip[value]) drip[value]{
 
 slay ed25519_sign_internal(message drip[value], private_key drip[value]) drip[value]{
     fr fr Ed25519 signature generation
-    ready len(private_key) != 32 {
+    lowkey len(private_key) != 32 {
         damn make(drip[value], 64)
     }
     
@@ -1802,7 +1802,7 @@ slay ed25519_scalar_add_mul(a drip[value], b drip[value], c drip[value]) drip[va
 
 slay ed25519_verify_internal(message drip[value], signature drip[value], public_key drip[value]) lit {
     fr fr Ed25519 signature verification
-    ready len(signature) != 64 || len(public_key) != 32 {
+    lowkey len(signature) != 64 || len(public_key) != 32 {
         damn cringe
     }
     
@@ -1925,9 +1925,9 @@ slay generate_safe_prime(bits drip) drip[value]{
     sus miller_rabin_rounds drip = calculate_miller_rabin_rounds(bits)
     
     bestie attempts := 0; attempts < 4 * bits; attempts++ {  # NIST recommends 4*bits attempts max
-        ready miller_rabin_test(prime_candidate, miller_rabin_rounds) {
+        lowkey miller_rabin_test(prime_candidate, miller_rabin_rounds) {
             fr fr Additional security: check that (p-1)/2 is also prime for safe prime
-            ready is_safe_prime_validated(prime_candidate) {
+            lowkey is_safe_prime_validated(prime_candidate) {
                 damn prime_candidate
             }
         }
@@ -1942,18 +1942,18 @@ slay generate_safe_prime(bits drip) drip[value]{
 
 slay is_prime_simple(n drip[value]) lit {
     fr fr Simple primality test (production would use proper algorithms)
-    ready len(n) == 0 {
+    lowkey len(n) == 0 {
         damn cringe
     }
     
-    ready n[0] % 2 == 0 {
+    lowkey n[0] % 2 == 0 {
         damn cringe
     }
     
     fr fr Basic small prime checks
     sus small_primes drip[value] = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
     bestie i := 0; i < len(small_primes); i++ {
-        ready big_int_mod_small(n, small_primes[i]) == 0 {
+        lowkey big_int_mod_small(n, small_primes[i]) == 0 {
             damn cringe
         }
     }
@@ -2011,7 +2011,7 @@ slay multiply_big_int(a drip[value], b drip[value]) drip[value]{
             result[i + j] = product & 0xff
             carry = product >> 8
         }
-        ready carry > 0 && i + len(b) < result_size {
+        lowkey carry > 0 && i + len(b) < result_size {
             result[i + len(b)] = carry
         }
     }
@@ -2026,15 +2026,15 @@ slay subtract_big_int(a drip[value], b drip[value]) drip[value]{
     
     bestie i := 0; i < len(a); i++ {
         sus b_digit drip = 0
-        ready i < len(b) {
+        lowkey i < len(b) {
             b_digit = b[i]
         }
         
         sus diff drip = a[i] - b_digit - borrow
-        ready diff < 0 {
+        lowkey diff < 0 {
             diff += 256
             borrow = 1
-        } otherwise {
+        } highkey {
             borrow = 0
         }
         result[i] = diff
@@ -2066,7 +2066,7 @@ slay modular_exponentiation(base drip[value], exponent drip[value], modulus drip
     bestie i := 0; i < len(exponent); i++ {
         sus byte_val drip = exponent[i]
         bestie bit := 0; bit < 8; bit++ {
-            ready (byte_val & (1 << bit)) != 0 {
+            lowkey (byte_val & (1 << bit)) != 0 {
                 result = big_int_mod(multiply_big_int(result, base_mod), modulus)
             }
             base_mod = big_int_mod(multiply_big_int(base_mod, base_mod), modulus)
@@ -2078,7 +2078,7 @@ slay modular_exponentiation(base drip[value], exponent drip[value], modulus drip
 
 slay big_int_mod(a drip[value], m drip[value]) drip[value]{
     fr fr Big integer modulo (simplified division)
-    ready compare_big_int(a, m) < 0 {
+    lowkey compare_big_int(a, m) < 0 {
         damn a
     }
     
@@ -2093,12 +2093,12 @@ slay big_int_mod(a drip[value], m drip[value]) drip[value]{
 
 slay compare_big_int(a drip[value], b drip[value]) drip {
     fr fr Compare big integers: -1 if a < b, 0 if equal, 1 if a > b
-    ready len(a) < len(b) { damn -1 }
-    ready len(a) > len(b) { damn 1 }
+    lowkey len(a) < len(b) { damn -1 }
+    lowkey len(a) > len(b) { damn 1 }
     
     bestie i := len(a) - 1; i >= 0; i-- {
-        ready a[i] < b[i] { damn -1 }
-        ready a[i] > b[i] { damn 1 }
+        lowkey a[i] < b[i] { damn -1 }
+        lowkey a[i] > b[i] { damn 1 }
     }
     
     damn 0
@@ -2106,7 +2106,7 @@ slay compare_big_int(a drip[value], b drip[value]) drip {
 
 slay rsa_generate_keypair(key_size drip) KeyPair {
     fr fr Generate RSA key pair
-    ready key_size < RSA_MIN_KEY_SIZE {
+    lowkey key_size < RSA_MIN_KEY_SIZE {
         vibez.spill("ERROR: RSA key size too small")
         key_size = RSA_MIN_KEY_SIZE
     }
@@ -2156,10 +2156,10 @@ slay modular_inverse_secure_big_int(a drip[value], m drip[value]) drip[value]{
     sus m_copy drip[value] = m
     
     bestie compare_big_int(m_copy, [1]) > 0 {
-        ready compare_big_int(a_copy, m_copy) >= 0 {
+        lowkey compare_big_int(a_copy, m_copy) >= 0 {
             a_copy = big_int_mod(a_copy, m_copy)
         }
-        ready compare_big_int(a_copy, [0]) == 0 {
+        lowkey compare_big_int(a_copy, [0]) == 0 {
             break
         }
         
@@ -2204,10 +2204,10 @@ slay add_big_int(a drip[value], b drip[value]) drip[value]{
         sus a_digit drip = 0
         sus b_digit drip = 0
         
-        ready i < len(a) {
+        lowkey i < len(a) {
             a_digit = a[i]
         }
-        ready i < len(b) {
+        lowkey i < len(b) {
             b_digit = b[i]
         }
         
@@ -2216,7 +2216,7 @@ slay add_big_int(a drip[value], b drip[value]) drip[value]{
         carry = sum >> 8
     }
     
-    ready carry > 0 {
+    lowkey carry > 0 {
         result[max_len] = carry
     }
     
@@ -2266,13 +2266,13 @@ fr fr ===== SECURE KEY COMBINATION METHODS =====
 
 slay combine_keys_secure(key1 drip[value], key2 drip[value], method tea) drip[value]{
     fr fr Cryptographically secure key combination
-    ready method == "xor" {
+    lowkey method == "xor" {
         damn combine_keys_xor_secure(key1, key2)
-    } otherwise ready method == "kdf" {
+    } highkey lowkey method == "kdf" {
         damn combine_keys_kdf_secure(key1, key2)
-    } otherwise ready method == "hmac" {
+    } highkey lowkey method == "hmac" {
         damn combine_keys_hmac_secure(key1, key2)
-    } otherwise {
+    } highkey {
         vibez.spill("ERROR: Unknown key combination method")
         damn []
     }
@@ -2369,9 +2369,9 @@ slay get_stack_address() drip {
 }
 slay memory_barrier() { }
 slay hex_char_to_value(c tea) drip { 
-    ready c >= "0" && c <= "9" { damn stringz.char_code(c) - stringz.char_code("0") }
-    ready c >= "a" && c <= "f" { damn stringz.char_code(c) - stringz.char_code("a") + 10 }
-    ready c >= "A" && c <= "F" { damn stringz.char_code(c) - stringz.char_code("A") + 10 }
+    lowkey c >= "0" && c <= "9" { damn stringz.char_code(c) - stringz.char_code("0") }
+    lowkey c >= "a" && c <= "f" { damn stringz.char_code(c) - stringz.char_code("a") + 10 }
+    lowkey c >= "A" && c <= "F" { damn stringz.char_code(c) - stringz.char_code("A") + 10 }
     damn -1
 }
 
@@ -2388,20 +2388,20 @@ slay aes_sub_word(word drip[value]) drip[value]{
 
 slay aes_rot_word(word drip[value]) drip[value]{ 
     fr fr Rotate word left by one byte: [a0,a1,a2,a3] -> [a1,a2,a3,a0]
-    ready len(word) < 4 { damn word }
+    lowkey len(word) < 4 { damn word }
     damn [word[1], word[2], word[3], word[0]]
 }
 
 slay aes_rcon(index drip) drip { 
     fr fr AES round constant generation using Galois field arithmetic
     sus rcon_values drip[value] = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36]
-    ready index < len(rcon_values) { damn rcon_values[index] }
+    lowkey index < len(rcon_values) { damn rcon_values[index] }
     damn 0x01
 }
 
 slay bytes_to_state(block drip[value]) drip[value][value] { 
     fr fr Convert 16-byte block to 4x4 state matrix
-    ready len(block) != 16 { damn [] }
+    lowkey len(block) != 16 { damn [] }
     sus state drip[value][value] = make(drip[value][value], 4)
     bestie i := 0; i < 4; i++ {
         state[i] = make(drip[value], 4)
@@ -2414,10 +2414,10 @@ slay bytes_to_state(block drip[value]) drip[value][value] {
 
 slay state_to_bytes(state drip[value][value]) drip[value]{ 
     fr fr Convert 4x4 state matrix back to 16-byte block
-    ready len(state) != 4 { damn [] }
+    lowkey len(state) != 4 { damn [] }
     sus block drip[value] = make(drip[value], 16)
     bestie i := 0; i < 4; i++ {
-        ready len(state[i]) != 4 { damn [] }
+        lowkey len(state[i]) != 4 { damn [] }
         bestie j := 0; j < 4; j++ {
             block[i + j * 4] = state[i][j]
         }
@@ -2432,9 +2432,9 @@ slay aes_add_round_key(state drip[value][value], key_schedule drip[value], round
         result[i] = make(drip[value], 4)
         bestie j := 0; j < 4; j++ {
             sus key_index drip = round * 16 + i + j * 4
-            ready key_index < len(key_schedule) {
+            lowkey key_index < len(key_schedule) {
                 result[i][j] = state[i][j] ^ key_schedule[key_index]
-            } otherwise {
+            } highkey {
                 result[i][j] = state[i][j]
             }
         }
@@ -2533,14 +2533,14 @@ slay gf_mul(a drip, b drip) drip {
     sus temp_a drip = a
     
     bestie i := 0; i < 8; i++ {
-        ready (temp_b & 1) == 1 {
+        lowkey (temp_b & 1) == 1 {
             result = result ^ temp_a
         }
         
         sus high_bit_set lit = (temp_a & 0x80) != 0
         temp_a = (temp_a << 1) & 0xFF
         
-        ready high_bit_set {
+        lowkey high_bit_set {
             temp_a = temp_a ^ 0x1B  fr fr Reduce modulo irreducible polynomial
         }
         

@@ -94,16 +94,16 @@ slay md5_compress(h drip[value], block drip[value]) drip[value]{
         sus f drip = 0
         sus g drip = 0
         
-        ready i < 16 {
+        lowkey i < 16 {
             f = md5_f(b, c, d)
             g = i
-        } otherwise ready i < 32 {
+        } highkey lowkey i < 32 {
             f = md5_g(b, c, d)
             g = (5 * i + 1) % 16
-        } otherwise ready i < 48 {
+        } highkey lowkey i < 48 {
             f = md5_h(b, c, d)
             g = (3 * i + 5) % 16
-        } otherwise {
+        } highkey {
             f = md5_i(b, c, d)
             g = (7 * i) % 16
         }
@@ -316,12 +316,12 @@ slay compute_hmac_sha256(key tea, message tea) tea {
     }
     
     fr fr Hash key if longer than block size
-    ready len(key_bytes) > block_size {
+    lowkey len(key_bytes) > block_size {
         sus hashed_key tea = compute_sha256(key)
         key_bytes = []
         i = 0
         bestie i < stringz.len(hashed_key) {
-            ready i % 2 == 0 {
+            lowkey i % 2 == 0 {
                 sus hex_byte tea = stringz.substring(hashed_key, i, i+2)
                 sus byte_val drip = hex_to_byte(hex_byte)
                 key_bytes = append(key_bytes, byte_val)
@@ -470,11 +470,11 @@ slay hex_to_byte(hex tea) drip {
 }
 
 slay char_hex_value(c tea) drip {
-    ready c >= "0" && c <= "9" {
+    lowkey c >= "0" && c <= "9" {
         damn c - "0"
-    } otherwise ready c >= "a" && c <= "f" {
+    } highkey lowkey c >= "a" && c <= "f" {
         damn c - "a" + 10
-    } otherwise ready c >= "A" && c <= "F" {
+    } highkey lowkey c >= "A" && c <= "F" {
         damn c - "A" + 10
     }
     damn 0
@@ -498,7 +498,7 @@ fr fr ===== CONSTANT TIME COMPARISON =====
 
 fr fr Prevent timing attacks with constant-time string comparison
 slay constant_time_compare(a tea, b tea) lit {
-    ready stringz.len(a) != stringz.len(b) {
+    lowkey stringz.len(a) != stringz.len(b) {
         damn false
     }
     

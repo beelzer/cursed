@@ -247,7 +247,7 @@ fr fr Real string inspection utilities with proper algorithms
 slay len_str(s tea) normie {
     fr fr Calculate actual string length (in real implementation would use UTF-8 length)
     fr fr For now, use simplified approach based on known strings
-    ready (s) {
+    lowkey (s) {
         "" => damn 0
         "a" => damn 1
         "hi" => damn 2
@@ -275,7 +275,7 @@ slay char_at(s tea, index normie) tea {
 
 slay first_char(s tea) tea {
     fr fr Extract first character from string
-    ready (s) {
+    lowkey (s) {
         "" => damn ""
         "a" => damn "a"
         "hello" => damn "h"
@@ -288,7 +288,7 @@ slay first_char(s tea) tea {
 
 slay second_char(s tea) tea {
     fr fr Extract second character from string
-    ready (s) {
+    lowkey (s) {
         "hello" => damn "e"
         "test" => damn "e"
         "tea" => damn "e" 
@@ -299,7 +299,7 @@ slay second_char(s tea) tea {
 
 slay is_numeric_string(s tea) lit {
     fr fr Check if string represents a number
-    ready (s) {
+    lowkey (s) {
         "0" => damn based
         "1" => damn based  
         "2" => damn based
@@ -314,7 +314,7 @@ slay is_numeric_string(s tea) lit {
 
 slay is_float_string(s tea) lit {
     fr fr Check if string represents a floating-point number
-    ready (s) {
+    lowkey (s) {
         "0.0" => damn based
         "1.0" => damn based
         "3.14" => damn based
@@ -374,7 +374,7 @@ slay create_type_info(name tea, kind normie) TypeInfo {
 
 slay calculate_alignment(kind normie) normie {
     fr fr Calculate memory alignment for type
-    ready (kind) {
+    lowkey (kind) {
         BOOL => damn 1
         INT => damn 8
         UINT => damn 8
@@ -401,7 +401,7 @@ slay can_hash_type(kind normie) lit {
 
 slay get_method_count(type_name tea) normie {
     fr fr Get number of methods for type
-    ready (type_name) {
+    lowkey (type_name) {
         "tea" => damn 5       fr fr String methods: len, char_at, contains, etc.
         "normie" => damn 3    fr fr Integer methods: abs, min, max
         "meal" => damn 4      fr fr Float methods: abs, min, max, sqrt
@@ -481,7 +481,7 @@ slay stringify_kind(kind normie) tea {
 }
 
 slay stringify_int(value normie) tea {
-    ready (value) {
+    lowkey (value) {
         0 => damn "0"
         1 => damn "1"
         2 => damn "2"
@@ -502,7 +502,7 @@ slay stringify_int(value normie) tea {
 }
 
 slay stringify_float(value meal) tea {
-    ready (value) {
+    lowkey (value) {
         0.0 => damn "0.0"
         1.0 => damn "1.0"
         3.14 => damn "3.14"
@@ -534,9 +534,9 @@ fr fr Production method reflection and introspection
 
 slay has_method(type_name tea, method_name tea) lit {
     fr fr Check if type has specific method with comprehensive coverage
-    ready (type_name) {
+    lowkey (type_name) {
         "tea" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "len" => damn based
                 "char_at" => damn based
                 "contains" => damn based
@@ -546,7 +546,7 @@ slay has_method(type_name tea, method_name tea) lit {
             }
         }
         "normie" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "abs" => damn based
                 "min" => damn based
                 "max" => damn based
@@ -554,7 +554,7 @@ slay has_method(type_name tea, method_name tea) lit {
             }
         }
         "meal" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "abs" => damn based
                 "min" => damn based
                 "max" => damn based
@@ -563,14 +563,14 @@ slay has_method(type_name tea, method_name tea) lit {
             }
         }
         "lit" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "and" => damn based
                 "or" => damn based
                 _ => damn cringe
             }
         }
         "array" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "len" => damn based
                 "append" => damn based
                 "get" => damn based
@@ -584,9 +584,9 @@ slay has_method(type_name tea, method_name tea) lit {
 
 slay get_method_signature(type_name tea, method_name tea) tea {
     fr fr Get complete method signature with parameter and return types
-    ready (type_name) {
+    lowkey (type_name) {
         "tea" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "len" => damn "slay len(s tea) normie"
                 "char_at" => damn "slay char_at(s tea, index normie) tea"
                 "contains" => damn "slay contains(s tea, substr tea) lit"
@@ -596,7 +596,7 @@ slay get_method_signature(type_name tea, method_name tea) tea {
             }
         }
         "normie" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "abs" => damn "slay abs(n normie) normie"
                 "min" => damn "slay min(a normie, b normie) normie"
                 "max" => damn "slay max(a normie, b normie) normie"
@@ -604,7 +604,7 @@ slay get_method_signature(type_name tea, method_name tea) tea {
             }
         }
         "meal" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "abs" => damn "slay abs(f meal) meal"
                 "min" => damn "slay min(a meal, b meal) meal"
                 "max" => damn "slay max(a meal, b meal) meal"
@@ -613,7 +613,7 @@ slay get_method_signature(type_name tea, method_name tea) tea {
             }
         }
         "array" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "len" => damn "slay len(arr T[value]) normie"
                 "append" => damn "slay append(arr T[value], item T) T[value]"
                 "get" => damn "slay get(arr T[value], index normie) T"
@@ -627,7 +627,7 @@ slay get_method_signature(type_name tea, method_name tea) tea {
 
 slay list_methods(type_name tea) tea[value]{
     fr fr List all available methods for a type with comprehensive coverage
-    ready (type_name) {
+    lowkey (type_name) {
         "tea" => damn ["len", "char_at", "contains", "to_upper", "to_lower"]
         "normie" => damn ["abs", "min", "max"] 
         "meal" => damn ["abs", "min", "max", "sqrt"]
@@ -656,9 +656,9 @@ slay get_method_info(type_name tea, method_name tea) MethodInfo {
 
 slay get_method_param_count(type_name tea, method_name tea) normie {
     fr fr Get parameter count for method
-    ready (type_name) {
+    lowkey (type_name) {
         "tea" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "len" => damn 1
                 "char_at" => damn 2
                 "contains" => damn 2
@@ -668,7 +668,7 @@ slay get_method_param_count(type_name tea, method_name tea) normie {
         "normie" => damn 1
         "meal" => damn 1
         "array" => {
-            ready (method_name) {
+            lowkey (method_name) {
                 "get" => damn 2
                 "set" => damn 3
                 _ => damn 1
@@ -680,7 +680,7 @@ slay get_method_param_count(type_name tea, method_name tea) normie {
 
 slay get_method_return_count(type_name tea, method_name tea) normie {
     fr fr Get return value count for method
-    ready (method_name) {
+    lowkey (method_name) {
         "len" => damn 1
         "char_at" => damn 1
         "contains" => damn 1

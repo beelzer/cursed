@@ -58,7 +58,7 @@ slay postgres_connect(host tea, port drip, database tea, username tea, password 
     
     fr fr Establish TCP connection
     sus tcp_connection NetworkConnection = networkz.tcp_connect(host, port)
-    ready (!tcp_connection.socket.is_connected) {
+    lowkey (!tcp_connection.socket.is_connected) {
         connection.last_error = "Failed to connect to PostgreSQL server"
         connection.is_connected = cringe
         damn connection
@@ -72,11 +72,11 @@ slay postgres_connect(host tea, port drip, database tea, username tea, password 
     sus auth_response tea = networkz.tcp_receive(tcp_connection, 1024)
     sus auth_success lit = handle_postgres_authentication(tcp_connection, password, auth_response)
     
-    ready (auth_success) {
+    lowkey (auth_success) {
         connection.is_connected = based
         connection.connection_id = generate_connection_id()
         vibez.spill("Connected to PostgreSQL: " + connection.connection_string)
-    } otherwise {
+    } highkey {
         connection.last_error = "PostgreSQL authentication failed"
         connection.is_connected = cringe
     }
@@ -90,7 +90,7 @@ slay postgres_query(connection DatabaseConnection, sql tea) QueryResult {
     sus result QueryResult = QueryResult{}
     result.execution_time_ms = 0
     
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         result.success = cringe
         result.rows = []
         damn result
@@ -101,15 +101,15 @@ slay postgres_query(connection DatabaseConnection, sql tea) QueryResult {
     sus start_time drip = get_current_time_ms()
     
     fr fr Simulate query execution
-    ready (starts_with(sql, "SELECT")) {
+    lowkey (starts_with(sql, "SELECT")) {
         result = execute_postgres_select(sql)
-    } otherwise ready (starts_with(sql, "INSERT")) {
+    } highkey lowkey (starts_with(sql, "INSERT")) {
         result = execute_postgres_insert(sql)
-    } otherwise ready (starts_with(sql, "UPDATE")) {
+    } highkey lowkey (starts_with(sql, "UPDATE")) {
         result = execute_postgres_update(sql)
-    } otherwise ready (starts_with(sql, "DELETE")) {
+    } highkey lowkey (starts_with(sql, "DELETE")) {
         result = execute_postgres_delete(sql)
-    } otherwise {
+    } highkey {
         result = execute_postgres_ddl(sql)
     }
     
@@ -128,7 +128,7 @@ slay mysql_connect(host tea, port drip, database tea, username tea, password tea
     connection.connection_string = build_mysql_connection_string(host, port, database, username, password)
     
     sus tcp_connection NetworkConnection = networkz.tcp_connect(host, port)
-    ready (!tcp_connection.socket.is_connected) {
+    lowkey (!tcp_connection.socket.is_connected) {
         connection.last_error = "Failed to connect to MySQL server"
         connection.is_connected = cringe
         damn connection
@@ -145,11 +145,11 @@ slay mysql_connect(host tea, port drip, database tea, username tea, password tea
     sus auth_response tea = networkz.tcp_receive(tcp_connection, 1024)
     sus auth_success lit = verify_mysql_auth_response(auth_response)
     
-    ready (auth_success) {
+    lowkey (auth_success) {
         connection.is_connected = based
         connection.connection_id = generate_connection_id()
         vibez.spill("Connected to MySQL " + server_version + ": " + connection.connection_string)
-    } otherwise {
+    } highkey {
         connection.last_error = "MySQL authentication failed"
         connection.is_connected = cringe
     }
@@ -162,7 +162,7 @@ slay mysql_query(connection DatabaseConnection, sql tea) QueryResult {
     fr fr Execute MySQL query
     sus result QueryResult = QueryResult{}
     
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         result.success = cringe
         result.rows = []
         damn result
@@ -173,15 +173,15 @@ slay mysql_query(connection DatabaseConnection, sql tea) QueryResult {
     sus start_time drip = get_current_time_ms()
     
     fr fr Execute based on query type
-    ready (starts_with(sql, "SELECT")) {
+    lowkey (starts_with(sql, "SELECT")) {
         result = execute_mysql_select(sql)
-    } otherwise ready (starts_with(sql, "INSERT")) {
+    } highkey lowkey (starts_with(sql, "INSERT")) {
         result = execute_mysql_insert(sql)
-    } otherwise ready (starts_with(sql, "UPDATE")) {
+    } highkey lowkey (starts_with(sql, "UPDATE")) {
         result = execute_mysql_update(sql)
-    } otherwise ready (starts_with(sql, "DELETE")) {
+    } highkey lowkey (starts_with(sql, "DELETE")) {
         result = execute_mysql_delete(sql)
-    } otherwise {
+    } highkey {
         result = execute_mysql_ddl(sql)
     }
     
@@ -216,7 +216,7 @@ slay sqlite_query(connection DatabaseConnection, sql tea) QueryResult {
     fr fr Execute real SQLite query using sqlite_driver
     sus result QueryResult = QueryResult{}
     
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         result.success = cringe
         result.rows = []
         damn result
@@ -226,7 +226,7 @@ slay sqlite_query(connection DatabaseConnection, sql tea) QueryResult {
     fr fr For now we'll create a temporary connection for demonstration
     sus real_connection SQLiteConnection = sqlite_real_open(extract_database_path_from_connection_string(connection.connection_string))
     
-    ready (!real_connection.is_connected) {
+    lowkey (!real_connection.is_connected) {
         result.success = cringe
         result.rows = []
         damn result
@@ -264,17 +264,17 @@ fr fr ===== TRANSACTION SUPPORT =====
 
 slay db_begin_transaction(connection DatabaseConnection) lit {
     fr fr Start database transaction
-    ready (!connection.is_connected) {
+    lowkey (!connection.is_connected) {
         damn cringe
     }
     
-    ready (connection.transaction_active) {
+    lowkey (connection.transaction_active) {
         vibez.spill("Transaction already active")
         damn cringe
     }
     
     sus result QueryResult = db_query(connection, "BEGIN")
-    ready (result.success) {
+    lowkey (result.success) {
         connection.transaction_active = based
         vibez.spill("Transaction started")
         damn based
@@ -285,13 +285,13 @@ slay db_begin_transaction(connection DatabaseConnection) lit {
 
 slay db_commit_transaction(connection DatabaseConnection) lit {
     fr fr Commit database transaction
-    ready (!connection.transaction_active) {
+    lowkey (!connection.transaction_active) {
         vibez.spill("No active transaction to commit")
         damn cringe
     }
     
     sus result QueryResult = db_query(connection, "COMMIT")
-    ready (result.success) {
+    lowkey (result.success) {
         connection.transaction_active = cringe
         vibez.spill("Transaction committed")
         damn based
@@ -302,7 +302,7 @@ slay db_commit_transaction(connection DatabaseConnection) lit {
 
 slay db_rollback_transaction(connection DatabaseConnection) lit {
     fr fr Rollback database transaction
-    ready (!connection.transaction_active) {
+    lowkey (!connection.transaction_active) {
         vibez.spill("No active transaction to rollback")
         damn cringe
     }
@@ -322,10 +322,10 @@ slay db_prepare_statement(connection DatabaseConnection, sql tea) PreparedStatem
     statement.parameter_count = count_sql_parameters(sql)
     statement.statement_id = generate_statement_id()
     
-    ready (connection.is_connected) {
+    lowkey (connection.is_connected) {
         statement.is_prepared = based
         vibez.spill("Prepared statement: " + sql)
-    } otherwise {
+    } highkey {
         statement.is_prepared = cringe
     }
     
@@ -336,7 +336,7 @@ slay db_execute_prepared(connection DatabaseConnection, statement PreparedStatem
     fr fr Execute prepared statement with parameters
     sus result QueryResult = QueryResult{}
     
-    ready (!statement.is_prepared) {
+    lowkey (!statement.is_prepared) {
         result.success = cringe
         result.rows = []
         damn result
@@ -371,7 +371,7 @@ slay create_connection_pool(database_type tea, connection_string tea, pool_size 
     sus i drip = 0
     bestie (i < pool_size) {
         sus connection DatabaseConnection = create_database_connection(database_type, connection_string)
-        ready (connection.is_connected) {
+        lowkey (connection.is_connected) {
             pool.available_connections[i] = connection
         }
         i = i + 1
@@ -383,7 +383,7 @@ slay create_connection_pool(database_type tea, connection_string tea, pool_size 
 
 slay pool_get_connection(pool ConnectionPool) DatabaseConnection {
     fr fr Get connection from pool
-    ready (pool.active_connections >= pool.pool_size) {
+    lowkey (pool.active_connections >= pool.pool_size) {
         sus empty_connection DatabaseConnection = DatabaseConnection{}
         empty_connection.last_error = "Connection pool exhausted"
         empty_connection.is_connected = cringe
@@ -398,7 +398,7 @@ slay pool_get_connection(pool ConnectionPool) DatabaseConnection {
 
 slay pool_return_connection(pool ConnectionPool, connection DatabaseConnection) lit {
     fr fr Return connection to pool
-    ready (pool.active_connections > 0) {
+    lowkey (pool.active_connections > 0) {
         pool.active_connections = pool.active_connections - 1
         damn based
     }
@@ -409,13 +409,13 @@ fr fr ===== HIGH-LEVEL DATABASE OPERATIONS =====
 
 slay db_query(connection DatabaseConnection, sql tea) QueryResult {
     fr fr Universal query function
-    ready (connection.database_type == "postgresql") {
+    lowkey (connection.database_type == "postgresql") {
         damn postgres_query(connection, sql)
-    } otherwise ready (connection.database_type == "mysql") {
+    } highkey lowkey (connection.database_type == "mysql") {
         damn mysql_query(connection, sql)
-    } otherwise ready (connection.database_type == "sqlite") {
+    } highkey lowkey (connection.database_type == "sqlite") {
         damn sqlite_query(connection, sql)
-    } otherwise {
+    } highkey {
         sus result QueryResult = QueryResult{}
         result.success = cringe
         result.rows = []
@@ -453,16 +453,16 @@ slay db_table_exists(connection DatabaseConnection, table_name tea) lit {
     fr fr Check if table exists
     sus sql tea = ""
     
-    ready (connection.database_type == "postgresql") {
+    lowkey (connection.database_type == "postgresql") {
         sql = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = '" + table_name + "')"
-    } otherwise ready (connection.database_type == "mysql") {
+    } highkey lowkey (connection.database_type == "mysql") {
         sql = "SHOW TABLES LIKE '" + table_name + "'"
-    } otherwise ready (connection.database_type == "sqlite") {
+    } highkey lowkey (connection.database_type == "sqlite") {
         sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + table_name + "'"
     }
     
     sus result QueryResult = db_query(connection, sql)
-    ready (result.success && array_length(result.rows) > 0) {
+    lowkey (result.success && array_length(result.rows) > 0) {
         damn based
     }
     
@@ -473,16 +473,16 @@ slay db_get_table_schema(connection DatabaseConnection, table_name tea) tea[valu
     fr fr Get table column information
     sus sql tea = ""
     
-    ready (connection.database_type == "postgresql") {
+    lowkey (connection.database_type == "postgresql") {
         sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '" + table_name + "'"
-    } otherwise ready (connection.database_type == "mysql") {
+    } highkey lowkey (connection.database_type == "mysql") {
         sql = "DESCRIBE " + table_name
-    } otherwise ready (connection.database_type == "sqlite") {
+    } highkey lowkey (connection.database_type == "sqlite") {
         sql = "PRAGMA table_info(" + table_name + ")"
     }
     
     sus result QueryResult = db_query(connection, sql)
-    ready (result.success) {
+    lowkey (result.success) {
         damn result.column_names
     }
     
@@ -492,8 +492,8 @@ slay db_get_table_schema(connection DatabaseConnection, table_name tea) tea[valu
 
 slay db_close(connection DatabaseConnection) lit {
     fr fr Close database connection
-    ready (connection.is_connected) {
-        ready (connection.transaction_active) {
+    lowkey (connection.is_connected) {
+        lowkey (connection.transaction_active) {
             db_rollback_transaction(connection)
         }
         
@@ -513,7 +513,7 @@ slay build_insert_sql(table tea, columns tea[value], values tea[value]) tea {
     fr fr Add column names
     sus i drip = 0
     bestie (i < array_length(columns)) {
-        ready (i > 0) {
+        lowkey (i > 0) {
             sql = sql + ", "
         }
         sql = sql + columns[i]
@@ -525,7 +525,7 @@ slay build_insert_sql(table tea, columns tea[value], values tea[value]) tea {
     fr fr Add values
     i = 0
     bestie (i < array_length(values)) {
-        ready (i > 0) {
+        lowkey (i > 0) {
             sql = sql + ", "
         }
         sql = sql + "'" + escape_sql_string(values[i]) + "'"
@@ -539,12 +539,12 @@ slay build_insert_sql(table tea, columns tea[value], values tea[value]) tea {
 slay build_select_sql(table tea, columns tea[value], where_clause tea) tea {
     sus sql tea = "SELECT "
     
-    ready (array_length(columns) == 0) {
+    lowkey (array_length(columns) == 0) {
         sql = sql + "*"
-    } otherwise {
+    } highkey {
         sus i drip = 0
         bestie (i < array_length(columns)) {
-            ready (i > 0) {
+            lowkey (i > 0) {
                 sql = sql + ", "
             }
             sql = sql + columns[i]
@@ -554,7 +554,7 @@ slay build_select_sql(table tea, columns tea[value], where_clause tea) tea {
     
     sql = sql + " FROM " + table
     
-    ready (where_clause != "") {
+    lowkey (where_clause != "") {
         sql = sql + " WHERE " + where_clause
     }
     
@@ -564,7 +564,7 @@ slay build_select_sql(table tea, columns tea[value], where_clause tea) tea {
 slay build_update_sql(table tea, set_clause tea, where_clause tea) tea {
     sus sql tea = "UPDATE " + table + " SET " + set_clause
     
-    ready (where_clause != "") {
+    lowkey (where_clause != "") {
         sql = sql + " WHERE " + where_clause
     }
     
@@ -574,7 +574,7 @@ slay build_update_sql(table tea, set_clause tea, where_clause tea) tea {
 slay build_delete_sql(table tea, where_clause tea) tea {
     sus sql tea = "DELETE FROM " + table
     
-    ready (where_clause != "") {
+    lowkey (where_clause != "") {
         sql = sql + " WHERE " + where_clause
     }
     
@@ -647,7 +647,7 @@ slay execute_postgres_select(sql tea) QueryResult {
     
     fr fr Establish real PostgreSQL connection
     sus pg_connection PostgresConnection = establish_postgres_connection(conn_params)
-    ready (!pg_connection.is_connected) {
+    lowkey (!pg_connection.is_connected) {
         sus error_result QueryResult = QueryResult{}
         error_result.success = cringe
         error_result.last_error = "Failed to connect to PostgreSQL: " + pg_connection.error_message
@@ -752,7 +752,7 @@ slay get_current_time_ms() drip {
 
 slay file_exists_check(path tea) lit { 
     sus file_info filez.FileInfo = filez.stat(path)
-    ready (file_info.size >= 0) {
+    lowkey (file_info.size >= 0) {
         damn based
     }
     damn cringe
@@ -760,7 +760,7 @@ slay file_exists_check(path tea) lit {
 
 slay extract_database_path_from_connection_string(conn_string tea) tea {
     fr fr Extract database path from SQLite connection string
-    ready (stringz.starts_with(conn_string, "sqlite://")) {
+    lowkey (stringz.starts_with(conn_string, "sqlite://")) {
         damn stringz.substring(conn_string, 9, stringz.length(conn_string))
     }
     fr fr Default to treating as direct path
@@ -770,7 +770,7 @@ slay count_sql_parameters(sql tea) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < stringz.length(sql)) {
-        ready (stringz.char_at(sql, i) == "?") {
+        lowkey (stringz.char_at(sql, i) == "?") {
             count = count + 1
         }
         i = i + 1
@@ -784,14 +784,14 @@ slay substitute_sql_parameters(sql tea, params tea[value]) tea {
     sus i drip = 0
     
     bestie (i < stringz.length(result) && param_index < stringz.length(params)) {
-        ready (stringz.char_at(result, i) == "?") {
+        lowkey (stringz.char_at(result, i) == "?") {
             sus before tea = stringz.substring(result, 0, i)
             sus after tea = stringz.substring(result, i + 1, stringz.length(result))
             sus param_value tea = escape_sql_string(params[param_index])
             result = before + "'" + param_value + "'" + after
             param_index = param_index + 1
             i = i + stringz.length(param_value) + 2 fr fr Account for quotes
-        } otherwise {
+        } highkey {
             i = i + 1
         }
     }
@@ -805,15 +805,15 @@ slay build_mysql_connection_string(host tea, port drip, db tea, user tea, pass t
 }
 slay handle_postgres_authentication(conn NetworkConnection, password tea, response tea) lit { 
     fr fr Parse authentication request from PostgreSQL server
-    ready (stringz.length(response) < 8) {
+    lowkey (stringz.length(response) < 8) {
         damn cringe  fr fr Invalid response
     }
     
     sus auth_type drip = parse_int32_be(stringz.substring(response, 4, 8))
     
-    ready (auth_type == 0) {
+    lowkey (auth_type == 0) {
         damn based  fr fr Authentication successful 
-    } otherwise ready (auth_type == 3) {
+    } highkey lowkey (auth_type == 3) {
         fr fr Clear text password required
         sus password_message tea = create_postgres_password_message(password)
         sus bytes_sent drip = networkz.tcp_send(conn, password_message)
@@ -821,7 +821,7 @@ slay handle_postgres_authentication(conn NetworkConnection, password tea, respon
         sus auth_response tea = networkz.tcp_receive(conn, 1024)
         sus final_auth_type drip = parse_int32_be(stringz.substring(auth_response, 4, 8))
         damn final_auth_type == 0
-    } otherwise ready (auth_type == 5) {
+    } highkey lowkey (auth_type == 5) {
         fr fr MD5 password authentication
         sus salt tea = stringz.substring(response, 8, 12)
         sus md5_password tea = create_postgres_md5_password(password, "postgres", salt)
@@ -838,7 +838,7 @@ slay handle_postgres_authentication(conn NetworkConnection, password tea, respon
 
 slay parse_mysql_handshake(response tea) tea { 
     fr fr Parse MySQL handshake response to extract server version
-    ready (stringz.length(response) < 10) {
+    lowkey (stringz.length(response) < 10) {
         damn "unknown"
     }
     
@@ -846,7 +846,7 @@ slay parse_mysql_handshake(response tea) tea {
     sus version_start drip = 1
     sus version_end drip = stringz.find_char(response, 0, version_start)  fr fr Find null terminator
     
-    ready (version_end > version_start) {
+    lowkey (version_end > version_start) {
         damn stringz.substring(response, version_start, version_end)
     }
     
@@ -855,7 +855,7 @@ slay parse_mysql_handshake(response tea) tea {
 
 slay verify_mysql_auth_response(response tea) lit { 
     fr fr Check MySQL authentication response
-    ready (stringz.length(response) < 4) {
+    lowkey (stringz.length(response) < 4) {
         damn cringe
     }
     
@@ -863,15 +863,15 @@ slay verify_mysql_auth_response(response tea) lit {
     sus packet_length drip = parse_int24_le(stringz.substring(response, 0, 3))
     sus sequence_id drip = parse_int8(stringz.substring(response, 3, 4))
     
-    ready (packet_length < 1) {
+    lowkey (packet_length < 1) {
         damn cringe
     }
     
     fr fr Check first byte of payload - 0x00 means OK, 0xFF means error
     sus status_byte drip = parse_int8(stringz.substring(response, 4, 5))
-    ready (status_byte == 0) {
+    lowkey (status_byte == 0) {
         damn based  fr fr OK packet
-    } otherwise ready (status_byte == 254 && packet_length < 9) {
+    } highkey lowkey (status_byte == 254 && packet_length < 9) {
         damn based  fr fr EOF packet (old auth switch)
     }
     
@@ -919,7 +919,7 @@ slay mysql_password_hash(password tea) tea {
 
 fr fr Additional parsing functions needed
 slay parse_int32_be(data tea) drip {
-    ready (stringz.length(data) < 4) { damn 0 }
+    lowkey (stringz.length(data) < 4) { damn 0 }
     sus b1 drip = char_code(stringz.char_at(data, 0))
     sus b2 drip = char_code(stringz.char_at(data, 1))
     sus b3 drip = char_code(stringz.char_at(data, 2))
@@ -928,7 +928,7 @@ slay parse_int32_be(data tea) drip {
 }
 
 slay parse_int24_le(data tea) drip {
-    ready (stringz.length(data) < 3) { damn 0 }
+    lowkey (stringz.length(data) < 3) { damn 0 }
     sus b1 drip = char_code(stringz.char_at(data, 0))
     sus b2 drip = char_code(stringz.char_at(data, 1))
     sus b3 drip = char_code(stringz.char_at(data, 2))
@@ -936,14 +936,14 @@ slay parse_int24_le(data tea) drip {
 }
 
 slay parse_int8(data tea) drip {
-    ready (stringz.length(data) < 1) { damn 0 }
+    lowkey (stringz.length(data) < 1) { damn 0 }
     damn char_code(stringz.char_at(data, 0))
 }
 
 slay char_code(c tea) drip {
     fr fr Convert character to ASCII code (simplified)
-    ready (c == "A") { damn 65 }
-    ready (c == "B") { damn 66 }
+    lowkey (c == "A") { damn 65 }
+    lowkey (c == "B") { damn 66 }
     fr fr ... implement full ASCII mapping
     damn 0  fr fr Default for unmapped chars
 }

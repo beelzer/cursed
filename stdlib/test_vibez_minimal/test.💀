@@ -29,7 +29,7 @@ vibez.spill("value:", 10)
 vibez.spill(2 + 2)
 
 // Test minimal conditional with spill
-ready (based) {
+lowkey (based) {
     vibez.spill("condition works")
 }
 
@@ -48,9 +48,9 @@ sus func_result drip = minimal_func()
 vibez.spill(func_result)
 
 // Test minimal error case
-ready (nocap) {
+lowkey (nocap) {
     vibez.spill("should not print")
-} otherwise {
+} highkey {
     vibez.spill("else works")
 }
 
@@ -60,7 +60,7 @@ sus str2 tea = "b"
 vibez.spill(str1 + str2)
 
 // Test minimal comparison
-ready (1 == 1) {
+lowkey (1 == 1) {
     vibez.spill("equal")
 }
 

@@ -8,11 +8,11 @@ yeet "concurrenz"
 
 # Merge multiple contexts - cancels when any parent cancels
 slay merge_contexts(contexts Context[value]) (Context, CancelFunc) {
-    ready (len(contexts) == 0) {
+    lowkey (len(contexts) == 0) {
         damn with_cancel(background())
     }
     
-    ready (len(contexts) == 1) {
+    lowkey (len(contexts) == 1) {
         damn with_cancel(contexts[0])
     }
     
@@ -43,7 +43,7 @@ slay with_condition(parent Context, condition slay() lit) (Context, CancelFunc) 
     
     go {
         bestie (based) {
-            ready (condition()) {
+            lowkey (condition()) {
                 cancel()
                 break
             }
@@ -80,7 +80,7 @@ slay (tree *ContextTree) get_children(parent Context) Context[value]{
     
     sus children Context[value] = []
     bestie (child, child_parent in tree.children) {
-        ready (child_parent == parent) {
+        lowkey (child_parent == parent) {
             children = append(children, child)
         }
     }
@@ -93,7 +93,7 @@ type ContextMiddleware slay(Context, slay(Context)) Context
 # Chain context middleware
 slay chain_middleware(middlewares ContextMiddleware[value]) ContextMiddleware {
     damn slay(ctx Context, next slay(Context)) Context {
-        ready (len(middlewares) == 0) {
+        lowkey (len(middlewares) == 0) {
             damn next(ctx)
         }
         
@@ -101,7 +101,7 @@ slay chain_middleware(middlewares ContextMiddleware[value]) ContextMiddleware {
         
         sus chain_func slay(Context) Context
         chain_func = slay(current_ctx Context) Context {
-            ready (current >= len(middlewares)) {
+            lowkey (current >= len(middlewares)) {
                 damn next(current_ctx)
             }
             
@@ -120,9 +120,9 @@ slay logging_middleware(ctx Context, next slay(Context)) Context {
     
     sus result_ctx := next(ctx)
     
-    ready (result_ctx.err() != nil) {
+    lowkey (result_ctx.err() != nil) {
         vibez.spill("Context: Operation cancelled:", result_ctx.err())
-    } otherwise {
+    } highkey {
         vibez.spill("Context: Operation completed")
     }
     
@@ -157,22 +157,22 @@ slay retry_with_context<T>(ctx Context, operation slay() (T, yikes<tea>)) (T, yi
     
     bestie (current_retry <= max_retries) {
         # Check if context is cancelled
-        ready (is_cancelled(ctx)) {
+        lowkey (is_cancelled(ctx)) {
             sus zero T
             damn zero, ctx.err()
         }
         
         sus result, err := operation()
-        ready (err == nil) {
+        lowkey (err == nil) {
             damn result, nil
         }
         
-        ready (current_retry == max_retries) {
+        lowkey (current_retry == max_retries) {
             damn result, err  # Last attempt failed
         }
         
         # Wait before retry with context cancellation
-        ready (!sleep_with_cancel(ctx, retry_delay)) {
+        lowkey (!sleep_with_cancel(ctx, retry_delay)) {
             sus zero T
             damn zero, ctx.err()
         }
@@ -210,7 +210,7 @@ slay (pool *ContextPool) get() Context {
         when ctx := <-pool.contexts -> {
             damn ctx
         }
-        otherwise -> {
+        highkey -> {
             damn pool.factory()  # Create new if pool empty
         }
     }
@@ -221,7 +221,7 @@ slay (pool *ContextPool) put(ctx Context) {
         when pool.contexts <- ctx -> {
             # Successfully returned to pool
         }
-        otherwise -> {
+        highkey -> {
             # Pool full, discard context
         }
     }
@@ -236,12 +236,12 @@ slay debug_context_tree(ctx Context, depth drip) {
     
     vibez.spill(indent + "Context:", ctx)
     
-    ready (ctx.err() != nil) {
+    lowkey (ctx.err() != nil) {
         vibez.spill(indent + "  Error:", ctx.err())
     }
     
     sus deadline, has_deadline := ctx.deadline()
-    ready (has_deadline) {
+    lowkey (has_deadline) {
         vibez.spill(indent + "  Deadline:", deadline)
     }
 }

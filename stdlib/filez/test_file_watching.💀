@@ -106,9 +106,9 @@ slay test_directory_watching() {
     sus file_events drip = 0
     
     sus dir_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
-        ready (event.is_directory) {
+        lowkey (event.is_directory) {
             dir_events = dir_events + 1
-        } otherwise {
+        } highkey {
             file_events = file_events + 1
         }
         vibez.spill("Directory event: " + event_type_to_string(event.event_type) + " -> " + event.path)
@@ -149,7 +149,7 @@ slay test_recursive_watching() {
     
     sus recursive_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
         total_events = total_events + 1
-        ready (contains_substring(event.path, "subdir") || contains_substring(event.path, "deep")) {
+        lowkey (contains_substring(event.path, "subdir") || contains_substring(event.path, "deep")) {
             subdir_events = subdir_events + 1
         }
         vibez.spill("Recursive event: " + event_type_to_string(event.event_type) + " -> " + event.path)
@@ -200,7 +200,7 @@ slay test_watcher_lifecycle() {
         write_file(test_file, "content")
         
         (watch_id, err) := start_file_watcher(test_file, dummy_callback)
-        ready (err == "") {
+        lowkey (err == "") {
             watcher_ids[count] = watch_id
             count = count + 1
         }
@@ -219,7 +219,7 @@ slay test_watcher_lifecycle() {
     i = 0
     bestie (i < count && i < 3) {
         sus err tea = stop_file_watcher(watcher_ids[i])
-        ready (err == "") {
+        lowkey (err == "") {
             stopped = stopped + 1
         }
         i = i + 1
@@ -246,15 +246,15 @@ slay test_event_filtering() {
     sus other_events drip = 0
     
     sus filter_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
-        ready (ends_with(event.path, ".txt")) {
+        lowkey (ends_with(event.path, ".txt")) {
             txt_events = txt_events + 1
         }
-        ready (ends_with(event.path, ".log")) {
+        lowkey (ends_with(event.path, ".log")) {
             log_events = log_events + 1
         }
-        ready (event.event_type == EVENT_MODIFIED) {
+        lowkey (event.event_type == EVENT_MODIFIED) {
             modify_events = modify_events + 1
-        } otherwise {
+        } highkey {
             other_events = other_events + 1
         }
         vibez.spill("Filtered event: " + event.path)
@@ -404,7 +404,7 @@ slay test_invalid_inputs() {
     
     (id5, err5) := start_watcher_with_filter(TEST_DIR, bad_filter, dummy_callback)
     fr fr Should handle empty patterns gracefully
-    ready (err5 == "") {
+    lowkey (err5 == "") {
         stop_file_watcher(id5)
     }
     
@@ -426,10 +426,10 @@ slay test_resource_management() {
         write_file(test_file, "content")
         
         (watch_id, err) := start_file_watcher(test_file, dummy_callback)
-        ready (err == "") {
+        lowkey (err == "") {
             created_watchers[created_count] = watch_id
             created_count = created_count + 1
-        } otherwise {
+        } highkey {
             vibez.spill("Resource limit reached at watcher " + int_to_string(i) + ": " + err)
             break
         }
@@ -454,7 +454,7 @@ slay test_resource_management() {
     bestie (i < array_length(active_ids)) {
         sus j drip = 0
         bestie (j < created_count) {
-            ready (active_ids[i] == created_watchers[j]) {
+            lowkey (active_ids[i] == created_watchers[j]) {
                 remaining_from_test = remaining_from_test + 1
                 break
             }
@@ -477,15 +477,15 @@ slay test_platform_integration() {
     vibez.spill("Testing on platform: " + platform)
     
     fr fr Test platform-specific features
-    ready (platform == "linux") {
+    lowkey (platform == "linux") {
         test_linux_inotify_features()
     }
     
-    ready (platform == "macos") {
+    lowkey (platform == "macos") {
         test_macos_kqueue_features()
     }
     
-    ready (platform == "windows") {
+    lowkey (platform == "windows") {
         test_windows_readdir_features()
     }
     
@@ -500,7 +500,7 @@ slay test_linux_inotify_features() {
     
     sus linux_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
         events_with_details = events_with_details + 1
-        ready (event.event_type == EVENT_MOVED) {
+        lowkey (event.event_type == EVENT_MOVED) {
             move_events = move_events + 1
         }
         vibez.spill("Linux event: " + event_type_to_string(event.event_type))
@@ -508,7 +508,7 @@ slay test_linux_inotify_features() {
     }
     
     (watch_id, err) := start_directory_watcher(TEST_DIR, based, linux_callback)
-    ready (err != "") {
+    lowkey (err != "") {
         vibez.spill("⚠️  Cannot test Linux features: " + err)
         damn
     }
@@ -539,7 +539,7 @@ slay test_macos_kqueue_features() {
     }
     
     (watch_id, err) := start_file_watcher(TEST_FILE, macos_callback)
-    ready (err != "") {
+    lowkey (err != "") {
         vibez.spill("⚠️  Cannot test macOS features: " + err)
         damn
     }
@@ -564,7 +564,7 @@ slay test_windows_readdir_features() {
     
     sus windows_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
         unicode_events = unicode_events + 1
-        ready (string_length(event.path) > 50) {
+        lowkey (string_length(event.path) > 50) {
             long_path_events = long_path_events + 1
         }
         vibez.spill("Windows event: " + event_type_to_string(event.event_type))
@@ -572,7 +572,7 @@ slay test_windows_readdir_features() {
     }
     
     (watch_id, err) := start_directory_watcher(TEST_DIR, based, windows_callback)
-    ready (err != "") {
+    lowkey (err != "") {
         vibez.spill("⚠️  Cannot test Windows features: " + err)
         damn
     }
@@ -609,7 +609,7 @@ slay test_performance_characteristics() {
     sus i drip = 0
     bestie (i < 100) {
         write_file(TEST_DIR + "/perf_test_" + int_to_string(i) + ".txt", "content " + int_to_string(i))
-        ready (i % 10 == 0) {
+        lowkey (i % 10 == 0) {
             sleep_and_process_events(100)  fr fr Brief pause every 10 files
         }
         i = i + 1
@@ -738,7 +738,7 @@ slay test_memory_safety() {
         sus is_dir lit = event.is_directory
         sus type drip = event.event_type
         
-        ready (path_len > 0 && timestamp > 0) {
+        lowkey (path_len > 0 && timestamp > 0) {
             fr fr Event data appears valid
         }
         damn based
@@ -766,17 +766,17 @@ fr fr ===== TEST UTILITIES =====
 slay setup_test_environment() {
     vibez.spill("🔧 Setting up test environment...")
     
-    ready (!directory_exists(TEST_DIR)) {
+    lowkey (!directory_exists(TEST_DIR)) {
         create_directory(TEST_DIR)
     }
     
-    ready (!directory_exists(TEST_SUBDIR)) {
+    lowkey (!directory_exists(TEST_SUBDIR)) {
         create_directory(TEST_SUBDIR)
     }
     
     write_file(TEST_FILE, "Initial test content")
     
-    vibez.spill("✅ Test environment ready")
+    vibez.spill("✅ Test environment lowkey")
 }
 
 slay cleanup_test_environment() {
@@ -787,13 +787,13 @@ slay cleanup_test_environment() {
     
     fr fr Clean up any remaining test files
     (entries, _) := list_directory(TEST_DIR)
-    ready (array_length(entries) > 0) {
+    lowkey (array_length(entries) > 0) {
         sus i drip = 0
         bestie (i < array_length(entries)) {
             sus entry_path tea = TEST_DIR + "/" + entries[i]
-            ready (is_file(entry_path)) {
+            lowkey (is_file(entry_path)) {
                 delete_file(entry_path)
-            } otherwise {
+            } highkey {
                 remove_directory(entry_path)
             }
             i = i + 1

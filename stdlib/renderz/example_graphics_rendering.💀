@@ -108,11 +108,11 @@ slay demo_shader_programming() lit {
     
     // Create and compile shader
     sus shader renderz.Shader = renderz_create_shader(vertex_shader, fragment_shader)
-    ready (shader.compiled) {
+    lowkey (shader.compiled) {
         vibez.print_success("Shader compiled successfully")
         vibez.print_result("Shader ID", stringz_from_int(shader.id))
         vibez.print_result("Uniform count", stringz_from_int(shader.uniform_count))
-    } otherwise {
+    } highkey {
         vibez.print_error("Failed to compile shader")
     }
     
@@ -220,11 +220,11 @@ slay demo_texture_mapping() lit {
     
     // Load texture image
     sus texture_image imagez.ImageData = imagez_load_from_file("texture.png")
-    ready (texture_image.width == 0) {
+    lowkey (texture_image.width == 0) {
         // Create procedural texture if file not found
         texture_image = imagez_create_solid_color(256, 256, imagez.COLOR_WHITE, 4)
         vibez.print_warning("Using procedural texture")
-    } otherwise {
+    } highkey {
         vibez.print_success("Loaded texture from file")
     }
     

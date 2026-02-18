@@ -57,12 +57,12 @@ slay main_character() void {
     
     bestie (i normie = 0; i < changes.len; i = i + 1) {
         sus change HistoricalChange = changes[i]
-        ready (change.year == 1918 && change.month == 3) {
+        lowkey (change.year == 1918 && change.month == 3) {
             found_1918_dst = based
             testz.assert_eq_string(change.change_type, "DST_START")
             vibez.spill("✅ Found 1918 DST start entry")
         }
-        ready (change.year == 2007 && change.month == 3) {
+        lowkey (change.year == 2007 && change.month == 3) {
             found_2007_change = based
             testz.assert_eq_string(change.change_type, "DST_RULE_CHANGE")
             vibez.spill("✅ Found 2007 DST rule change")

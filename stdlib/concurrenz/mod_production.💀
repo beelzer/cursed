@@ -144,7 +144,7 @@ slay create_production_worker_thread(worker_id normie, cpu_affinity normie) *Pro
     init_production_work_queue(&worker.local_queue, 256)
     
     fr fr Create actual OS thread
-    ready sysz.platform_is_linux() {
+    lowkey sysz.platform_is_linux() {
         fr fr Linux: Use clone() system call with CLONE_VM | CLONE_FILES
         worker.os_thread_handle = sysz.linux_create_thread(
             production_worker_thread_main, 
@@ -153,7 +153,7 @@ slay create_production_worker_thread(worker_id normie, cpu_affinity normie) *Pro
             0x00010000 | 0x00000400  // CLONE_VM | CLONE_FILES
         )
     }
-    otherwise ready sysz.platform_is_windows() {
+    highkey lowkey sysz.platform_is_windows() {
         fr fr Windows: Use CreateThread() API
         worker.os_thread_handle = sysz.windows_create_thread(
             production_worker_thread_main,
@@ -162,7 +162,7 @@ slay create_production_worker_thread(worker_id normie, cpu_affinity normie) *Pro
             0  // Default creation flags
         )
     }
-    otherwise ready sysz.platform_is_darwin() {
+    highkey lowkey sysz.platform_is_darwin() {
         fr fr macOS: Use pthread_create()
         worker.os_thread_handle = sysz.darwin_pthread_create(
             production_worker_thread_main,
@@ -171,7 +171,7 @@ slay create_production_worker_thread(worker_id normie, cpu_affinity normie) *Pro
     }
     
     fr fr Set CPU affinity for worker thread
-    ready cpu_affinity >= 0 {
+    lowkey cpu_affinity >= 0 {
         sysz.set_thread_affinity(worker.os_thread_handle, cpu_affinity)
     }
     
@@ -185,7 +185,7 @@ slay production_worker_thread_main(worker_data thicc) normie {
     sus idle_start_time thicc = 0
     sus consecutive_steals normie = 0
     
-    ready scheduler == 0 {
+    lowkey scheduler == 0 {
         damn 1  // Error: no scheduler
     }
     
@@ -198,20 +198,20 @@ slay production_worker_thread_main(worker_data thicc) normie {
         
         fr fr Try to get work from local queue first (cache-friendly)
         sus local_task thicc = dequeue_production_work(&worker.local_queue)
-        ready local_task != 0 {
+        lowkey local_task != 0 {
             execute_production_goroutine(worker, local_task)
             found_work = based
             consecutive_steals = 0
         }
-        otherwise {
+        highkey {
             fr fr No local work - attempt work stealing
-            ready scheduler.load_balancer_enabled {
+            lowkey scheduler.load_balancer_enabled {
                 sus target_worker_id normie = (worker.worker_id + 1 + consecutive_steals) % scheduler.num_workers
                 sus target_worker *ProductionWorkerThread = &scheduler.worker_threads[target_worker_id]
                 
-                ready target_worker_id != worker.worker_id {
+                lowkey target_worker_id != worker.worker_id {
                     sus stolen_task thicc = steal_production_work(&target_worker.local_queue)
-                    ready stolen_task != 0 {
+                    lowkey stolen_task != 0 {
                         execute_production_goroutine(worker, stolen_task)
                         worker.total_stolen = worker.total_stolen + 1
                         atomic_drip.atomic_add_i64(&scheduler.performance_stats.total_work_steals, 1, RELAXED)
@@ -222,9 +222,9 @@ slay production_worker_thread_main(worker_data thicc) normie {
             }
             
             fr fr Still no work - check global queue
-            ready found_work == cap {
+            lowkey found_work == cap {
                 sus global_task thicc = dequeue_production_work(&scheduler.global_queue)
-                ready global_task != 0 {
+                lowkey global_task != 0 {
                     execute_production_goroutine(worker, global_task)
                     found_work = based
                     consecutive_steals = 0
@@ -232,25 +232,25 @@ slay production_worker_thread_main(worker_data thicc) normie {
             }
         }
         
-        ready found_work == cap {
+        lowkey found_work == cap {
             fr fr No work available - enter idle state with backoff
-            ready idle_start_time == 0 {
+            lowkey idle_start_time == 0 {
                 idle_start_time = start_time
             }
             
             fr fr Exponential backoff idle strategy
             sus idle_duration normie = consecutive_steals * 1000  // Microseconds
-            ready idle_duration < 10000 {  // Max 10ms idle
+            lowkey idle_duration < 10000 {  // Max 10ms idle
                 sysz.microsleep(idle_duration)
-            } otherwise {
+            } highkey {
                 fr fr Long idle - yield CPU to OS scheduler
                 sysz.sched_yield()
             }
             
             consecutive_steals = consecutive_steals + 1
-        } otherwise {
+        } highkey {
             fr fr Found work - reset idle tracking
-            ready idle_start_time != 0 {
+            lowkey idle_start_time != 0 {
                 worker.idle_time_ns = worker.idle_time_ns + (start_time - idle_start_time)
                 idle_start_time = 0
             }
@@ -266,34 +266,34 @@ fr fr ==========================================================================
 
 fr fr Save complete CPU context to memory (platform-specific assembly)
 slay save_production_cpu_context(goroutine *ProductionGoroutine) {
-    ready sysz.platform_is_x86_64() {
+    lowkey sysz.platform_is_x86_64() {
         fr fr x86-64 register save sequence
         sysz.asm_save_x86_64_context(&goroutine.cpu_context)
     }
-    otherwise ready sysz.platform_is_aarch64() {
+    highkey lowkey sysz.platform_is_aarch64() {
         fr fr ARM64 register save sequence  
         sysz.asm_save_aarch64_context(&goroutine.cpu_context)
     }
-    otherwise ready sysz.platform_is_x86() {
+    highkey lowkey sysz.platform_is_x86() {
         fr fr x86-32 register save sequence
         sysz.asm_save_x86_context(&goroutine.cpu_context)
     }
-    otherwise {
+    highkey {
         vibez.spill("🚨 FATAL: Unsupported CPU architecture for context switching")
     }
 }
 
 fr fr Restore complete CPU context from memory (platform-specific assembly)
 slay restore_production_cpu_context(goroutine *ProductionGoroutine) {
-    ready sysz.platform_is_x86_64() {
+    lowkey sysz.platform_is_x86_64() {
         fr fr x86-64 register restore sequence
         sysz.asm_restore_x86_64_context(&goroutine.cpu_context)
     }
-    otherwise ready sysz.platform_is_aarch64() {
+    highkey lowkey sysz.platform_is_aarch64() {
         fr fr ARM64 register restore sequence
         sysz.asm_restore_aarch64_context(&goroutine.cpu_context)
     }
-    otherwise ready sysz.platform_is_x86() {
+    highkey lowkey sysz.platform_is_x86() {
         fr fr x86-32 register restore sequence
         sysz.asm_restore_x86_context(&goroutine.cpu_context)
     }
@@ -301,14 +301,14 @@ slay restore_production_cpu_context(goroutine *ProductionGoroutine) {
 
 fr fr Perform atomic context switch between goroutines
 slay production_context_switch(from_goroutine *ProductionGoroutine, to_goroutine *ProductionGoroutine) {
-    ready from_goroutine == 0 || to_goroutine == 0 {
+    lowkey from_goroutine == 0 || to_goroutine == 0 {
         damn
     }
     
     sus switch_start_time thicc = sysz.get_monotonic_time_ns()
     
     fr fr Save current goroutine state
-    ready from_goroutine.state == 1 {  // GOROUTINE_RUNNING
+    lowkey from_goroutine.state == 1 {  // GOROUTINE_RUNNING
         from_goroutine.state = 3  // GOROUTINE_YIELDED
         save_production_cpu_context(from_goroutine)
         from_goroutine.context_switches = from_goroutine.context_switches + 1
@@ -323,7 +323,7 @@ slay production_context_switch(from_goroutine *ProductionGoroutine, to_goroutine
     sus switch_end_time thicc = sysz.get_monotonic_time_ns()
     sus switch_duration thicc = switch_end_time - switch_start_time
     
-    ready global_production_scheduler != 0 {
+    lowkey global_production_scheduler != 0 {
         atomic_drip.atomic_add_i64(&global_production_scheduler.performance_stats.total_context_switches, 1, RELAXED)
         atomic_drip.atomic_add_i64(&global_production_scheduler.performance_stats.scheduler_overhead_ns, switch_duration, RELAXED)
     }
@@ -335,22 +335,22 @@ fr fr ==========================================================================
 
 fr fr Allocate goroutine with stack overflow protection
 slay allocate_production_goroutine(stack_size normie, priority normie) *ProductionGoroutine {
-    ready stack_size < 8192 {
+    lowkey stack_size < 8192 {
         stack_size = 8192  // Minimum 8KB stack
     }
-    ready stack_size > 1048576 {
+    lowkey stack_size > 1048576 {
         stack_size = 1048576  // Maximum 1MB stack
     }
     
     sus goroutine *ProductionGoroutine = memory.allocate(ProductionGoroutine)
-    ready goroutine == 0 {
+    lowkey goroutine == 0 {
         damn 0
     }
     
     fr fr Allocate stack with guard pages
     sus total_size normie = stack_size + 8192  // Stack + 2 guard pages
     goroutine.stack_memory = sysz.allocate_virtual_memory(total_size, 1)  // READ|WRITE
-    ready goroutine.stack_memory == 0 {
+    lowkey goroutine.stack_memory == 0 {
         memory.free(goroutine)
         damn 0
     }
@@ -391,28 +391,28 @@ slay allocate_production_goroutine(stack_size normie, priority normie) *Producti
 
 fr fr Safely deallocate goroutine with cleanup
 slay deallocate_production_goroutine(goroutine *ProductionGoroutine) {
-    ready goroutine == 0 {
+    lowkey goroutine == 0 {
         damn
     }
     
     fr fr Ensure goroutine is not running
-    ready goroutine.state == 1 {  // GOROUTINE_RUNNING
+    lowkey goroutine.state == 1 {  // GOROUTINE_RUNNING
         vibez.spill("🚨 FATAL: Attempting to deallocate running goroutine:", goroutine.id)
         damn
     }
     
     fr fr Free stack memory with guard pages
-    ready goroutine.stack_memory != 0 {
+    lowkey goroutine.stack_memory != 0 {
         sysz.free_virtual_memory(goroutine.stack_memory, goroutine.stack_size + 8192)
     }
     
     fr fr Free goroutine-local storage if allocated
-    ready goroutine.local_storage != 0 {
+    lowkey goroutine.local_storage != 0 {
         memory.free(goroutine.local_storage)
     }
     
     fr fr Update scheduler statistics
-    ready global_production_scheduler != 0 {
+    lowkey global_production_scheduler != 0 {
         atomic_drip.atomic_sub_i32(&global_production_scheduler.active_goroutines, 1, RELEASE)
     }
     
@@ -425,13 +425,13 @@ fr fr ==========================================================================
 
 fr fr Initialize production work queue with proper synchronization
 slay init_production_work_queue(queue *ProductionWorkQueue, capacity normie) lit {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn cap
     }
     
     queue.tasks = memory.allocate_array(thicc, capacity)
     queue.task_data = memory.allocate_array(thicc, capacity)
-    ready queue.tasks == 0 || queue.task_data == 0 {
+    lowkey queue.tasks == 0 || queue.task_data == 0 {
         damn cap
     }
     
@@ -449,17 +449,17 @@ slay init_production_work_queue(queue *ProductionWorkQueue, capacity normie) lit
 
 fr fr Enqueue work with overflow handling
 slay enqueue_production_work(queue *ProductionWorkQueue, task_func thicc, task_data thicc) lit {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn cap
     }
     
     fr fr Fast path: try lock-free enqueue
     sus current_size normie = atomic_drip.atomic_load_i32(&queue.size, ACQUIRE)
-    ready current_size < queue.capacity {
+    lowkey current_size < queue.capacity {
         sus tail_pos normie = atomic_drip.atomic_load_i32(&queue.tail, ACQUIRE)
         sus new_tail normie = (tail_pos + 1) % queue.capacity
         
-        ready atomic_drip.compare_and_swap_i32(&queue.tail, tail_pos, new_tail, ACQREL) {
+        lowkey atomic_drip.compare_and_swap_i32(&queue.tail, tail_pos, new_tail, ACQREL) {
             queue.tasks[tail_pos] = task_func
             queue.task_data[tail_pos] = task_data
             atomic_drip.atomic_add_i32(&queue.size, 1, RELEASE)
@@ -471,7 +471,7 @@ slay enqueue_production_work(queue *ProductionWorkQueue, task_func thicc, task_d
     sync.production_mutex_lock(&queue.mutex)
     
     current_size = atomic_drip.atomic_load_i32(&queue.size, ACQUIRE)
-    ready current_size >= queue.capacity {
+    lowkey current_size >= queue.capacity {
         sync.production_mutex_unlock(&queue.mutex)
         atomic_drip.atomic_add_i32(&queue.contention_count, 1, RELAXED)
         damn cap  // Queue full
@@ -491,20 +491,20 @@ slay enqueue_production_work(queue *ProductionWorkQueue, task_func thicc, task_d
 
 fr fr Dequeue work (FIFO for local worker)
 slay dequeue_production_work(queue *ProductionWorkQueue) thicc {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn 0
     }
     
     fr fr Fast path: try lock-free dequeue
     sus current_size normie = atomic_drip.atomic_load_i32(&queue.size, ACQUIRE)
-    ready current_size == 0 {
+    lowkey current_size == 0 {
         damn 0  // Queue empty
     }
     
     sus head_pos normie = atomic_drip.atomic_load_i32(&queue.head, ACQUIRE)
     sus new_head normie = (head_pos + 1) % queue.capacity
     
-    ready atomic_drip.compare_and_swap_i32(&queue.head, head_pos, new_head, ACQREL) {
+    lowkey atomic_drip.compare_and_swap_i32(&queue.head, head_pos, new_head, ACQREL) {
         sus task_func thicc = queue.tasks[head_pos]
         atomic_drip.atomic_sub_i32(&queue.size, 1, RELEASE)
         damn task_func
@@ -514,7 +514,7 @@ slay dequeue_production_work(queue *ProductionWorkQueue) thicc {
     sync.production_mutex_lock(&queue.mutex)
     
     current_size = atomic_drip.atomic_load_i32(&queue.size, ACQUIRE)
-    ready current_size == 0 {
+    lowkey current_size == 0 {
         sync.production_mutex_unlock(&queue.mutex)
         damn 0
     }
@@ -532,7 +532,7 @@ slay dequeue_production_work(queue *ProductionWorkQueue) thicc {
 
 fr fr Steal work (LIFO from tail for work stealing)
 slay steal_production_work(queue *ProductionWorkQueue) thicc {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn 0
     }
     
@@ -543,16 +543,16 @@ slay steal_production_work(queue *ProductionWorkQueue) thicc {
     sus start_time thicc = sysz.get_monotonic_time_ns()
     
     bestie sysz.get_monotonic_time_ns() - start_time < steal_timeout * 1000 {
-        ready sync.production_mutex_trylock(&queue.mutex) {
+        lowkey sync.production_mutex_trylock(&queue.mutex) {
             sus current_size normie = atomic_drip.atomic_load_i32(&queue.size, ACQUIRE)
-            ready current_size == 0 {
+            lowkey current_size == 0 {
                 sync.production_mutex_unlock(&queue.mutex)
                 damn 0
             }
             
             fr fr Steal from tail (most recent work)
             sus tail_pos normie = atomic_drip.atomic_load_i32(&queue.tail, RELAXED)
-            sus steal_pos normie = ready tail_pos == 0 { queue.capacity - 1 } otherwise { tail_pos - 1 }
+            sus steal_pos normie = lowkey tail_pos == 0 { queue.capacity - 1 } highkey { tail_pos - 1 }
             
             sus task_func thicc = queue.tasks[steal_pos]
             atomic_drip.atomic_store_i32(&queue.tail, steal_pos, RELEASE)
@@ -576,17 +576,17 @@ fr fr ==========================================================================
 
 fr fr Initialize production scheduler with detected CPU count
 slay init_production_scheduler(worker_count normie) lit {
-    ready global_production_scheduler != 0 {
+    lowkey global_production_scheduler != 0 {
         damn based  // Already initialized
     }
     
     sus cpu_count normie = sync.get_cpu_count()
-    ready worker_count == 0 || worker_count > cpu_count * 4 {
+    lowkey worker_count == 0 || worker_count > cpu_count * 4 {
         worker_count = cpu_count  // Use CPU count as default
     }
     
     sus scheduler *ProductionScheduler = memory.allocate(ProductionScheduler)
-    ready scheduler == 0 {
+    lowkey scheduler == 0 {
         damn cap
     }
     
@@ -605,7 +605,7 @@ slay init_production_scheduler(worker_count normie) lit {
     
     fr fr Allocate and initialize worker threads
     scheduler.worker_threads = memory.allocate_array(ProductionWorkerThread, worker_count)
-    ready scheduler.worker_threads == 0 {
+    lowkey scheduler.worker_threads == 0 {
         memory.free(scheduler)
         damn cap
     }
@@ -643,8 +643,8 @@ fr fr ==========================================================================
 
 fr fr Production stan function - spawn goroutine with work-stealing scheduler
 slay stan_production(task_function thicc, context_data thicc) thicc {
-    ready global_production_scheduler == 0 {
-        ready init_production_scheduler(0) == cap {
+    lowkey global_production_scheduler == 0 {
+        lowkey init_production_scheduler(0) == cap {
             damn 0  // Failed to initialize scheduler
         }
     }
@@ -653,14 +653,14 @@ slay stan_production(task_function thicc, context_data thicc) thicc {
     
     fr fr Check goroutine limits
     sus current_count normie = atomic_drip.atomic_load_i32(&scheduler.active_goroutines, ACQUIRE)
-    ready current_count >= 10000 {  // Safety limit
+    lowkey current_count >= 10000 {  // Safety limit
         vibez.spill("🚨 Maximum goroutine limit reached")
         damn 0
     }
     
     fr fr Create production goroutine
     sus goroutine *ProductionGoroutine = allocate_production_goroutine(8192, 128)
-    ready goroutine == 0 {
+    lowkey goroutine == 0 {
         damn 0
     }
     
@@ -675,7 +675,7 @@ slay stan_production(task_function thicc, context_data thicc) thicc {
     sus i normie = 0
     bestie i < scheduler.num_workers {
         sus queue_size normie = atomic_drip.atomic_load_i32(&scheduler.worker_threads[i].local_queue.size, ACQUIRE)
-        ready queue_size < min_queue_size {
+        lowkey queue_size < min_queue_size {
             min_queue_size = queue_size
             best_worker_id = i
         }
@@ -684,9 +684,9 @@ slay stan_production(task_function thicc, context_data thicc) thicc {
     
     fr fr Enqueue goroutine to best worker or global queue
     sus target_worker *ProductionWorkerThread = &scheduler.worker_threads[best_worker_id]
-    ready enqueue_production_work(&target_worker.local_queue, task_function, context_data) == cap {
+    lowkey enqueue_production_work(&target_worker.local_queue, task_function, context_data) == cap {
         fr fr Local queue full, try global queue
-        ready enqueue_production_work(&scheduler.global_queue, task_function, context_data) == cap {
+        lowkey enqueue_production_work(&scheduler.global_queue, task_function, context_data) == cap {
             fr fr Both queues full - cleanup and fail
             deallocate_production_goroutine(goroutine)
             damn 0
@@ -698,14 +698,14 @@ slay stan_production(task_function thicc, context_data thicc) thicc {
 
 fr fr Production stan with custom stack size
 slay stan_production_stack(task_function thicc, context_data thicc, stack_size normie) thicc {
-    ready global_production_scheduler == 0 {
-        ready init_production_scheduler(0) == cap {
+    lowkey global_production_scheduler == 0 {
+        lowkey init_production_scheduler(0) == cap {
             damn 0
         }
     }
     
     sus goroutine *ProductionGoroutine = allocate_production_goroutine(stack_size, 128)
-    ready goroutine == 0 {
+    lowkey goroutine == 0 {
         damn 0
     }
     
@@ -715,14 +715,14 @@ slay stan_production_stack(task_function thicc, context_data thicc, stack_size n
 
 fr fr Production stan with priority
 slay stan_production_priority(task_function thicc, context_data thicc, priority normie) thicc {
-    ready global_production_scheduler == 0 {
-        ready init_production_scheduler(0) == cap {
+    lowkey global_production_scheduler == 0 {
+        lowkey init_production_scheduler(0) == cap {
             damn 0
         }
     }
     
     sus goroutine *ProductionGoroutine = allocate_production_goroutine(8192, priority)
-    ready goroutine == 0 {
+    lowkey goroutine == 0 {
         damn 0
     }
     
@@ -736,7 +736,7 @@ fr fr ==========================================================================
 
 fr fr Get detailed scheduler statistics
 slay get_production_scheduler_stats() *ProductionSchedulerStats {
-    ready global_production_scheduler == 0 {
+    lowkey global_production_scheduler == 0 {
         damn 0
     }
     
@@ -762,7 +762,7 @@ slay get_production_scheduler_stats() *ProductionSchedulerStats {
 
 fr fr Display production concurrency status
 slay production_concurrency_status() {
-    ready global_production_scheduler == 0 {
+    lowkey global_production_scheduler == 0 {
         vibez.spill("❌ Production scheduler not initialized")
         damn
     }
@@ -797,10 +797,10 @@ slay concurrency_production_init() lit {
     vibez.spill("Architecture:", sysz.get_cpu_architecture())
     
     fr fr Initialize scheduler with optimal worker count
-    ready init_production_scheduler(0) {
-        vibez.spill("✅ Production scheduler ready")
+    lowkey init_production_scheduler(0) {
+        vibez.spill("✅ Production scheduler lowkey")
         damn based
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Failed to initialize production scheduler")
         damn cap
     }
@@ -813,7 +813,7 @@ slay concurrency_production_version() tea {
 
 fr fr Shutdown production concurrency system
 slay concurrency_production_shutdown() {
-    ready global_production_scheduler == 0 {
+    lowkey global_production_scheduler == 0 {
         damn
     }
     

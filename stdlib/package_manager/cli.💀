@@ -40,7 +40,7 @@ squad CliCommand {
         vibez.spill("DESCRIPTION:")
         vibez.spill("    {}", self.description)
         
-        ready (len(self.flags) > 0) {
+        lowkey (len(self.flags) > 0) {
             vibez.spill("")
             vibez.spill("FLAGS:")
             sus i drip = 0
@@ -51,7 +51,7 @@ squad CliCommand {
             }
         }
         
-        ready (len(self.examples) > 0) {
+        lowkey (len(self.examples) > 0) {
             vibez.spill("")
             vibez.spill("EXAMPLES:")
             sus i drip = 0
@@ -94,19 +94,19 @@ squad CliFlag {
     
     slay printHelp(self CliFlag) {
         sus flags_str tea = ""
-        ready (self.short != "") {
+        lowkey (self.short != "") {
             flags_str = format_str("-{}", self.short)
         }
-        ready (self.long != "") {
-            ready (flags_str != "") { flags_str = concat_str(flags_str, ", ") }
+        lowkey (self.long != "") {
+            lowkey (flags_str != "") { flags_str = concat_str(flags_str, ", ") }
             flags_str = concat_str(flags_str, format_str("--{}", self.long))
         }
         
-        ready (self.has_value) {
+        lowkey (self.has_value) {
             flags_str = concat_str(flags_str, " <value>")
         }
         
-        sus required_marker tea = ready (self.required) { damn " (required)" } otherwise { damn "" }
+        sus required_marker tea = lowkey (self.required) { damn " (required)" } highkey { damn "" }
         vibez.spill("    {:<20} {}{}", flags_str, self.description, required_marker)
     }
 }
@@ -133,7 +133,7 @@ squad ParsedArgs {
         sus i drip = 0
         bestie (i < len(self.flags)) {
             sus flag ParsedFlag = self.flags[i]
-            ready (flag.name == flag_name) {
+            lowkey (flag.name == flag_name) {
                 damn based
             }
             i = i + 1
@@ -145,7 +145,7 @@ squad ParsedArgs {
         sus i drip = 0
         bestie (i < len(self.flags)) {
             sus flag ParsedFlag = self.flags[i]
-            ready (flag.name == flag_name) {
+            lowkey (flag.name == flag_name) {
                 damn flag.value
             }
             i = i + 1
@@ -364,7 +364,7 @@ squad PackageManagerCLI {
     slay parseArgs(self PackageManagerCLI, args tea[value]) ParsedArgs {
         sus parsed ParsedArgs = ParsedArgs.new()
         
-        ready (len(args) == 0) {
+        lowkey (len(args) == 0) {
             damn parsed
         }
         
@@ -375,19 +375,19 @@ squad PackageManagerCLI {
         bestie (i < len(args)) {
             sus arg tea = args[i]
             
-            ready (starts_with(arg, "--")) {
+            lowkey (starts_with(arg, "--")) {
                 // Long flag
                 sus flag_name tea = slice_str(arg, 2)
                 sus flag_value tea = ""
                 
                 // Check if flag has value (--flag=value)
                 sus eq_pos drip = find_str(flag_name, "=")
-                ready (eq_pos != -1) {
+                lowkey (eq_pos != -1) {
                     flag_value = slice_str(flag_name, eq_pos + 1)
                     flag_name = slice_str(flag_name, 0, eq_pos)
-                } otherwise {
+                } highkey {
                     // Check if next argument is the value
-                    ready (i + 1 < len(args) && !starts_with(args[i + 1], "-")) {
+                    lowkey (i + 1 < len(args) && !starts_with(args[i + 1], "-")) {
                         i = i + 1
                         flag_value = args[i]
                     }
@@ -396,13 +396,13 @@ squad PackageManagerCLI {
                 sus flag ParsedFlag = ParsedFlag.new(flag_name, flag_value)
                 parsed.flags = append_array(parsed.flags, flag)
                 
-            } otherwise ready (starts_with(arg, "-") && len(arg) > 1) {
+            } highkey lowkey (starts_with(arg, "-") && len(arg) > 1) {
                 // Short flag
                 sus flag_name tea = slice_str(arg, 1)
                 sus flag_value tea = ""
                 
                 // Check if next argument is the value
-                ready (i + 1 < len(args) && !starts_with(args[i + 1], "-")) {
+                lowkey (i + 1 < len(args) && !starts_with(args[i + 1], "-")) {
                     i = i + 1
                     flag_value = args[i]
                 }
@@ -410,11 +410,11 @@ squad PackageManagerCLI {
                 sus flag ParsedFlag = ParsedFlag.new(flag_name, flag_value)
                 parsed.flags = append_array(parsed.flags, flag)
                 
-            } otherwise {
+            } highkey {
                 // Positional argument
-                ready (parsed.subcommand == "" && i == 1) {
+                lowkey (parsed.subcommand == "" && i == 1) {
                     parsed.subcommand = arg
-                } otherwise {
+                } highkey {
                     parsed.positional = append_array(parsed.positional, arg)
                 }
             }
@@ -429,18 +429,18 @@ squad PackageManagerCLI {
         sus parsed ParsedArgs = self.parseArgs(args)
         
         // Handle global flags first
-        ready (parsed.hasFlag("help")) {
+        lowkey (parsed.hasFlag("help")) {
             self.printHelp(parsed.command)
             damn 0
         }
         
-        ready (parsed.hasFlag("version")) {
+        lowkey (parsed.hasFlag("version")) {
             self.printVersion()
             damn 0
         }
         
         // Handle empty command
-        ready (parsed.command == "") {
+        lowkey (parsed.command == "") {
             self.printGeneralHelp()
             damn 1
         }
@@ -450,46 +450,46 @@ squad PackageManagerCLI {
     }
     
     slay executeCommand(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Executing command: {}", args.command)
         }
         
         sus cmd tea = args.command
         
-        ready (cmd == "init") {
+        lowkey (cmd == "init") {
             damn self.handleInit(args)
         }
-        ready (cmd == "add") {
+        lowkey (cmd == "add") {
             damn self.handleAdd(args)
         }
-        ready (cmd == "remove") {
+        lowkey (cmd == "remove") {
             damn self.handleRemove(args)
         }
-        ready (cmd == "install") {
+        lowkey (cmd == "install") {
             damn self.handleInstall(args)
         }
-        ready (cmd == "update") {
+        lowkey (cmd == "update") {
             damn self.handleUpdate(args)
         }
-        ready (cmd == "search") {
+        lowkey (cmd == "search") {
             damn self.handleSearch(args)
         }
-        ready (cmd == "info") {
+        lowkey (cmd == "info") {
             damn self.handleInfo(args)
         }
-        ready (cmd == "list") {
+        lowkey (cmd == "list") {
             damn self.handleList(args)
         }
-        ready (cmd == "publish") {
+        lowkey (cmd == "publish") {
             damn self.handlePublish(args)
         }
-        ready (cmd == "login") {
+        lowkey (cmd == "login") {
             damn self.handleLogin(args)
         }
-        ready (cmd == "logout") {
+        lowkey (cmd == "logout") {
             damn self.handleLogout(args)
         }
-        ready (cmd == "clean") {
+        lowkey (cmd == "clean") {
             damn self.handleClean(args)
         }
         
@@ -500,32 +500,32 @@ squad PackageManagerCLI {
     
     // Command handlers
     slay handleInit(self PackageManagerCLI, args ParsedArgs) drip {
-        sus package_name tea = ready (len(args.positional) > 0) {
+        sus package_name tea = lowkey (len(args.positional) > 0) {
             damn args.positional[0]
-        } otherwise {
+        } highkey {
             damn get_current_dir_name()
         }
         
         sus version tea = args.getFlagValue("version")
-        ready (version == "") { version = "0.1.0" }
+        lowkey (version == "") { version = "0.1.0" }
         
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Initializing package '{}' version {}", package_name, version)
         }
         
         sus success lit = cmd_init(package_name, version)
         
-        ready (success) {
+        lowkey (success) {
             vibez.spill("Initialized package {} in {}", package_name, self.current_directory)
             damn 0
-        } otherwise {
+        } highkey {
             vibez.spill("Failed to initialize package")
             damn 1
         }
     }
     
     slay handleAdd(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (len(args.positional) == 0) {
+        lowkey (len(args.positional) == 0) {
             vibez.spill("Error: Package name required")
             vibez.spill("Usage: cursed-pkg add <package> [version]")
             damn 1
@@ -537,31 +537,31 @@ squad PackageManagerCLI {
         
         // Parse package@version syntax
         sus at_pos drip = find_str(package_spec, "@")
-        ready (at_pos != -1) {
+        lowkey (at_pos != -1) {
             package_name = slice_str(package_spec, 0, at_pos)
             version = slice_str(package_spec, at_pos + 1)
-        } otherwise ready (len(args.positional) > 1) {
+        } highkey lowkey (len(args.positional) > 1) {
             version = args.positional[1]
         }
         
         sus is_dev lit = args.hasFlag("dev")
         
-        ready (args.isVerbose()) {
-            sus dep_type tea = ready (is_dev) { damn "development dependency" } otherwise { damn "dependency" }
+        lowkey (args.isVerbose()) {
+            sus dep_type tea = lowkey (is_dev) { damn "development dependency" } highkey { damn "dependency" }
             vibez.spill("Adding {} {} version {}", dep_type, package_name, version)
         }
         
         sus success lit = cmd_add(package_name, version, is_dev)
         
-        ready (success) {
+        lowkey (success) {
             damn 0
-        } otherwise {
+        } highkey {
             damn 1
         }
     }
     
     slay handleRemove(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (len(args.positional) == 0) {
+        lowkey (len(args.positional) == 0) {
             vibez.spill("Error: Package name required")
             vibez.spill("Usage: cursed-pkg remove <package>")
             damn 1
@@ -569,40 +569,40 @@ squad PackageManagerCLI {
         
         sus package_name tea = args.positional[0]
         
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Removing package {}", package_name)
         }
         
         sus success lit = cmd_remove(package_name)
         
-        ready (success) {
+        lowkey (success) {
             damn 0
-        } otherwise {
+        } highkey {
             damn 1
         }
     }
     
     slay handleInstall(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Installing dependencies...")
         }
         
-        ready (args.isDryRun()) {
+        lowkey (args.isDryRun()) {
             vibez.spill("Dry run - would install dependencies")
             damn 0
         }
         
         sus success lit = cmd_install()
         
-        ready (success) {
+        lowkey (success) {
             damn 0
-        } otherwise {
+        } highkey {
             damn 1
         }
     }
     
     slay handleSearch(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (len(args.positional) == 0) {
+        lowkey (len(args.positional) == 0) {
             vibez.spill("Error: Search query required")
             vibez.spill("Usage: cursed-pkg search <query>")
             damn 1
@@ -610,7 +610,7 @@ squad PackageManagerCLI {
         
         sus query tea = args.positional[0]
         
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Searching for packages matching '{}'", query)
         }
         
@@ -619,7 +619,7 @@ squad PackageManagerCLI {
     }
     
     slay handleInfo(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (len(args.positional) == 0) {
+        lowkey (len(args.positional) == 0) {
             vibez.spill("Error: Package name required")
             vibez.spill("Usage: cursed-pkg info <package>")
             damn 1
@@ -627,7 +627,7 @@ squad PackageManagerCLI {
         
         sus package_name tea = args.positional[0]
         
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Getting information for package {}", package_name)
         }
         
@@ -639,29 +639,29 @@ squad PackageManagerCLI {
         )
         
         sus info PackageInfo = client.getPackageInfo(package_name)
-        ready (info.name != "") {
+        lowkey (info.name != "") {
             vibez.spill("Package: {}", info.name)
             vibez.spill("Version: {}", info.version.toString())
             vibez.spill("Description: {}", info.description)
             damn 0
-        } otherwise {
+        } highkey {
             vibez.spill("Package {} not found", package_name)
             damn 1
         }
     }
     
     slay handleList(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Listing installed packages...")
         }
         
         // Implementation would list packages from manifest and cache
         vibez.spill("Installed packages:")
         
-        ready (file_exists("package.💀")) {
+        lowkey (file_exists("package.💀")) {
             sus manifest PackageManifest = PackageManifest.loadFromFile("package.💀")
             
-            ready (len(manifest.dependencies) > 0) {
+            lowkey (len(manifest.dependencies) > 0) {
                 vibez.spill("\nDependencies:")
                 sus i drip = 0
                 bestie (i < len(manifest.dependencies)) {
@@ -671,7 +671,7 @@ squad PackageManagerCLI {
                 }
             }
             
-            ready (len(manifest.dev_dependencies) > 0 && !args.hasFlag("production")) {
+            lowkey (len(manifest.dev_dependencies) > 0 && !args.hasFlag("production")) {
                 vibez.spill("\nDevelopment dependencies:")
                 sus i drip = 0
                 bestie (i < len(manifest.dev_dependencies)) {
@@ -680,7 +680,7 @@ squad PackageManagerCLI {
                     i = i + 1
                 }
             }
-        } otherwise {
+        } highkey {
             vibez.spill("  (no package.💀 found)")
         }
         
@@ -688,32 +688,32 @@ squad PackageManagerCLI {
     }
     
     slay handlePublish(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (!file_exists("package.💀")) {
+        lowkey (!file_exists("package.💀")) {
             vibez.spill("Error: No package.💀 found in current directory")
             damn 1
         }
         
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Publishing package...")
         }
         
-        ready (args.isDryRun()) {
+        lowkey (args.isDryRun()) {
             vibez.spill("Dry run - would publish package")
             damn 0
         }
         
         sus success lit = cmd_publish()
         
-        ready (success) {
+        lowkey (success) {
             damn 0
-        } otherwise {
+        } highkey {
             damn 1
         }
     }
     
     slay handleLogin(self PackageManagerCLI, args ParsedArgs) drip {
         sus username tea = args.getFlagValue("username")
-        ready (username == "") {
+        lowkey (username == "") {
             vibez.spill("Username: ")
             username = read_line()
         }
@@ -722,17 +722,17 @@ squad PackageManagerCLI {
         sus password tea = read_password()
         
         sus registry_url tea = args.getFlagValue("registry")
-        ready (registry_url == "") {
+        lowkey (registry_url == "") {
             registry_url = "https://packages.cursed.dev/api/v1"
         }
         
         sus client PackageRegistryClient = PackageRegistryClient.new(registry_url, ".cursed/cache")
         sus success lit = client.authenticate(username, password)
         
-        ready (success) {
+        lowkey (success) {
             vibez.spill("Successfully logged in as {}", username)
             damn 0
-        } otherwise {
+        } highkey {
             vibez.spill("Login failed")
             damn 1
         }
@@ -740,25 +740,25 @@ squad PackageManagerCLI {
     
     slay handleLogout(self PackageManagerCLI, args ParsedArgs) drip {
         sus auth_file tea = ".cursed/cache/auth.txt"
-        ready (file_exists(auth_file)) {
+        lowkey (file_exists(auth_file)) {
             delete_file(auth_file)
             vibez.spill("Logged out successfully")
-        } otherwise {
+        } highkey {
             vibez.spill("Not currently logged in")
         }
         damn 0
     }
     
     slay handleClean(self PackageManagerCLI, args ParsedArgs) drip {
-        ready (args.isVerbose()) {
+        lowkey (args.isVerbose()) {
             vibez.spill("Cleaning package cache...")
         }
         
         sus cache_dir tea = ".cursed/cache"
-        ready (dir_exists(cache_dir)) {
+        lowkey (dir_exists(cache_dir)) {
             delete_dir_recursive(cache_dir)
             vibez.spill("Cache cleaned successfully")
-        } otherwise {
+        } highkey {
             vibez.spill("No cache to clean")
         }
         
@@ -797,7 +797,7 @@ squad PackageManagerCLI {
     }
     
     slay printHelp(self PackageManagerCLI, command_name tea) {
-        ready (command_name == "") {
+        lowkey (command_name == "") {
             self.printGeneralHelp()
             damn
         }
@@ -805,7 +805,7 @@ squad PackageManagerCLI {
         sus i drip = 0
         bestie (i < len(self.commands)) {
             sus cmd CliCommand = self.commands[i]
-            ready (cmd.name == command_name) {
+            lowkey (cmd.name == command_name) {
                 cmd.printHelp()
                 damn
             }
@@ -831,7 +831,7 @@ slay get_current_dir() tea {
 slay get_current_dir_name() tea {
     sus full_path tea = get_current_dir()
     sus parts tea[value] = split_str(full_path, "/")
-    ready (len(parts) > 0) {
+    lowkey (len(parts) > 0) {
         damn parts[len(parts) - 1]
     }
     damn "my-package"

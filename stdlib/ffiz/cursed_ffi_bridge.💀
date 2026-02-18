@@ -117,7 +117,7 @@ slay initialize_type_mappings(bridge FFIBridge) vibes {
 
 // Register external library
 slay register_library(bridge FFIBridge, library_name tea) ExternLibrary yikes FFIError {
-    ready bridge.libraries.contains(library_name) {
+    lowkey bridge.libraries.contains(library_name) {
         damn bridge.libraries[library_name]
     }
     
@@ -134,7 +134,7 @@ slay register_library(bridge FFIBridge, library_name tea) ExternLibrary yikes FF
 
 // Load external library dynamically
 slay load_library(library ExternLibrary) FFIError yikes vibes {
-    ready library.loaded {
+    lowkey library.loaded {
         damn // Already loaded
     }
     
@@ -159,7 +159,7 @@ slay declare_extern_function(library ExternLibrary, signature CABISignature) FFI
 
 // Resolve function pointer from loaded library
 slay resolve_function(library ExternLibrary, func_name tea) FFIError yikes drip {
-    ready !library.loaded {
+    lowkey !library.loaded {
         load_library(library) yikes shook
     }
     
@@ -168,7 +168,7 @@ slay resolve_function(library ExternLibrary, func_name tea) FFIError yikes drip 
     }
     
     // Update function entry
-    ready library.functions.contains(func_name) {
+    lowkey library.functions.contains(func_name) {
         library.functions[func_name].function_ptr = func_ptr
     }
     
@@ -181,7 +181,7 @@ slay parse_extern_declaration(bridge FFIBridge, decl_text tea) FFIError yikes CA
     // extern "C" int add(int a, int b);
     
     sus tokens tea[value] = tokenize_declaration(decl_text)
-    ready tokens.length < 4 {
+    lowkey tokens.length < 4 {
         yikes FFIError.InvalidSignature
     }
     
@@ -195,30 +195,30 @@ slay parse_extern_declaration(bridge FFIBridge, decl_text tea) FFIError yikes CA
     sus token_index normie = 0
     
     // Skip "extern"
-    ready tokens[token_index] == "extern" {
+    lowkey tokens[token_index] == "extern" {
         token_index = token_index + 1
     }
     
     // Parse ABI
-    ready token_index < tokens.length {
+    lowkey token_index < tokens.length {
         sus abi tea = tokens[token_index]
-        ready abi == "\"C\"" {
+        lowkey abi == "\"C\"" {
             signature.calling_convention = CallingConvention.C
-        } otherwise ready abi == "\"stdcall\"" {
+        } highkey lowkey abi == "\"stdcall\"" {
             signature.calling_convention = CallingConvention.Stdcall
         }
         token_index = token_index + 1
     }
     
     // Parse return type
-    ready token_index < tokens.length {
+    lowkey token_index < tokens.length {
         sus return_type_str tea = tokens[token_index]
         signature.return_type = parse_c_type(bridge, return_type_str)
         token_index = token_index + 1
     }
     
     // Parse function name
-    ready token_index < tokens.length {
+    lowkey token_index < tokens.length {
         signature.name = tokens[token_index]
         token_index = token_index + 1
     }
@@ -243,7 +243,7 @@ slay parse_extern_declaration(bridge FFIBridge, decl_text tea) FFIError yikes CA
 // Parse C type string to CABIType
 slay parse_c_type(bridge FFIBridge, type_str tea) CABIType {
     // Check enum mappings first
-    ready bridge.enum_mappings.contains(type_str) {
+    lowkey bridge.enum_mappings.contains(type_str) {
         damn bridge.enum_mappings[type_str]
     }
     
@@ -264,14 +264,14 @@ slay parse_c_type(bridge FFIBridge, type_str tea) CABIType {
         when "unsigned long long" -> damn CABIType.UInt64
         when "float" -> damn CABIType.Float32
         when "double" -> damn CABIType.Float64
-        otherwise -> {
-            ready type_str.contains("*") {
-                ready type_str.contains("char*") {
+        highkey -> {
+            lowkey type_str.contains("*") {
+                lowkey type_str.contains("char*") {
                     damn CABIType.String
                 }
                 damn CABIType.Pointer
             }
-            ready type_str.starts_with("enum ") {
+            lowkey type_str.starts_with("enum ") {
                 damn CABIType.EnumInt32 // Default enum size
             }
             damn CABIType.Int32 // Default fallback
@@ -288,7 +288,7 @@ slay generate_wrapper(bridge FFIBridge, signature CABISignature, library_name te
     
     // Generate parameters
     bestie i normie in 0..signature.parameters.length {
-        ready i > 0 {
+        lowkey i > 0 {
             wrapper = wrapper + ", "
         }
         sus param CABIParameter = signature.parameters[i]
@@ -297,18 +297,18 @@ slay generate_wrapper(bridge FFIBridge, signature CABISignature, library_name te
     }
     
     sus return_type tea = c_type_to_cursed_type(signature.return_type)
-    ready return_type == "vibes" {
+    lowkey return_type == "vibes" {
         wrapper = wrapper + ") vibes {\n"
-    } otherwise {
+    } highkey {
         wrapper = wrapper + ") " + return_type + " {\n"
     }
     
     // Generate FFI call
     wrapper = wrapper + "    // FFI call to " + library_name + "." + signature.name + "\n"
     
-    ready signature.return_type != CABIType.Void {
+    lowkey signature.return_type != CABIType.Void {
         wrapper = wrapper + "    sus result " + return_type + " = "
-    } otherwise {
+    } highkey {
         wrapper = wrapper + "    "
     }
     
@@ -320,7 +320,7 @@ slay generate_wrapper(bridge FFIBridge, signature CABISignature, library_name te
     
     wrapper = wrapper + ")\n"
     
-    ready signature.return_type != CABIType.Void {
+    lowkey signature.return_type != CABIType.Void {
         wrapper = wrapper + "    damn result\n"
     }
     
@@ -355,7 +355,7 @@ slay c_type_to_cursed_type(c_type CABIType) tea {
         when CABIType.EnumUInt16 -> damn "smol"
         when CABIType.EnumUInt32 -> damn "normie"
         when CABIType.EnumUInt64 -> damn "drip"
-        otherwise -> damn "vibes"
+        highkey -> damn "vibes"
     }
 }
 
@@ -371,11 +371,11 @@ slay cursed_type_to_c_type(cursed_type tea) tea {
         when "meal" -> damn "double"
         when "tea" -> damn "const char*"
         when "vibes" -> damn "void"
-        otherwise -> {
-            ready cursed_type.starts_with("*") {
+        highkey -> {
+            lowkey cursed_type.starts_with("*") {
                 damn "void*"
             }
-            ready cursed_type.starts_with("[]") {
+            lowkey cursed_type.starts_with("[]") {
                 damn "void*" // Arrays passed as pointers
             }
             damn "void*"
@@ -403,7 +403,7 @@ slay generate_c_header(bridge FFIBridge, cursed_functions tea[value]) tea {
         header = header + c_return_type + " cursed_" + signature.name + "("
         
         bestie i normie in 0..signature.parameters.length {
-            ready i > 0 {
+            lowkey i > 0 {
                 header = header + ", "
             }
             sus param CABIParameter = signature.parameters[i]
@@ -447,7 +447,7 @@ slay c_type_to_c_string(c_type CABIType) tea {
         when CABIType.EnumUInt16 -> damn "unsigned short"
         when CABIType.EnumUInt32 -> damn "unsigned int"
         when CABIType.EnumUInt64 -> damn "unsigned long long"
-        otherwise -> damn "void*"
+        highkey -> damn "void*"
     }
 }
 
@@ -462,13 +462,13 @@ slay generate_ffi_runtime(bridge FFIBridge) tea {
     runtime = runtime + "slay cursed_ffi_call(library_name tea, function_name tea, ...args) tea {\n"
     runtime = runtime + "    // Load library if not already loaded\n"
     runtime = runtime + "    sus lib_handle drip = load_dynamic_library(library_name)\n"
-    runtime = runtime + "    ready lib_handle == 0 {\n"
+    runtime = runtime + "    lowkey lib_handle == 0 {\n"
     runtime = runtime + "        damn \"ERROR: Could not load library \" + library_name\n"
     runtime = runtime + "    }\n\n"
     
     runtime = runtime + "    // Get function pointer\n"
     runtime = runtime + "    sus func_ptr drip = get_function_symbol(lib_handle, function_name)\n"
-    runtime = runtime + "    ready func_ptr == 0 {\n"
+    runtime = runtime + "    lowkey func_ptr == 0 {\n"
     runtime = runtime + "        damn \"ERROR: Could not find function \" + function_name\n"
     runtime = runtime + "    }\n\n"
     
@@ -486,18 +486,18 @@ slay parse_extern_block(bridge FFIBridge, block_text tea) FFIError yikes vibes {
     
     bestie line tea in lines {
         sus trimmed tea = line.trim()
-        ready trimmed.length == 0 || trimmed.starts_with("//") {
+        lowkey trimmed.length == 0 || trimmed.starts_with("//") {
             continue // Skip empty lines and comments
         }
         
-        ready trimmed.starts_with("library") {
+        lowkey trimmed.starts_with("library") {
             // Parse library declaration: library "libname"
             current_library = parse_library_declaration(trimmed) fam {
                 when _ -> yikes FFIError.InvalidSignature
             }
-        } otherwise ready trimmed.starts_with("extern") {
+        } highkey lowkey trimmed.starts_with("extern") {
             // Parse extern function: extern "C" int func(int x);
-            ready current_library != null {
+            lowkey current_library != null {
                 sus signature CABISignature = parse_extern_declaration(bridge, trimmed) yikes shook
                 sus library ExternLibrary = register_library(bridge, current_library?) yikes shook
                 declare_extern_function(library, signature) yikes shook
@@ -516,7 +516,7 @@ slay parse_library_declaration(line tea) tea yikes FFIError {
         when _ -> yikes FFIError.InvalidSignature
     }
     
-    ready start_quote >= end_quote {
+    lowkey start_quote >= end_quote {
         yikes FFIError.InvalidSignature
     }
     
@@ -603,17 +603,17 @@ slay tokenize_declaration(decl tea) tea[value]{
     sus current_token tea = ""
     
     bestie ch smol in decl {
-        ready ch == ' ' || ch == '\t' || ch == '(' || ch == ')' || ch == ',' || ch == ';' {
-            ready current_token.length > 0 {
+        lowkey ch == ' ' || ch == '\t' || ch == '(' || ch == ')' || ch == ',' || ch == ';' {
+            lowkey current_token.length > 0 {
                 tokens.append(current_token)
                 current_token = ""
             }
-        } otherwise {
+        } highkey {
             current_token = current_token + ch.to_string()
         }
     }
     
-    ready current_token.length > 0 {
+    lowkey current_token.length > 0 {
         tokens.append(current_token)
     }
     
@@ -706,7 +706,7 @@ slay example_ffi_usage() vibes {
             vibez.spill("Math library not found")
             damn
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("Failed to load math library")
             damn
         }

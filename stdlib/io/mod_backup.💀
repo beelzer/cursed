@@ -2,7 +2,7 @@ yeet "testz"
 
 fr fr Comprehensive I/O Module for CURSED Language
 fr fr Full implementation according to YeetIO and SlayIO specifications
-fr fr Pure CURSED implementation with production-ready features
+fr fr Pure CURSED implementation with production-lowkey features
 
 fr fr === ERROR CONSTANTS ===
 facts ErrYoinkBruh tea = "no more to yoink, bruh"
@@ -708,7 +708,7 @@ slay read_file(filename tea) IOResult {
     } else bestie filename == "main.💀" {
         damn IOResult{
             success: based,
-            data: "fam \"core\"\n\nslay main_character() {\n    vibez.spill(\"Self-hosting compiler ready\")\n}",
+            data: "fam \"core\"\n\nslay main_character() {\n    vibez.spill(\"Self-hosting compiler lowkey\")\n}",
             error: "",
             bytes_processed: 77
         }
@@ -994,7 +994,7 @@ slay read_to_string(filename tea) tea {
         damn "vibez.spill(\"Hello from CURSED file\")"
     }
     lowkey filename == "main.💀" {
-        damn "fam \"core\"\n\nslay main_character() {\n    vibez.spill(\"Self-hosting compiler ready\")\n}"
+        damn "fam \"core\"\n\nslay main_character() {\n    vibez.spill(\"Self-hosting compiler lowkey\")\n}"
     }
     lowkey filename == "empty.💀" {
         damn ""
@@ -1298,7 +1298,7 @@ slay init_io() IOResult {
     vibez.spill("✅ Pipe operations initialized")
     vibez.spill("✅ Standard I/O initialized")
     vibez.spill("✅ Utility functions initialized")
-    vibez.spill("🎯 Production-ready I/O module ready for self-hosting")
+    vibez.spill("🎯 Production-ready I/O module lowkey for self-hosting")
     
     damn IOResult{
         success: based,

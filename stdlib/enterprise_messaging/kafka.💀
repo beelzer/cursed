@@ -121,7 +121,7 @@ squad Producer {
         producer.start_sender()
         
         // Initialize transactions if enabled
-        ready (producer_config.enable_transactions) {
+        lowkey (producer_config.enable_transactions) {
             producer.init_transactions() fam {
                 when err -> yikes "failed to initialize transactions: " + err
             }
@@ -132,7 +132,7 @@ squad Producer {
     
     slay send(message Message) yikes<RecordMetadata> {
         // Validate message
-        ready (len(message.topic) == 0) {
+        lowkey (len(message.topic) == 0) {
             yikes "topic cannot be empty"
         }
         
@@ -169,11 +169,11 @@ squad Producer {
     }
     
     slay begin_transaction() yikes<tea> {
-        ready (!self.producer_config.enable_transactions) {
+        lowkey (!self.producer_config.enable_transactions) {
             yikes "transactions not enabled"
         }
         
-        ready (self.in_transaction) {
+        lowkey (self.in_transaction) {
             yikes "transaction already in progress"
         }
         
@@ -186,7 +186,7 @@ squad Producer {
     }
     
     slay commit_transaction() yikes<tea> {
-        ready (!self.in_transaction) {
+        lowkey (!self.in_transaction) {
             yikes "no transaction in progress"
         }
         
@@ -204,7 +204,7 @@ squad Producer {
     }
     
     slay abort_transaction() yikes<tea> {
-        ready (!self.in_transaction) {
+        lowkey (!self.in_transaction) {
             yikes "no transaction in progress"
         }
         
@@ -247,7 +247,7 @@ squad Producer {
                 self.add_to_batch(message)
                 
                 // Check if we should send batch
-                ready (self.should_send_batch(message.topic)) {
+                lowkey (self.should_send_batch(message.topic)) {
                     self.send_batch(message.topic) fam {
                         when err -> {
                             vibez.spill("Failed to send batch:", err)
@@ -279,7 +279,7 @@ squad Producer {
             self.broker_connections[broker] = conn
         }
         
-        ready (len(self.broker_connections) == 0) {
+        lowkey (len(self.broker_connections) == 0) {
             yikes "failed to connect to any brokers"
         }
     }
@@ -374,7 +374,7 @@ squad Consumer {
         
         bestie (timez.now_millis() - start_time < timeout_ms) {
             // Send heartbeat if needed
-            ready (self.should_send_heartbeat()) {
+            lowkey (self.should_send_heartbeat()) {
                 self.send_heartbeat() fam {
                     when err -> {
                         vibez.spill("Heartbeat failed:", err)
@@ -395,20 +395,20 @@ squad Consumer {
                 messages = append(messages, partition_messages...)
                 
                 // Update position
-                ready (len(partition_messages) > 0) {
+                lowkey (len(partition_messages) > 0) {
                     sus last_message Message = partition_messages[len(partition_messages) - 1]
                     self.position[tp] = last_message.offset + 1
                 }
                 
                 // Check if we have enough messages
-                ready (len(messages) >= self.consumer_config.max_poll_records) {
+                lowkey (len(messages) >= self.consumer_config.max_poll_records) {
                     break
                 }
             }
             
             // Auto-commit offsets if enabled
-            ready (self.consumer_config.enable_auto_commit && len(messages) > 0) {
-                ready (self.should_auto_commit()) {
+            lowkey (self.consumer_config.enable_auto_commit && len(messages) > 0) {
+                lowkey (self.should_auto_commit()) {
                     self.commit_sync() fam {
                         when err -> {
                             vibez.spill("Auto-commit failed:", err)
@@ -419,7 +419,7 @@ squad Consumer {
             }
             
             // Break if we have messages or timeout
-            ready (len(messages) > 0) {
+            lowkey (len(messages) > 0) {
                 break
             }
             
@@ -452,7 +452,7 @@ squad Consumer {
                 when e -> e
             }
             
-            ready (callback != nil) {
+            lowkey (callback != nil) {
                 callback(self.committed_offsets, err)
             }
         }
@@ -489,7 +489,7 @@ squad Consumer {
             conn.close()
         }
         
-        ready (self.coordinator_connection != nil) {
+        lowkey (self.coordinator_connection != nil) {
             self.coordinator_connection.close()
         }
     }

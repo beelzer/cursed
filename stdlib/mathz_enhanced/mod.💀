@@ -12,34 +12,34 @@ sus LN2 drip = 693147180559945
 fr fr ===== BASIC ARITHMETIC (Extended) =====
 
 slay abs_normie(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -x
     }
     damn x
 }
 
 slay max_normie(a drip, b drip) drip {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b
 }
 
 slay min_normie(a drip, b drip) drip {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b
 }
 
 slay pow_int(base drip, exponent drip) drip {
-    ready (exponent == 0) {
+    lowkey (exponent == 0) {
         damn 1
     }
-    ready (exponent == 1) {
+    lowkey (exponent == 1) {
         damn base
     }
-    ready (exponent < 0) {
+    lowkey (exponent < 0) {
         damn 0  fr fr Simplified: no floating point division
     }
     
@@ -53,10 +53,10 @@ slay pow_int(base drip, exponent drip) drip {
 }
 
 slay sqrt_int(n drip) drip {
-    ready (n <= 0) {
+    lowkey (n <= 0) {
         damn 0
     }
-    ready (n == 1) {
+    lowkey (n == 1) {
         damn 1
     }
     
@@ -101,7 +101,7 @@ slay cos_radians(x drip) drip {
 
 slay tan_radians(x drip) drip {
     sus cos_val drip = cos_radians(x)
-    ready (cos_val == 0) {
+    lowkey (cos_val == 0) {
         damn 999999999  fr fr "Infinity" approximation
     }
     damn sin_radians(x) / cos_val
@@ -124,10 +124,10 @@ slay exp_approx(x drip) drip {
 }
 
 slay ln_approx(x drip) drip {
-    ready (x <= 0) {
+    lowkey (x <= 0) {
         damn -999999999  fr fr Negative infinity approximation
     }
-    ready (x == 1) {
+    lowkey (x == 1) {
         damn 0
     }
     
@@ -173,7 +173,7 @@ slay rand_int(min_val drip, max_val drip) drip {
 
 slay rand_bool() lit {
     sus val drip = rand() % 2
-    ready (val == 0) {
+    lowkey (val == 0) {
         damn cringe
     }
     damn based
@@ -208,7 +208,7 @@ slay std_dev_two(a drip, b drip) drip {
 fr fr ===== ADVANCED MATHEMATICAL FUNCTIONS =====
 
 slay gcd(a drip, b drip) drip {
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn a
     }
     damn gcd(b, a % b)
@@ -220,7 +220,7 @@ slay lcm(a drip, b drip) drip {
 }
 
 slay factorial(n drip) drip {
-    ready (n <= 1) {
+    lowkey (n <= 1) {
         damn 1
     }
     sus result drip = 1
@@ -233,7 +233,7 @@ slay factorial(n drip) drip {
 }
 
 slay fibonacci(n drip) drip {
-    ready (n <= 1) {
+    lowkey (n <= 1) {
         damn n
     }
     sus a drip = 0
@@ -249,20 +249,20 @@ slay fibonacci(n drip) drip {
 }
 
 slay is_prime(n drip) lit {
-    ready (n <= 1) {
+    lowkey (n <= 1) {
         damn cringe
     }
-    ready (n <= 3) {
+    lowkey (n <= 3) {
         damn based
     }
-    ready (n % 2 == 0) {
+    lowkey (n % 2 == 0) {
         damn cringe
     }
     
     sus i drip = 3
     sus sqrt_n drip = sqrt_int(n)
     bestie (i <= sqrt_n) {
-        ready (n % i == 0) {
+        lowkey (n % i == 0) {
             damn cringe
         }
         i = i + 2
@@ -281,20 +281,20 @@ slay next_prime(n drip) drip {
 fr fr ===== UTILITY FUNCTIONS =====
 
 slay clamp(value drip, min_val drip, max_val drip) drip {
-    ready (value < min_val) {
+    lowkey (value < min_val) {
         damn min_val
     }
-    ready (value > max_val) {
+    lowkey (value > max_val) {
         damn max_val
     }
     damn value
 }
 
 slay sign(x drip) drip {
-    ready (x > 0) {
+    lowkey (x > 0) {
         damn 1
     }
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -1
     }
     damn 0

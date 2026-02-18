@@ -291,7 +291,7 @@ slay example_api_key_encoding() {
     vibez.spill("Auth header: " + auth_header)
     
     fr fr Server validates the API key
-    ready string_starts_with(api_key_formatted, "ck_") {
+    lowkey string_starts_with(api_key_formatted, "ck_") {
         sus key_data tea = substring(api_key_formatted, 3, string_length(api_key_formatted))
         sus decoded_key tea = base64_decode_url_safe(key_data) fam {
             when err -> {
@@ -304,16 +304,16 @@ slay example_api_key_encoding() {
         
         fr fr Parse key components (simplified)
         sus key_parts tea[value] = split(decoded_key, ":")
-        ready array_length(key_parts) == 4 {
+        lowkey array_length(key_parts) == 4 {
             vibez.spill("User ID: " + key_parts[0])
             vibez.spill("Project ID: " + key_parts[1])
             vibez.spill("Permissions: " + key_parts[2])
             vibez.spill("Timestamp: " + key_parts[3])
             vibez.spill("✅ API key validation successful")
-        } otherwise {
+        } highkey {
             vibez.spill("❌ Invalid API key format")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Invalid API key prefix")
     }
     
@@ -399,7 +399,7 @@ slay example_data_export() {
         record = string_replace(record, "third_binary_image", base64_encode("fake_image_data_3"))
         
         json_export = json_export + "  " + record
-        ready i < array_length(records) - 1 {
+        lowkey i < array_length(records) - 1 {
             json_export = json_export + ","
         }
         json_export = json_export + "\n"
@@ -429,7 +429,7 @@ slay example_data_export() {
 fr fr ===== HELPER FUNCTIONS =====
 
 slay bool_to_string(value lit) tea {
-    ready value == based { damn "true" } otherwise { damn "false" }
+    lowkey value == based { damn "true" } highkey { damn "false" }
 }
 
 slay int_to_binary_string(value drip) tea {
@@ -441,7 +441,7 @@ slay string_index(s tea, substr tea) drip {
     fr fr Find index of substring
     sus i drip = 0
     bestie i <= string_length(s) - string_length(substr) {
-        ready substring(s, i, i + string_length(substr)) == substr {
+        lowkey substring(s, i, i + string_length(substr)) == substr {
             damn i
         }
         i = i + 1
@@ -453,7 +453,7 @@ slay string_index_from(s tea, char tea, start drip) drip {
     fr fr Find index of character from start position
     sus i drip = start
     bestie i < string_length(s) {
-        ready char_to_string(char_at(s, i)) == char {
+        lowkey char_to_string(char_at(s, i)) == char {
             damn i
         }
         i = i + 1
@@ -464,7 +464,7 @@ slay string_index_from(s tea, char tea, start drip) drip {
 slay string_replace(s tea, old_str tea, new_str tea) tea {
     fr fr Simple string replacement - replace with efficient implementation
     sus index drip = string_index(s, old_str)
-    ready index == -1 {
+    lowkey index == -1 {
         damn s
     }
     sus before tea = substring(s, 0, index)
@@ -473,7 +473,7 @@ slay string_replace(s tea, old_str tea, new_str tea) tea {
 }
 
 slay string_starts_with(s tea, prefix tea) lit {
-    ready string_length(prefix) > string_length(s) {
+    lowkey string_length(prefix) > string_length(s) {
         damn cap
     }
     damn substring(s, 0, string_length(prefix)) == prefix

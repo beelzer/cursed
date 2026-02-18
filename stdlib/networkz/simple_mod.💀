@@ -31,19 +31,19 @@ slay execute_simple_command(command tea) tea {
     fr fr Execute system command and return output
     fr fr Simulate real curl responses for testing
     
-    ready (str_contains(command, "httpbin.org/ip")) {
+    lowkey (str_contains(command, "httpbin.org/ip")) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"origin\": \"203.0.113.1\"}"
     }
     
-    ready (str_contains(command, "google.com")) {
+    lowkey (str_contains(command, "google.com")) {
         damn "HTTP/1.1 301 Moved Permanently\r\nLocation: https://www.google.com/\r\n\r\n<HTML><HEAD><TITLE>301 Moved</TITLE></HEAD></HTML>"
     }
     
-    ready (str_contains(command, "nonexistent") || str_contains(command, ".invalid")) {
+    lowkey (str_contains(command, "nonexistent") || str_contains(command, ".invalid")) {
         damn "curl: (6) Could not resolve host"
     }
     
-    ready (str_contains(command, "httpbin.org/post") && str_contains(command, "-d")) {
+    lowkey (str_contains(command, "httpbin.org/post") && str_contains(command, "-d")) {
         damn "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"data\": \"test data\", \"url\": \"httpbin.org/post\"}"
     }
     

@@ -28,11 +28,11 @@ slay archive_error(message tea) {
 
 # Create new archive
 slay create_archive(filename tea, format tea) yikes<tea> {
-    ready (filename == "") {
+    lowkey (filename == "") {
         yikes "filename cannot be empty"
     }
     
-    ready (format != ZIP_FORMAT && format != TAR_FORMAT && format != GZIP_FORMAT && format != BZIP2_FORMAT) {
+    lowkey (format != ZIP_FORMAT && format != TAR_FORMAT && format != GZIP_FORMAT && format != BZIP2_FORMAT) {
         yikes "unsupported format: " + format
     }
     
@@ -46,13 +46,13 @@ slay create_archive(filename tea, format tea) yikes<tea> {
 
 # Open existing archive
 slay open_archive(filename tea) yikes<tea> {
-    ready (filename == "") {
+    lowkey (filename == "") {
         yikes "filename cannot be empty"
     }
     
     # Detect format from extension
     sus detected_format tea = detect_format(filename)
-    ready (detected_format == "") {
+    lowkey (detected_format == "") {
         yikes "could not detect format for: " + filename
     }
     
@@ -66,7 +66,7 @@ slay open_archive(filename tea) yikes<tea> {
 
 # Close current archive
 slay close_archive() lit {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         damn cap
     }
     
@@ -79,16 +79,16 @@ slay close_archive() lit {
 
 # Detect archive format from filename
 slay detect_format(filename tea) tea {
-    ready (ends_with(filename, ".zip")) {
+    lowkey (ends_with(filename, ".zip")) {
         damn ZIP_FORMAT
     }
-    ready (ends_with(filename, ".tar")) {
+    lowkey (ends_with(filename, ".tar")) {
         damn TAR_FORMAT
     }
-    ready (ends_with(filename, ".gz") || ends_with(filename, ".gzip")) {
+    lowkey (ends_with(filename, ".gz") || ends_with(filename, ".gzip")) {
         damn GZIP_FORMAT
     }
-    ready (ends_with(filename, ".bz2") || ends_with(filename, ".bzip2")) {
+    lowkey (ends_with(filename, ".bz2") || ends_with(filename, ".bzip2")) {
         damn BZIP2_FORMAT
     }
     damn ""
@@ -99,7 +99,7 @@ slay ends_with(str tea, suffix tea) lit {
     sus str_len drip = len(str)
     sus suffix_len drip = len(suffix)
     
-    ready (suffix_len > str_len) {
+    lowkey (suffix_len > str_len) {
         damn cap
     }
     
@@ -110,30 +110,30 @@ slay ends_with(str tea, suffix tea) lit {
 
 # Add file to archive
 slay add_file(filepath tea, archive_path tea) yikes<tea> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
-    ready (filepath == "") {
+    lowkey (filepath == "") {
         yikes "filepath cannot be empty"
     }
     
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         archive_path = filepath  # Use original path if not specified
     }
     
     vibez.spill("Adding file: " + filepath + " -> " + archive_path)
     
     # Archive format specific handling
-    ready (archive_format == ZIP_FORMAT) {
+    lowkey (archive_format == ZIP_FORMAT) {
         add_file_zip(filepath, archive_path)
-    } otherwise ready (archive_format == TAR_FORMAT) {
+    } highkey lowkey (archive_format == TAR_FORMAT) {
         add_file_tar(filepath, archive_path)
-    } otherwise ready (archive_format == GZIP_FORMAT) {
+    } highkey lowkey (archive_format == GZIP_FORMAT) {
         add_file_gzip(filepath, archive_path)
-    } otherwise ready (archive_format == BZIP2_FORMAT) {
+    } highkey lowkey (archive_format == BZIP2_FORMAT) {
         add_file_bzip2(filepath, archive_path)
-    } otherwise {
+    } highkey {
         yikes "unsupported format for add_file: " + archive_format
     }
     
@@ -142,15 +142,15 @@ slay add_file(filepath tea, archive_path tea) yikes<tea> {
 
 # Add directory to archive
 slay add_directory(dirpath tea, archive_path tea) yikes<tea> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
-    ready (dirpath == "") {
+    lowkey (dirpath == "") {
         yikes "dirpath cannot be empty"
     }
     
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         archive_path = dirpath
     }
     
@@ -165,30 +165,30 @@ slay add_directory(dirpath tea, archive_path tea) yikes<tea> {
 
 # Extract file from archive
 slay extract_file(archive_path tea, output_path tea) yikes<tea> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
-    ready (archive_path == "") {
+    lowkey (archive_path == "") {
         yikes "archive_path cannot be empty"
     }
     
-    ready (output_path == "") {
+    lowkey (output_path == "") {
         output_path = archive_path
     }
     
     vibez.spill("Extracting file: " + archive_path + " -> " + output_path)
     
     # Archive format specific handling
-    ready (archive_format == ZIP_FORMAT) {
+    lowkey (archive_format == ZIP_FORMAT) {
         extract_file_zip(archive_path, output_path)
-    } otherwise ready (archive_format == TAR_FORMAT) {
+    } highkey lowkey (archive_format == TAR_FORMAT) {
         extract_file_tar(archive_path, output_path)  
-    } otherwise ready (archive_format == GZIP_FORMAT) {
+    } highkey lowkey (archive_format == GZIP_FORMAT) {
         extract_file_gzip(archive_path, output_path)
-    } otherwise ready (archive_format == BZIP2_FORMAT) {
+    } highkey lowkey (archive_format == BZIP2_FORMAT) {
         extract_file_bzip2(archive_path, output_path)
-    } otherwise {
+    } highkey {
         yikes "unsupported format for extract_file: " + archive_format
     }
     
@@ -197,11 +197,11 @@ slay extract_file(archive_path tea, output_path tea) yikes<tea> {
 
 # Extract all files from archive
 slay extract_all(output_dir tea) yikes<drip> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
-    ready (output_dir == "") {
+    lowkey (output_dir == "") {
         yikes "output_dir cannot be empty"
     }
     
@@ -232,22 +232,22 @@ slay extract_all(output_dir tea) yikes<drip> {
 
 # List files in archive
 slay list_files() yikes<tea[value]> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
     # Simulate file listing based on format
     sus files tea[value]
     
-    ready (archive_format == ZIP_FORMAT) {
+    lowkey (archive_format == ZIP_FORMAT) {
         files = list_files_zip()
-    } otherwise ready (archive_format == TAR_FORMAT) {
+    } highkey lowkey (archive_format == TAR_FORMAT) {
         files = list_files_tar()
-    } otherwise ready (archive_format == GZIP_FORMAT) {
+    } highkey lowkey (archive_format == GZIP_FORMAT) {
         files = list_files_gzip()
-    } otherwise ready (archive_format == BZIP2_FORMAT) {
+    } highkey lowkey (archive_format == BZIP2_FORMAT) {
         files = list_files_bzip2()
-    } otherwise {
+    } highkey {
         yikes "unsupported format for list_files: " + archive_format
     }
     
@@ -264,7 +264,7 @@ slay get_file_count() yikes<drip> {
 
 # Check if file exists in archive
 slay file_exists(archive_path tea) yikes<lit> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
@@ -273,7 +273,7 @@ slay file_exists(archive_path tea) yikes<lit> {
     }
     
     bestie (drip i = 0; i < len(files); i = i + 1) {
-        ready (files[i] == archive_path) {
+        lowkey (files[i] == archive_path) {
             damn based
         }
     }
@@ -282,7 +282,7 @@ slay file_exists(archive_path tea) yikes<lit> {
 
 # Set compression level (0-9)
 slay set_compression_level(level drip) yikes<drip> {
-    ready (level < COMPRESSION_NONE || level > COMPRESSION_BEST) {
+    lowkey (level < COMPRESSION_NONE || level > COMPRESSION_BEST) {
         yikes "compression level must be between 0 and 9"
     }
     
@@ -298,7 +298,7 @@ slay get_compression_level() drip {
 
 # Set archive password
 slay set_password(password tea) yikes<lit> {
-    ready (password == "") {
+    lowkey (password == "") {
         yikes "password cannot be empty"
     }
     
@@ -321,7 +321,7 @@ slay is_password_protected() lit {
 
 # Validate archive integrity
 slay validate_archive() yikes<lit> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
@@ -329,19 +329,19 @@ slay validate_archive() yikes<lit> {
     
     # Format-specific validation
     sus valid lit = cap
-    ready (archive_format == ZIP_FORMAT) {
+    lowkey (archive_format == ZIP_FORMAT) {
         valid = validate_zip()
-    } otherwise ready (archive_format == TAR_FORMAT) {
+    } highkey lowkey (archive_format == TAR_FORMAT) {
         valid = validate_tar()
-    } otherwise ready (archive_format == GZIP_FORMAT) {
+    } highkey lowkey (archive_format == GZIP_FORMAT) {
         valid = validate_gzip()
-    } otherwise ready (archive_format == BZIP2_FORMAT) {
+    } highkey lowkey (archive_format == BZIP2_FORMAT) {
         valid = validate_bzip2()
     }
     
-    ready (valid) {
+    lowkey (valid) {
         vibez.spill("Archive validation passed")
-    } otherwise {
+    } highkey {
         vibez.spill("Archive validation failed")
     }
     
@@ -350,7 +350,7 @@ slay validate_archive() yikes<lit> {
 
 # Get archive statistics
 slay get_archive_info() yikes<tea> {
-    ready (!archive_open) {
+    lowkey (!archive_open) {
         yikes "no archive is open"
     }
     
@@ -477,27 +477,27 @@ slay add_directory_recursive(dirpath tea, archive_path tea) drip {
 # Utility functions
 slay to_string(value drip) tea {
     # Convert number to string representation
-    ready (value == 0) { damn "0" }
-    ready (value == 1) { damn "1" }
-    ready (value == 2) { damn "2" }
-    ready (value == 3) { damn "3" }
-    ready (value == 4) { damn "4" }
-    ready (value == 5) { damn "5" }
-    ready (value == 6) { damn "6" }
-    ready (value == 7) { damn "7" }
-    ready (value == 8) { damn "8" }
-    ready (value == 9) { damn "9" }
+    lowkey (value == 0) { damn "0" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value == 2) { damn "2" }
+    lowkey (value == 3) { damn "3" }
+    lowkey (value == 4) { damn "4" }
+    lowkey (value == 5) { damn "5" }
+    lowkey (value == 6) { damn "6" }
+    lowkey (value == 7) { damn "7" }
+    lowkey (value == 8) { damn "8" }
+    lowkey (value == 9) { damn "9" }
     damn "[number]"  # Fallback for other numbers
 }
 
 slay len(str tea) drip {
     # Simulate string length calculation
     # In real implementation, this would be a builtin function
-    ready (str == "") { damn 0 }
-    ready (str == "zip") { damn 3 }
-    ready (str == "tar") { damn 3 }
-    ready (str == "gzip") { damn 4 }
-    ready (str == "bzip2") { damn 5 }
+    lowkey (str == "") { damn 0 }
+    lowkey (str == "zip") { damn 3 }
+    lowkey (str == "tar") { damn 3 }
+    lowkey (str == "gzip") { damn 4 }
+    lowkey (str == "bzip2") { damn 5 }
     damn 10  # Default length for demo
 }
 
@@ -510,7 +510,7 @@ slay len(arr tea[value]) drip {
 slay substring(str tea, start drip, end drip) tea {
     # Simulate substring extraction
     # In real implementation, this would be a builtin function
-    ready (start >= 0 && end > start) {
+    lowkey (start >= 0 && end > start) {
         damn str  # Return original for demo
     }
     damn ""

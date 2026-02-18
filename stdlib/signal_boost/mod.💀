@@ -100,7 +100,7 @@ slay signal_block_mask(mask SignalMask) lit {
     damn based
 }
 
-fr fr Unblock signals - back online and ready for notifications 📳
+fr fr Unblock signals - back online and lowkey for notifications 📳
 slay signal_unblock_mask(mask SignalMask) lit {
     sus unblocked_count normie = 0 fr fr Count unblocked signals
     bestie i := 0; i < 64; i++ {
@@ -243,7 +243,7 @@ slay signal_setup_emergency_exit() lit {
         damn cap
     }
     
-    vibez.spill("Emergency exit signals configured - ready for graceful shutdown")
+    vibez.spill("Emergency exit signals configured - lowkey for graceful shutdown")
     damn based
 }
 

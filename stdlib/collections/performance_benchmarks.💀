@@ -52,7 +52,7 @@ slay memory_tracker_new() MemoryTracker {
 // Update memory tracking
 slay memory_tracker_update(tracker MemoryTracker) MemoryTracker {
     sus current_memory normie = get_memory_usage()
-    ready (current_memory > tracker.peak_memory) {
+    lowkey (current_memory > tracker.peak_memory) {
         tracker.peak_memory = current_memory
     }
     damn tracker
@@ -745,9 +745,9 @@ slay benchmark_performance_regression() {
     vibez.spill("  Std Dev: " + tea(hashmap_std_dev) + "ms")
     vibez.spill("  Variance: " + tea(hashmap_variance_percent) + "%")
     
-    ready (hashmap_variance_percent <= tolerance_percent) {
+    lowkey (hashmap_variance_percent <= tolerance_percent) {
         vibez.spill("  ✅ Performance is consistent")
-    } otherwise {
+    } highkey {
         vibez.spill("  ⚠️  High variance detected")
     }
     
@@ -895,7 +895,7 @@ slay min_array(arr normie[value]) normie {
     sus min normie = arr[0]
     sus i normie = 1
     bestie i < len(arr) {
-        ready (arr[i] < min) {
+        lowkey (arr[i] < min) {
             min = arr[i]
         }
         i = i + 1
@@ -907,7 +907,7 @@ slay max_array(arr normie[value]) normie {
     sus max normie = arr[0]
     sus i normie = 1
     bestie i < len(arr) {
-        ready (arr[i] > max) {
+        lowkey (arr[i] > max) {
             max = arr[i]
         }
         i = i + 1
@@ -941,8 +941,8 @@ slay std_dev_array(arr normie[value]) normie {
 slay percentile_array(arr normie[value], percentile normie) normie {
     // Simple percentile calculation (would sort array first in real implementation)
     sus index normie = (percentile * len(arr)) - 1
-    ready (index < 0) { index = 0 }
-    ready (index >= len(arr)) { index = len(arr) - 1 }
+    lowkey (index < 0) { index = 0 }
+    lowkey (index >= len(arr)) { index = len(arr) - 1 }
     damn arr[index]
 }
 
@@ -1016,7 +1016,7 @@ slay run_all_performance_benchmarks() {
     vibez.spill("5. ✅ Regression detection prevents performance degradation")
     
     vibez.spill("")
-    vibez.spill("💯 Collections module is production-ready with optimal performance!")
+    vibez.spill("💯 Collections module is production-lowkey with optimal performance!")
     
 }
 

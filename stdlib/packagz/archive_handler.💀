@@ -47,21 +47,21 @@ slay create_package_archive(source_dir tea, output_path tea, options ArchiveOpti
     vibez.spill("Creating archive:", output_path, "from:", source_dir)
     
     # Validate source directory exists
-    ready (!filez.dir_exists(source_dir)) {
+    lowkey (!filez.dir_exists(source_dir)) {
         vibez.spill("Source directory does not exist:", source_dir)
         damn cap
     }
     
     # Create output directory if needed
     sus output_dir tea = filez.dirname(output_path)
-    ready (!filez.create_dir_all(output_dir)) {
+    lowkey (!filez.create_dir_all(output_dir)) {
         vibez.spill("Failed to create output directory:", output_dir)
         damn cap
     }
     
     # Collect files to archive
     sus file_list tea[value] = collect_archive_files(source_dir, options)
-    ready (arrayz.len(file_list) == 0) {
+    lowkey (arrayz.len(file_list) == 0) {
         vibez.spill("No files found to archive in:", source_dir)
         damn cap
     }
@@ -91,12 +91,12 @@ slay create_tar_gz_archive(source_dir tea, output_path tea, file_list tea[value]
     # Create temporary tar file first
     sus temp_tar tea = output_path + ".tmp.tar"
     
-    ready (!create_tar_archive(source_dir, temp_tar, file_list, options)) {
+    lowkey (!create_tar_archive(source_dir, temp_tar, file_list, options)) {
         damn cap
     }
     
     # Compress tar file to tar.gz
-    ready (!compress_file_gzip(temp_tar, output_path, options.compression_level)) {
+    lowkey (!compress_file_gzip(temp_tar, output_path, options.compression_level)) {
         filez.remove_file(temp_tar)
         damn cap
     }
@@ -126,7 +126,7 @@ slay create_tar_archive(source_dir tea, output_path tea, file_list tea[value], o
         archive_data = archive_data + header
         
         # Add file content (if not directory)
-        ready (!is_dir) {
+        lowkey (!is_dir) {
             sus file_content tea = filez.read_file(full_path)
             archive_data = archive_data + file_content
             
@@ -144,7 +144,7 @@ slay create_tar_archive(source_dir tea, output_path tea, file_list tea[value], o
     }
     
     # Write archive to file
-    ready (!filez.write_file(output_path, archive_data)) {
+    lowkey (!filez.write_file(output_path, archive_data)) {
         vibez.spill("Failed to write tar archive:", output_path)
         damn cap
     }
@@ -165,7 +165,7 @@ slay create_tar_header(file_path tea, file_size drip, is_directory lit, options 
     
     # File mode (8 bytes) - default 644 for files, 755 for dirs
     sus mode tea = "000644  "
-    ready (is_directory) {
+    lowkey (is_directory) {
         mode = "000755  "
     }
     header = header + mode
@@ -188,9 +188,9 @@ slay create_tar_header(file_path tea, file_size drip, is_directory lit, options 
     header = header + "        "  # Placeholder for checksum
     
     # Type flag (1 byte) - '0' for file, '5' for directory
-    ready (is_directory) {
+    lowkey (is_directory) {
         header = header + "5"
-    } otherwise {
+    } highkey {
         header = header + "0"
     }
     
@@ -227,10 +227,10 @@ slay calculate_tar_checksum(header tea) drip {
     sus checksum drip = 0
     
     bestie (sus i drip = 0; i < stringz.len(header); i = i + 1) {
-        ready (i >= 148 && i < 156) {
+        lowkey (i >= 148 && i < 156) {
             # Checksum field is treated as spaces
             checksum = checksum + 32
-        } otherwise {
+        } highkey {
             checksum = checksum + stringz.char_code(stringz.char_at(header, i))
         }
     }
@@ -243,13 +243,13 @@ slay extract_package_archive(archive_path tea, extraction_options ExtractionOpti
     vibez.spill("Extracting archive:", archive_path)
     
     # Validate archive exists
-    ready (!filez.file_exists(archive_path)) {
+    lowkey (!filez.file_exists(archive_path)) {
         vibez.spill("Archive file does not exist:", archive_path)
         damn cap
     }
     
     # Create destination directory
-    ready (!filez.create_dir_all(extraction_options.destination_dir)) {
+    lowkey (!filez.create_dir_all(extraction_options.destination_dir)) {
         vibez.spill("Failed to create destination directory:", extraction_options.destination_dir)
         damn cap
     }
@@ -280,7 +280,7 @@ slay extract_tar_gz_archive(archive_path tea, options ExtractionOptions) lit {
     # Decompress to temporary tar file
     sus temp_tar tea = archive_path + ".tmp.tar"
     
-    ready (!decompress_file_gzip(archive_path, temp_tar)) {
+    lowkey (!decompress_file_gzip(archive_path, temp_tar)) {
         vibez.spill("Failed to decompress archive:", archive_path)
         damn cap
     }
@@ -297,7 +297,7 @@ slay extract_tar_gz_archive(archive_path tea, options ExtractionOptions) lit {
 # Extract tar archive (uncompressed)
 slay extract_tar_archive(archive_path tea, options ExtractionOptions) lit {
     sus archive_data tea = filez.read_file(archive_path)
-    ready (archive_data == "") {
+    lowkey (archive_data == "") {
         vibez.spill("Failed to read archive:", archive_path)
         damn cap
     }
@@ -313,51 +313,51 @@ slay extract_tar_archive(archive_path tea, options ExtractionOptions) lit {
         offset = offset + 512
         
         # Check for end of archive (all zeros)
-        ready (is_zero_block(header)) {
+        lowkey (is_zero_block(header)) {
             break
         }
         
         # Parse header
         sus entry ArchiveEntry = parse_tar_header(header)
-        ready (entry.path == "") {
+        lowkey (entry.path == "") {
             vibez.spill("Invalid tar header at offset:", offset - 512)
             damn cap
         }
         
         # Security check: prevent path traversal
-        ready (!is_safe_extract_path(entry.path, options.destination_dir)) {
+        lowkey (!is_safe_extract_path(entry.path, options.destination_dir)) {
             vibez.spill("Unsafe extraction path:", entry.path)
             damn cap
         }
         
         # Check size limits
         total_size = total_size + entry.size
-        ready (options.max_extract_size > 0 && total_size > options.max_extract_size) {
+        lowkey (options.max_extract_size > 0 && total_size > options.max_extract_size) {
             vibez.spill("Archive exceeds maximum extraction size limit")
             damn cap
         }
         
         sus full_path tea = options.destination_dir + "/" + entry.path
         
-        ready (entry.is_directory) {
+        lowkey (entry.is_directory) {
             # Create directory
             filez.create_dir_all(full_path)
-        } otherwise {
+        } highkey {
             # Extract file
-            ready (entry.size > 0) {
+            lowkey (entry.size > 0) {
                 sus file_data tea = stringz.substring(archive_data, offset, entry.size)
                 
                 # Verify checksum if enabled
-                ready (options.verify_checksums && entry.checksum != "") {
+                lowkey (options.verify_checksums && entry.checksum != "") {
                     sus computed_checksum tea = cryptz.sha256_hash(file_data)
-                    ready (computed_checksum != entry.checksum) {
+                    lowkey (computed_checksum != entry.checksum) {
                         vibez.spill("Checksum mismatch for file:", entry.path)
                         damn cap
                     }
                 }
                 
                 # Check if file already exists
-                ready (filez.file_exists(full_path) && !options.overwrite_existing) {
+                lowkey (filez.file_exists(full_path) && !options.overwrite_existing) {
                     vibez.spill("File already exists:", full_path)
                     damn cap
                 }
@@ -367,13 +367,13 @@ slay extract_tar_archive(archive_path tea, options ExtractionOptions) lit {
                 filez.create_dir_all(parent_dir)
                 
                 # Write file
-                ready (!filez.write_file(full_path, file_data)) {
+                lowkey (!filez.write_file(full_path, file_data)) {
                     vibez.spill("Failed to extract file:", full_path)
                     damn cap
                 }
                 
                 # Set permissions if enabled
-                ready (options.preserve_permissions) {
+                lowkey (options.preserve_permissions) {
                     filez.set_file_permissions(full_path, entry.permissions)
                 }
                 
@@ -412,28 +412,28 @@ slay parse_tar_header(header tea) ArchiveEntry {
 # Detect archive format from file extension and magic bytes
 slay detect_archive_format(file_path tea) ArchiveFormat {
     # Check file extension first
-    ready (stringz.ends_with(file_path, ".tar.gz") || stringz.ends_with(file_path, ".tgz")) {
+    lowkey (stringz.ends_with(file_path, ".tar.gz") || stringz.ends_with(file_path, ".tgz")) {
         damn ArchiveFormat.TarGz
     }
-    ready (stringz.ends_with(file_path, ".tar")) {
+    lowkey (stringz.ends_with(file_path, ".tar")) {
         damn ArchiveFormat.Tar
     }
-    ready (stringz.ends_with(file_path, ".zip")) {
+    lowkey (stringz.ends_with(file_path, ".zip")) {
         damn ArchiveFormat.Zip
     }
     
     # Read magic bytes to detect format
     sus magic tea = filez.read_file_bytes(file_path, 0, 8)
-    ready (stringz.len(magic) >= 3) {
+    lowkey (stringz.len(magic) >= 3) {
         # Check for gzip magic bytes
         sus byte1 drip = stringz.char_code(stringz.char_at(magic, 0))
         sus byte2 drip = stringz.char_code(stringz.char_at(magic, 1))
-        ready (byte1 == 0x1f && byte2 == 0x8b) {
+        lowkey (byte1 == 0x1f && byte2 == 0x8b) {
             damn ArchiveFormat.TarGz
         }
         
         # Check for zip magic bytes
-        ready (stringz.starts_with(magic, "PK")) {
+        lowkey (stringz.starts_with(magic, "PK")) {
             damn ArchiveFormat.Zip
         }
     }
@@ -453,12 +453,12 @@ slay collect_archive_files(source_dir tea, options ArchiveOptions) tea[value]{
         sus file_path tea = all_files[i]
         
         # Skip hidden files if not including them
-        ready (!options.include_hidden && is_hidden_file(file_path)) {
+        lowkey (!options.include_hidden && is_hidden_file(file_path)) {
             continue
         }
         
         # Check exclude patterns
-        ready (should_exclude_file(file_path, options.exclude_patterns)) {
+        lowkey (should_exclude_file(file_path, options.exclude_patterns)) {
             continue
         }
         
@@ -473,17 +473,17 @@ slay collect_archive_files(source_dir tea, options ArchiveOptions) tea[value]{
 # Security check for extraction paths
 slay is_safe_extract_path(path tea, destination_dir tea) lit {
     # Prevent path traversal attacks
-    ready (stringz.contains(path, "..")) {
+    lowkey (stringz.contains(path, "..")) {
         damn cap
     }
     
     # Prevent absolute paths
-    ready (stringz.starts_with(path, "/")) {
+    lowkey (stringz.starts_with(path, "/")) {
         damn cap
     }
     
     # Prevent Windows drive letters
-    ready (stringz.len(path) >= 2 && stringz.char_at(path, 1) == ":") {
+    lowkey (stringz.len(path) >= 2 && stringz.char_at(path, 1) == ":") {
         damn cap
     }
     
@@ -516,7 +516,7 @@ slay pad_string_left(s tea, length drip) tea {
 
 slay is_zero_block(block tea) lit {
     bestie (sus i drip = 0; i < stringz.len(block); i = i + 1) {
-        ready (stringz.char_at(block, i) != "\0") {
+        lowkey (stringz.char_at(block, i) != "\0") {
             damn cap
         }
     }
@@ -531,7 +531,7 @@ slay is_hidden_file(path tea) lit {
 slay should_exclude_file(path tea, exclude_patterns tea[value]) lit {
     bestie (sus i drip = 0; i < arrayz.len(exclude_patterns); i = i + 1) {
         sus pattern tea = exclude_patterns[i]
-        ready (matches_pattern(path, pattern)) {
+        lowkey (matches_pattern(path, pattern)) {
             damn based
         }
     }
@@ -544,9 +544,9 @@ slay matches_pattern(path tea, pattern tea) lit {
 }
 
 slay make_relative_path(full_path tea, base_dir tea) tea {
-    ready (stringz.starts_with(full_path, base_dir)) {
+    lowkey (stringz.starts_with(full_path, base_dir)) {
         sus relative tea = stringz.substring(full_path, stringz.len(base_dir), stringz.len(full_path))
-        ready (stringz.starts_with(relative, "/")) {
+        lowkey (stringz.starts_with(relative, "/")) {
             relative = stringz.substring(relative, 1, stringz.len(relative))
         }
         damn relative
@@ -569,7 +569,7 @@ slay create_zip_archive(source_dir tea, output_path tea, file_list tea[value], o
         sus full_path tea = source_dir + "/" + file_path
         
         # Skip if file doesn't exist
-        ready (!filez.file_exists(full_path) && !filez.is_directory(full_path)) {
+        lowkey (!filez.file_exists(full_path) && !filez.is_directory(full_path)) {
             continue
         }
         
@@ -577,7 +577,7 @@ slay create_zip_archive(source_dir tea, output_path tea, file_list tea[value], o
         sus file_data tea = ""
         sus file_size drip = 0
         
-        ready (!is_dir) {
+        lowkey (!is_dir) {
             file_data = filez.read_file(full_path)
             file_size = stringz.len(file_data)
         }
@@ -605,7 +605,7 @@ slay create_zip_archive(source_dir tea, output_path tea, file_list tea[value], o
     zip_data = zip_data + end_record
     
     # Write ZIP file
-    ready (!filez.write_file(output_path, zip_data)) {
+    lowkey (!filez.write_file(output_path, zip_data)) {
         vibez.spill("Failed to write ZIP archive:", output_path)
         damn cap
     }
@@ -618,14 +618,14 @@ slay extract_zip_archive(archive_path tea, options ExtractionOptions) lit {
     vibez.spill("Extracting ZIP archive:", archive_path)
     
     sus zip_data tea = filez.read_file(archive_path)
-    ready (zip_data == "") {
+    lowkey (zip_data == "") {
         vibez.spill("Failed to read ZIP archive:", archive_path)
         damn cap
     }
     
     # Find end of central directory record (search from end)
     sus end_record_pos drip = find_zip_end_record(zip_data)
-    ready (end_record_pos == -1) {
+    lowkey (end_record_pos == -1) {
         vibez.spill("Invalid ZIP file - no end record found")
         damn cap
     }
@@ -640,7 +640,7 @@ slay extract_zip_archive(archive_path tea, options ExtractionOptions) lit {
     sus offset drip = central_dir_offset
     
     bestie (sus i drip = 0; i < file_count; i = i + 1) {
-        ready (offset >= stringz.len(zip_data)) {
+        lowkey (offset >= stringz.len(zip_data)) {
             break
         }
         
@@ -648,13 +648,13 @@ slay extract_zip_archive(archive_path tea, options ExtractionOptions) lit {
         sus (entry_path tea, file_size drip, local_header_offset drip, is_dir lit, entry_size drip) = 
             parse_zip_central_entry(zip_data, offset)
         
-        ready (entry_path == "") {
+        lowkey (entry_path == "") {
             vibez.spill("Failed to parse central directory entry", i)
             break
         }
         
         # Security check
-        ready (!is_safe_extract_path(entry_path, options.destination_dir)) {
+        lowkey (!is_safe_extract_path(entry_path, options.destination_dir)) {
             vibez.spill("Unsafe path in ZIP:", entry_path)
             damn cap
         }
@@ -662,9 +662,9 @@ slay extract_zip_archive(archive_path tea, options ExtractionOptions) lit {
         # Extract file
         sus full_extract_path tea = options.destination_dir + "/" + entry_path
         
-        ready (is_dir) {
+        lowkey (is_dir) {
             filez.create_dir_all(full_extract_path)
-        } otherwise {
+        } highkey {
             # Read file data from local entry
             sus file_data tea = read_zip_file_data(zip_data, local_header_offset, file_size)
             
@@ -673,7 +673,7 @@ slay extract_zip_archive(archive_path tea, options ExtractionOptions) lit {
             filez.create_dir_all(parent_dir)
             
             # Write file
-            ready (!filez.write_file(full_extract_path, file_data)) {
+            lowkey (!filez.write_file(full_extract_path, file_data)) {
                 vibez.spill("Failed to extract file:", entry_path)
                 damn cap
             }
@@ -775,9 +775,9 @@ slay create_zip_central_entry(file_path tea, file_size drip, local_offset drip, 
     entry = entry + "\x00\x00"
     
     # External file attributes
-    ready (is_directory) {
+    lowkey (is_directory) {
         entry = entry + "\x10\x00\x00\x00"  # Directory attribute
-    } otherwise {
+    } highkey {
         entry = entry + "\x20\x00\x00\x00"  # File attribute
     }
     
@@ -849,7 +849,7 @@ slay find_zip_end_record(zip_data tea) drip {
     sus search_start drip = mathz.max(0, data_len - 65536)
     
     bestie (sus i drip = data_len - 4; i >= search_start; i = i - 1) {
-        ready (stringz.substring(zip_data, i, 4) == signature) {
+        lowkey (stringz.substring(zip_data, i, 4) == signature) {
             damn i
         }
     }

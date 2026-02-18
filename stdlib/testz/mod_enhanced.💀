@@ -228,7 +228,7 @@ slay property_test(property_name tea, property_function tea, generators [Propert
         fr fr Execute property test
         sus result PropertyTestResult = execute_property_test(property_function, inputs)
         
-        ready (!result.success) {
+        lowkey (!result.success) {
             failures = failures + 1
             
             fr fr Attempt shrinking
@@ -244,7 +244,7 @@ slay property_test(property_name tea, property_function tea, generators [Propert
             
             counterexamples = append_counterexample(counterexamples, counterexample)
             
-            ready (failures >= 5) {
+            lowkey (failures >= 5) {
                 break  fr fr Stop after 5 failures
             }
         }
@@ -252,10 +252,10 @@ slay property_test(property_name tea, property_function tea, generators [Propert
         i = i + 1
     }
     
-    ready (failures == 0) {
+    lowkey (failures == 0) {
         test_passed = test_passed + 1
         vibez.spill("✅ Property test passed after", iterations, "iterations")
-    } otherwise {
+    } highkey {
         test_failed = test_failed + 1
         vibez.spill("❌ Property test failed with", failures, "counterexamples")
         print_property_failures(counterexamples)
@@ -277,15 +277,15 @@ slay generate_property_inputs(generators [PropertyGenerator]) [tea] {
 }
 
 slay generate_value_from_generator(generator PropertyGenerator) tea {
-    ready (generator.generator_name == "integer") {
+    lowkey (generator.generator_name == "integer") {
         sus constraint PropertyConstraint = generator.constraints[0]
         sus value normie = random_int_range(constraint.min_value, constraint.max_value)
         damn tea(value)
-    } otherwise ready (generator.generator_name == "string") {
+    } highkey lowkey (generator.generator_name == "string") {
         sus constraint PropertyConstraint = generator.constraints[0]
         sus length normie = random_int_range(constraint.min_value, constraint.max_value)
         damn generate_random_string_with_pattern(length, constraint.pattern)
-    } otherwise ready (generator.generator_name == "array") {
+    } highkey lowkey (generator.generator_name == "array") {
         sus constraint PropertyConstraint = generator.constraints[0]
         sus length normie = random_int_range(constraint.min_value, constraint.max_value)
         damn generate_random_array_string(length)
@@ -315,7 +315,7 @@ slay shrink_counterexample(inputs [tea], generators [PropertyGenerator], propert
                 
                 fr fr Test if still fails with shrunk input
                 sus test_result PropertyTestResult = execute_property_test(property_function, shrunk)
-                ready (!test_result.success) {
+                lowkey (!test_result.success) {
                     improved = based
                     break
                 }
@@ -323,9 +323,9 @@ slay shrink_counterexample(inputs [tea], generators [PropertyGenerator], propert
                 j = j + 1
             }
             
-            ready (improved) {
+            lowkey (improved) {
                 break
-            } otherwise {
+            } highkey {
                 shrunk[i] = original_value  fr fr Restore if no improvement
             }
             
@@ -339,19 +339,19 @@ slay shrink_counterexample(inputs [tea], generators [PropertyGenerator], propert
 slay generate_shrink_candidates(value tea, generator PropertyGenerator) [tea] {
     sus candidates [tea] = []
     
-    ready (generator.generator_name == "integer") {
+    lowkey (generator.generator_name == "integer") {
         sus int_value normie = parse_int(value)
         candidates = append_string(candidates, tea(int_value / 2))
         candidates = append_string(candidates, tea(int_value - 1))
-        ready (int_value > 0) {
+        lowkey (int_value > 0) {
             candidates = append_string(candidates, "0")
         }
-    } otherwise ready (generator.generator_name == "string") {
-        ready (len_string(value) > 1) {
+    } highkey lowkey (generator.generator_name == "string") {
+        lowkey (len_string(value) > 1) {
             candidates = append_string(candidates, substring(value, 0, len_string(value) - 1))
             candidates = append_string(candidates, substring(value, 1, len_string(value)))
         }
-        ready (len_string(value) > 0) {
+        lowkey (len_string(value) > 0) {
             candidates = append_string(candidates, "")
         }
     }
@@ -423,7 +423,7 @@ slay fuzz_test(target_function tea, initial_inputs [tea], iterations normie) Fuz
         fr fr Execute target function with mutated input
         sus result FuzzExecutionResult = execute_fuzz_target(target_function, mutated_input)
         
-        ready (result.crashed) {
+        lowkey (result.crashed) {
             fuzz_crash_count = fuzz_crash_count + 1
             
             sus crash FuzzCrash = FuzzCrash{
@@ -438,7 +438,7 @@ slay fuzz_test(target_function tea, initial_inputs [tea], iterations normie) Fuz
             mutated_input.crash_inducing = based
         }
         
-        ready (result.new_coverage) {
+        lowkey (result.new_coverage) {
             coverage_gained = coverage_gained + 1
             corpus = append_fuzz_input(corpus, mutated_input)
         }
@@ -457,10 +457,10 @@ slay fuzz_test(target_function tea, initial_inputs [tea], iterations normie) Fuz
         corpus_size: len_fuzz_inputs(corpus)
     }
     
-    ready (len_fuzz_crashes(crashes) > 0) {
+    lowkey (len_fuzz_crashes(crashes) > 0) {
         test_failed = test_failed + 1
         print_fuzz_crashes(crashes)
-    } otherwise {
+    } highkey {
         test_passed = test_passed + 1
     }
     
@@ -473,15 +473,15 @@ slay mutate_input(base_input FuzzInput, iteration normie) FuzzInput {
     sus mutation_strategy tea = select_mutation_strategy(iteration)
     sus mutated_data tea = ""
     
-    ready (mutation_strategy == "bit_flip") {
+    lowkey (mutation_strategy == "bit_flip") {
         mutated_data = mutate_bit_flip(base_input.input_data)
-    } otherwise ready (mutation_strategy == "byte_insert") {
+    } highkey lowkey (mutation_strategy == "byte_insert") {
         mutated_data = mutate_byte_insert(base_input.input_data)
-    } otherwise ready (mutation_strategy == "byte_delete") {
+    } highkey lowkey (mutation_strategy == "byte_delete") {
         mutated_data = mutate_byte_delete(base_input.input_data)
-    } otherwise ready (mutation_strategy == "arith_mutate") {
+    } highkey lowkey (mutation_strategy == "arith_mutate") {
         mutated_data = mutate_arithmetic(base_input.input_data)
-    } otherwise {
+    } highkey {
         mutated_data = mutate_random(base_input.input_data)
     }
     
@@ -497,21 +497,21 @@ slay mutate_input(base_input FuzzInput, iteration normie) FuzzInput {
 slay select_mutation_strategy(iteration normie) tea {
     sus strategy_index normie = iteration % 5
     
-    ready (strategy_index == 0) {
+    lowkey (strategy_index == 0) {
         damn "bit_flip"
-    } otherwise ready (strategy_index == 1) {
+    } highkey lowkey (strategy_index == 1) {
         damn "byte_insert"
-    } otherwise ready (strategy_index == 2) {
+    } highkey lowkey (strategy_index == 2) {
         damn "byte_delete"
-    } otherwise ready (strategy_index == 3) {
+    } highkey lowkey (strategy_index == 3) {
         damn "arith_mutate"
-    } otherwise {
+    } highkey {
         damn "random"
     }
 }
 
 slay mutate_bit_flip(input tea) tea {
-    ready (len_string(input) == 0) {
+    lowkey (len_string(input) == 0) {
         damn input
     }
     
@@ -533,7 +533,7 @@ slay mutate_byte_insert(input tea) tea {
 }
 
 slay mutate_byte_delete(input tea) tea {
-    ready (len_string(input) <= 1) {
+    lowkey (len_string(input) <= 1) {
         damn input
     }
     
@@ -542,7 +542,7 @@ slay mutate_byte_delete(input tea) tea {
 }
 
 slay mutate_arithmetic(input tea) tea {
-    ready (len_string(input) == 0) {
+    lowkey (len_string(input) == 0) {
         damn input
     }
     
@@ -572,16 +572,16 @@ slay disable_coverage_tracking() {
 }
 
 slay record_line_coverage(file_path tea, line_number normie) {
-    ready (!coverage_enabled) {
+    lowkey (!coverage_enabled) {
         damn
     }
     
     sus file_coverage FileCoverage = get_or_create_file_coverage(coverage_data, file_path)
     
-    ready (line_number >= 0 && line_number < len_line_hits(file_coverage.line_hits)) {
+    lowkey (line_number >= 0 && line_number < len_line_hits(file_coverage.line_hits)) {
         file_coverage.line_hits[line_number] = file_coverage.line_hits[line_number] + 1
         
-        ready (file_coverage.line_hits[line_number] == 1) {
+        lowkey (file_coverage.line_hits[line_number] == 1) {
             file_coverage.covered_lines = file_coverage.covered_lines + 1
             coverage_data.covered_lines = coverage_data.covered_lines + 1
         }
@@ -591,14 +591,14 @@ slay record_line_coverage(file_path tea, line_number normie) {
 }
 
 slay record_branch_coverage(file_path tea, line_number normie, branch_taken lit) {
-    ready (!coverage_enabled) {
+    lowkey (!coverage_enabled) {
         damn
     }
     
     sus branch_key tea = file_path + ":" + tea(line_number)
     sus branch_coverage BranchCoverage = get_or_create_branch_coverage(coverage_data, branch_key, file_path, line_number)
     
-    ready (branch_taken) {
+    lowkey (branch_taken) {
         branch_coverage.branches_covered = branch_coverage.branches_covered + 1
     }
     
@@ -607,7 +607,7 @@ slay record_branch_coverage(file_path tea, line_number normie, branch_taken lit)
 }
 
 slay record_function_coverage(function_name tea, file_path tea, line_number normie, execution_time normie) {
-    ready (!coverage_enabled) {
+    lowkey (!coverage_enabled) {
         damn
     }
     
@@ -617,7 +617,7 @@ slay record_function_coverage(function_name tea, file_path tea, line_number norm
 }
 
 slay generate_coverage_report() tea {
-    ready (!coverage_enabled) {
+    lowkey (!coverage_enabled) {
         damn "Coverage tracking is disabled"
     }
     
@@ -676,7 +676,7 @@ slay generate_coverage_report() tea {
 }
 
 slay export_coverage_lcov(output_file tea) {
-    ready (!coverage_enabled) {
+    lowkey (!coverage_enabled) {
         vibez.spill("❌ Coverage tracking is disabled")
         damn
     }
@@ -692,7 +692,7 @@ slay export_coverage_lcov(output_file tea) {
         fr fr Line coverage data
         sus j normie = 0
         bestie (j < len_line_hits(file_cov.line_hits)) {
-            ready (file_cov.line_hits[j] > 0) {
+            lowkey (file_cov.line_hits[j] > 0) {
                 lcov_content = lcov_content + "DA:" + tea(j + 1) + "," + tea(file_cov.line_hits[j]) + "\n"
             }
             j = j + 1
@@ -750,7 +750,7 @@ slay execute_tests_parallel_enhanced(test_names [tea], config ParallelTestConfig
         fr fr Assign tasks to available workers
         sus worker_id normie = find_available_worker(workers)
         
-        ready (worker_id >= 0 && len_string_array(task_queue) > 0) {
+        lowkey (worker_id >= 0 && len_string_array(task_queue) > 0) {
             sus test_name tea = task_queue[0]
             task_queue = remove_first_string(task_queue)
             
@@ -790,7 +790,7 @@ slay execute_test_in_worker(worker TestWorker, test_name tea, config ParallelTes
     fr fr Update worker stats
     worker.tests_completed = worker.tests_completed + 1
     worker.total_execution_time = worker.total_execution_time + (end_time - start_time)
-    ready (end_memory > worker.memory_peak) {
+    lowkey (end_memory > worker.memory_peak) {
         worker.memory_peak = end_memory
     }
     
@@ -812,7 +812,7 @@ slay enable_performance_tracking() {
 }
 
 slay record_test_performance(test_name tea, execution_time normie, memory_usage normie, cpu_usage normie) {
-    ready (!performance_tracking) {
+    lowkey (!performance_tracking) {
         damn
     }
     
@@ -827,17 +827,17 @@ slay record_test_performance(test_name tea, execution_time normie, memory_usage 
     performance_data.slowest_tests = add_sorted_performance(performance_data.slowest_tests, test_perf)
     performance_data.total_execution_time = performance_data.total_execution_time + execution_time
     
-    ready (memory_usage > performance_data.memory_peak) {
+    lowkey (memory_usage > performance_data.memory_peak) {
         performance_data.memory_peak = memory_usage
     }
     
-    ready (cpu_usage > performance_data.cpu_peak) {
+    lowkey (cpu_usage > performance_data.cpu_peak) {
         performance_data.cpu_peak = cpu_usage
     }
 }
 
 slay generate_performance_report() tea {
-    ready (!performance_tracking) {
+    lowkey (!performance_tracking) {
         damn "Performance tracking is disabled"
     }
     
@@ -888,7 +888,7 @@ slay generate_comprehensive_report() tea {
     report = report + "  Fuzz tests: " + tea(fuzz_tests) + "\n\n"
     
     fr fr Coverage section
-    ready (coverage_enabled) {
+    lowkey (coverage_enabled) {
         report = report + "Coverage Analysis:\n"
         report = report + "  Line coverage: " + tea(coverage_data.coverage_percentage) + "%\n"
         report = report + "  Files analyzed: " + tea(len_file_coverage(coverage_data.file_coverage)) + "\n"
@@ -897,7 +897,7 @@ slay generate_comprehensive_report() tea {
     }
     
     fr fr Performance section
-    ready (performance_tracking) {
+    lowkey (performance_tracking) {
         report = report + "Performance Analysis:\n"
         report = report + "  Total execution time: " + tea(performance_data.total_execution_time) + "ms\n"
         report = report + "  Average test time: " + tea(performance_data.average_test_time) + "ms\n"
@@ -906,7 +906,7 @@ slay generate_comprehensive_report() tea {
     }
     
     fr fr Fuzzing section
-    ready (fuzz_tests > 0) {
+    lowkey (fuzz_tests > 0) {
         report = report + "Fuzzing Results:\n"
         report = report + "  Fuzz tests executed: " + tea(fuzz_tests) + "\n"
         report = report + "  Crashes discovered: " + tea(fuzz_crash_count) + "\n"
@@ -1035,12 +1035,12 @@ slay run_enhanced_test_suite() {
     fr fr Run comprehensive test analysis
     generate_comprehensive_report()
     
-    ready (coverage_enabled) {
+    lowkey (coverage_enabled) {
         generate_coverage_report()
         export_coverage_lcov("coverage.lcov")
     }
     
-    ready (performance_tracking) {
+    lowkey (performance_tracking) {
         generate_performance_report()
     }
     
@@ -1048,10 +1048,10 @@ slay run_enhanced_test_suite() {
     
     vibez.spill("================================================================")
     
-    ready (test_failed > 0 || test_errors > 0 || fuzz_crash_count > 0) {
+    lowkey (test_failed > 0 || test_errors > 0 || fuzz_crash_count > 0) {
         vibez.spill("❌ Test suite completed with failures")
         damn 1
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Test suite completed successfully")
         damn 0
     }

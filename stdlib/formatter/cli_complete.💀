@@ -53,45 +53,45 @@ slay parse_cli_args(args tea[value]) FormatterCliArgs {
     bestie (i < len(args)) {
         sus arg tea = args[i]
         
-        ready (arg == "--help" || arg == "-h") {
+        lowkey (arg == "--help" || arg == "-h") {
             cli_args.help = based
-        } otherwise ready (arg == "--version" || arg == "-v") {
+        } highkey lowkey (arg == "--version" || arg == "-v") {
             cli_args.version = based
-        } otherwise ready (arg == "--check" || arg == "-c") {
+        } highkey lowkey (arg == "--check" || arg == "-c") {
             cli_args.check = based
-        } otherwise ready (arg == "--diff" || arg == "-d") {
+        } highkey lowkey (arg == "--diff" || arg == "-d") {
             cli_args.diff = based
-        } otherwise ready (arg == "--in-place" || arg == "-i") {
+        } highkey lowkey (arg == "--in-place" || arg == "-i") {
             cli_args.in_place = based
-        } otherwise ready (arg == "--backup" || arg == "-b") {
+        } highkey lowkey (arg == "--backup" || arg == "-b") {
             cli_args.backup = based
-        } otherwise ready (arg == "--validate" || arg == "-V") {
+        } highkey lowkey (arg == "--validate" || arg == "-V") {
             cli_args.validate = based
-        } otherwise ready (arg == "--verbose") {
+        } highkey lowkey (arg == "--verbose") {
             cli_args.verbose = based
-        } otherwise ready (arg == "--recursive" || arg == "-r") {
+        } highkey lowkey (arg == "--recursive" || arg == "-r") {
             cli_args.recursive = based
-        } otherwise ready (arg == "--style" || arg == "-s") {
-            ready (i + 1 < len(args)) {
+        } highkey lowkey (arg == "--style" || arg == "-s") {
+            lowkey (i + 1 < len(args)) {
                 i = i + 1
                 cli_args.style = args[i]
             }
-        } otherwise ready (arg == "--config" || arg == "-C") {
-            ready (i + 1 < len(args)) {
+        } highkey lowkey (arg == "--config" || arg == "-C") {
+            lowkey (i + 1 < len(args)) {
                 i = i + 1
                 cli_args.config_file = args[i]
             }
-        } otherwise ready (arg == "--output" || arg == "-o") {
-            ready (i + 1 < len(args)) {
+        } highkey lowkey (arg == "--output" || arg == "-o") {
+            lowkey (i + 1 < len(args)) {
                 i = i + 1
                 cli_args.output_file = args[i]
             }
-        } otherwise ready (arg == "--exclude") {
-            ready (i + 1 < len(args)) {
+        } highkey lowkey (arg == "--exclude") {
+            lowkey (i + 1 < len(args)) {
                 i = i + 1
                 push(cli_args.exclude_patterns, args[i])
             }
-        } otherwise ready (!starts_with(arg, "-")) {
+        } highkey lowkey (!starts_with(arg, "-")) {
             push(cli_args.input_files, arg)
         }
         
@@ -105,13 +105,13 @@ fr fr ===== FILE OPERATIONS =====
 
 slay read_file_content(filename tea) tea {
     fr fr Simulate file reading for demo
-    ready (filename == "test.💀") {
+    lowkey (filename == "test.💀") {
         damn "sus x drip=42;slay test(){damn x+1;}"
-    } otherwise ready (filename == "multiline.💀") {
+    } highkey lowkey (filename == "multiline.💀") {
         damn "sus html tea = \"<html>\n<body>\n    <h1>Hello</h1>\n</body>\n</html>\""
-    } otherwise ready (filename == "complex.💀") {
-        damn "ready(x>0){vibez.spill(x);}otherwise{vibez.spill(0);}"
-    } otherwise {
+    } highkey lowkey (filename == "complex.💀") {
+        damn "lowkey(x>0){vibez.spill(x);}highkey{vibez.spill(0);}"
+    } highkey {
         damn "sus demo tea = \"Example code\nwith multiline string\""
     }
 }
@@ -137,34 +137,34 @@ slay file_needs_formatting(filename tea, config FormatterConfig) lit {
 fr fr ===== CONFIGURATION MANAGEMENT =====
 
 slay load_style_config(style tea) FormatterConfig {
-    ready (style == "compact") {
+    lowkey (style == "compact") {
         damn compact_formatter_config()
-    } otherwise ready (style == "google") {
+    } highkey lowkey (style == "google") {
         damn google_style_config()
-    } otherwise ready (style == "mozilla") {
+    } highkey lowkey (style == "mozilla") {
         damn mozilla_style_config()
-    } otherwise {
+    } highkey {
         damn default_formatter_config()
     }
 }
 
 slay load_config_file(config_file tea) FormatterConfig {
-    ready (config_file == "") {
+    lowkey (config_file == "") {
         damn default_formatter_config()
     }
     
     fr fr Simulate config file loading
-    ready (config_file == "compact.toml") {
+    lowkey (config_file == "compact.toml") {
         sus config FormatterConfig = default_formatter_config()
         config.indent_size = 2
         config.max_line_length = 80
         damn config
-    } otherwise ready (config_file == "strict.toml") {
+    } highkey lowkey (config_file == "strict.toml") {
         sus config FormatterConfig = default_formatter_config()
         config.preserve_multiline_strings = based
         config.continue_on_errors = cringe
         damn config
-    } otherwise {
+    } highkey {
         vibez.spill("Loading config from: " + config_file)
         damn default_formatter_config()
     }
@@ -173,20 +173,20 @@ slay load_config_file(config_file tea) FormatterConfig {
 fr fr ===== ADVANCED CLI OPERATIONS =====
 
 slay format_single_file(filename tea, config FormatterConfig, cli_args FormatterCliArgs) drip {
-    ready (cli_args.verbose) {
+    lowkey (cli_args.verbose) {
         vibez.spill("Processing file: " + filename)
     }
     
     sus content tea = read_file_content(filename)
     
-    ready (cli_args.validate) {
+    lowkey (cli_args.validate) {
         sus errors tea[value] = validate_syntax(content)
-        ready (len(errors) == 0) {
-            ready (cli_args.verbose) {
+        lowkey (len(errors) == 0) {
+            lowkey (cli_args.verbose) {
                 vibez.spill("✅ " + filename + " - Syntax valid")
             }
             damn 0
-        } otherwise {
+        } highkey {
             vibez.spill("❌ " + filename + " - Syntax errors:")
             sus i drip = 0
             bestie (i < len(errors)) {
@@ -197,14 +197,14 @@ slay format_single_file(filename tea, config FormatterConfig, cli_args Formatter
         }
     }
     
-    ready (cli_args.check) {
-        ready (file_needs_formatting(filename, config)) {
-            ready (cli_args.verbose) {
+    lowkey (cli_args.check) {
+        lowkey (file_needs_formatting(filename, config)) {
+            lowkey (cli_args.verbose) {
                 vibez.spill("❌ " + filename + " - Needs formatting")
             }
             damn 1
-        } otherwise {
-            ready (cli_args.verbose) {
+        } highkey {
+            lowkey (cli_args.verbose) {
                 vibez.spill("✅ " + filename + " - Already formatted")
             }
             damn 0
@@ -213,27 +213,27 @@ slay format_single_file(filename tea, config FormatterConfig, cli_args Formatter
     
     sus formatted tea = format_cursed_code_with_config_ast(content, config)
     
-    ready (cli_args.diff) {
+    lowkey (cli_args.diff) {
         sus diff_output tea = format_with_diff(content, config)
         vibez.spill("Diff for " + filename + ":")
         vibez.spill(diff_output)
         damn 0
     }
     
-    ready (cli_args.in_place) {
-        ready (cli_args.backup) {
+    lowkey (cli_args.in_place) {
+        lowkey (cli_args.backup) {
             backup_file(filename)
         }
         write_file_content(filename, formatted)
-        ready (cli_args.verbose) {
+        lowkey (cli_args.verbose) {
             vibez.spill("✅ " + filename + " - Formatted in place")
         }
         damn 0
     }
     
-    ready (cli_args.output_file != "") {
+    lowkey (cli_args.output_file != "") {
         write_file_content(cli_args.output_file, formatted)
-        ready (cli_args.verbose) {
+        lowkey (cli_args.verbose) {
             vibez.spill("✅ " + filename + " - Output written to " + cli_args.output_file)
         }
         damn 0
@@ -250,7 +250,7 @@ slay process_multiple_files(cli_args FormatterCliArgs, config FormatterConfig) d
     sus success_count drip = 0
     sus error_count drip = 0
     
-    ready (cli_args.verbose) {
+    lowkey (cli_args.verbose) {
         vibez.spill("Processing " + int_to_string(total_files) + " files...")
     }
     
@@ -259,16 +259,16 @@ slay process_multiple_files(cli_args FormatterCliArgs, config FormatterConfig) d
         sus filename tea = cli_args.input_files[i]
         sus result drip = format_single_file(filename, config, cli_args)
         
-        ready (result == 0) {
+        lowkey (result == 0) {
             success_count = success_count + 1
-        } otherwise {
+        } highkey {
             error_count = error_count + 1
         }
         
         i = i + 1
     }
     
-    ready (cli_args.verbose) {
+    lowkey (cli_args.verbose) {
         vibez.spill("")
         vibez.spill("Summary:")
         vibez.spill("  Processed: " + int_to_string(total_files))
@@ -276,7 +276,7 @@ slay process_multiple_files(cli_args FormatterCliArgs, config FormatterConfig) d
         vibez.spill("  Errors: " + int_to_string(error_count))
     }
     
-    ready (error_count > 0) {
+    lowkey (error_count > 0) {
         damn 1
     }
     damn 0
@@ -350,24 +350,24 @@ slay print_version() {
 fr fr ===== MAIN CLI INTERFACE =====
 
 slay main_cli(args tea[value]) drip {
-    ready (len(args) == 0) {
+    lowkey (len(args) == 0) {
         print_help()
         damn 0
     }
     
     sus cli_args FormatterCliArgs = parse_cli_args(args)
     
-    ready (cli_args.help) {
+    lowkey (cli_args.help) {
         print_help()
         damn 0
     }
     
-    ready (cli_args.version) {
+    lowkey (cli_args.version) {
         print_version()
         damn 0
     }
     
-    ready (len(cli_args.input_files) == 0) {
+    lowkey (len(cli_args.input_files) == 0) {
         vibez.spill("Error: No input files specified")
         vibez.spill("Use --help for usage information")
         damn 1
@@ -375,12 +375,12 @@ slay main_cli(args tea[value]) drip {
     
     fr fr Load configuration
     sus config FormatterConfig = load_style_config(cli_args.style)
-    ready (cli_args.config_file != "") {
+    lowkey (cli_args.config_file != "") {
         config = load_config_file(cli_args.config_file)
     }
     
     fr fr Apply CLI-specific config overrides
-    ready (cli_args.verbose) {
+    lowkey (cli_args.verbose) {
         config.add_error_comments = based
     }
     
@@ -413,10 +413,10 @@ slay demo_multiline_string_fix() {
     vibez.spill(second_pass)
     vibez.spill("")
     
-    ready (first_pass == second_pass) {
+    lowkey (first_pass == second_pass) {
         vibez.spill("✅ SUCCESS: Round-trip formatting is now consistent!")
         vibez.spill("✅ Critical P1 Issue #20 has been FIXED")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ FAILURE: Round-trip issue still exists")
     }
 }

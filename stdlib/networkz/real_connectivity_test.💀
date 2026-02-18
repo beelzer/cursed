@@ -54,7 +54,7 @@ sus dns_hostname tea = reverse_lookup("8.8.8.8") fam {
         ""  // Some systems may not allow reverse DNS
     }
 }
-ready (stringz.len(dns_hostname) > 0) {
+lowkey (stringz.len(dns_hostname) > 0) {
     vibez.spill("✅ 8.8.8.8 reverse resolves to: " + dns_hostname)
 }
 
@@ -238,7 +238,7 @@ sus all_tests_passed lit = test_network_connectivity() fam {
         no_cap
     }
 }
-ready (all_tests_passed) {
+lowkey (all_tests_passed) {
     vibez.spill("🎉 ALL NETWORK CONNECTIVITY TESTS PASSED!")
     vibez.spill("✅ Real DNS resolution working")
     vibez.spill("✅ Real HTTP GET/POST working") 
@@ -246,7 +246,7 @@ ready (all_tests_passed) {
     vibez.spill("✅ Real port checking working")
     vibez.spill("✅ Real network statistics working")
     vibez.spill("✅ Real network interfaces working")
-} otherwise {
+} highkey {
     vibez.spill("❌ Some network connectivity tests failed")
     test_fail("Comprehensive network connectivity validation failed")
 }
@@ -262,4 +262,4 @@ vibez.spill("   - Network interfaces: REAL (system interface enumeration)")
 vibez.spill("   - Network statistics: REAL (system network stats)")
 vibez.spill("   - Port checking: REAL (actual connectivity tests)")
 vibez.spill("")
-vibez.spill("🚀 CURSED networking is now production-ready with real connectivity!")
+vibez.spill("🚀 CURSED networking is now production-lowkey with real connectivity!")

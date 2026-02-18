@@ -8,9 +8,9 @@ vibez.spill("=== Test 1: Empty Input ===")
 sus emptyScanner tea = NewSlayScanner("")
 sus hasToken1 lit = ScanNext(emptyScanner)
 vibez.spill("Empty input ScanNext result: " + tea(hasToken1))
-ready (hasToken1 == cap) {
+lowkey (hasToken1 == cap) {
     vibez.spill("✅ PASS: Empty input correctly returns false")
-} otherwise {
+} highkey {
     vibez.spill("❌ FAIL: Empty input should return false")
 }
 
@@ -19,9 +19,9 @@ vibez.spill("\n=== Test 2: Single Number Token ===")
 sus numberScanner tea = NewSlayScanner("123")
 sus hasToken2 lit = ScanNext(numberScanner)
 vibez.spill("Number token ScanNext result: " + tea(hasToken2))
-ready (hasToken2 == based) {
+lowkey (hasToken2 == based) {
     vibez.spill("✅ PASS: Number token correctly returns true")
-} otherwise {
+} highkey {
     vibez.spill("❌ FAIL: Number token should return true")
 }
 
@@ -66,9 +66,9 @@ sus hasToken7a lit = ScanNext(endScanner)
 vibez.spill("Single char token result: " + tea(hasToken7a))
 sus hasToken7b lit = ScanNext(endScanner)
 vibez.spill("End of input result: " + tea(hasToken7b))
-ready (hasToken7a == based && hasToken7b == cap) {
+lowkey (hasToken7a == based && hasToken7b == cap) {
     vibez.spill("✅ PASS: End of input correctly detected")
-} otherwise {
+} highkey {
     vibez.spill("❌ FAIL: End of input detection failed")
 }
 
@@ -77,9 +77,9 @@ vibez.spill("\n=== Test 8: Whitespace-Only Input ===")
 sus wsScanner tea = NewSlayScanner("   \t\n  ")
 sus hasToken8 lit = ScanNext(wsScanner)
 vibez.spill("Whitespace-only result: " + tea(hasToken8))
-ready (hasToken8 == cap) {
+lowkey (hasToken8 == cap) {
     vibez.spill("✅ PASS: Whitespace-only correctly returns false")
-} otherwise {
+} highkey {
     vibez.spill("❌ FAIL: Whitespace-only should return false")
 }
 

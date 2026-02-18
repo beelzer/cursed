@@ -90,7 +90,7 @@ slay resolve_dependencies(context ResolutionContext, root_packages PackageMetada
         sus result lit = resolve_node_dependencies(context, context.resolved_packages[i])
         packages_analyzed = packages_analyzed + 1
         
-        ready (!result) {
+        lowkey (!result) {
             sus end_time drip = get_timestamp_ms()
             damn ResolutionResult {
                 success: cap,
@@ -102,7 +102,7 @@ slay resolve_dependencies(context ResolutionContext, root_packages PackageMetada
         }
         
         # Prevent infinite recursion
-        ready (context.current_depth > context.max_depth) {
+        lowkey (context.current_depth > context.max_depth) {
             sus conflict ResolutionConflict = ResolutionConflict {
                 package_name: "depth_limit",
                 conflicting_versions: [],
@@ -134,7 +134,7 @@ slay resolve_dependencies(context ResolutionContext, root_packages PackageMetada
 
 # Resolve dependencies for a single node
 slay resolve_node_dependencies(context ResolutionContext, node ResolutionNode) lit {
-    ready (node.resolved) {
+    lowkey (node.resolved) {
         damn based
     }
     
@@ -144,7 +144,7 @@ slay resolve_node_dependencies(context ResolutionContext, node ResolutionNode) l
     bestie (sus i drip = 0; i < arrayz.len(node.metadata.dependencies); i = i + 1) {
         sus dep PackageDependency = node.metadata.dependencies[i]
         
-        ready (dep.optional && !should_install_optional_dependency(dep)) {
+        lowkey (dep.optional && !should_install_optional_dependency(dep)) {
             continue
         }
         
@@ -153,7 +153,7 @@ slay resolve_node_dependencies(context ResolutionContext, node ResolutionNode) l
         
         # Find compatible version
         sus compatible_versions PackageMetadata[value] = find_compatible_versions(context.registry, dep.name, constraint)
-        ready (arrayz.len(compatible_versions) == 0) {
+        lowkey (arrayz.len(compatible_versions) == 0) {
             sus conflict ResolutionConflict = ResolutionConflict {
                 package_name: dep.name,
                 conflicting_versions: [],
@@ -169,10 +169,10 @@ slay resolve_node_dependencies(context ResolutionContext, node ResolutionNode) l
         
         # Check for existing resolution
         sus existing_node ResolutionNode = find_existing_resolution(context.resolved_packages, dep.name)
-        ready (existing_node.name != "") {
+        lowkey (existing_node.name != "") {
             # Version conflict resolution
-            ready (existing_node.version != selected_metadata.version) {
-                ready (!can_resolve_version_conflict(existing_node, selected_metadata, constraint)) {
+            lowkey (existing_node.version != selected_metadata.version) {
+                lowkey (!can_resolve_version_conflict(existing_node, selected_metadata, constraint)) {
                     sus conflict ResolutionConflict = ResolutionConflict {
                         package_name: dep.name,
                         conflicting_versions: [existing_node.version, selected_metadata.version],
@@ -184,13 +184,13 @@ slay resolve_node_dependencies(context ResolutionContext, node ResolutionNode) l
                 }
                 
                 # Upgrade to newer compatible version if possible
-                ready (version_is_newer_str(selected_metadata.version, existing_node.version)) {
+                lowkey (version_is_newer_str(selected_metadata.version, existing_node.version)) {
                     existing_node.version = selected_metadata.version
                     existing_node.metadata = selected_metadata
                     existing_node.resolved = cap  # Re-resolve with new version
                 }
             }
-        } otherwise {
+        } highkey {
             # Add new dependency node
             sus dep_node ResolutionNode = create_resolution_node(selected_metadata, [node.name])
             context.resolved_packages = arrayz.append(context.resolved_packages, dep_node)
@@ -217,41 +217,41 @@ slay create_resolution_node(metadata PackageMetadata, required_by tea[value]) Re
 
 # Parse version constraint string into structured constraint
 slay parse_version_constraint(constraint_str tea) VersionConstraint {
-    ready (constraint_str == "" || constraint_str == "*") {
+    lowkey (constraint_str == "" || constraint_str == "*") {
         damn VersionConstraint { type: ConstraintType.Any, version: PackageVersion{} }
     }
     
-    ready (stringz.starts_with(constraint_str, "^")) {
+    lowkey (stringz.starts_with(constraint_str, "^")) {
         sus version_str tea = stringz.substring(constraint_str, 1, stringz.length(constraint_str))
         damn VersionConstraint { type: ConstraintType.Compatible, version: parse_version(version_str) }
     }
     
-    ready (stringz.starts_with(constraint_str, "~")) {
+    lowkey (stringz.starts_with(constraint_str, "~")) {
         sus version_str tea = stringz.substring(constraint_str, 1, stringz.length(constraint_str))
         damn VersionConstraint { type: ConstraintType.Wildcard, version: parse_version(version_str) }
     }
     
-    ready (stringz.starts_with(constraint_str, ">=")) {
+    lowkey (stringz.starts_with(constraint_str, ">=")) {
         sus version_str tea = stringz.substring(constraint_str, 2, stringz.length(constraint_str))
         damn VersionConstraint { type: ConstraintType.GreaterEqual, version: parse_version(version_str) }
     }
     
-    ready (stringz.starts_with(constraint_str, ">")) {
+    lowkey (stringz.starts_with(constraint_str, ">")) {
         sus version_str tea = stringz.substring(constraint_str, 1, stringz.length(constraint_str))
         damn VersionConstraint { type: ConstraintType.GreaterThan, version: parse_version(version_str) }
     }
     
-    ready (stringz.starts_with(constraint_str, "<=")) {
+    lowkey (stringz.starts_with(constraint_str, "<=")) {
         sus version_str tea = stringz.substring(constraint_str, 2, stringz.length(constraint_str))
         damn VersionConstraint { type: ConstraintType.LessEqual, version: parse_version(version_str) }
     }
     
-    ready (stringz.starts_with(constraint_str, "<")) {
+    lowkey (stringz.starts_with(constraint_str, "<")) {
         sus version_str tea = stringz.substring(constraint_str, 1, stringz.length(constraint_str))
         damn VersionConstraint { type: ConstraintType.LessThan, version: parse_version(version_str) }
     }
     
-    ready (stringz.starts_with(constraint_str, "=")) {
+    lowkey (stringz.starts_with(constraint_str, "=")) {
         sus version_str tea = stringz.substring(constraint_str, 1, stringz.length(constraint_str))
         damn VersionConstraint { type: ConstraintType.Exact, version: parse_version(version_str) }
     }
@@ -268,8 +268,8 @@ slay find_compatible_versions(registry PackageRegistry, package_name tea, constr
     
     bestie (sus i drip = 0; i < arrayz.len(search_results); i = i + 1) {
         sus pkg PackageMetadata = search_results[i]
-        ready (pkg.name == package_name) {
-            ready (is_version_compatible(pkg.version, constraint)) {
+        lowkey (pkg.name == package_name) {
+            lowkey (is_version_compatible(pkg.version, constraint)) {
                 compatible = arrayz.append(compatible, pkg)
             }
         }
@@ -296,15 +296,15 @@ slay is_version_compatible(version_str tea, constraint VersionConstraint) lit {
 
 # Check if version is compatible (^1.2.3 matches 1.x.x but not 2.x.x)
 slay is_compatible_version(version PackageVersion, constraint_version PackageVersion) lit {
-    ready (version.major != constraint_version.major) {
+    lowkey (version.major != constraint_version.major) {
         damn cap
     }
     
-    ready (version.minor < constraint_version.minor) {
+    lowkey (version.minor < constraint_version.minor) {
         damn cap
     }
     
-    ready (version.minor == constraint_version.minor && version.patch < constraint_version.patch) {
+    lowkey (version.minor == constraint_version.minor && version.patch < constraint_version.patch) {
         damn cap
     }
     
@@ -313,11 +313,11 @@ slay is_compatible_version(version PackageVersion, constraint_version PackageVer
 
 # Check if version matches wildcard constraint (~1.2.3 matches 1.2.x)
 slay is_wildcard_compatible(version PackageVersion, constraint_version PackageVersion) lit {
-    ready (version.major != constraint_version.major) {
+    lowkey (version.major != constraint_version.major) {
         damn cap
     }
     
-    ready (version.minor != constraint_version.minor) {
+    lowkey (version.minor != constraint_version.minor) {
         damn cap
     }
     
@@ -326,11 +326,11 @@ slay is_wildcard_compatible(version PackageVersion, constraint_version PackageVe
 
 # Select best version from compatible versions (latest stable)
 slay select_best_version(versions PackageMetadata[value], constraint VersionConstraint) PackageMetadata {
-    ready (arrayz.len(versions) == 0) {
+    lowkey (arrayz.len(versions) == 0) {
         damn PackageMetadata{}
     }
     
-    ready (arrayz.len(versions) == 1) {
+    lowkey (arrayz.len(versions) == 1) {
         damn versions[0]
     }
     
@@ -339,17 +339,17 @@ slay select_best_version(versions PackageMetadata[value], constraint VersionCons
         sus current PackageMetadata = versions[i]
         
         # Prefer stable versions over pre-release
-        ready (is_prerelease_version(best.version) && !is_prerelease_version(current.version)) {
+        lowkey (is_prerelease_version(best.version) && !is_prerelease_version(current.version)) {
             best = current
             continue
         }
         
-        ready (!is_prerelease_version(best.version) && is_prerelease_version(current.version)) {
+        lowkey (!is_prerelease_version(best.version) && is_prerelease_version(current.version)) {
             continue
         }
         
         # Select newer version
-        ready (version_is_newer_str(current.version, best.version)) {
+        lowkey (version_is_newer_str(current.version, best.version)) {
             best = current
         }
     }
@@ -365,9 +365,9 @@ slay detect_version_conflicts(resolved ResolutionNode[value]) ResolutionConflict
     # Build package name to node mapping
     bestie (sus i drip = 0; i < arrayz.len(resolved); i = i + 1) {
         sus node ResolutionNode = resolved[i]
-        ready (map_contains(package_map, node.name)) {
+        lowkey (map_contains(package_map, node.name)) {
             sus existing ResolutionNode = map_get(package_map, node.name)
-            ready (existing.version != node.version) {
+            lowkey (existing.version != node.version) {
                 sus conflict ResolutionConflict = ResolutionConflict {
                     package_name: node.name,
                     conflicting_versions: [existing.version, node.version],
@@ -376,7 +376,7 @@ slay detect_version_conflicts(resolved ResolutionNode[value]) ResolutionConflict
                 }
                 conflicts = arrayz.append(conflicts, conflict)
             }
-        } otherwise {
+        } highkey {
             package_map = map_set(package_map, node.name, node)
         }
     }
@@ -388,7 +388,7 @@ slay detect_version_conflicts(resolved ResolutionNode[value]) ResolutionConflict
 slay find_existing_resolution(resolved ResolutionNode[value], package_name tea) ResolutionNode {
     bestie (sus i drip = 0; i < arrayz.len(resolved); i = i + 1) {
         sus node ResolutionNode = resolved[i]
-        ready (node.name == package_name) {
+        lowkey (node.name == package_name) {
             damn node
         }
     }
@@ -403,8 +403,8 @@ slay can_resolve_version_conflict(existing ResolutionNode, new_metadata PackageM
     sus new_version PackageVersion = parse_version(new_metadata.version)
     
     # If new version is more recent and compatible, we can upgrade
-    ready (is_version_compatible(new_metadata.version, constraint)) {
-        ready (compare_versions(new_version, existing_version) > 0) {
+    lowkey (is_version_compatible(new_metadata.version, constraint)) {
+        lowkey (compare_versions(new_version, existing_version) > 0) {
             damn based
         }
     }
@@ -417,7 +417,7 @@ slay extract_package_metadata(nodes ResolutionNode[value]) PackageMetadata[value
     sus metadata PackageMetadata[value] = []
     bestie (sus i drip = 0; i < arrayz.len(nodes); i = i + 1) {
         sus node ResolutionNode = nodes[i]
-        ready (node.resolved) {
+        lowkey (node.resolved) {
             metadata = arrayz.append(metadata, node.metadata)
         }
     }
@@ -432,9 +432,9 @@ slay detect_circular_dependencies(nodes ResolutionNode[value]) ResolutionConflic
     
     bestie (sus i drip = 0; i < arrayz.len(nodes); i = i + 1) {
         sus node ResolutionNode = nodes[i]
-        ready (!arrayz.contains_string(visited, node.name)) {
+        lowkey (!arrayz.contains_string(visited, node.name)) {
             sus cycle tea[value] = find_circular_dependency(node, visiting, visited)
-            ready (arrayz.len(cycle) > 0) {
+            lowkey (arrayz.len(cycle) > 0) {
                 sus conflict ResolutionConflict = ResolutionConflict {
                     package_name: "circular_dependency",
                     conflicting_versions: [],
@@ -451,13 +451,13 @@ slay detect_circular_dependencies(nodes ResolutionNode[value]) ResolutionConflic
 
 # Find circular dependency path
 slay find_circular_dependency(node ResolutionNode, visiting tea[value], visited tea[value]) tea[value]{
-    ready (arrayz.contains_string(visiting, node.name)) {
+    lowkey (arrayz.contains_string(visiting, node.name)) {
         # Found cycle
         sus cycle_start drip = arrayz.index_of_string(visiting, node.name)
         damn arrayz.slice_string(visiting, cycle_start, arrayz.len(visiting))
     }
     
-    ready (arrayz.contains_string(visited, node.name)) {
+    lowkey (arrayz.contains_string(visited, node.name)) {
         damn []
     }
     
@@ -466,7 +466,7 @@ slay find_circular_dependency(node ResolutionNode, visiting tea[value], visited 
     bestie (sus i drip = 0; i < arrayz.len(node.dependencies); i = i + 1) {
         sus dep_node ResolutionNode = node.dependencies[i]
         sus cycle tea[value] = find_circular_dependency(dep_node, visiting, visited)
-        ready (arrayz.len(cycle) > 0) {
+        lowkey (arrayz.len(cycle) > 0) {
             damn cycle
         }
     }

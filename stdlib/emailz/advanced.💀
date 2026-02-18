@@ -59,7 +59,7 @@ slay send_bulk_emails(sender BulkEmailSender, emails Email[value]) yikes<BulkEma
     sus i drip = 0
     bestie (i < arrayz.len(emails)) {
         sus batch_end drip = i + sender.batch_size
-        ready (batch_end > arrayz.len(emails)) {
+        lowkey (batch_end > arrayz.len(emails)) {
             batch_end = arrayz.len(emails)
         }
         
@@ -69,12 +69,12 @@ slay send_bulk_emails(sender BulkEmailSender, emails Email[value]) yikes<BulkEma
             sus email Email = emails[j]
             
             // Apply rate limiting
-            ready (sender.rate_limit > 0) {
+            lowkey (sender.rate_limit > 0) {
                 sus current_time drip = timez.current_milliseconds()
                 sus time_since_last drip = current_time - sender.last_send_time
                 sus min_interval drip = 60000 / sender.rate_limit  // milliseconds between emails
                 
-                ready (time_since_last < min_interval) {
+                lowkey (time_since_last < min_interval) {
                     sus sleep_time drip = min_interval - time_since_last
                     timez.sleep_milliseconds(sleep_time)
                     rate_limited_count = rate_limited_count + 1
@@ -92,7 +92,7 @@ slay send_bulk_emails(sender BulkEmailSender, emails Email[value]) yikes<BulkEma
                 }
             }
             
-            ready (success) {
+            lowkey (success) {
                 sent_count = sent_count + 1
                 sender.sent_count = sender.sent_count + 1
             }
@@ -124,9 +124,9 @@ slay send_email_with_retries(client SmtpClient, email Email, max_retries drip) y
         sus response SmtpResponse = send_email(client, email) fam {
             when err -> {
                 // Check if error is retryable
-                ready (is_retryable_smtp_error(err)) {
+                lowkey (is_retryable_smtp_error(err)) {
                     attempt = attempt + 1
-                    ready (attempt <= max_retries) {
+                    lowkey (attempt <= max_retries) {
                         // Exponential backoff
                         sus wait_time drip = attempt * attempt * 1000  // 1s, 4s, 9s, 16s...
                         timez.sleep_milliseconds(wait_time)
@@ -147,12 +147,12 @@ slay send_email_with_retries(client SmtpClient, email Email, max_retries drip) y
 // Determines if an SMTP error is retryable
 slay is_retryable_smtp_error(error EmailError) lit {
     // Temporary failures (4xx codes) are generally retryable
-    ready (error.smtp_code >= 400 && error.smtp_code < 500) {
+    lowkey (error.smtp_code >= 400 && error.smtp_code < 500) {
         damn based
     }
     
     // Connection errors are retryable
-    ready (stringz.equals(error.kind, "smtp_connect")) {
+    lowkey (stringz.equals(error.kind, "smtp_connect")) {
         damn based
     }
     
@@ -190,7 +190,7 @@ squad SmtpPool {
 
 // Creates an SMTP connection pool
 slay create_smtp_pool(config SmtpPoolConfig) yikes<SmtpPool> {
-    ready (config.max_connections <= 0) {
+    lowkey (config.max_connections <= 0) {
         yikes create_email_error("pool_config", "Max connections must be greater than 0", 0, "")
     }
     
@@ -213,7 +213,7 @@ slay create_smtp_pool(config SmtpPoolConfig) yikes<SmtpPool> {
                 // Log warning but continue - connections will be created on demand
             }
         }
-        ready (client.authenticated) {
+        lowkey (client.authenticated) {
             pool.connections = arrayz.push(pool.connections, client)
             pool.connection_count = pool.connection_count + 1
         }
@@ -227,15 +227,15 @@ slay create_smtp_pool(config SmtpPoolConfig) yikes<SmtpPool> {
 slay create_pool_connection(config SmtpPoolConfig) yikes<SmtpClient> {
     sus client SmtpClient = ""
     
-    ready (config.use_tls) {
+    lowkey (config.use_tls) {
         client = create_smtp_client_tls(config.host, config.port) fam {
             when err -> yikes err
         }
-    } otherwise ready (config.use_starttls) {
+    } highkey lowkey (config.use_starttls) {
         client = create_smtp_client_starttls(config.host, config.port) fam {
             when err -> yikes err
         }
-    } otherwise {
+    } highkey {
         client = create_smtp_client(config.host, config.port) fam {
             when err -> yikes err
         }
@@ -247,7 +247,7 @@ slay create_pool_connection(config SmtpPoolConfig) yikes<SmtpClient> {
     connect_smtp(client) fam { when err -> yikes err }
     ehlo_smtp(client, "pool-client") fam { when err -> yikes err }
     
-    ready (config.use_starttls) {
+    lowkey (config.use_starttls) {
         starttls_smtp(client) fam { when err -> yikes err }
         ehlo_smtp(client, "pool-client") fam { when err -> yikes err }
     }
@@ -264,7 +264,7 @@ slay get_pool_connection(pool SmtpPool) yikes<SmtpClient> {
     concurrenz.lock(pool.pool_lock)
     
     // Try to get an available connection
-    ready (arrayz.len(pool.connections) > 0) {
+    lowkey (arrayz.len(pool.connections) > 0) {
         sus client SmtpClient = pool.connections[0]
         pool.connections = arrayz.remove_at(pool.connections, 0)
         pool.active_connections = arrayz.push(pool.active_connections, client)
@@ -274,7 +274,7 @@ slay get_pool_connection(pool SmtpPool) yikes<SmtpClient> {
     }
     
     // No available connections - try to create a new one
-    ready (pool.connection_count < pool.config.max_connections) {
+    lowkey (pool.connection_count < pool.config.max_connections) {
         pool.connection_count = pool.connection_count + 1
         concurrenz.unlock(pool.pool_lock)
         
@@ -311,9 +311,9 @@ slay return_pool_connection(pool SmtpPool, client SmtpClient) {
     })
     
     // Add back to available connections if still valid
-    ready (client.authenticated) {
+    lowkey (client.authenticated) {
         pool.connections = arrayz.push(pool.connections, client)
-    } otherwise {
+    } highkey {
         pool.connection_count = pool.connection_count - 1
     }
     
@@ -374,7 +374,7 @@ sus global_template_registry TemplateRegistry = TemplateRegistry{
 
 // Registers a new email template
 slay register_email_template(name tea, subject_template tea, html_template tea, text_template tea) yikes<lit> {
-    ready (stringz.len(name) == 0) {
+    lowkey (stringz.len(name) == 0) {
         yikes create_email_error("template_error", "Template name cannot be empty", 0, "")
     }
     
@@ -394,7 +394,7 @@ slay register_email_template(name tea, subject_template tea, html_template tea, 
     sus i drip = 0
     bestie (i < arrayz.len(global_template_registry.templates)) {
         sus existing EmailTemplate = global_template_registry.templates[i]
-        ready (stringz.equals(existing.name, name)) {
+        lowkey (stringz.equals(existing.name, name)) {
             // Update existing template
             global_template_registry.templates[i] = template
             concurrenz.unlock(global_template_registry.registry_lock)
@@ -421,7 +421,7 @@ slay create_template_email(template_name tea, variables TemplateVariable[value],
     sus i drip = 0
     bestie (i < arrayz.len(global_template_registry.templates)) {
         sus t EmailTemplate = global_template_registry.templates[i]
-        ready (stringz.equals(t.name, template_name)) {
+        lowkey (stringz.equals(t.name, template_name)) {
             template = t
             found = based
             damn // Break out of loop
@@ -431,7 +431,7 @@ slay create_template_email(template_name tea, variables TemplateVariable[value],
     
     concurrenz.unlock(global_template_registry.registry_lock)
     
-    ready (!found) {
+    lowkey (!found) {
         yikes create_email_error("template_not_found", stringz.concat(["Template not found: ", template_name]), 0, "")
     }
     
@@ -450,17 +450,17 @@ slay create_template_email(template_name tea, variables TemplateVariable[value],
     
     // Create email
     sus email Email = ""
-    ready (stringz.len(rendered_html) > 0 && stringz.len(rendered_text) > 0) {
+    lowkey (stringz.len(rendered_html) > 0 && stringz.len(rendered_text) > 0) {
         email = create_html_email(from, to, rendered_subject, rendered_html, rendered_text) fam {
             when err -> yikes err
         }
-    } otherwise ready (stringz.len(rendered_html) > 0) {
+    } highkey lowkey (stringz.len(rendered_html) > 0) {
         email = create_email(from, to, rendered_subject, rendered_html) fam {
             when err -> yikes err
         }
         email.body_html = rendered_html
         email.content_type = "text/html"
-    } otherwise {
+    } highkey {
         email = create_email(from, to, rendered_subject, rendered_text) fam {
             when err -> yikes err
         }
@@ -471,7 +471,7 @@ slay create_template_email(template_name tea, variables TemplateVariable[value],
 
 // Renders a template with variable substitution
 slay render_template(template tea, variables TemplateVariable[value]) yikes<tea> {
-    ready (stringz.len(template) == 0) {
+    lowkey (stringz.len(template) == 0) {
         damn ""
     }
     
@@ -486,9 +486,9 @@ slay render_template(template tea, variables TemplateVariable[value]) yikes<tea>
     }
     
     // Check for unresolved variables
-    ready (stringz.contains(result, "{{") && stringz.contains(result, "}}")) {
+    lowkey (stringz.contains(result, "{{") && stringz.contains(result, "}}")) {
         sus unresolved tea = extract_unresolved_variables(result)
-        ready (stringz.len(unresolved) > 0) {
+        lowkey (stringz.len(unresolved) > 0) {
             yikes create_email_error("template_render", stringz.concat(["Unresolved template variables: ", unresolved]), 0, "")
         }
     }
@@ -504,17 +504,17 @@ slay extract_template_variables(subject tea, html tea, text tea) tea[value]{
     sus current_pos drip = 0
     bestie (current_pos < stringz.len(all_content)) {
         sus start drip = stringz.find_from(all_content, "{{", current_pos)
-        ready (start == -1) {
+        lowkey (start == -1) {
             damn variables
         }
         
         sus end drip = stringz.find_from(all_content, "}}", start)
-        ready (end == -1) {
+        lowkey (end == -1) {
             damn variables
         }
         
         sus var_name tea = stringz.trim(stringz.substring(all_content, start + 2, end))
-        ready (stringz.len(var_name) > 0 && !arrayz.contains(variables, var_name)) {
+        lowkey (stringz.len(var_name) > 0 && !arrayz.contains(variables, var_name)) {
             variables = arrayz.push(variables, var_name)
         }
         
@@ -531,17 +531,17 @@ slay extract_unresolved_variables(rendered tea) tea {
     
     bestie (current_pos < stringz.len(rendered)) {
         sus start drip = stringz.find_from(rendered, "{{", current_pos)
-        ready (start == -1) {
+        lowkey (start == -1) {
             damn stringz.join(unresolved, ", ")
         }
         
         sus end drip = stringz.find_from(rendered, "}}", start)
-        ready (end == -1) {
+        lowkey (end == -1) {
             damn stringz.join(unresolved, ", ")
         }
         
         sus var_name tea = stringz.trim(stringz.substring(rendered, start + 2, end))
-        ready (stringz.len(var_name) > 0 && !arrayz.contains(unresolved, var_name)) {
+        lowkey (stringz.len(var_name) > 0 && !arrayz.contains(unresolved, var_name)) {
             unresolved = arrayz.push(unresolved, var_name)
         }
         
@@ -571,7 +571,7 @@ squad BounceInfo {
 slay parse_bounce_email(bounce_email ParsedEmail) yikes<BounceInfo> {
     // Check if this is a delivery status notification
     sus content_type tea = bounce_email.content_type
-    ready (!stringz.contains(content_type, "multipart/report") && !stringz.contains(content_type, "message/delivery-status")) {
+    lowkey (!stringz.contains(content_type, "multipart/report") && !stringz.contains(content_type, "message/delivery-status")) {
         yikes create_email_error("not_bounce", "Email is not a delivery status notification", 0, "")
     }
     
@@ -590,7 +590,7 @@ slay parse_bounce_email(bounce_email ParsedEmail) yikes<BounceInfo> {
     sus i drip = 0
     bestie (i < arrayz.len(bounce_email.attachments)) {
         sus attachment EmailAttachment = bounce_email.attachments[i]
-        ready (stringz.contains(attachment.content_type, "message/delivery-status")) {
+        lowkey (stringz.contains(attachment.content_type, "message/delivery-status")) {
             bounce_info = parse_delivery_status_content(attachment.content) fam {
                 when err -> {
                     // Try parsing from body text as fallback
@@ -604,7 +604,7 @@ slay parse_bounce_email(bounce_email ParsedEmail) yikes<BounceInfo> {
     
     // Fallback: parse bounce information from email body
     sus body_text tea = bounce_email.body_text
-    ready (stringz.len(body_text) == 0) {
+    lowkey (stringz.len(body_text) == 0) {
         body_text = bounce_email.body_html
     }
     
@@ -627,13 +627,13 @@ slay parse_delivery_status_content(content tea) yikes<BounceInfo> {
         sus line tea = stringz.trim(lines[i])
         
         // Skip empty lines
-        ready (stringz.len(line) == 0) {
+        lowkey (stringz.len(line) == 0) {
             i = i + 1
             damn // Continue
         }
         
         // Section separator
-        ready (!stringz.contains(line, ":")) {
+        lowkey (!stringz.contains(line, ":")) {
             current_section = "recipient"
             i = i + 1
             damn // Continue
@@ -655,13 +655,13 @@ slay parse_delivery_status_content(content tea) yikes<BounceInfo> {
             }
             when "original-recipient", "final-recipient" -> {
                 // Format: "rfc822;email@example.com"
-                ready (stringz.contains(field_value, ";")) {
+                lowkey (stringz.contains(field_value, ";")) {
                     sus parts tea[value] = stringz.split(field_value, ";")
-                    ready (arrayz.len(parts) >= 2) {
+                    lowkey (arrayz.len(parts) >= 2) {
                         sus email_addr tea = stringz.trim(parts[1])
-                        ready (stringz.equals(field_name, "original-recipient")) {
+                        lowkey (stringz.equals(field_name, "original-recipient")) {
                             bounce_info.original_recipient = email_addr
-                        } otherwise {
+                        } highkey {
                             bounce_info.final_recipient = email_addr
                         }
                     }
@@ -677,7 +677,7 @@ slay parse_delivery_status_content(content tea) yikes<BounceInfo> {
     }
     
     // Set final recipient to original if not specified
-    ready (stringz.len(bounce_info.final_recipient) == 0) {
+    lowkey (stringz.len(bounce_info.final_recipient) == 0) {
         bounce_info.final_recipient = bounce_info.original_recipient
     }
     
@@ -694,26 +694,26 @@ slay parse_bounce_from_body(body tea) yikes<BounceInfo> {
     sus body_lower tea = stringz.to_lower(body)
     
     // Look for common bounce indicators
-    ready (stringz.contains(body_lower, "user unknown") || stringz.contains(body_lower, "no such user")) {
+    lowkey (stringz.contains(body_lower, "user unknown") || stringz.contains(body_lower, "no such user")) {
         bounce_info.bounce_type = "hard"
         bounce_info.bounce_reason = "User unknown"
-    } otherwise ready (stringz.contains(body_lower, "mailbox full") || stringz.contains(body_lower, "quota exceeded")) {
+    } highkey lowkey (stringz.contains(body_lower, "mailbox full") || stringz.contains(body_lower, "quota exceeded")) {
         bounce_info.bounce_type = "soft"
         bounce_info.bounce_reason = "Mailbox full"
-    } otherwise ready (stringz.contains(body_lower, "temporary failure") || stringz.contains(body_lower, "try again later")) {
+    } highkey lowkey (stringz.contains(body_lower, "temporary failure") || stringz.contains(body_lower, "try again later")) {
         bounce_info.bounce_type = "soft"
         bounce_info.bounce_reason = "Temporary failure"
-    } otherwise ready (stringz.contains(body_lower, "domain not found") || stringz.contains(body_lower, "host not found")) {
+    } highkey lowkey (stringz.contains(body_lower, "domain not found") || stringz.contains(body_lower, "host not found")) {
         bounce_info.bounce_type = "hard"
         bounce_info.bounce_reason = "Domain not found"
-    } otherwise ready (stringz.contains(body_lower, "blocked") || stringz.contains(body_lower, "blacklisted")) {
+    } highkey lowkey (stringz.contains(body_lower, "blocked") || stringz.contains(body_lower, "blacklisted")) {
         bounce_info.bounce_type = "hard"
         bounce_info.bounce_reason = "Message blocked or blacklisted"
     }
     
     // Try to extract email address
     sus email_match tea = extract_email_from_text(body)
-    ready (stringz.len(email_match) > 0) {
+    lowkey (stringz.len(email_match) > 0) {
         bounce_info.original_recipient = email_match
         bounce_info.final_recipient = email_match
     }
@@ -740,13 +740,13 @@ slay determine_bounce_type_from_action(action tea) tea {
 // Extracts SMTP code from enhanced status code
 slay extract_smtp_code_from_status(status tea) drip {
     // Enhanced status codes format: X.Y.Z (e.g., "5.1.1")
-    ready (stringz.len(status) >= 3) {
+    lowkey (stringz.len(status) >= 3) {
         sus first_char tea = stringz.char_at(status, 0)
-        ready (stringz.equals(first_char, "2")) {
+        lowkey (stringz.equals(first_char, "2")) {
             damn 250  // Success
-        } otherwise ready (stringz.equals(first_char, "4")) {
+        } highkey lowkey (stringz.equals(first_char, "4")) {
             damn 450  // Temporary failure
-        } otherwise ready (stringz.equals(first_char, "5")) {
+        } highkey lowkey (stringz.equals(first_char, "5")) {
             damn 550  // Permanent failure
         }
     }
@@ -758,17 +758,17 @@ slay extract_smtp_code_from_status(status tea) drip {
 slay extract_bounce_reason(diagnostic tea) tea {
     sus diagnostic_lower tea = stringz.to_lower(diagnostic)
     
-    ready (stringz.contains(diagnostic_lower, "user unknown")) {
+    lowkey (stringz.contains(diagnostic_lower, "user unknown")) {
         damn "Recipient address not found"
-    } otherwise ready (stringz.contains(diagnostic_lower, "mailbox full")) {
+    } highkey lowkey (stringz.contains(diagnostic_lower, "mailbox full")) {
         damn "Recipient mailbox is full"
-    } otherwise ready (stringz.contains(diagnostic_lower, "message too large")) {
+    } highkey lowkey (stringz.contains(diagnostic_lower, "message too large")) {
         damn "Message exceeds size limit"
-    } otherwise ready (stringz.contains(diagnostic_lower, "blocked")) {
+    } highkey lowkey (stringz.contains(diagnostic_lower, "blocked")) {
         damn "Message was blocked by recipient server"
-    } otherwise ready (stringz.contains(diagnostic_lower, "timeout")) {
+    } highkey lowkey (stringz.contains(diagnostic_lower, "timeout")) {
         damn "Connection timeout occurred"
-    } otherwise {
+    } highkey {
         damn stringz.substring(diagnostic, 0, mathz.min(100, stringz.len(diagnostic)))  // Truncate long diagnostics
     }
 }
@@ -779,7 +779,7 @@ slay extract_email_from_text(text tea) tea {
     
     bestie (current_pos < stringz.len(text)) {
         sus at_pos drip = stringz.find_from(text, "@", current_pos)
-        ready (at_pos == -1) {
+        lowkey (at_pos == -1) {
             damn ""  // No more @ symbols
         }
         
@@ -787,7 +787,7 @@ slay extract_email_from_text(text tea) tea {
         sus start_pos drip = at_pos
         bestie (start_pos > 0) {
             sus char tea = stringz.char_at(text, start_pos - 1)
-            ready (stringz.equals(char, " ") || stringz.equals(char, "\t") || stringz.equals(char, "\n") || stringz.equals(char, "\r")) {
+            lowkey (stringz.equals(char, " ") || stringz.equals(char, "\t") || stringz.equals(char, "\n") || stringz.equals(char, "\r")) {
                 damn // Found start
             }
             start_pos = start_pos - 1
@@ -797,7 +797,7 @@ slay extract_email_from_text(text tea) tea {
         sus end_pos drip = at_pos
         bestie (end_pos < stringz.len(text) - 1) {
             sus char tea = stringz.char_at(text, end_pos + 1)
-            ready (stringz.equals(char, " ") || stringz.equals(char, "\t") || stringz.equals(char, "\n") || stringz.equals(char, "\r") || stringz.equals(char, ",") || stringz.equals(char, ";")) {
+            lowkey (stringz.equals(char, " ") || stringz.equals(char, "\t") || stringz.equals(char, "\n") || stringz.equals(char, "\r") || stringz.equals(char, ",") || stringz.equals(char, ";")) {
                 damn // Found end
             }
             end_pos = end_pos + 1
@@ -805,7 +805,7 @@ slay extract_email_from_text(text tea) tea {
         
         // Extract potential email address
         sus potential_email tea = stringz.trim(stringz.substring(text, start_pos, end_pos + 1))
-        ready (validate_email_address(potential_email)) {
+        lowkey (validate_email_address(potential_email)) {
             damn potential_email
         }
         
@@ -829,7 +829,7 @@ slay arrayz.filter(array SmtpClient[value], predicate slay(SmtpClient) lit) Smtp
 slay arrayz.contains(array tea[value], value tea) lit {
     sus i drip = 0
     bestie (i < arrayz.len(array)) {
-        ready (stringz.equals(array[i], value)) {
+        lowkey (stringz.equals(array[i], value)) {
             damn based
         }
         i = i + 1
@@ -849,7 +849,7 @@ slay timez.sleep_milliseconds(ms drip) {
 
 // Helper functions for math operations (placeholders)
 slay mathz.min(a drip, b drip) drip {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b

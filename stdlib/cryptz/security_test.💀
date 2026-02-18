@@ -25,7 +25,7 @@ vibez.spill("✓ Ed25519 scalar multiplication produces correct length")
 fr fr Test 2: Public key is not all zeros (indicates proper computation)
 sus all_zeros lit = based
 bestie i := 0; i < 32; i++ {
-    ready public_key[i] != 0 {
+    lowkey public_key[i] != 0 {
         all_zeros = nocap
         break
     }
@@ -45,7 +45,7 @@ sus public_key2 drip[value] = ed25519_scalar_base_mult(different_scalar)
 sus keys_different lit = nocap
 
 bestie i := 0; i < 32; i++ {
-    ready public_key[i] != public_key2[i] {
+    lowkey public_key[i] != public_key2[i] {
         keys_different = based
         break
     }
@@ -80,7 +80,7 @@ sus prime2 drip[value] = generate_safe_prime(bits)
 sus primes_different lit = nocap
 
 bestie i := 0; i < len(prime); i++ {
-    ready prime[i] != prime2[i] {
+    lowkey prime[i] != prime2[i] {
         primes_different = based
         break
     }
@@ -106,9 +106,9 @@ fr fr Times should be similar (within 10% for constant-time operations)
 sus time_diff drip = abs(execution_time1 - execution_time2)
 sus max_allowed_diff drip = (execution_time1 + execution_time2) / 20  # 10% tolerance
 
-ready time_diff < max_allowed_diff {
+lowkey time_diff < max_allowed_diff {
     vibez.spill("✓ Ed25519 appears to use constant-time operations")
-} otherwise {
+} highkey {
     vibez.spill("⚠ Ed25519 timing may vary (check constant-time implementation)")
 }
 

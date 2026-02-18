@@ -18,8 +18,8 @@ slay calculate_optimal_packet_size(connection NetworkConnection) normie {
     sus optimal_size normie = mtu - header_overhead
     
     fr fr Ensure minimum and maximum bounds
-    ready (optimal_size < 536) { damn 536 }      fr fr Minimum safe size
-    ready (optimal_size > 9000) { damn 9000 }    fr fr Jumbo frame limit
+    lowkey (optimal_size < 536) { damn 536 }      fr fr Minimum safe size
+    lowkey (optimal_size > 9000) { damn 9000 }    fr fr Jumbo frame limit
     damn optimal_size
 }
 

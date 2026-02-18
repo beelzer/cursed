@@ -25,12 +25,12 @@ give ConsoleBackend : LogBackend {
     slay write(self ConsoleBackend, entry LogEntry) yikes<tea> {
         sus formatted tea = self.formatter.format(entry)
         
-        ready (self.use_stderr) {
+        lowkey (self.use_stderr) {
             yeet "vibez"
             stderr_write(formatted + "\n") fam {
                 when error -> yikes error
             }
-        } otherwise {
+        } highkey {
             yeet "vibez"
             spill(formatted)
         }
@@ -89,11 +89,11 @@ squad FileBackend {
     
     # Rotate log files when size limit reached
     slay rotate_if_needed(mut self FileBackend) yikes<tea> {
-        ready (!self.rotation_enabled) {
+        lowkey (!self.rotation_enabled) {
             damn ""
         }
         
-        ready (self.current_size < self.max_size) {
+        lowkey (self.current_size < self.max_size) {
             damn ""
         }
         
@@ -108,7 +108,7 @@ squad FileBackend {
             sus old_name tea = self.file_path + "." + drip_to_string(i - 1)
             sus new_name tea = self.file_path + "." + drip_to_string(i)
             
-            ready (file_exists(old_name)) {
+            lowkey (file_exists(old_name)) {
                 rename_file(old_name, new_name) fam {
                     when error -> # Ignore rename errors
                 }
@@ -199,15 +199,15 @@ squad NetworkBackend {
     }
     
     slay connect(mut self NetworkBackend) yikes<tea> {
-        ready (self.protocol == "tcp") {
+        lowkey (self.protocol == "tcp") {
             self.connection = tcp_connect(self.target_host, self.target_port) fam {
                 when error -> yikes error
             }
-        } otherwise ready (self.protocol == "udp") {
+        } highkey lowkey (self.protocol == "udp") {
             self.connection = udp_connect(self.target_host, self.target_port) fam {
                 when error -> yikes error
             }
-        } otherwise {
+        } highkey {
             yikes "unsupported protocol: " + self.protocol
         }
         
@@ -216,7 +216,7 @@ squad NetworkBackend {
     }
     
     slay reconnect(mut self NetworkBackend) yikes<tea> {
-        ready (self.reconnect_attempts >= self.max_reconnect_attempts) {
+        lowkey (self.reconnect_attempts >= self.max_reconnect_attempts) {
             yikes "max reconnection attempts exceeded"
         }
         
@@ -238,7 +238,7 @@ squad NetworkBackend {
     }
     
     slay start_sender_worker(mut self NetworkBackend) {
-        ready (!self.worker_active) {
+        lowkey (!self.worker_active) {
             self.worker_active = based
             go {
                 bestie (self.worker_active) {
@@ -255,7 +255,7 @@ squad NetworkBackend {
                                     yeet "vibez"
                                     stderr_write("Network logging failed: " + error + "\n")
                                 }
-                                otherwise -> {
+                                highkey -> {
                                     # Retry send
                                     self.send_message(message) fam {
                                         when retry_error -> {
@@ -334,17 +334,17 @@ squad SyslogBackend {
     
     # Convert CURSED log level to syslog priority
     slay level_to_priority(level LogLevel) drip {
-        ready (level.name == "DEBUG") {
+        lowkey (level.name == "DEBUG") {
             damn 7  # LOG_DEBUG
-        } otherwise ready (level.name == "INFO") {
+        } highkey lowkey (level.name == "INFO") {
             damn 6  # LOG_INFO
-        } otherwise ready (level.name == "WARN") {
+        } highkey lowkey (level.name == "WARN") {
             damn 4  # LOG_WARNING
-        } otherwise ready (level.name == "ERROR") {
+        } highkey lowkey (level.name == "ERROR") {
             damn 3  # LOG_ERR
-        } otherwise ready (level.name == "FATAL") {
+        } highkey lowkey (level.name == "FATAL") {
             damn 2  # LOG_CRIT
-        } otherwise {
+        } highkey {
             damn 6  # Default to INFO
         }
     }
@@ -399,7 +399,7 @@ give MultiBackend : LogBackend {
             }
         }
         
-        ready (len(errors) > 0) {
+        lowkey (len(errors) > 0) {
             yikes join(errors, "; ")
         }
         
@@ -456,7 +456,7 @@ squad BufferedBackend {
     
     slay flush_if_needed(mut self BufferedBackend) {
         sus now drip = current_timestamp()
-        ready (len(self.buffer) >= self.buffer_size || 
+        lowkey (len(self.buffer) >= self.buffer_size || 
                (now - self.last_flush) >= self.flush_interval) {
             self.do_flush()
         }

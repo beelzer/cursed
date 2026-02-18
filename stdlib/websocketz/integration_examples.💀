@@ -792,7 +792,7 @@ slay run_all_integration_examples() {
     vibez.spill("  • Game Lobby: Multiplayer matchmaking and communication")
     vibez.spill("  • IoT Monitoring: Device status and sensor data streaming")
     vibez.spill("")
-    vibez.spill("These examples demonstrate production-ready WebSocket usage patterns")
+    vibez.spill("These examples demonstrate production-lowkey WebSocket usage patterns")
     vibez.spill("for common real-world applications and use cases.")
 }
 

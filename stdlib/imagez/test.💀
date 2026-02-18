@@ -61,9 +61,9 @@ slay run_imagez_tests() lit {
     vibez.spill("Passed: " + string(passed_count))
     vibez.spill("Failed: " + string(failed_count))
     
-    ready (failed_count == 0) {
+    lowkey (failed_count == 0) {
         vibez.spill("✅ All imagez tests PASSED!")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ " + string(failed_count) + " tests FAILED")
     }
     
@@ -80,7 +80,7 @@ slay run_test(test_name tea, test_func slay() yikes<lit>) lit {
             vibez.spill("  ❌ FAILED: " + error)
             failed_count = failed_count + 1
         }
-    } otherwise {
+    } highkey {
         vibez.spill("  ✅ PASSED")
         passed_count = passed_count + 1
     }
@@ -93,15 +93,15 @@ slay test_image_creation() lit {
     run_test("Image Creation", slay() yikes<lit> {
         sus img Image = create_image(100, 100, 3)
         
-        ready (img.width != 100 || img.height != 100 || img.channels != 3) {
+        lowkey (img.width != 100 || img.height != 100 || img.channels != 3) {
             yikes "incorrect image dimensions or channels"
         }
         
-        ready (len(img.data) != 100 * 100 * 3) {
+        lowkey (len(img.data) != 100 * 100 * 3) {
             yikes "incorrect data size"
         }
         
-        ready (img.color_space != "RGB") {
+        lowkey (img.color_space != "RGB") {
             yikes "incorrect default color space"
         }
         
@@ -111,11 +111,11 @@ slay test_image_creation() lit {
     run_test("RGBA Image Creation", slay() yikes<lit> {
         sus img Image = create_image(50, 75, 4)
         
-        ready (img.channels != 4) {
+        lowkey (img.channels != 4) {
             yikes "incorrect RGBA channels"
         }
         
-        ready (img.color_space != "RGBA") {
+        lowkey (img.color_space != "RGBA") {
             yikes "incorrect RGBA color space"
         }
         
@@ -140,12 +140,12 @@ slay test_pixel_operations() lit {
             when e -> yikes e
         }
         
-        ready (len(retrieved_pixel) != 3) {
+        lowkey (len(retrieved_pixel) != 3) {
             yikes "retrieved pixel has wrong channel count"
         }
         
         bestie (i drip = 0; i < 3; i = i + 1) {
-            ready (retrieved_pixel[i] != test_pixel[i]) {
+            lowkey (retrieved_pixel[i] != test_pixel[i]) {
                 yikes "pixel values don't match"
             }
         }
@@ -161,7 +161,7 @@ slay test_pixel_operations() lit {
             when _ -> damn []  # Expected to fail
         }
         
-        ready (len(result) > 0) {
+        lowkey (len(result) > 0) {
             yikes "bounds checking failed - should have failed"
         }
         
@@ -194,7 +194,7 @@ slay test_image_validation() lit {
             when _ -> validation_result = nah  # Expected to fail
         }
         
-        ready (validation_result) {
+        lowkey (validation_result) {
             yikes "invalid image passed validation"
         }
         
@@ -212,19 +212,19 @@ slay test_color_structures() lit {
         sus lab LAB = LAB{l: 50.0, a: 25.0, b: -25.0}
         
         # Basic structure validation
-        ready (rgb.r != 255 || rgb.g != 128 || rgb.b != 64) {
+        lowkey (rgb.r != 255 || rgb.g != 128 || rgb.b != 64) {
             yikes "RGB structure values incorrect"
         }
         
-        ready (rgba.a != 255) {
+        lowkey (rgba.a != 255) {
             yikes "RGBA alpha value incorrect"
         }
         
-        ready (hsv.h != 180.0 || hsv.s != 0.5 || hsv.v != 1.0) {
+        lowkey (hsv.h != 180.0 || hsv.s != 0.5 || hsv.v != 1.0) {
             yikes "HSV structure values incorrect"
         }
         
-        ready (lab.l != 50.0) {
+        lowkey (lab.l != 50.0) {
             yikes "LAB structure values incorrect"
         }
         
@@ -241,15 +241,15 @@ slay test_rgb_hsv_conversion() lit {
         sus hsv HSV = rgb_to_hsv_precise(rgb)
         
         # Red should have hue ~0, saturation 1, value 1
-        ready (hsv.h < -1.0 || hsv.h > 1.0) {  # Allow small tolerance
+        lowkey (hsv.h < -1.0 || hsv.h > 1.0) {  # Allow small tolerance
             yikes "red hue conversion incorrect: " + string(hsv.h)
         }
         
-        ready (hsv.s < 0.99 || hsv.s > 1.01) {
+        lowkey (hsv.s < 0.99 || hsv.s > 1.01) {
             yikes "red saturation conversion incorrect: " + string(hsv.s)
         }
         
-        ready (hsv.v < 0.99 || hsv.v > 1.01) {
+        lowkey (hsv.v < 0.99 || hsv.v > 1.01) {
             yikes "red value conversion incorrect: " + string(hsv.v)
         }
         
@@ -261,15 +261,15 @@ slay test_rgb_hsv_conversion() lit {
         sus rgb RGB = hsv_to_rgb_precise(hsv)
         
         # Should result in pure green (0, 255, 0)
-        ready (rgb.r > 5) {  # Allow small tolerance for rounding
+        lowkey (rgb.r > 5) {  # Allow small tolerance for rounding
             yikes "green red component incorrect: " + string(rgb.r)
         }
         
-        ready (rgb.g < 250 || rgb.g > 255) {
+        lowkey (rgb.g < 250 || rgb.g > 255) {
             yikes "green green component incorrect: " + string(rgb.g)
         }
         
-        ready (rgb.b > 5) {
+        lowkey (rgb.b > 5) {
             yikes "green blue component incorrect: " + string(rgb.b)
         }
         
@@ -284,15 +284,15 @@ slay test_rgb_hsv_conversion() lit {
         # Allow small tolerance for rounding errors
         sus tolerance drip = 2
         
-        ready (abs(converted.r - original.r) > tolerance) {
+        lowkey (abs(converted.r - original.r) > tolerance) {
             yikes "round trip red component error"
         }
         
-        ready (abs(converted.g - original.g) > tolerance) {
+        lowkey (abs(converted.g - original.g) > tolerance) {
             yikes "round trip green component error"
         }
         
-        ready (abs(converted.b - original.b) > tolerance) {
+        lowkey (abs(converted.b - original.b) > tolerance) {
             yikes "round trip blue component error"
         }
         
@@ -308,11 +308,11 @@ slay test_rgb_lab_conversion() lit {
         sus lab LAB = rgb_to_lab(white)
         
         # White should have high L value, near-zero a and b
-        ready (lab.l < 95.0 || lab.l > 105.0) {
+        lowkey (lab.l < 95.0 || lab.l > 105.0) {
             yikes "white LAB L component incorrect: " + string(lab.l)
         }
         
-        ready (abs_tea(lab.a) > 5.0 || abs_tea(lab.b) > 5.0) {
+        lowkey (abs_tea(lab.a) > 5.0 || abs_tea(lab.b) > 5.0) {
             yikes "white LAB a/b components should be near zero"
         }
         
@@ -324,7 +324,7 @@ slay test_rgb_lab_conversion() lit {
         sus rgb RGB = lab_to_rgb(lab)
         
         # Should result in black or very dark
-        ready (rgb.r > 10 || rgb.g > 10 || rgb.b > 10) {
+        lowkey (rgb.r > 10 || rgb.g > 10 || rgb.b > 10) {
             yikes "black LAB conversion incorrect"
         }
         
@@ -339,12 +339,12 @@ slay test_rgb_cmyk_conversion() lit {
         sus black RGB = RGB{r: 0, g: 0, b: 0}
         sus cmyk tea[value] = rgb_to_cmyk(black)
         
-        ready (len(cmyk) != 4) {
+        lowkey (len(cmyk) != 4) {
             yikes "CMYK conversion wrong number of components"
         }
         
         # Black should have K=1, CMY=0
-        ready (cmyk[3] < 0.99) {
+        lowkey (cmyk[3] < 0.99) {
             yikes "black K component should be ~1.0"
         }
         
@@ -356,7 +356,7 @@ slay test_rgb_cmyk_conversion() lit {
         sus rgb RGB = cmyk_to_rgb(cmyk)
         
         # Should result in white
-        ready (rgb.r < 250 || rgb.g < 250 || rgb.b < 250) {
+        lowkey (rgb.r < 250 || rgb.g < 250 || rgb.b < 250) {
             yikes "white CMYK conversion incorrect"
         }
         
@@ -380,11 +380,11 @@ slay test_colorspace_image_conversion() lit {
             when e -> yikes e
         }
         
-        ready (gray_img.channels != 1) {
+        lowkey (gray_img.channels != 1) {
             yikes "grayscale image should have 1 channel"
         }
         
-        ready (gray_img.color_space != "GRAYSCALE") {
+        lowkey (gray_img.color_space != "GRAYSCALE") {
             yikes "grayscale color space incorrect"
         }
         
@@ -393,7 +393,7 @@ slay test_colorspace_image_conversion() lit {
         }
         
         # Red pixel should convert to some gray value
-        ready (len(gray_pixel) != 1) {
+        lowkey (len(gray_pixel) != 1) {
             yikes "grayscale pixel should have 1 component"
         }
         
@@ -411,11 +411,11 @@ slay test_image_resizing() lit {
             when e -> yikes e
         }
         
-        ready (resized.width != 4 || resized.height != 4) {
+        lowkey (resized.width != 4 || resized.height != 4) {
             yikes "resized dimensions incorrect"
         }
         
-        ready (resized.channels != 3) {
+        lowkey (resized.channels != 3) {
             yikes "resized channels incorrect"
         }
         
@@ -428,7 +428,7 @@ slay test_image_resizing() lit {
             when e -> yikes e
         }
         
-        ready (resized.width != 6 || resized.height != 6) {
+        lowkey (resized.width != 6 || resized.height != 6) {
             yikes "bilinear resized dimensions incorrect"
         }
         
@@ -453,7 +453,7 @@ slay test_image_cropping() lit {
             when e -> yikes e
         }
         
-        ready (cropped.width != 5 || cropped.height != 5) {
+        lowkey (cropped.width != 5 || cropped.height != 5) {
             yikes "cropped dimensions incorrect"
         }
         
@@ -463,7 +463,7 @@ slay test_image_cropping() lit {
         }
         
         bestie (i drip = 0; i < 3; i = i + 1) {
-            ready (cropped_pixel[i] != test_pixel[i]) {
+            lowkey (cropped_pixel[i] != test_pixel[i]) {
                 yikes "cropped pixel values incorrect"
             }
         }
@@ -482,7 +482,7 @@ slay test_image_rotation() lit {
         }
         
         # After 90 degree rotation, dimensions should be swapped approximately
-        ready (rotated.width <= 0 || rotated.height <= 0) {
+        lowkey (rotated.width <= 0 || rotated.height <= 0) {
             yikes "rotated image has invalid dimensions"
         }
         
@@ -512,7 +512,7 @@ slay test_image_flipping() lit {
         }
         
         bestie (i drip = 0; i < 3; i = i + 1) {
-            ready (flipped_pixel[i] != test_pixel[i]) {
+            lowkey (flipped_pixel[i] != test_pixel[i]) {
                 yikes "horizontally flipped pixel incorrect"
             }
         }
@@ -539,7 +539,7 @@ slay test_image_flipping() lit {
         }
         
         bestie (i drip = 0; i < 3; i = i + 1) {
-            ready (flipped_pixel[i] != test_pixel[i]) {
+            lowkey (flipped_pixel[i] != test_pixel[i]) {
                 yikes "vertically flipped pixel incorrect"
             }
         }
@@ -564,7 +564,7 @@ slay test_convolution_filters() lit {
             when e -> yikes e
         }
         
-        ready (blurred.width != img.width || blurred.height != img.height) {
+        lowkey (blurred.width != img.width || blurred.height != img.height) {
             yikes "blur filter changed image dimensions"
         }
         
@@ -577,7 +577,7 @@ slay test_convolution_filters() lit {
             when e -> yikes e
         }
         
-        ready (sharpened.width != img.width || sharpened.height != img.height) {
+        lowkey (sharpened.width != img.width || sharpened.height != img.height) {
             yikes "sharpen filter changed image dimensions"
         }
         
@@ -594,7 +594,7 @@ slay test_gaussian_blur() lit {
             when e -> yikes e
         }
         
-        ready (blurred.width != img.width || blurred.height != img.height) {
+        lowkey (blurred.width != img.width || blurred.height != img.height) {
             yikes "gaussian blur changed image dimensions"
         }
         
@@ -607,7 +607,7 @@ slay test_gaussian_blur() lit {
             when e -> yikes e
         }
         
-        ready (blurred.width != img.width || blurred.height != img.height) {
+        lowkey (blurred.width != img.width || blurred.height != img.height) {
             yikes "box blur changed image dimensions"
         }
         
@@ -637,7 +637,7 @@ slay test_edge_detection() lit {
             when e -> yikes e
         }
         
-        ready (edges.channels != 1) {
+        lowkey (edges.channels != 1) {
             yikes "edge detection should produce grayscale image"
         }
         
@@ -666,7 +666,7 @@ slay test_image_adjustments() lit {
         }
         
         # Should be brighter (but clamped to 255)
-        ready (adjusted_pixel[0] <= original_pixel[0]) {
+        lowkey (adjusted_pixel[0] <= original_pixel[0]) {
             yikes "brightness adjustment failed"
         }
         
@@ -679,7 +679,7 @@ slay test_image_adjustments() lit {
             when e -> yikes e
         }
         
-        ready (contrasted.width != img.width || contrasted.height != img.height) {
+        lowkey (contrasted.width != img.width || contrasted.height != img.height) {
             yikes "contrast adjustment changed dimensions"
         }
         
@@ -696,7 +696,7 @@ slay test_format_detection() lit {
             when e -> yikes e
         }
         
-        ready (png_format != "PNG") {
+        lowkey (png_format != "PNG") {
             yikes "PNG format detection failed"
         }
         
@@ -704,7 +704,7 @@ slay test_format_detection() lit {
             when e -> yikes e
         }
         
-        ready (jpg_format != "JPEG") {
+        lowkey (jpg_format != "JPEG") {
             yikes "JPEG format detection failed"
         }
         
@@ -728,11 +728,11 @@ slay test_metadata_handling() lit {
             software: "CURSED imagez"
         }
         
-        ready (metadata.author != "Test Author") {
+        lowkey (metadata.author != "Test Author") {
             yikes "metadata author field incorrect"
         }
         
-        ready (metadata.dpi_x != 72) {
+        lowkey (metadata.dpi_x != 72) {
             yikes "metadata DPI field incorrect"
         }
         
@@ -748,7 +748,7 @@ slay test_large_image_handling() lit {
         # Test reasonably large image (not too large for test environment)
         sus img Image = create_image(1000, 1000, 3)
         
-        ready (len(img.data) != 1000 * 1000 * 3) {
+        lowkey (len(img.data) != 1000 * 1000 * 3) {
             yikes "large image data size incorrect"
         }
         
@@ -771,7 +771,7 @@ slay test_error_handling() lit {
             when _ -> damn create_image(1, 1, 1)  # Expected to fail
         }
         
-        ready (result.width != 1) {
+        lowkey (result.width != 1) {
             yikes "error handling failed - should have returned default"
         }
         
@@ -786,7 +786,7 @@ slay test_error_handling() lit {
             when _ -> damn create_image(1, 1, 1)  # Expected to fail
         }
         
-        ready (result.width != 1) {
+        lowkey (result.width != 1) {
             yikes "crop error handling failed"
         }
         
@@ -820,7 +820,7 @@ slay test_memory_safety() lit {
         }
         
         bestie (i drip = 0; i < 3; i = i + 1) {
-            ready (cloned_pixel[i] != original_pixel[i]) {
+            lowkey (cloned_pixel[i] != original_pixel[i]) {
                 yikes "clone operation not memory safe"
             }
         }
@@ -833,7 +833,7 @@ slay test_memory_safety() lit {
 
 # Helper function for absolute value (until we can import mathz properly)
 slay abs(x drip) drip {
-    damn ready (x < 0) { damn -x } otherwise { damn x }
+    damn lowkey (x < 0) { damn -x } highkey { damn x }
 }
 
 # Run all tests

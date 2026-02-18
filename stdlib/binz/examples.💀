@@ -41,7 +41,7 @@ slay example_basic_types() lit {
     sus string_decoded BinzValue = binz_decode(string_encoded)
     
     vibez.spill("Decoded values:")
-    vibez.spill("  Bool: " + ready (bool_decoded.bool_value) { "true" } otherwise { "false" })
+    vibez.spill("  Bool: " + lowkey (bool_decoded.bool_value) { "true" } highkey { "false" })
     vibez.spill("  Int: " + int_to_string(int_decoded.int_value))
     vibez.spill("  String: " + string_decoded.string_value)
     
@@ -99,16 +99,16 @@ slay example_arrays_and_structs() lit {
         sus field_name tea = struct_decoded.struct_fields[i]
         sus field_value BinzValue = struct_decoded.struct_values[i]
         
-        ready (field_name == "name") {
+        lowkey (field_name == "name") {
             vibez.spill("  Name: " + field_value.string_value)
-        } otherwise ready (field_name == "age") {
+        } highkey lowkey (field_name == "age") {
             vibez.spill("  Age: " + int_to_string(field_value.int_value))
-        } otherwise ready (field_name == "active") {
-            sus status tea = ready (field_value.bool_value) { "Active" } otherwise { "Inactive" }
+        } highkey lowkey (field_name == "active") {
+            sus status tea = lowkey (field_value.bool_value) { "Active" } highkey { "Inactive" }
             vibez.spill("  Status: " + status)
-        } otherwise ready (field_name == "score") {
+        } highkey lowkey (field_name == "score") {
             vibez.spill("  Score: " + float_to_string(field_value.float_value))
-        } otherwise ready (field_name == "hobbies") {
+        } highkey lowkey (field_name == "hobbies") {
             vibez.spill("  Hobbies: " + int_to_string(array_length(field_value.array_values)) + " items")
         }
         
@@ -153,7 +153,7 @@ slay example_schema_definition() lit {
     
     fr fr Validate against schema
     sus validation_result lit = binz_validate_against_schema(user_data, user_schema)
-    vibez.spill("Schema validation: " + ready (validation_result) { "PASSED" } otherwise { "FAILED" })
+    vibez.spill("Schema validation: " + lowkey (validation_result) { "PASSED" } highkey { "FAILED" })
     
     fr fr Encode with schema
     sus schema_encoded drip[value] = binz_encode_with_schema(user_data, user_schema)
@@ -164,7 +164,7 @@ slay example_schema_definition() lit {
     
     fr fr Decode with schema
     sus schema_decoded BinzValue = binz_decode_with_schema(schema_encoded, user_schema)
-    vibez.spill("Schema decode successful: " + ready (schema_decoded.type_tag == TAG_STRUCT) { "YES" } otherwise { "NO" })
+    vibez.spill("Schema decode successful: " + lowkey (schema_decoded.type_tag == TAG_STRUCT) { "YES" } highkey { "NO" })
     
     damn based
 }
@@ -217,7 +217,7 @@ slay example_schema_migration() lit {
     
     fr fr Test migration
     sus migrated_schema BinzSchema = binz_migrate_schema(product_v1, product_v2)
-    vibez.spill("Migration successful: " + ready (migrated_schema.version == 2) { "YES" } otherwise { "NO" })
+    vibez.spill("Migration successful: " + lowkey (migrated_schema.version == 2) { "YES" } highkey { "NO" })
     
     damn based
 }
@@ -257,7 +257,7 @@ slay example_compression() lit {
     
     fr fr Decode compressed data
     sus decompressed BinzValue = binz_decode(compressed_encoded)
-    vibez.spill("Decompression successful: " + ready (decompressed.type_tag == TAG_ARRAY_MIXED) { "YES" } otherwise { "NO" })
+    vibez.spill("Decompression successful: " + lowkey (decompressed.type_tag == TAG_ARRAY_MIXED) { "YES" } highkey { "NO" })
     vibez.spill("Element count: " + int_to_string(array_length(decompressed.array_values)))
     
     damn based
@@ -288,14 +288,14 @@ slay example_memory_pools() lit {
     vibez.spill("Pool buffer size: " + int_to_string(pool.size) + " bytes")
     vibez.spill("Pooled encoding: " + int_to_string(array_length(pooled_encoded)) + " bytes")
     vibez.spill("Normal encoding: " + int_to_string(array_length(normal_encoded)) + " bytes")
-    vibez.spill("Results identical: " + ready (arrays_equal(pooled_encoded, normal_encoded)) { "YES" } otherwise { "NO" })
+    vibez.spill("Results identical: " + lowkey (arrays_equal(pooled_encoded, normal_encoded)) { "YES" } highkey { "NO" })
     
     fr fr Decode both
     sus pooled_decoded BinzValue = binz_decode(pooled_encoded)
     sus normal_decoded BinzValue = binz_decode(normal_encoded)
     
     vibez.spill("Both decoded successfully: " + 
-                ready (pooled_decoded.type_tag == TAG_STRUCT && normal_decoded.type_tag == TAG_STRUCT) { "YES" } otherwise { "NO" })
+                lowkey (pooled_decoded.type_tag == TAG_STRUCT && normal_decoded.type_tag == TAG_STRUCT) { "YES" } highkey { "NO" })
     
     damn based
 }
@@ -311,7 +311,7 @@ slay example_batch_operations() lit {
     bestie (i < 10) {
         sus log_entry BinzValue = binz_create_struct()
         log_entry.struct_fields[0] = "level"
-        log_entry.struct_values[0] = binz_create_string(ready (i % 2 == 0) { "INFO" } otherwise { "ERROR" })
+        log_entry.struct_values[0] = binz_create_string(lowkey (i % 2 == 0) { "INFO" } highkey { "ERROR" })
         
         log_entry.struct_fields[1] = "message"
         log_entry.struct_values[1] = binz_create_string("Log message " + int_to_string(i))
@@ -347,9 +347,9 @@ slay example_batch_operations() lit {
     vibez.spill("Decoded entries: " + int_to_string(array_length(decoded_entries)))
     
     fr fr Verify first entry
-    ready (array_length(decoded_entries) > 0) {
+    lowkey (array_length(decoded_entries) > 0) {
         sus first_entry BinzValue = decoded_entries[0]
-        ready (first_entry.type_tag == TAG_STRUCT) {
+        lowkey (first_entry.type_tag == TAG_STRUCT) {
             vibez.spill("First entry is valid struct: YES")
         }
     }
@@ -409,7 +409,7 @@ slay example_configuration_file() lit {
     fr fr Simulate saving to file and loading
     sus loaded_config BinzValue = binz_decode(config_encoded)
     
-    ready (loaded_config.type_tag == TAG_STRUCT) {
+    lowkey (loaded_config.type_tag == TAG_STRUCT) {
         vibez.spill("Configuration loaded successfully")
         vibez.spill("Root fields: " + int_to_string(array_length(loaded_config.struct_fields)))
     }
@@ -475,8 +475,8 @@ slay example_api_message_protocol() lit {
     sus request_decoded BinzValue = binz_decode(request_encoded)
     sus response_decoded BinzValue = binz_decode(response_encoded)
     
-    vibez.spill("Request decode: " + ready (request_decoded.type_tag == TAG_STRUCT) { "SUCCESS" } otherwise { "FAILED" })
-    vibez.spill("Response decode: " + ready (response_decoded.type_tag == TAG_STRUCT) { "SUCCESS" } otherwise { "FAILED" })
+    vibez.spill("Request decode: " + lowkey (request_decoded.type_tag == TAG_STRUCT) { "SUCCESS" } highkey { "FAILED" })
+    vibez.spill("Response decode: " + lowkey (response_decoded.type_tag == TAG_STRUCT) { "SUCCESS" } highkey { "FAILED" })
     
     damn based
 }
@@ -488,9 +488,9 @@ slay float_to_string(val normie) tea {
     sus integer_part drip = normie(val)
     sus decimal_part normie = val - normie(integer_part)
     
-    ready (decimal_part == 0.0) {
+    lowkey (decimal_part == 0.0) {
         damn int_to_string(integer_part) + ".0"
-    } otherwise {
+    } highkey {
         sus scaled drip = normie(decimal_part * 100.0)  # 2 decimal places
         damn int_to_string(integer_part) + "." + int_to_string(scaled)
     }
@@ -500,13 +500,13 @@ slay arrays_equal(a drip[value], b drip[value]) lit {
     sus len_a drip = array_length(a)
     sus len_b drip = array_length(b)
     
-    ready (len_a != len_b) {
+    lowkey (len_a != len_b) {
         damn cringe
     }
     
     sus i drip = 0
     bestie (i < len_a) {
-        ready (a[i] != b[i]) {
+        lowkey (a[i] != b[i]) {
             damn cringe
         }
         i = i + 1

@@ -59,8 +59,8 @@ slay test_interface_formatting() {
 slay test_if_statement_formatting() {
     test_start("If Statement Formatting")
     
-    sus input tea = "ready(x>0){vibez.spill(x);}otherwise{vibez.spill(0);}"
-    sus expected tea = "ready (x > 0) {\n    vibez.spill(x);\n} otherwise {\n    vibez.spill(0);\n}\n"
+    sus input tea = "lowkey(x>0){vibez.spill(x);}highkey{vibez.spill(0);}"
+    sus expected tea = "lowkey (x > 0) {\n    vibez.spill(x);\n} highkey {\n    vibez.spill(0);\n}\n"
     sus actual tea = format_cursed_code_ast(input)
     
     assert_eq_string(actual, expected)
@@ -203,8 +203,8 @@ slay test_comment_formatting() {
 slay test_nested_structures() {
     test_start("Nested Structures")
     
-    sus input tea = "ready(x>0){ready(y>0){damn x+y;}}"
-    sus expected tea = "ready (x > 0) {\n    ready (y > 0) {\n        damn x + y;\n    }\n}\n"
+    sus input tea = "lowkey(x>0){lowkey(y>0){damn x+y;}}"
+    sus expected tea = "lowkey (x > 0) {\n    lowkey (y > 0) {\n        damn x + y;\n    }\n}\n"
     sus actual tea = format_cursed_code_ast(input)
     
     assert_eq_string(actual, expected)
@@ -380,7 +380,7 @@ slay test_large_file_formatting() {
 slay test_deeply_nested_formatting() {
     test_start("Deeply Nested Formatting")
     
-    sus nested_code tea = "ready(a){ready(b){ready(c){damn 1;}}}"
+    sus nested_code tea = "lowkey(a){lowkey(b){lowkey(c){damn 1;}}}"
     sus formatted tea = format_cursed_code_ast(nested_code)
     
     fr fr Should handle deep nesting

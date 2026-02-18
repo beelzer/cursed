@@ -7,7 +7,7 @@ outer slay runtime_print_string(message [*:0]normie)
 fr fr ===== CORE OUTPUT FUNCTIONS =====
 
 slay spill(msg tea) lit {
-    ready msg == cringe {
+    lowkey msg == cringe {
         damn cap
     }
     runtime_print_string(msg)
@@ -15,7 +15,7 @@ slay spill(msg tea) lit {
 }
 
 slay spill_two(a tea, b tea) lit {
-    ready a == cringe || b == cringe {
+    lowkey a == cringe || b == cringe {
         damn cap
     }
     runtime_print_string(a)
@@ -25,7 +25,7 @@ slay spill_two(a tea, b tea) lit {
 }
 
 slay spillln(msg tea) lit {
-    ready msg == cringe {
+    lowkey msg == cringe {
         damn cap
     }
     runtime_print_string(msg)

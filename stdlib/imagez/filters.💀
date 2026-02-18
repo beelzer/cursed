@@ -139,7 +139,7 @@ slay gaussian_blur(img Image, radius tea) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (radius <= 0.0) {
+    lowkey (radius <= 0.0) {
         yikes "invalid blur radius"
     }
     
@@ -153,7 +153,7 @@ slay gaussian_blur(img Image, radius tea) yikes<Image> {
 # Create Gaussian kernel with specified radius
 slay create_gaussian_kernel(radius tea) yikes<FilterKernel> {
     sus size drip = drip(radius * 6.0) + 1
-    ready (size % 2 == 0) {
+    lowkey (size % 2 == 0) {
         size = size + 1  # Ensure odd size
     }
     
@@ -192,7 +192,7 @@ slay box_blur(img Image, radius drip) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (radius <= 0) {
+    lowkey (radius <= 0) {
         yikes "invalid blur radius"
     }
     
@@ -220,7 +220,7 @@ slay motion_blur(img Image, angle tea, distance drip) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (distance <= 0) {
+    lowkey (distance <= 0) {
         yikes "invalid motion blur distance"
     }
     
@@ -243,7 +243,7 @@ slay motion_blur(img Image, angle tea, distance drip) yikes<Image> {
                 sus sample_x drip = x + drip(i * dx)
                 sus sample_y drip = y + drip(i * dy)
                 
-                ready (sample_x >= 0 && sample_x < img.width && 
+                lowkey (sample_x >= 0 && sample_x < img.width && 
                        sample_y >= 0 && sample_y < img.height) {
                     sus pixel drip[value] = get_pixel(img, sample_x, sample_y) fam {
                         when _ -> continue
@@ -257,7 +257,7 @@ slay motion_blur(img Image, angle tea, distance drip) yikes<Image> {
                 }
             }
             
-            ready (samples > 0) {
+            lowkey (samples > 0) {
                 sus avg_pixel drip[value] = []
                 bestie (c drip = 0; c < img.channels; c = c + 1) {
                     avg_pixel = append(avg_pixel, drip(sum_pixel[c] / samples))
@@ -280,9 +280,9 @@ slay sobel_edge_detection(img Image) yikes<Image> {
     }
     
     # Convert to grayscale first if needed
-    sus gray_img Image = ready (img.channels == 1) {
+    sus gray_img Image = lowkey (img.channels == 1) {
         damn img
-    } otherwise {
+    } highkey {
         damn convert_to_grayscale(img) fam {
             when e -> yikes e
         }
@@ -350,7 +350,7 @@ slay unsharp_mask(img Image, radius tea, amount tea, threshold drip) yikes<Image
         when e -> yikes e
     }
     
-    ready (radius <= 0.0 || amount <= 0.0) {
+    lowkey (radius <= 0.0 || amount <= 0.0) {
         yikes "invalid unsharp mask parameters"
     }
     
@@ -376,10 +376,10 @@ slay unsharp_mask(img Image, radius tea, amount tea, threshold drip) yikes<Image
             bestie (c drip = 0; c < img.channels; c = c + 1) {
                 sus diff drip = original[c] - blur_pixel[c]
                 
-                ready (abs(diff) >= threshold) {
+                lowkey (abs(diff) >= threshold) {
                     sus sharp_value drip = drip(original[c] + amount * diff)
                     sharp_pixel = append(sharp_pixel, clamp_pixel_value(sharp_value))
-                } otherwise {
+                } highkey {
                     sharp_pixel = append(sharp_pixel, original[c])
                 }
             }
@@ -411,9 +411,9 @@ slay adjust_brightness(img Image, brightness drip) yikes<Image> {
             
             bestie (c drip = 0; c < img.channels; c = c + 1) {
                 # Skip alpha channel in RGBA images
-                ready (c == 3 && img.channels == 4) {
+                lowkey (c == 3 && img.channels == 4) {
                     adjusted_pixel = append(adjusted_pixel, pixel[c])
-                } otherwise {
+                } highkey {
                     sus new_value drip = clamp_pixel_value(pixel[c] + brightness)
                     adjusted_pixel = append(adjusted_pixel, new_value)
                 }
@@ -447,9 +447,9 @@ slay adjust_contrast(img Image, contrast tea) yikes<Image> {
             
             bestie (c drip = 0; c < img.channels; c = c + 1) {
                 # Skip alpha channel in RGBA images
-                ready (c == 3 && img.channels == 4) {
+                lowkey (c == 3 && img.channels == 4) {
                     adjusted_pixel = append(adjusted_pixel, pixel[c])
-                } otherwise {
+                } highkey {
                     sus new_value drip = drip(factor * (pixel[c] - 128.0) + 128.0)
                     adjusted_pixel = append(adjusted_pixel, clamp_pixel_value(new_value))
                 }
@@ -470,7 +470,7 @@ slay adjust_gamma(img Image, gamma tea) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (gamma <= 0.0) {
+    lowkey (gamma <= 0.0) {
         yikes "invalid gamma value"
     }
     
@@ -487,9 +487,9 @@ slay adjust_gamma(img Image, gamma tea) yikes<Image> {
             
             bestie (c drip = 0; c < img.channels; c = c + 1) {
                 # Skip alpha channel in RGBA images
-                ready (c == 3 && img.channels == 4) {
+                lowkey (c == 3 && img.channels == 4) {
                     adjusted_pixel = append(adjusted_pixel, pixel[c])
-                } otherwise {
+                } highkey {
                     sus normalized tea = pixel[c] / 255.0
                     sus corrected tea = pow(normalized, inv_gamma)
                     sus new_value drip = drip(corrected * 255.0)
@@ -512,7 +512,7 @@ slay convert_to_grayscale(img Image) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (img.channels < 3) {
+    lowkey (img.channels < 3) {
         # Already grayscale or has alpha - just copy
         damn clone_image(img)
     }
@@ -549,7 +549,7 @@ slay median_filter(img Image, radius drip) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (radius <= 0) {
+    lowkey (radius <= 0) {
         yikes "invalid median filter radius"
     }
     
@@ -596,7 +596,7 @@ slay sort_array(arr *drip[value]) lit {
     
     bestie (i drip = 0; i < n - 1; i = i + 1) {
         bestie (j drip = 0; j < n - i - 1; j = j + 1) {
-            ready ((*arr)[j] > (*arr)[j + 1]) {
+            lowkey ((*arr)[j] > (*arr)[j + 1]) {
                 sus temp drip = (*arr)[j]
                 (*arr)[j] = (*arr)[j + 1]
                 (*arr)[j + 1] = temp

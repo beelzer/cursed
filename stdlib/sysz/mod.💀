@@ -44,19 +44,19 @@ fr fr ==========================================================================
 fr fr Get current platform (compile-time detection)
 slay get_current_platform() normie {
     fr fr This would be set by the build system based on target
-    ready platform_is_linux() {
+    lowkey platform_is_linux() {
         damn PLATFORM_LINUX
     }
-    otherwise ready platform_is_windows() {
+    highkey lowkey platform_is_windows() {
         damn PLATFORM_WINDOWS  
     }
-    otherwise ready platform_is_darwin() {
+    highkey lowkey platform_is_darwin() {
         damn PLATFORM_DARWIN
     }
-    otherwise ready platform_is_freebsd() {
+    highkey lowkey platform_is_freebsd() {
         damn PLATFORM_FREEBSD
     }
-    otherwise {
+    highkey {
         damn PLATFORM_UNKNOWN
     }
 }
@@ -82,38 +82,38 @@ slay platform_is_freebsd() lit {
 fr fr Get platform name as string
 slay get_platform_name() tea {
     sus platform normie = get_current_platform()
-    ready platform == PLATFORM_LINUX {
+    lowkey platform == PLATFORM_LINUX {
         damn "Linux"
     }
-    otherwise ready platform == PLATFORM_WINDOWS {
+    highkey lowkey platform == PLATFORM_WINDOWS {
         damn "Windows"
     }
-    otherwise ready platform == PLATFORM_DARWIN {
+    highkey lowkey platform == PLATFORM_DARWIN {
         damn "macOS"
     }
-    otherwise ready platform == PLATFORM_FREEBSD {
+    highkey lowkey platform == PLATFORM_FREEBSD {
         damn "FreeBSD"
     }
-    otherwise {
+    highkey {
         damn "Unknown"
     }
 }
 
 fr fr Get CPU architecture
 slay get_cpu_architecture() tea {
-    ready platform_is_x86_64() {
+    lowkey platform_is_x86_64() {
         damn "x86_64"
     }
-    otherwise ready platform_is_aarch64() {
+    highkey lowkey platform_is_aarch64() {
         damn "aarch64"  
     }
-    otherwise ready platform_is_x86() {
+    highkey lowkey platform_is_x86() {
         damn "x86"
     }
-    otherwise ready platform_is_arm() {
+    highkey lowkey platform_is_arm() {
         damn "arm"
     }
-    otherwise {
+    highkey {
         damn "unknown"
     }
 }
@@ -145,22 +145,22 @@ slay syscall(syscall_number normie, arg1 thicc, arg2 thicc, arg3 thicc, arg4 thi
     sus result thicc = cursed_runtime_syscall(syscall_number, arg1, arg2, arg3, arg4, arg5, arg6)
     
     fr fr Handle special case syscalls
-    ready syscall_number == SYS_GETTID {
+    lowkey syscall_number == SYS_GETTID {
         damn cursed_runtime_gettid()
     }
-    otherwise ready syscall_number == SYS_SCHED_YIELD {
+    highkey lowkey syscall_number == SYS_SCHED_YIELD {
         damn cursed_runtime_sched_yield()
     }
-    otherwise ready syscall_number == SYS_CLOCK_GETTIME {
+    highkey lowkey syscall_number == SYS_CLOCK_GETTIME {
         damn cursed_runtime_clock_gettime_monotonic()
     }
-    otherwise ready syscall_number == SYS_FUTEX {
+    highkey lowkey syscall_number == SYS_FUTEX {
         damn cursed_runtime_futex(arg1, arg2, arg3, arg4, arg5, arg6)
     }
-    otherwise ready syscall_number == SYS_CLONE {
+    highkey lowkey syscall_number == SYS_CLONE {
         damn cursed_runtime_clone(arg1, arg2, arg3, arg4, arg5, arg6)
     }
-    otherwise {
+    highkey {
         damn result  fr fr Return actual syscall result
     }
 }
@@ -211,16 +211,16 @@ fr fr Parse Linux /proc files for system information
 slay linux_parse_proc_status(field_name tea) normie {
     fr fr In real implementation would open and parse /proc/self/status
     fr fr For now, return simulated values
-    ready field_name == "VmRSS" {
+    lowkey field_name == "VmRSS" {
         damn 12345  // 12MB RSS
     }
-    otherwise ready field_name == "VmSize" {
+    highkey lowkey field_name == "VmSize" {
         damn 56789  // 56MB virtual size
     }
-    otherwise ready field_name == "VmPeak" {
+    highkey lowkey field_name == "VmPeak" {
         damn 67890  // 67MB peak
     }
-    otherwise {
+    highkey {
         damn 0
     }
 }
@@ -429,29 +429,29 @@ slay get_current_thread_id_fallback() normie {
 
 fr fr Get current thread ID (unified interface)
 slay get_current_thread_id() normie {
-    ready platform_is_linux() {
+    lowkey platform_is_linux() {
         damn syscall_gettid()
     }
-    otherwise ready platform_is_windows() {
+    highkey lowkey platform_is_windows() {
         damn windows_get_current_thread_id()
     }
-    otherwise ready platform_is_darwin() {
+    highkey lowkey platform_is_darwin() {
         damn darwin_pthread_threadid_np()
     }
-    otherwise {
+    highkey {
         damn get_current_thread_id_fallback()
     }
 }
 
 fr fr Get monotonic time (unified interface)
 slay get_monotonic_time_ns() thicc {
-    ready platform_is_linux() || platform_is_darwin() {
+    lowkey platform_is_linux() || platform_is_darwin() {
         damn clock_gettime_monotonic_ns()
     }
-    otherwise ready platform_is_windows() {
+    highkey lowkey platform_is_windows() {
         damn windows_query_performance_counter_ns()
     }
-    otherwise {
+    highkey {
         damn get_simulated_monotonic_time()
     }
 }

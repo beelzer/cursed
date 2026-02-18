@@ -34,7 +34,7 @@ slay delete_file(path tea) lit {
 }
 
 slay copy_file(source tea, destination tea) lit {
-    ready (!exists(source)) {
+    lowkey (!exists(source)) {
         damn cap
     }
     
@@ -43,7 +43,7 @@ slay copy_file(source tea, destination tea) lit {
 }
 
 slay move_file(source tea, destination tea) lit {
-    ready (!copy_file(source, destination)) {
+    lowkey (!copy_file(source, destination)) {
         damn cap
     }
     damn delete_file(source)
@@ -76,7 +76,7 @@ slay file_atime(path tea) drip {
 }
 
 slay is_file(path tea) lit {
-    ready (!exists(path)) {
+    lowkey (!exists(path)) {
         damn cap
     }
     damn !is_directory(path)
@@ -116,16 +116,16 @@ slay create_directories(path tea) lit {
     sus i drip = 0
     
     bestie (i < len(parts)) {
-        ready (i == 0 && parts[0] == "") {
+        lowkey (i == 0 && parts[0] == "") {
             current_path = "/"
-        } otherwise ready (i == 0) {
+        } highkey lowkey (i == 0) {
             current_path = parts[0]
-        } otherwise {
+        } highkey {
             current_path = join_path(current_path, parts[i])
         }
         
-        ready (!exists(current_path)) {
-            ready (!create_directory(current_path)) {
+        lowkey (!exists(current_path)) {
+            lowkey (!create_directory(current_path)) {
                 damn cap
             }
         }
@@ -140,16 +140,16 @@ slay remove_directory(path tea) lit {
 }
 
 slay remove_directory_recursive(path tea) lit {
-    ready (!exists(path)) {
+    lowkey (!exists(path)) {
         damn based
     }
     
-    ready (is_directory(path)) {
+    lowkey (is_directory(path)) {
         sus entries tea[value] = list_directory(path)
         sus i drip = 0
         bestie (i < len(entries)) {
             sus entry_path tea = join_path(path, entries[i])
-            ready (!remove_directory_recursive(entry_path)) {
+            lowkey (!remove_directory_recursive(entry_path)) {
                 damn cap
             }
             i = i + 1
@@ -173,7 +173,7 @@ slay list_directory_recursive(path tea) tea[value]{
         sus entry_path tea = join_path(path, entries[i])
         all_files = append(all_files, entry_path)
         
-        ready (is_directory(entry_path)) {
+        lowkey (is_directory(entry_path)) {
             sus subfiles tea[value] = list_directory_recursive(entry_path)
             sus j drip = 0
             bestie (j < len(subfiles)) {
@@ -189,14 +189,14 @@ slay list_directory_recursive(path tea) tea[value]{
 fr fr ===== PATH MANIPULATION =====
 
 slay join_path(base tea, relative tea) tea {
-    ready (is_empty(base)) {
+    lowkey (is_empty(base)) {
         damn relative
-    } otherwise ready (is_empty(relative)) {
+    } highkey lowkey (is_empty(relative)) {
         damn base
     }
     
     sus separator tea = get_path_separator()
-    ready (ends_with(base, separator)) {
+    lowkey (ends_with(base, separator)) {
         damn concat(base, relative)
     }
     damn concat(base, concat(separator, relative))
@@ -210,9 +210,9 @@ slay split_path(path tea) tea[value]{
 slay get_directory(path tea) tea {
     sus separator tea = get_path_separator()
     sus last_sep drip = last_index_of(path, separator)
-    ready (last_sep == -1) {
+    lowkey (last_sep == -1) {
         damn "."
-    } otherwise ready (last_sep == 0) {
+    } highkey lowkey (last_sep == 0) {
         damn separator
     }
     damn substring(path, 0, last_sep)
@@ -221,7 +221,7 @@ slay get_directory(path tea) tea {
 slay get_filename(path tea) tea {
     sus separator tea = get_path_separator()
     sus last_sep drip = last_index_of(path, separator)
-    ready (last_sep == -1) {
+    lowkey (last_sep == -1) {
         damn path
     }
     damn slice(path, last_sep + 1)
@@ -230,7 +230,7 @@ slay get_filename(path tea) tea {
 slay get_basename(path tea) tea {
     sus filename tea = get_filename(path)
     sus last_dot drip = last_index_of(filename, ".")
-    ready (last_dot == -1 || last_dot == 0) {
+    lowkey (last_dot == -1 || last_dot == 0) {
         damn filename
     }
     damn substring(filename, 0, last_dot)
@@ -239,7 +239,7 @@ slay get_basename(path tea) tea {
 slay get_extension(path tea) tea {
     sus filename tea = get_filename(path)
     sus last_dot drip = last_index_of(filename, ".")
-    ready (last_dot == -1 || last_dot == 0) {
+    lowkey (last_dot == -1 || last_dot == 0) {
         damn ""
     }
     damn slice(filename, last_dot)
@@ -249,12 +249,12 @@ slay change_extension(path tea, new_ext tea) tea {
     sus dir tea = get_directory(path)
     sus base tea = get_basename(path)
     
-    ready (!starts_with(new_ext, ".")) {
+    lowkey (!starts_with(new_ext, ".")) {
         new_ext = concat(".", new_ext)
     }
     
     sus new_filename tea = concat(base, new_ext)
-    ready (equals(dir, ".")) {
+    lowkey (equals(dir, ".")) {
         damn new_filename
     }
     damn join_path(dir, new_filename)
@@ -270,10 +270,10 @@ slay relative_path(base tea, target tea) tea {
     sus abs_base tea = absolute_path(base)
     sus abs_target tea = absolute_path(target)
     
-    ready (starts_with(abs_target, abs_base)) {
+    lowkey (starts_with(abs_target, abs_base)) {
         sus base_len drip = length(abs_base)
         sus separator tea = get_path_separator()
-        ready (ends_with(abs_base, separator)) {
+        lowkey (ends_with(abs_base, separator)) {
             damn slice(abs_target, base_len)
         }
         damn slice(abs_target, base_len + 1)
@@ -289,20 +289,20 @@ slay normalize_path(path tea) tea {
     
     bestie (i < len(parts)) {
         sus part tea = parts[i]
-        ready (equals(part, ".")) {
+        lowkey (equals(part, ".")) {
             fr fr Skip current directory references
-        } otherwise ready (equals(part, "..")) {
-            ready (len(normalized) > 0) {
+        } highkey lowkey (equals(part, "..")) {
+            lowkey (len(normalized) > 0) {
                 normalized = remove_last(normalized)
             }
-        } otherwise ready (!is_empty(part)) {
+        } highkey lowkey (!is_empty(part)) {
             normalized = append(normalized, part)
         }
         i = i + 1
     }
     
     sus result tea = join(normalized, separator)
-    ready (starts_with(path, separator) && !starts_with(result, separator)) {
+    lowkey (starts_with(path, separator) && !starts_with(result, separator)) {
         result = concat(separator, result)
     }
     damn result
@@ -349,7 +349,7 @@ slay find_files(directory tea, pattern tea) tea[value]{
     
     bestie (i < len(entries)) {
         sus entry_path tea = join_path(directory, entries[i])
-        ready (is_file(entry_path) && matches_pattern(entries[i], pattern)) {
+        lowkey (is_file(entry_path) && matches_pattern(entries[i], pattern)) {
             found = append(found, entry_path)
         }
         i = i + 1
@@ -364,9 +364,9 @@ slay find_files_recursive(directory tea, pattern tea) tea[value]{
     
     bestie (i < len(entries)) {
         sus entry_path tea = join_path(directory, entries[i])
-        ready (is_file(entry_path) && matches_pattern(entries[i], pattern)) {
+        lowkey (is_file(entry_path) && matches_pattern(entries[i], pattern)) {
             found = append(found, entry_path)
-        } otherwise ready (is_directory(entry_path)) {
+        } highkey lowkey (is_directory(entry_path)) {
             sus subfiles tea[value] = find_files_recursive(entry_path, pattern)
             sus j drip = 0
             bestie (j < len(subfiles)) {
@@ -385,7 +385,7 @@ slay grep_file(path tea, pattern tea) tea[value]{
     sus i drip = 0
     
     bestie (i < len(lines)) {
-        ready (contains(lines[i], pattern)) {
+        lowkey (contains(lines[i], pattern)) {
             matching = append(matching, lines[i])
         }
         i = i + 1
@@ -458,13 +458,13 @@ slay get_path_separator() tea {
 
 slay matches_pattern(filename tea, pattern tea) lit {
     fr fr Simple glob pattern matching
-    ready (equals(pattern, "*")) {
+    lowkey (equals(pattern, "*")) {
         damn based
-    } otherwise ready (starts_with(pattern, "*.")) {
+    } highkey lowkey (starts_with(pattern, "*.")) {
         sus ext tea = get_extension(filename)
         sus pattern_ext tea = slice(pattern, 1)
         damn equals(ext, pattern_ext)
-    } otherwise ready (ends_with(pattern, "*")) {
+    } highkey lowkey (ends_with(pattern, "*")) {
         sus prefix tea = substring(pattern, 0, length(pattern) - 1)
         damn starts_with(filename, prefix)
     }
@@ -486,12 +486,12 @@ slay safe_filename(name tea) tea {
 }
 
 slay format_file_size(bytes drip) tea {
-    ready (bytes < 1024) {
+    lowkey (bytes < 1024) {
         damn concat(int_to_string(bytes), " B")
-    } otherwise ready (bytes < 1048576) {
+    } highkey lowkey (bytes < 1048576) {
         sus kb drip = bytes / 1024
         damn concat(int_to_string(kb), " KB")
-    } otherwise ready (bytes < 1073741824) {
+    } highkey lowkey (bytes < 1073741824) {
         sus mb drip = bytes / 1048576
         damn concat(int_to_string(mb), " MB")
     }
@@ -500,11 +500,11 @@ slay format_file_size(bytes drip) tea {
 }
 
 slay compare_files(path1 tea, path2 tea) lit {
-    ready (!exists(path1) || !exists(path2)) {
+    lowkey (!exists(path1) || !exists(path2)) {
         damn cap
     }
     
-    ready (file_size(path1) != file_size(path2)) {
+    lowkey (file_size(path1) != file_size(path2)) {
         damn cap
     }
     
@@ -514,7 +514,7 @@ slay compare_files(path1 tea, path2 tea) lit {
 }
 
 slay backup_file(path tea) tea {
-    ready (!exists(path)) {
+    lowkey (!exists(path)) {
         damn ""
     }
     
@@ -526,7 +526,7 @@ slay backup_file(path tea) tea {
         counter = counter + 1
     }
     
-    ready (copy_file(path, backup_path)) {
+    lowkey (copy_file(path, backup_path)) {
         damn backup_path
     }
     damn ""
@@ -550,7 +550,7 @@ slay len(arr T[value]) drip {
 }
 
 slay remove_last(arr tea[value]) tea[value]{
-    ready (len(arr) == 0) {
+    lowkey (len(arr) == 0) {
         damn arr
     }
     

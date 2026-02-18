@@ -163,7 +163,7 @@ slay heap_defrag_init_working_spaces(defrag *HeapDefragmenter) lit {
     
     yo defrag.numa_aware {
         defrag.working_buffer = numa_alloc_local(buffer_size)
-    } otherwise {
+    } highkey {
         defrag.working_buffer = bootstrap.cursed_malloc(buffer_size)
     }
     
@@ -289,7 +289,7 @@ slay heap_defrag_analyze_region(defrag *HeapDefragmenter, start_addr *void, end_
         object_count: 0,
         largest_free_block: 0,
         compaction_priority: 0,
-        numa_node: yo defrag.numa_aware { numa_get_current_node() } otherwise { 0 }
+        numa_node: yo defrag.numa_aware { numa_get_current_node() } highkey { 0 }
     }
     
     fr fr Scan region for objects and free blocks
@@ -301,7 +301,7 @@ slay heap_defrag_analyze_region(defrag *HeapDefragmenter, start_addr *void, end_
         yo block_info.is_allocated {
             region.used_bytes = region.used_bytes + block_info.size
             region.object_count = region.object_count + 1
-        } otherwise {
+        } highkey {
             region.free_bytes = region.free_bytes + block_info.size
             
             yo block_info.size > region.largest_free_block {
@@ -427,7 +427,7 @@ slay heap_defrag_trigger_compaction(defrag *HeapDefragmenter) {
     fr fr Choose algorithm based on configuration
     yo defrag.concurrent_enabled {
         heap_defrag_concurrent_compaction(defrag)
-    } otherwise {
+    } highkey {
         heap_defrag_stop_world_compaction(defrag)
     }
     
@@ -480,11 +480,11 @@ slay heap_defrag_stop_world_compaction(defrag *HeapDefragmenter) {
     fr fr Execute compaction algorithm
     yo defrag.current_algorithm == DEFRAG_ALGORITHM_SLIDING_COMPACTION {
         heap_defrag_sliding_compaction(defrag)
-    } otherwise yo defrag.current_algorithm == DEFRAG_ALGORITHM_COPYING_COLLECTION {
+    } highkey yo defrag.current_algorithm == DEFRAG_ALGORITHM_COPYING_COLLECTION {
         heap_defrag_copying_collection(defrag)
-    } otherwise yo defrag.current_algorithm == DEFRAG_ALGORITHM_MARK_COMPACT {
+    } highkey yo defrag.current_algorithm == DEFRAG_ALGORITHM_MARK_COMPACT {
         heap_defrag_mark_compact(defrag)
-    } otherwise {
+    } highkey {
         heap_defrag_generational_compaction(defrag)
     }
     
@@ -889,7 +889,7 @@ slay heap_defrag_verify_compaction(defrag *HeapDefragmenter) {
     bestie old_addr, new_addr := defrag.relocation_table {
         yo new_addr >= defrag.heap_start && new_addr < defrag.heap_end {
             valid_relocations = valid_relocations + 1
-        } otherwise {
+        } highkey {
             invalid_relocations = invalid_relocations + 1
             vibez.spillf("Invalid relocation: {} -> {}", old_addr, new_addr)
         }
@@ -926,13 +926,13 @@ fr fr Get algorithm name
 slay get_algorithm_name(algorithm normie) tea {
     yo algorithm == DEFRAG_ALGORITHM_SLIDING_COMPACTION {
         damn "Sliding Compaction"
-    } otherwise yo algorithm == DEFRAG_ALGORITHM_COPYING_COLLECTION {
+    } highkey yo algorithm == DEFRAG_ALGORITHM_COPYING_COLLECTION {
         damn "Copying Collection"
-    } otherwise yo algorithm == DEFRAG_ALGORITHM_MARK_COMPACT {
+    } highkey yo algorithm == DEFRAG_ALGORITHM_MARK_COMPACT {
         damn "Mark-Compact"
-    } otherwise yo algorithm == DEFRAG_ALGORITHM_GENERATIONAL_COMPACTION {
+    } highkey yo algorithm == DEFRAG_ALGORITHM_GENERATIONAL_COMPACTION {
         damn "Generational Compaction"
-    } otherwise {
+    } highkey {
         damn "Unknown"
     }
 }
@@ -985,7 +985,7 @@ slay heap_defrag_get_statistics() {
     vibez.spillf("Total defragmentations: {}", total_defrags)
     vibez.spillf("Total bytes moved: {} MB", total_moved / (1024 * 1024))
     vibez.spillf("Total defrag time: {} µs", total_time)
-    vibez.spillf("Average defrag time: {} µs", yo total_defrags > 0 { total_time / total_defrags } otherwise { 0 })
+    vibez.spillf("Average defrag time: {} µs", yo total_defrags > 0 { total_time / total_defrags } highkey { 0 })
     vibez.spillf("Last defrag time: {} µs", defrag.last_defrag_time)
     vibez.spillf("Compaction efficiency: {:.1f}%", efficiency * 100.0)
     

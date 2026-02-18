@@ -94,7 +94,7 @@ sus next_file_descriptor normie = 3  fr fr Start after stdin/stdout/stderr
 slay allocate_file_handle() normie {
     sus i normie = 0
     bestie i < MAX_OPEN_FILES {
-        ready !open_files[i].is_open {
+        lowkey !open_files[i].is_open {
             sus handle file_handle = file_handle{
                 fd: next_file_descriptor,
                 path: "",
@@ -122,7 +122,7 @@ slay allocate_file_handle() normie {
 slay get_file_handle_by_fd(fd normie) file_handle {
     sus i normie = 0
     bestie i < MAX_OPEN_FILES {
-        ready open_files[i].is_open && open_files[i].fd == fd {
+        lowkey open_files[i].is_open && open_files[i].fd == fd {
             damn open_files[i]
         }
         i = i + 1
@@ -138,9 +138,9 @@ slay get_file_handle_by_fd(fd normie) file_handle {
 slay close_file_handle(fd normie) lit {
     sus i normie = 0
     bestie i < MAX_OPEN_FILES {
-        ready open_files[i].is_open && open_files[i].fd == fd {
+        lowkey open_files[i].is_open && open_files[i].fd == fd {
             fr fr Flush buffer if dirty
-            ready open_files[i].is_dirty {
+            lowkey open_files[i].is_dirty {
                 flush_file_buffer(fd)
             }
             
@@ -157,17 +157,17 @@ slay close_file_handle(fd normie) lit {
 fr fr ===== CORE FILE OPERATIONS =====
 
 slay fs_open(path tea, flags normie, mode normie) normie {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready stringz.length(path) > MAX_PATH_LENGTH {
+    lowkey stringz.length(path) > MAX_PATH_LENGTH {
         last_filesystem_error = FS_ERROR_NAME_TOO_LONG
         damn -1
     }
     
-    ready !validate_file_path(path) {
+    lowkey !validate_file_path(path) {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
@@ -175,31 +175,31 @@ slay fs_open(path tea, flags normie, mode normie) normie {
     fr fr Check if file exists
     sus file_exists lit = fs_file_exists_internal(path)
     
-    ready (flags & O_CREAT) != 0 && (flags & O_EXCL) != 0 && file_exists {
+    lowkey (flags & O_CREAT) != 0 && (flags & O_EXCL) != 0 && file_exists {
         last_filesystem_error = FS_ERROR_FILE_EXISTS
         damn -1
     }
     
-    ready (flags & O_CREAT) == 0 && !file_exists {
+    lowkey (flags & O_CREAT) == 0 && !file_exists {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         damn -1
     }
     
     fr fr Check permissions
-    ready !check_file_permissions(path, flags) {
+    lowkey !check_file_permissions(path, flags) {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
     
     fr fr Allocate file handle
     sus fd normie = allocate_file_handle()
-    ready fd == -1 {
+    lowkey fd == -1 {
         damn -1
     }
     
     fr fr Simulate actual file opening
     sus actual_fd normie = perform_file_open_syscall(path, flags, mode)
-    ready actual_fd == -1 {
+    lowkey actual_fd == -1 {
         close_file_handle(fd)
         damn -1
     }
@@ -211,11 +211,11 @@ slay fs_open(path tea, flags normie, mode normie) normie {
     handle.position = 0
     handle.size = get_file_size_internal(path)
     
-    ready (flags & O_APPEND) != 0 && handle.size > 0 {
+    lowkey (flags & O_APPEND) != 0 && handle.size > 0 {
         handle.position = handle.size
     }
     
-    ready (flags & O_TRUNC) != 0 && (flags & O_WRONLY) != 0 {
+    lowkey (flags & O_TRUNC) != 0 && (flags & O_WRONLY) != 0 {
         handle.size = 0
         perform_file_truncate(path, 0)
     }
@@ -226,13 +226,13 @@ slay fs_open(path tea, flags normie, mode normie) normie {
 
 slay fs_close(fd normie) normie {
     sus handle file_handle = get_file_handle_by_fd(fd)
-    ready !handle.is_open {
+    lowkey !handle.is_open {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
     fr fr Flush any pending writes
-    ready handle.is_dirty {
+    lowkey handle.is_dirty {
         fs_flush(fd)
     }
     
@@ -242,7 +242,7 @@ slay fs_close(fd normie) normie {
     fr fr Close our handle
     close_file_handle(fd)
     
-    ready result == -1 {
+    lowkey result == -1 {
         damn -1
     }
     
@@ -252,17 +252,17 @@ slay fs_close(fd normie) normie {
 
 slay fs_read(fd normie, buffer normie[value], count normie) normie {
     sus handle file_handle = get_file_handle_by_fd(fd)
-    ready !handle.is_open {
+    lowkey !handle.is_open {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready (handle.mode & O_WRONLY) != 0 {
+    lowkey (handle.mode & O_WRONLY) != 0 {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
     
-    ready count <= 0 {
+    lowkey count <= 0 {
         damn 0
     }
     
@@ -270,7 +270,7 @@ slay fs_read(fd normie, buffer normie[value], count normie) normie {
     sus remaining normie = count
     
     fr fr Read from buffer first
-    ready handle.buffer_size > handle.buffer_pos {
+    lowkey handle.buffer_size > handle.buffer_pos {
         sus available normie = handle.buffer_size - handle.buffer_pos
         sus to_copy normie = (remaining < available) ? remaining : available
         
@@ -282,22 +282,22 @@ slay fs_read(fd normie, buffer normie[value], count normie) normie {
     
     fr fr If buffer is exhausted and more data needed, read directly or refill buffer
     bestie remaining > 0 {
-        ready remaining >= FILE_BUFFER_SIZE {
+        lowkey remaining >= FILE_BUFFER_SIZE {
             fr fr Large read - bypass buffer
             sus direct_read normie = perform_file_read_syscall(fd, buffer, bytes_read, remaining)
-            ready direct_read == -1 {
+            lowkey direct_read == -1 {
                 damn bytes_read > 0 ? bytes_read : -1
             }
             bytes_read = bytes_read + direct_read
             handle.position = handle.position + direct_read
             ghosted
         }
-        otherwise {
+        highkey {
             fr fr Small read - refill buffer
             handle.buffer_size = perform_file_read_syscall(fd, handle.buffer, 0, FILE_BUFFER_SIZE)
             handle.buffer_pos = 0
             
-            ready handle.buffer_size <= 0 {
+            lowkey handle.buffer_size <= 0 {
                 ghosted
             }
             
@@ -317,17 +317,17 @@ slay fs_read(fd normie, buffer normie[value], count normie) normie {
 
 slay fs_write(fd normie, buffer normie[value], count normie) normie {
     sus handle file_handle = get_file_handle_by_fd(fd)
-    ready !handle.is_open {
+    lowkey !handle.is_open {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready (handle.mode & O_RDONLY) != 0 {
+    lowkey (handle.mode & O_RDONLY) != 0 {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
     
-    ready count <= 0 {
+    lowkey count <= 0 {
         damn 0
     }
     
@@ -335,19 +335,19 @@ slay fs_write(fd normie, buffer normie[value], count normie) normie {
     sus remaining normie = count
     
     fr fr Handle append mode
-    ready (handle.mode & O_APPEND) != 0 {
+    lowkey (handle.mode & O_APPEND) != 0 {
         fs_seek(fd, 0, SEEK_END)
     }
     
     bestie remaining > 0 {
-        ready remaining >= FILE_BUFFER_SIZE {
+        lowkey remaining >= FILE_BUFFER_SIZE {
             fr fr Large write - flush buffer and write directly
-            ready handle.buffer_pos > 0 {
+            lowkey handle.buffer_pos > 0 {
                 flush_file_buffer(fd)
             }
             
             sus direct_written normie = perform_file_write_syscall(fd, buffer, bytes_written, remaining)
-            ready direct_written == -1 {
+            lowkey direct_written == -1 {
                 damn bytes_written > 0 ? bytes_written : -1
             }
             
@@ -355,12 +355,12 @@ slay fs_write(fd normie, buffer normie[value], count normie) normie {
             handle.position = handle.position + direct_written
             remaining = remaining - direct_written
         }
-        otherwise {
+        highkey {
             fr fr Small write - use buffer
             sus space_available normie = FILE_BUFFER_SIZE - handle.buffer_pos
             sus to_copy normie = (remaining < space_available) ? remaining : space_available
             
-            ready to_copy > 0 {
+            lowkey to_copy > 0 {
                 copy_buffer_data(buffer, bytes_written, handle.buffer, handle.buffer_pos, to_copy)
                 handle.buffer_pos = handle.buffer_pos + to_copy
                 handle.is_dirty = based
@@ -369,14 +369,14 @@ slay fs_write(fd normie, buffer normie[value], count normie) normie {
             }
             
             fr fr If buffer is full, flush it
-            ready handle.buffer_pos >= FILE_BUFFER_SIZE {
+            lowkey handle.buffer_pos >= FILE_BUFFER_SIZE {
                 flush_file_buffer(fd)
             }
         }
     }
     
     fr fr Update file size if we wrote past end
-    ready handle.size >= 0 && handle.position > handle.size {
+    lowkey handle.size >= 0 && handle.position > handle.size {
         handle.size = handle.position
     }
     
@@ -387,47 +387,47 @@ slay fs_write(fd normie, buffer normie[value], count normie) normie {
 
 slay fs_seek(fd normie, offset normie, whence normie) normie {
     sus handle file_handle = get_file_handle_by_fd(fd)
-    ready !handle.is_open {
+    lowkey !handle.is_open {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
     fr fr Flush buffer if seeking with pending writes
-    ready handle.is_dirty {
+    lowkey handle.is_dirty {
         flush_file_buffer(fd)
     }
     
     sus new_position normie = 0
     
-    ready whence == SEEK_SET {
+    lowkey whence == SEEK_SET {
         new_position = offset
     }
     elseif whence == SEEK_CUR {
         new_position = handle.position + offset
     }
     elseif whence == SEEK_END {
-        ready handle.size >= 0 {
+        lowkey handle.size >= 0 {
             new_position = handle.size + offset
         }
-        otherwise {
+        highkey {
             fr fr Need to get current file size
             sus actual_size normie = get_file_size_internal(handle.path)
-            ready actual_size >= 0 {
+            lowkey actual_size >= 0 {
                 handle.size = actual_size
                 new_position = actual_size + offset
             }
-            otherwise {
+            highkey {
                 last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
                 damn -1
             }
         }
     }
-    otherwise {
+    highkey {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready new_position < 0 {
+    lowkey new_position < 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
@@ -438,7 +438,7 @@ slay fs_seek(fd normie, offset normie, whence normie) normie {
     
     fr fr Perform actual seek on file descriptor
     sus actual_position normie = perform_file_seek_syscall(fd, new_position, SEEK_SET)
-    ready actual_position != new_position {
+    lowkey actual_position != new_position {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
@@ -449,12 +449,12 @@ slay fs_seek(fd normie, offset normie, whence normie) normie {
 
 slay fs_flush(fd normie) normie {
     sus handle file_handle = get_file_handle_by_fd(fd)
-    ready !handle.is_open {
+    lowkey !handle.is_open {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready !handle.is_dirty {
+    lowkey !handle.is_dirty {
         damn 0  fr fr Nothing to flush
     }
     
@@ -463,19 +463,19 @@ slay fs_flush(fd normie) normie {
 
 slay flush_file_buffer(fd normie) normie {
     sus handle file_handle = get_file_handle_by_fd(fd)
-    ready !handle.is_open || !handle.is_dirty {
+    lowkey !handle.is_open || !handle.is_dirty {
         damn 0
     }
     
-    ready handle.buffer_pos > 0 {
+    lowkey handle.buffer_pos > 0 {
         sus written normie = perform_file_write_syscall(fd, handle.buffer, 0, handle.buffer_pos)
-        ready written != handle.buffer_pos {
+        lowkey written != handle.buffer_pos {
             last_filesystem_error = FS_ERROR_NO_SPACE
             damn -1
         }
         
         handle.position = handle.position + written
-        ready handle.size >= 0 && handle.position > handle.size {
+        lowkey handle.size >= 0 && handle.position > handle.size {
             handle.size = handle.position
         }
     }
@@ -493,41 +493,41 @@ slay flush_file_buffer(fd normie) normie {
 fr fr ===== DIRECTORY OPERATIONS =====
 
 slay fs_mkdir(path tea, mode normie) normie {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready stringz.length(path) > MAX_PATH_LENGTH {
+    lowkey stringz.length(path) > MAX_PATH_LENGTH {
         last_filesystem_error = FS_ERROR_NAME_TOO_LONG
         damn -1
     }
     
-    ready fs_file_exists_internal(path) {
+    lowkey fs_file_exists_internal(path) {
         last_filesystem_error = FS_ERROR_FILE_EXISTS
         damn -1
     }
     
-    ready !validate_directory_path(path) {
+    lowkey !validate_directory_path(path) {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
     fr fr Check parent directory exists and is writable
     sus parent_path tea = get_parent_directory_path(path)
-    ready parent_path != "" && !fs_file_exists_internal(parent_path) {
+    lowkey parent_path != "" && !fs_file_exists_internal(parent_path) {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         damn -1
     }
     
-    ready !check_directory_write_permissions(parent_path) {
+    lowkey !check_directory_write_permissions(parent_path) {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
     
     fr fr Perform actual directory creation
     sus result normie = perform_mkdir_syscall(path, mode)
-    ready result == -1 {
+    lowkey result == -1 {
         damn -1
     }
     
@@ -536,33 +536,33 @@ slay fs_mkdir(path tea, mode normie) normie {
 }
 
 slay fs_rmdir(path tea) normie {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready !fs_file_exists_internal(path) {
+    lowkey !fs_file_exists_internal(path) {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         damn -1
     }
     
-    ready !is_directory_internal(path) {
+    lowkey !is_directory_internal(path) {
         last_filesystem_error = FS_ERROR_NOT_DIRECTORY
         damn -1
     }
     
-    ready !is_directory_empty_internal(path) {
+    lowkey !is_directory_empty_internal(path) {
         last_filesystem_error = FS_ERROR_NOT_EMPTY
         damn -1
     }
     
-    ready !check_directory_write_permissions(path) {
+    lowkey !check_directory_write_permissions(path) {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
     
     sus result normie = perform_rmdir_syscall(path)
-    ready result == -1 {
+    lowkey result == -1 {
         damn -1
     }
     
@@ -579,29 +579,29 @@ squad dir_entry {
 }
 
 slay fs_opendir(path tea) normie {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready !fs_file_exists_internal(path) {
+    lowkey !fs_file_exists_internal(path) {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         damn -1
     }
     
-    ready !is_directory_internal(path) {
+    lowkey !is_directory_internal(path) {
         last_filesystem_error = FS_ERROR_NOT_DIRECTORY
         damn -1
     }
     
-    ready !check_directory_read_permissions(path) {
+    lowkey !check_directory_read_permissions(path) {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
     
     fr fr Allocate directory handle (reuse file handle structure)
     sus dir_fd normie = allocate_file_handle()
-    ready dir_fd == -1 {
+    lowkey dir_fd == -1 {
         damn -1
     }
     
@@ -616,14 +616,14 @@ slay fs_opendir(path tea) normie {
 
 slay fs_readdir(dir_fd normie) dir_entry {
     sus handle file_handle = get_file_handle_by_fd(dir_fd)
-    ready !handle.is_open {
+    lowkey !handle.is_open {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         sus invalid dir_entry = dir_entry{name: ""}
         damn invalid
     }
     
     sus entries dir_entry[value] = get_directory_entries_internal(handle.path)
-    ready handle.position >= len(entries) {
+    lowkey handle.position >= len(entries) {
         fr fr End of directory
         sus invalid dir_entry = dir_entry{name: ""}
         damn invalid
@@ -657,20 +657,20 @@ squad file_stat {
 }
 
 slay fs_stat(path tea) file_stat {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         sus invalid file_stat = file_stat{size: -1}
         damn invalid
     }
     
-    ready !fs_file_exists_internal(path) {
+    lowkey !fs_file_exists_internal(path) {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         sus invalid file_stat = file_stat{size: -1}
         damn invalid
     }
     
     sus stat_result file_stat = perform_stat_syscall(path)
-    ready stat_result.size == -1 {
+    lowkey stat_result.size == -1 {
         sus invalid file_stat = file_stat{size: -1}
         damn invalid
     }
@@ -681,7 +681,7 @@ slay fs_stat(path tea) file_stat {
 
 slay fs_fstat(fd normie) file_stat {
     sus handle file_handle = get_file_handle_by_fd(fd)
-    ready !handle.is_open {
+    lowkey !handle.is_open {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         sus invalid file_stat = file_stat{size: -1}
         damn invalid
@@ -691,18 +691,18 @@ slay fs_fstat(fd normie) file_stat {
 }
 
 slay fs_access(path tea, mode normie) lit {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn cap
     }
     
-    ready !fs_file_exists_internal(path) {
+    lowkey !fs_file_exists_internal(path) {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         damn cap
     }
     
     sus result normie = perform_access_syscall(path, mode)
-    ready result == -1 {
+    lowkey result == -1 {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn cap
     }
@@ -712,28 +712,28 @@ slay fs_access(path tea, mode normie) lit {
 }
 
 slay fs_unlink(path tea) normie {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready !fs_file_exists_internal(path) {
+    lowkey !fs_file_exists_internal(path) {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         damn -1
     }
     
-    ready is_directory_internal(path) {
+    lowkey is_directory_internal(path) {
         last_filesystem_error = FS_ERROR_IS_DIRECTORY
         damn -1
     }
     
-    ready !check_file_delete_permissions(path) {
+    lowkey !check_file_delete_permissions(path) {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
     
     sus result normie = perform_unlink_syscall(path)
-    ready result == -1 {
+    lowkey result == -1 {
         damn -1
     }
     
@@ -742,28 +742,28 @@ slay fs_unlink(path tea) normie {
 }
 
 slay fs_rename(old_path tea, new_path tea) normie {
-    ready old_path == cringe || new_path == cringe {
+    lowkey old_path == cringe || new_path == cringe {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready !fs_file_exists_internal(old_path) {
+    lowkey !fs_file_exists_internal(old_path) {
         last_filesystem_error = FS_ERROR_FILE_NOT_FOUND
         damn -1
     }
     
-    ready stringz.length(new_path) > MAX_PATH_LENGTH {
+    lowkey stringz.length(new_path) > MAX_PATH_LENGTH {
         last_filesystem_error = FS_ERROR_NAME_TOO_LONG
         damn -1
     }
     
-    ready !validate_file_path(new_path) {
+    lowkey !validate_file_path(new_path) {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
     sus result normie = perform_rename_syscall(old_path, new_path)
-    ready result == -1 {
+    lowkey result == -1 {
         damn -1
     }
     
@@ -774,31 +774,31 @@ slay fs_rename(old_path tea, new_path tea) normie {
 fr fr ===== PATH MANIPULATION AND VALIDATION =====
 
 slay validate_file_path(path tea) lit {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         damn cap
     }
     
-    ready stringz.length(path) > MAX_PATH_LENGTH {
+    lowkey stringz.length(path) > MAX_PATH_LENGTH {
         damn cap
     }
     
     fr fr Check for null bytes
-    ready stringz.contains(path, "\0") {
+    lowkey stringz.contains(path, "\0") {
         damn cap
     }
     
     fr fr Check for invalid characters (platform-specific)
-    ready contains_invalid_path_characters(path) {
+    lowkey contains_invalid_path_characters(path) {
         damn cap
     }
     
     fr fr Check for directory traversal attempts
-    ready contains_directory_traversal(path) {
+    lowkey contains_directory_traversal(path) {
         damn cap
     }
     
     fr fr Check path components length
-    ready has_component_too_long(path) {
+    lowkey has_component_too_long(path) {
         damn cap
     }
     
@@ -818,7 +818,7 @@ slay contains_invalid_path_characters(path tea) lit {
     bestie i := 0; i < path_len; i++ {
         sus path_char tea = stringz.char_at(path, i)
         bestie j := 0; j < invalid_len; j++ {
-            ready path_char == stringz.char_at(invalid_chars, j) {
+            lowkey path_char == stringz.char_at(invalid_chars, j) {
                 damn based
             }
         }
@@ -829,15 +829,15 @@ slay contains_invalid_path_characters(path tea) lit {
 
 slay contains_directory_traversal(path tea) lit {
     fr fr Check for various directory traversal patterns
-    ready stringz.contains(path, "..") {
+    lowkey stringz.contains(path, "..") {
         damn based
     }
     
-    ready stringz.contains(path, "./") {
+    lowkey stringz.contains(path, "./") {
         damn based
     }
     
-    ready stringz.contains(path, ".\\") {
+    lowkey stringz.contains(path, ".\\") {
         damn based
     }
     
@@ -849,7 +849,7 @@ slay has_component_too_long(path tea) lit {
     sus i normie = 0
     
     bestie i < len(components) {
-        ready stringz.length(components[i]) > MAX_FILENAME_LENGTH {
+        lowkey stringz.length(components[i]) > MAX_FILENAME_LENGTH {
             damn based
         }
         i = i + 1
@@ -865,18 +865,18 @@ slay split_path_components(path tea) tea[value]{
     
     bestie i := 0; i < path_len; i++ {
         sus char tea = stringz.char_at(path, i)
-        ready char == "/" || char == "\\" {
-            ready stringz.length(current_component) > 0 {
+        lowkey char == "/" || char == "\\" {
+            lowkey stringz.length(current_component) > 0 {
                 components = append_string(components, current_component)
                 current_component = ""
             }
         }
-        otherwise {
+        highkey {
             current_component = current_component + char
         }
     }
     
-    ready stringz.length(current_component) > 0 {
+    lowkey stringz.length(current_component) > 0 {
         components = append_string(components, current_component)
     }
     
@@ -884,7 +884,7 @@ slay split_path_components(path tea) tea[value]{
 }
 
 slay get_parent_directory_path(path tea) tea {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         damn ""
     }
     
@@ -894,17 +894,17 @@ slay get_parent_directory_path(path tea) tea {
     
     bestie i := path_len - 1; i >= 0; i-- {
         sus char tea = stringz.char_at(path, i)
-        ready char == "/" || char == "\\" {
+        lowkey char == "/" || char == "\\" {
             last_separator = i
             ghosted
         }
     }
     
-    ready last_separator == -1 {
+    lowkey last_separator == -1 {
         damn "."  fr fr Current directory
     }
     
-    ready last_separator == 0 {
+    lowkey last_separator == 0 {
         damn "/"  fr fr Root directory
     }
     
@@ -912,7 +912,7 @@ slay get_parent_directory_path(path tea) tea {
 }
 
 slay get_filename_from_path(path tea) tea {
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         damn ""
     }
     
@@ -921,13 +921,13 @@ slay get_filename_from_path(path tea) tea {
     
     bestie i := path_len - 1; i >= 0; i-- {
         sus char tea = stringz.char_at(path, i)
-        ready char == "/" || char == "\\" {
+        lowkey char == "/" || char == "\\" {
             last_separator = i
             ghosted
         }
     }
     
-    ready last_separator == -1 {
+    lowkey last_separator == -1 {
         damn path
     }
     
@@ -935,7 +935,7 @@ slay get_filename_from_path(path tea) tea {
 }
 
 slay normalize_path(path tea) tea {
-    ready path == cringe {
+    lowkey path == cringe {
         damn ""
     }
     
@@ -946,7 +946,7 @@ slay normalize_path(path tea) tea {
     normalized = remove_duplicate_slashes(normalized)
     
     fr fr Remove trailing slash (except for root)
-    ready stringz.length(normalized) > 1 && stringz.ends_with(normalized, "/") {
+    lowkey stringz.length(normalized) > 1 && stringz.ends_with(normalized, "/") {
         normalized = stringz.substring(normalized, 0, stringz.length(normalized) - 1)
     }
     
@@ -954,7 +954,7 @@ slay normalize_path(path tea) tea {
 }
 
 slay resolve_path(path tea, base_path tea) tea {
-    ready stringz.starts_with(path, "/") {
+    lowkey stringz.starts_with(path, "/") {
         damn normalize_path(path)  fr fr Absolute path
     }
     
@@ -967,20 +967,20 @@ fr fr ===== PERMISSION CHECKING =====
 
 slay check_file_permissions(path tea, flags normie) lit {
     sus stat file_stat = fs_stat(path)
-    ready stat.size == -1 {
+    lowkey stat.size == -1 {
         damn cap
     }
     
     fr fr Check read permissions
-    ready (flags & O_RDONLY) != 0 || (flags & O_RDWR) != 0 {
-        ready !has_read_permission(stat) {
+    lowkey (flags & O_RDONLY) != 0 || (flags & O_RDWR) != 0 {
+        lowkey !has_read_permission(stat) {
             damn cap
         }
     }
     
     fr fr Check write permissions
-    ready (flags & O_WRONLY) != 0 || (flags & O_RDWR) != 0 {
-        ready !has_write_permission(stat) {
+    lowkey (flags & O_WRONLY) != 0 || (flags & O_RDWR) != 0 {
+        lowkey !has_write_permission(stat) {
             damn cap
         }
     }
@@ -990,7 +990,7 @@ slay check_file_permissions(path tea, flags normie) lit {
 
 slay check_directory_read_permissions(path tea) lit {
     sus stat file_stat = fs_stat(path)
-    ready stat.size == -1 {
+    lowkey stat.size == -1 {
         damn cap
     }
     
@@ -999,7 +999,7 @@ slay check_directory_read_permissions(path tea) lit {
 
 slay check_directory_write_permissions(path tea) lit {
     sus stat file_stat = fs_stat(path)
-    ready stat.size == -1 {
+    lowkey stat.size == -1 {
         damn cap
     }
     
@@ -1034,7 +1034,7 @@ slay fs_file_exists_internal(path tea) lit {
 
 slay is_directory_internal(path tea) lit {
     sus stat file_stat = perform_stat_syscall(path)
-    ready stat.size == -1 {
+    lowkey stat.size == -1 {
         damn cap
     }
     damn stat.type == DT_DIR
@@ -1046,7 +1046,7 @@ slay is_directory_empty_internal(path tea) lit {
     fr fr Empty if only contains . and .. entries
     sus count normie = 0
     bestie i := 0; i < len(entries); i++ {
-        ready entries[i].name != "." && entries[i].name != ".." {
+        lowkey entries[i].name != "." && entries[i].name != ".." {
             count = count + 1
         }
     }
@@ -1056,7 +1056,7 @@ slay is_directory_empty_internal(path tea) lit {
 
 slay get_file_size_internal(path tea) normie {
     sus stat file_stat = perform_stat_syscall(path)
-    ready stat.size == -1 {
+    lowkey stat.size == -1 {
         damn -1
     }
     damn stat.size
@@ -1067,7 +1067,7 @@ slay get_directory_entries_internal(path tea) dir_entry[value]{
     fr fr For simulation, return sample entries
     sus entries dir_entry[value] = []
     
-    ready stringz.contains(path, "tmp") {
+    lowkey stringz.contains(path, "tmp") {
         entries = append_dir_entry(entries, dir_entry{
             name: ".",
             type: DT_DIR,
@@ -1105,16 +1105,16 @@ fr fr ===== SYSTEM CALL SIMULATION =====
 
 slay perform_file_open_syscall(path tea, flags normie, mode normie) normie {
     fr fr Simulate OS open() syscall
-    ready contains_invalid_path_characters(path) {
+    lowkey contains_invalid_path_characters(path) {
         last_filesystem_error = FS_ERROR_INVALID_ARGUMENT
         damn -1
     }
     
-    ready stringz.contains(path, "/dev/null") {
+    lowkey stringz.contains(path, "/dev/null") {
         damn 42  fr fr Special device file
     }
     
-    ready (flags & O_CREAT) != 0 || fs_file_exists_internal(path) {
+    lowkey (flags & O_CREAT) != 0 || fs_file_exists_internal(path) {
         damn next_file_descriptor - 1
     }
     
@@ -1124,7 +1124,7 @@ slay perform_file_open_syscall(path tea, flags normie, mode normie) normie {
 
 slay perform_file_close_syscall(fd normie) normie {
     fr fr Simulate OS close() syscall
-    ready fd > 2 {  fr fr Valid file descriptor
+    lowkey fd > 2 {  fr fr Valid file descriptor
         damn 0
     }
     damn -1
@@ -1134,7 +1134,7 @@ slay perform_file_read_syscall(fd normie, buffer normie[value], offset normie, c
     fr fr Simulate OS read() syscall
     fr fr For simulation, return pattern based on file descriptor
     
-    ready count == 0 {
+    lowkey count == 0 {
         damn 0
     }
     
@@ -1147,12 +1147,12 @@ slay perform_file_read_syscall(fd normie, buffer normie[value], offset normie, c
 
 slay perform_file_write_syscall(fd normie, buffer normie[value], offset normie, count normie) normie {
     fr fr Simulate OS write() syscall
-    ready count <= 0 {
+    lowkey count <= 0 {
         damn 0
     }
     
     fr fr Check for disk space (simplified)
-    ready count > 1000000 {  fr fr 1MB limit for simulation
+    lowkey count > 1000000 {  fr fr 1MB limit for simulation
         last_filesystem_error = FS_ERROR_FILE_TOO_LARGE
         damn -1
     }
@@ -1162,7 +1162,7 @@ slay perform_file_write_syscall(fd normie, buffer normie[value], offset normie, 
 
 slay perform_file_seek_syscall(fd normie, offset normie, whence normie) normie {
     fr fr Simulate OS lseek() syscall
-    ready offset < 0 {
+    lowkey offset < 0 {
         damn -1
     }
     damn offset
@@ -1175,12 +1175,12 @@ slay perform_file_sync_syscall(fd normie) normie {
 
 slay perform_stat_syscall(path tea) file_stat {
     fr fr Simulate OS stat() syscall
-    ready path == cringe || stringz.length(path) == 0 {
+    lowkey path == cringe || stringz.length(path) == 0 {
         sus invalid file_stat = file_stat{size: -1}
         damn invalid
     }
     
-    ready stringz.contains(path, "/tmp") {
+    lowkey stringz.contains(path, "/tmp") {
         sus tmp_stat file_stat = file_stat{
             size: 1024,
             type: DT_REG,
@@ -1197,7 +1197,7 @@ slay perform_stat_syscall(path tea) file_stat {
         damn tmp_stat
     }
     
-    ready stringz.ends_with(path, "/") {
+    lowkey stringz.ends_with(path, "/") {
         sus dir_stat file_stat = file_stat{
             size: 0,
             type: DT_DIR,
@@ -1220,8 +1220,8 @@ slay perform_stat_syscall(path tea) file_stat {
 
 slay perform_access_syscall(path tea, mode normie) normie {
     fr fr Simulate OS access() syscall
-    ready stringz.contains(path, "readonly") {
-        ready mode != O_RDONLY {
+    lowkey stringz.contains(path, "readonly") {
+        lowkey mode != O_RDONLY {
             damn -1
         }
     }
@@ -1231,7 +1231,7 @@ slay perform_access_syscall(path tea, mode normie) normie {
 
 slay perform_mkdir_syscall(path tea, mode normie) normie {
     fr fr Simulate OS mkdir() syscall
-    ready stringz.contains(path, "readonly") {
+    lowkey stringz.contains(path, "readonly") {
         last_filesystem_error = FS_ERROR_READ_ONLY
         damn -1
     }
@@ -1241,7 +1241,7 @@ slay perform_mkdir_syscall(path tea, mode normie) normie {
 
 slay perform_rmdir_syscall(path tea) normie {
     fr fr Simulate OS rmdir() syscall
-    ready stringz.contains(path, "readonly") {
+    lowkey stringz.contains(path, "readonly") {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
@@ -1251,7 +1251,7 @@ slay perform_rmdir_syscall(path tea) normie {
 
 slay perform_unlink_syscall(path tea) normie {
     fr fr Simulate OS unlink() syscall
-    ready stringz.contains(path, "readonly") {
+    lowkey stringz.contains(path, "readonly") {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
@@ -1261,7 +1261,7 @@ slay perform_unlink_syscall(path tea) normie {
 
 slay perform_rename_syscall(old_path tea, new_path tea) normie {
     fr fr Simulate OS rename() syscall
-    ready stringz.contains(old_path, "readonly") || stringz.contains(new_path, "readonly") {
+    lowkey stringz.contains(old_path, "readonly") || stringz.contains(new_path, "readonly") {
         last_filesystem_error = FS_ERROR_PERMISSION_DENIED
         damn -1
     }
@@ -1271,7 +1271,7 @@ slay perform_rename_syscall(old_path tea, new_path tea) normie {
 
 slay perform_file_truncate(path tea, size normie) normie {
     fr fr Simulate OS truncate() syscall
-    ready size < 0 {
+    lowkey size < 0 {
         damn -1
     }
     damn 0
@@ -1292,7 +1292,7 @@ slay make_buffer(size normie) normie[value]{
 slay copy_buffer_data(src normie[value], src_offset normie, dst normie[value], dst_offset normie, count normie) {
     fr fr In real implementation, would copy actual bytes
     fr fr For simulation, just validate parameters
-    ready count <= 0 {
+    lowkey count <= 0 {
         damn
     }
 }
@@ -1343,10 +1343,10 @@ slay replace_all_chars(str tea, search tea, replace tea) tea {
     
     bestie i := 0; i < str_len; i++ {
         sus char tea = stringz.char_at(str, i)
-        ready char == search {
+        lowkey char == search {
             result = result + replace
         }
-        otherwise {
+        highkey {
             result = result + char
         }
     }
@@ -1361,13 +1361,13 @@ slay remove_duplicate_slashes(path tea) tea {
     
     bestie i := 0; i < path_len; i++ {
         sus char tea = stringz.char_at(path, i)
-        ready char == "/" {
-            ready !prev_was_slash {
+        lowkey char == "/" {
+            lowkey !prev_was_slash {
                 result = result + char
             }
             prev_was_slash = based
         }
-        otherwise {
+        highkey {
             result = result + char
             prev_was_slash = cap
         }
@@ -1387,7 +1387,7 @@ slay clear_filesystem_error() {
 }
 
 slay get_filesystem_error_message() tea {
-    ready last_filesystem_error == FS_SUCCESS {
+    lowkey last_filesystem_error == FS_SUCCESS {
         damn "No error"
     }
     elseif last_filesystem_error == FS_ERROR_FILE_NOT_FOUND {
@@ -1437,12 +1437,12 @@ fr fr ===== HIGH-LEVEL FILE I/O API =====
 
 slay read_entire_file(path tea) tea {
     sus fd normie = fs_open(path, O_RDONLY, 0)
-    ready fd == -1 {
+    lowkey fd == -1 {
         damn ""
     }
     
     sus stat file_stat = fs_fstat(fd)
-    ready stat.size <= 0 {
+    lowkey stat.size <= 0 {
         fs_close(fd)
         damn ""
     }
@@ -1452,7 +1452,7 @@ slay read_entire_file(path tea) tea {
     
     fs_close(fd)
     
-    ready bytes_read != stat.size {
+    lowkey bytes_read != stat.size {
         damn ""
     }
     
@@ -1462,7 +1462,7 @@ slay read_entire_file(path tea) tea {
 
 slay write_entire_file(path tea, content tea) lit {
     sus fd normie = fs_open(path, O_WRONLY | O_CREAT | O_TRUNC, PERM_DEFAULT_FILE)
-    ready fd == -1 {
+    lowkey fd == -1 {
         damn cap
     }
     
@@ -1476,7 +1476,7 @@ slay write_entire_file(path tea, content tea) lit {
 
 slay append_to_file(path tea, content tea) lit {
     sus fd normie = fs_open(path, O_WRONLY | O_CREAT | O_APPEND, PERM_DEFAULT_FILE)
-    ready fd == -1 {
+    lowkey fd == -1 {
         damn cap
     }
     
@@ -1492,10 +1492,10 @@ slay buffer_to_string(buffer normie[value], size normie) tea {
     fr fr Convert byte buffer to string
     sus result tea = ""
     bestie i := 0; i < size; i++ {
-        ready buffer[i] >= 32 && buffer[i] <= 126 {
+        lowkey buffer[i] >= 32 && buffer[i] <= 126 {
             result = result + ascii_byte_to_char(buffer[i])
         }
-        otherwise {
+        highkey {
             result = result + "?"
         }
     }
@@ -1515,102 +1515,102 @@ slay string_to_buffer(str tea) normie[value]{
 }
 
 slay ascii_byte_to_char(byte normie) tea {
-    ready byte == 32 { damn " " }
-    ready byte == 33 { damn "!" }
-    ready byte >= 48 && byte <= 57 {
+    lowkey byte == 32 { damn " " }
+    lowkey byte == 33 { damn "!" }
+    lowkey byte >= 48 && byte <= 57 {
         damn digit_byte_to_char(byte - 48)
     }
-    ready byte >= 65 && byte <= 90 {
+    lowkey byte >= 65 && byte <= 90 {
         damn upper_byte_to_char(byte - 65)
     }
-    ready byte >= 97 && byte <= 122 {
+    lowkey byte >= 97 && byte <= 122 {
         damn lower_byte_to_char(byte - 97)
     }
     damn "?"
 }
 
 slay char_to_ascii_byte(char tea) normie {
-    ready char == " " { damn 32 }
-    ready char == "!" { damn 33 }
-    ready char >= "0" && char <= "9" {
+    lowkey char == " " { damn 32 }
+    lowkey char == "!" { damn 33 }
+    lowkey char >= "0" && char <= "9" {
         damn char_digit_to_byte(char) + 48
     }
-    ready char >= "A" && char <= "Z" {
+    lowkey char >= "A" && char <= "Z" {
         damn char_upper_to_byte(char) + 65
     }
-    ready char >= "a" && char <= "z" {
+    lowkey char >= "a" && char <= "z" {
         damn char_lower_to_byte(char) + 97
     }
     damn 63  fr fr '?'
 }
 
 slay digit_byte_to_char(digit normie) tea {
-    ready digit == 0 { damn "0" }
-    ready digit == 1 { damn "1" }
-    ready digit == 2 { damn "2" }
-    ready digit == 3 { damn "3" }
-    ready digit == 4 { damn "4" }
-    ready digit == 5 { damn "5" }
-    ready digit == 6 { damn "6" }
-    ready digit == 7 { damn "7" }
-    ready digit == 8 { damn "8" }
-    ready digit == 9 { damn "9" }
+    lowkey digit == 0 { damn "0" }
+    lowkey digit == 1 { damn "1" }
+    lowkey digit == 2 { damn "2" }
+    lowkey digit == 3 { damn "3" }
+    lowkey digit == 4 { damn "4" }
+    lowkey digit == 5 { damn "5" }
+    lowkey digit == 6 { damn "6" }
+    lowkey digit == 7 { damn "7" }
+    lowkey digit == 8 { damn "8" }
+    lowkey digit == 9 { damn "9" }
     damn "?"
 }
 
 slay upper_byte_to_char(index normie) tea {
-    ready index == 0 { damn "A" }
-    ready index == 1 { damn "B" }
-    ready index == 2 { damn "C" }
-    ready index == 7 { damn "H" }
-    ready index == 4 { damn "E" }
-    ready index == 11 { damn "L" }
-    ready index == 14 { damn "O" }
+    lowkey index == 0 { damn "A" }
+    lowkey index == 1 { damn "B" }
+    lowkey index == 2 { damn "C" }
+    lowkey index == 7 { damn "H" }
+    lowkey index == 4 { damn "E" }
+    lowkey index == 11 { damn "L" }
+    lowkey index == 14 { damn "O" }
     damn "X"
 }
 
 slay lower_byte_to_char(index normie) tea {
-    ready index == 0 { damn "a" }
-    ready index == 1 { damn "b" }
-    ready index == 2 { damn "c" }
-    ready index == 7 { damn "h" }
-    ready index == 4 { damn "e" }
-    ready index == 11 { damn "l" }
-    ready index == 14 { damn "o" }
+    lowkey index == 0 { damn "a" }
+    lowkey index == 1 { damn "b" }
+    lowkey index == 2 { damn "c" }
+    lowkey index == 7 { damn "h" }
+    lowkey index == 4 { damn "e" }
+    lowkey index == 11 { damn "l" }
+    lowkey index == 14 { damn "o" }
     damn "x"
 }
 
 slay char_digit_to_byte(char tea) normie {
-    ready char == "0" { damn 0 }
-    ready char == "1" { damn 1 }
-    ready char == "2" { damn 2 }
-    ready char == "3" { damn 3 }
-    ready char == "4" { damn 4 }
-    ready char == "5" { damn 5 }
-    ready char == "6" { damn 6 }
-    ready char == "7" { damn 7 }
-    ready char == "8" { damn 8 }
-    ready char == "9" { damn 9 }
+    lowkey char == "0" { damn 0 }
+    lowkey char == "1" { damn 1 }
+    lowkey char == "2" { damn 2 }
+    lowkey char == "3" { damn 3 }
+    lowkey char == "4" { damn 4 }
+    lowkey char == "5" { damn 5 }
+    lowkey char == "6" { damn 6 }
+    lowkey char == "7" { damn 7 }
+    lowkey char == "8" { damn 8 }
+    lowkey char == "9" { damn 9 }
     damn 0
 }
 
 slay char_upper_to_byte(char tea) normie {
     fr fr A=0, B=1, etc.
-    ready char == "A" { damn 0 }
-    ready char == "B" { damn 1 }
-    ready char == "C" { damn 2 }
-    ready char == "H" { damn 7 }
-    ready char == "E" { damn 4 }
+    lowkey char == "A" { damn 0 }
+    lowkey char == "B" { damn 1 }
+    lowkey char == "C" { damn 2 }
+    lowkey char == "H" { damn 7 }
+    lowkey char == "E" { damn 4 }
     damn 23  fr fr Default 'X'
 }
 
 slay char_lower_to_byte(char tea) normie {
     fr fr a=0, b=1, etc.
-    ready char == "a" { damn 0 }
-    ready char == "b" { damn 1 }
-    ready char == "c" { damn 2 }
-    ready char == "h" { damn 7 }
-    ready char == "e" { damn 4 }
+    lowkey char == "a" { damn 0 }
+    lowkey char == "b" { damn 1 }
+    lowkey char == "c" { damn 2 }
+    lowkey char == "h" { damn 7 }
+    lowkey char == "e" { damn 4 }
     damn 23  fr fr Default 'x'
 }
 
@@ -1632,13 +1632,13 @@ slay reset_filesystem_stats() {
 }
 
 slay int_to_string(num normie) tea {
-    ready num == 0 { damn "0" }
+    lowkey num == 0 { damn "0" }
     
     sus result tea = ""
     sus temp normie = num
     sus is_negative lit = cap
     
-    ready temp < 0 {
+    lowkey temp < 0 {
         is_negative = based
         temp = -temp
     }
@@ -1649,7 +1649,7 @@ slay int_to_string(num normie) tea {
         temp = temp / 10
     }
     
-    ready is_negative {
+    lowkey is_negative {
         result = "-" + result
     }
     
@@ -1665,36 +1665,36 @@ slay test_filesystem_operations() lit {
     sus test_path tea = "/tmp/cursed_test.txt"
     sus test_content tea = "Hello, CURSED filesystem!"
     
-    ready !write_entire_file(test_path, test_content) {
+    lowkey !write_entire_file(test_path, test_content) {
         test_passed = cap
     }
     
     fr fr Test file reading
     sus read_content tea = read_entire_file(test_path)
-    ready read_content != test_content {
+    lowkey read_content != test_content {
         test_passed = cap
     }
     
     fr fr Test file metadata
     sus stat file_stat = fs_stat(test_path)
-    ready stat.size <= 0 {
+    lowkey stat.size <= 0 {
         test_passed = cap
     }
     
     fr fr Test directory operations
     sus test_dir tea = "/tmp/cursed_test_dir"
-    ready fs_mkdir(test_dir, PERM_DEFAULT_DIR) != 0 {
+    lowkey fs_mkdir(test_dir, PERM_DEFAULT_DIR) != 0 {
         test_passed = cap
     }
     
     fr fr Test directory listing
     sus dir_fd normie = fs_opendir("/tmp")
-    ready dir_fd == -1 {
+    lowkey dir_fd == -1 {
         test_passed = cap
     }
-    otherwise {
+    highkey {
         sus entry dir_entry = fs_readdir(dir_fd)
-        ready entry.name == "" {
+        lowkey entry.name == "" {
             test_passed = cap
         }
         fs_closedir(dir_fd)

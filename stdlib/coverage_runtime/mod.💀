@@ -6,7 +6,7 @@ sus coverage_data {} = {}
 
 # Record line execution
 slay recordLine(file_path tea, line_number normie) {
-    ready (coverage_data[file_path] == nil) {
+    lowkey (coverage_data[file_path] == nil) {
         coverage_data[file_path] = {}
     }
     
@@ -15,7 +15,7 @@ slay recordLine(file_path tea, line_number normie) {
 
 # Record function entry
 slay recordFunction(file_path tea, function_name tea, line_number normie) {
-    ready (coverage_data[file_path] == nil) {
+    lowkey (coverage_data[file_path] == nil) {
         coverage_data[file_path] = {}
     }
     
@@ -25,7 +25,7 @@ slay recordFunction(file_path tea, function_name tea, line_number normie) {
 
 # Record branch execution
 slay recordBranch(file_path tea, branch_id tea, line_number normie, taken lit) {
-    ready (coverage_data[file_path] == nil) {
+    lowkey (coverage_data[file_path] == nil) {
         coverage_data[file_path] = {}
     }
     
@@ -49,10 +49,10 @@ slay getCoverageSummary() {} {
         sus branches_covered normie = 0
         
         bestie (key in file_data) {
-            ready (key.startsWith("func:")) {
+            lowkey (key.startsWith("func:")) {
                 functions_covered = functions_covered + 1
-            } else ready (key.startsWith("branch:")) {
-                ready (file_data[key] == based) {
+            } else lowkey (key.startsWith("branch:")) {
+                lowkey (file_data[key] == based) {
                     branches_covered = branches_covered + 1
                 }
             } else {
@@ -75,9 +75,9 @@ slay saveCoverageReport(output_path tea, format tea) {
     sus summary {} = getCoverageSummary()
     sus report_content tea = ""
     
-    ready (format == "json") {
+    lowkey (format == "json") {
         report_content = JSON.stringify(summary)
-    } else ready (format == "html") {
+    } else lowkey (format == "html") {
         report_content = generateHTMLReport(summary)
     } else {
         report_content = generateTextReport(summary)

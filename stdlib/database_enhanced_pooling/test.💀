@@ -129,13 +129,13 @@ slay test_concurrent_connection_requests() lit {
                 }
             }
             
-            ready (conn != null) {
+            lowkey (conn != null) {
                 successful_acquisitions += 1
                 // Hold connection briefly
                 sleep(50)
                 release_connection(pool, conn)
                 completion_ch <- based
-            } otherwise {
+            } highkey {
                 completion_ch <- nah
             }
         }
@@ -240,12 +240,12 @@ slay test_resource_cleanup() lit {
         sus conn1 = acquire_connection(pool) fam { when _ -> damn null }
         sus conn2 = acquire_connection(pool) fam { when _ -> damn null }
         
-        ready (conn1 != null) {
+        lowkey (conn1 != null) {
             connection_count += 1
             release_connection(pool, conn1)
         }
         
-        ready (conn2 != null) {
+        lowkey (conn2 != null) {
             connection_count += 1
             release_connection(pool, conn2)
         }
@@ -340,7 +340,7 @@ slay test_rapid_acquire_release_cycles() lit {
             when _ -> damn null
         }
         
-        ready (conn != null) {
+        lowkey (conn != null) {
             // Simulate brief database operation
             sleep(1)
             release_connection(pool, conn)
@@ -371,7 +371,7 @@ slay test_memory_leak_detection() lit {
         // Perform operations
         bestie (op drip = 0; op < 20; op += 1) {
             sus conn = acquire_connection(pool) fam { when _ -> damn null }
-            ready (conn != null) {
+            lowkey (conn != null) {
                 sleep(1)
                 release_connection(pool, conn)
             }

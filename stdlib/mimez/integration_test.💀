@@ -40,7 +40,7 @@ slay test_vibez_integration() {
     detect_mime_from_extension("")  fr fr This should generate an error
     sus error tea = get_last_error()
     
-    ready error != "" {
+    lowkey error != "" {
         vibez.spill("Error detected and reported:", error)
     }
     
@@ -92,9 +92,9 @@ slay test_web_server_simulation() {
         sus response tea = "HTTP/1.1 200 OK\r\n"
         response = response + "Content-Type: " + content_type + "\r\n"
         
-        ready is_binary {
+        lowkey is_binary {
             response = response + "Content-Transfer-Encoding: binary\r\n"
-        } otherwise {
+        } highkey {
             response = response + "Content-Transfer-Encoding: text\r\n"
         }
         
@@ -174,17 +174,17 @@ slay test_file_processing_pipeline() {
         assert_not_equal_string(result.mime_type, "")
         assert_not_equal_string(result.description, "")
         
-        ready result.filename == "document.pdf" {
+        lowkey result.filename == "document.pdf" {
             assert_eq_string(result.mime_type, "application/pdf")
             assert_eq_bool(result.is_binary, based)
         }
         
-        ready result.filename == "data.json" {
+        lowkey result.filename == "data.json" {
             assert_eq_string(result.mime_type, "application/json") 
             assert_eq_bool(result.is_binary, cap)
         }
         
-        ready result.filename == "source.💀" {
+        lowkey result.filename == "source.💀" {
             assert_eq_string(result.mime_type, "text/x-cursed")
             assert_eq_bool(result.is_binary, cap)
         }
@@ -204,28 +204,28 @@ slay test_api_response_handling() {
         sus response_mime tea = ""
         sus response_content tea = ""
         
-        ready endpoint == "/api/data" {
+        lowkey endpoint == "/api/data" {
             response_mime = "application/json"
             response_content = "{\"status\": \"success\", \"data\": []}"
-        } otherwise ready endpoint == "/api/export" {
-            ready string_contains(accept_header, "text/csv") {
+        } highkey lowkey endpoint == "/api/export" {
+            lowkey string_contains(accept_header, "text/csv") {
                 response_mime = "text/csv"
                 response_content = "name,value\ntest,123\n"
-            } otherwise {
+            } highkey {
                 response_mime = "application/json"
                 response_content = "{\"export\": \"data\"}"
             }
-        } otherwise ready endpoint == "/docs" {
+        } highkey lowkey endpoint == "/docs" {
             response_mime = "text/html"
             response_content = "<html><body>Documentation</body></html>"
-        } otherwise {
+        } highkey {
             response_mime = "text/plain"
             response_content = "Not found"
         }
         
-        sus content_type_header tea = ready string_starts_with(response_mime, "text/") {
+        sus content_type_header tea = lowkey string_starts_with(response_mime, "text/") {
             format_content_type(response_mime, "utf-8", "")
-        } otherwise {
+        } highkey {
             response_mime
         }
         

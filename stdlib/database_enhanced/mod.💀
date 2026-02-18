@@ -47,23 +47,23 @@ slay create_connection(connection_url tea) DatabaseConnection {
     conn.transaction_active = cringe
     conn.last_error = ""
     
-    ready (stringz.starts_with(connection_url, "sqlite://")) {
+    lowkey (stringz.starts_with(connection_url, "sqlite://")) {
         conn.database_type = "sqlite"
         conn.is_connected = initialize_sqlite_connection(connection_url)
-    } otherwise ready (stringz.starts_with(connection_url, "postgres://")) {
+    } highkey lowkey (stringz.starts_with(connection_url, "postgres://")) {
         conn.database_type = "postgresql"
         conn.is_connected = initialize_postgres_connection(connection_url)
-    } otherwise ready (stringz.starts_with(connection_url, "file://")) {
+    } highkey lowkey (stringz.starts_with(connection_url, "file://")) {
         conn.database_type = "file"
         conn.is_connected = initialize_file_database(connection_url)
-    } otherwise {
+    } highkey {
         conn.database_type = "memory"
         conn.is_connected = initialize_memory_database()
     }
     
-    ready (conn.is_connected) {
+    lowkey (conn.is_connected) {
         vibez.spill("Database connected: " + conn.database_type + " - " + conn.connection_id)
-    } otherwise {
+    } highkey {
         conn.last_error = "Failed to connect to database: " + connection_url
         vibez.spill("ERROR: " + conn.last_error)
     }
@@ -72,11 +72,11 @@ slay create_connection(connection_url tea) DatabaseConnection {
 }
 
 slay close_connection(conn DatabaseConnection) lit {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         damn cringe
     }
     
-    ready (conn.transaction_active) {
+    lowkey (conn.transaction_active) {
         rollback_transaction(conn)
     }
     
@@ -94,7 +94,7 @@ slay execute_query(conn DatabaseConnection, query tea) QueryResult {
     result.last_insert_id = 0
     result.error_message = ""
     
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         result.success = cringe
         result.error_message = "Database not connected"
         damn result
@@ -103,26 +103,26 @@ slay execute_query(conn DatabaseConnection, query tea) QueryResult {
     sus start_time drip = timez.now_millis()
     
     fr fr Route query based on type and database
-    ready (stringz.starts_with(stringz.to_upper(query), "SELECT")) {
+    lowkey (stringz.starts_with(stringz.to_upper(query), "SELECT")) {
         result = execute_select(conn, query)
-    } otherwise ready (stringz.starts_with(stringz.to_upper(query), "INSERT")) {
+    } highkey lowkey (stringz.starts_with(stringz.to_upper(query), "INSERT")) {
         result = execute_insert(conn, query)
-    } otherwise ready (stringz.starts_with(stringz.to_upper(query), "UPDATE")) {
+    } highkey lowkey (stringz.starts_with(stringz.to_upper(query), "UPDATE")) {
         result = execute_update(conn, query)
-    } otherwise ready (stringz.starts_with(stringz.to_upper(query), "DELETE")) {
+    } highkey lowkey (stringz.starts_with(stringz.to_upper(query), "DELETE")) {
         result = execute_delete(conn, query)
-    } otherwise ready (stringz.starts_with(stringz.to_upper(query), "CREATE")) {
+    } highkey lowkey (stringz.starts_with(stringz.to_upper(query), "CREATE")) {
         result = execute_ddl(conn, query)
-    } otherwise ready (stringz.starts_with(stringz.to_upper(query), "DROP")) {
+    } highkey lowkey (stringz.starts_with(stringz.to_upper(query), "DROP")) {
         result = execute_ddl(conn, query)
-    } otherwise {
+    } highkey {
         result = execute_other(conn, query)
     }
     
     result.execution_time_ms = timez.now_millis() - start_time
     result.success = (result.error_message == "")
     
-    ready (!result.success) {
+    lowkey (!result.success) {
         vibez.spill("Query failed: " + result.error_message)
         vibez.spill("Query: " + query)
     }
@@ -133,14 +133,14 @@ slay execute_query(conn DatabaseConnection, query tea) QueryResult {
 fr fr ===== HIGH-LEVEL DATABASE OPERATIONS =====
 
 slay insert_record(conn DatabaseConnection, table tea, data tea) lit {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         vibez.spill("ERROR: Database not connected")
         damn cringe
     }
     
     fr fr Parse JSON data
     sus json_data map[tea]tea = json.parse_object(data)
-    ready (json_data == empty_map()) {
+    lowkey (json_data == empty_map()) {
         vibez.spill("ERROR: Invalid JSON data for insert")
         damn cringe
     }
@@ -169,14 +169,14 @@ slay insert_record(conn DatabaseConnection, table tea, data tea) lit {
 }
 
 slay update_record(conn DatabaseConnection, table tea, id drip, data tea) lit {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         vibez.spill("ERROR: Database not connected")
         damn cringe
     }
     
     fr fr Parse JSON data
     sus json_data map[tea]tea = json.parse_object(data)
-    ready (json_data == empty_map()) {
+    lowkey (json_data == empty_map()) {
         vibez.spill("ERROR: Invalid JSON data for update")
         damn cringe
     }
@@ -204,7 +204,7 @@ slay update_record(conn DatabaseConnection, table tea, id drip, data tea) lit {
 }
 
 slay delete_record(conn DatabaseConnection, table tea, id drip) lit {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         vibez.spill("ERROR: Database not connected")
         damn cringe
     }
@@ -217,7 +217,7 @@ slay delete_record(conn DatabaseConnection, table tea, id drip) lit {
 }
 
 slay find_records(conn DatabaseConnection, table tea, conditions tea) tea[value]{
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         vibez.spill("ERROR: Database not connected")
         sus empty tea[value] = []
         damn empty
@@ -225,15 +225,15 @@ slay find_records(conn DatabaseConnection, table tea, conditions tea) tea[value]
     
     sus query tea = "SELECT * FROM " + table
     
-    ready (conditions != "" && conditions != "{}") {
+    lowkey (conditions != "" && conditions != "{}") {
         sus where_clause tea = build_where_clause_from_json(conditions)
-        ready (where_clause != "") {
+        lowkey (where_clause != "") {
             query = query + " WHERE " + where_clause
         }
     }
     
     sus result QueryResult = execute_query(conn, query)
-    ready (result.success) {
+    lowkey (result.success) {
         damn result.rows
     }
     
@@ -242,14 +242,14 @@ slay find_records(conn DatabaseConnection, table tea, conditions tea) tea[value]
 }
 
 slay create_table(conn DatabaseConnection, name tea, schema tea) lit {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         vibez.spill("ERROR: Database not connected")
         damn cringe
     }
     
     fr fr Parse schema JSON
     sus schema_data map[tea]tea = json.parse_object(schema)
-    ready (schema_data == empty_map()) {
+    lowkey (schema_data == empty_map()) {
         vibez.spill("ERROR: Invalid table schema")
         damn cringe
     }
@@ -274,17 +274,17 @@ slay create_table(conn DatabaseConnection, name tea, schema tea) lit {
 fr fr ===== TRANSACTION SUPPORT =====
 
 slay begin_transaction(conn DatabaseConnection) lit {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         damn cringe
     }
     
-    ready (conn.transaction_active) {
+    lowkey (conn.transaction_active) {
         vibez.spill("Transaction already active")
         damn cringe
     }
     
     sus result QueryResult = execute_query(conn, "BEGIN TRANSACTION")
-    ready (result.success) {
+    lowkey (result.success) {
         conn.transaction_active = based
         vibez.spill("Transaction started: " + conn.connection_id)
     }
@@ -293,13 +293,13 @@ slay begin_transaction(conn DatabaseConnection) lit {
 }
 
 slay commit_transaction(conn DatabaseConnection) lit {
-    ready (!conn.transaction_active) {
+    lowkey (!conn.transaction_active) {
         vibez.spill("No active transaction to commit")
         damn cringe
     }
     
     sus result QueryResult = execute_query(conn, "COMMIT")
-    ready (result.success) {
+    lowkey (result.success) {
         conn.transaction_active = cringe
         vibez.spill("Transaction committed: " + conn.connection_id)
     }
@@ -308,7 +308,7 @@ slay commit_transaction(conn DatabaseConnection) lit {
 }
 
 slay rollback_transaction(conn DatabaseConnection) lit {
-    ready (!conn.transaction_active) {
+    lowkey (!conn.transaction_active) {
         vibez.spill("No active transaction to rollback")
         damn cringe
     }
@@ -325,11 +325,11 @@ fr fr ===== QUERY EXECUTION IMPLEMENTATIONS =====
 slay execute_select(conn DatabaseConnection, query tea) QueryResult {
     sus result QueryResult = QueryResult{}
     
-    ready (conn.database_type == "sqlite" || conn.database_type == "file") {
+    lowkey (conn.database_type == "sqlite" || conn.database_type == "file") {
         damn execute_file_select(conn, query)
-    } otherwise ready (conn.database_type == "memory") {
+    } highkey lowkey (conn.database_type == "memory") {
         damn execute_memory_select(conn, query)
-    } otherwise {
+    } highkey {
         fr fr For other databases, simulate results
         result.success = based
         result.columns = ["id", "name", "created_at"]
@@ -344,11 +344,11 @@ slay execute_select(conn DatabaseConnection, query tea) QueryResult {
 slay execute_insert(conn DatabaseConnection, query tea) QueryResult {
     sus result QueryResult = QueryResult{}
     
-    ready (conn.database_type == "sqlite" || conn.database_type == "file") {
+    lowkey (conn.database_type == "sqlite" || conn.database_type == "file") {
         damn execute_file_insert(conn, query)
-    } otherwise ready (conn.database_type == "memory") {
+    } highkey lowkey (conn.database_type == "memory") {
         damn execute_memory_insert(conn, query)
-    } otherwise {
+    } highkey {
         result.success = based
         result.rows_affected = 1
         result.last_insert_id = mathz.random_int(1000)
@@ -393,7 +393,7 @@ slay execute_file_select(conn DatabaseConnection, query tea) QueryResult {
     sus table_name tea = extract_table_name_from_query(query)
     sus file_path tea = get_table_file_path(conn, table_name)
     
-    ready (!fs.file_exists(file_path)) {
+    lowkey (!fs.file_exists(file_path)) {
         result.success = cringe
         result.error_message = "Table file not found: " + table_name
         damn result
@@ -402,7 +402,7 @@ slay execute_file_select(conn DatabaseConnection, query tea) QueryResult {
     sus file_content tea = fs.read_file(file_path)
     sus lines tea[value] = stringz.split(file_content, "\n")
     
-    ready (lines.length == 0) {
+    lowkey (lines.length == 0) {
         result.success = based
         result.rows = []
         result.columns = []
@@ -415,7 +415,7 @@ slay execute_file_select(conn DatabaseConnection, query tea) QueryResult {
     
     sus i drip = 1
     bestie (i < lines.length) {
-        ready (stringz.trim(lines[i]) != "") {
+        lowkey (stringz.trim(lines[i]) != "") {
             result.rows[i-1] = lines[i]
         }
         i = i + 1
@@ -433,7 +433,7 @@ slay execute_file_insert(conn DatabaseConnection, query tea) QueryResult {
     sus file_path tea = get_table_file_path(conn, table_name)
     sus values tea = extract_values_from_insert(query)
     
-    ready (values == "") {
+    lowkey (values == "") {
         result.success = cringe
         result.error_message = "Invalid INSERT query"
         damn result
@@ -441,11 +441,11 @@ slay execute_file_insert(conn DatabaseConnection, query tea) QueryResult {
     
     fr fr Append to file
     sus content tea = values + "\n"
-    ready (fs.append_to_file(file_path, content)) {
+    lowkey (fs.append_to_file(file_path, content)) {
         result.success = based
         result.rows_affected = 1
         result.last_insert_id = mathz.random_int(1000)
-    } otherwise {
+    } highkey {
         result.success = cringe
         result.error_message = "Failed to write to table file"
     }
@@ -469,7 +469,7 @@ slay execute_memory_select(conn DatabaseConnection, query tea) QueryResult {
     sus table_name tea = extract_table_name_from_query(query)
     sus table MemoryTable = find_memory_table(table_name)
     
-    ready (table.name == "") {
+    lowkey (table.name == "") {
         result.success = cringe
         result.error_message = "Table not found: " + table_name
         damn result
@@ -495,7 +495,7 @@ slay execute_memory_insert(conn DatabaseConnection, query tea) QueryResult {
     sus table_name tea = extract_table_name_from_insert(query)
     sus table MemoryTable = find_memory_table(table_name)
     
-    ready (table.name == "") {
+    lowkey (table.name == "") {
         result.success = cringe
         result.error_message = "Table not found: " + table_name
         damn result
@@ -523,12 +523,12 @@ slay generate_connection_id() tea {
 
 slay initialize_sqlite_connection(url tea) lit {
     sus path tea = stringz.substring(url, 9, stringz.length(url)) fr fr Remove "sqlite://"
-    ready (path == ":memory:") {
+    lowkey (path == ":memory:") {
         damn initialize_memory_database()
     }
     fr fr Create directory if needed
     sus dir tea = fs.dirname(path)
-    ready (dir != "" && !fs.directory_exists(dir)) {
+    lowkey (dir != "" && !fs.directory_exists(dir)) {
         fs.create_directory(dir)
     }
     damn based
@@ -543,7 +543,7 @@ slay initialize_postgres_connection(url tea) lit {
 slay initialize_file_database(url tea) lit {
     sus path tea = stringz.substring(url, 7, stringz.length(url)) fr fr Remove "file://"
     sus dir tea = fs.dirname(path)
-    ready (!fs.directory_exists(dir)) {
+    lowkey (!fs.directory_exists(dir)) {
         fs.create_directory(dir)
     }
     damn based
@@ -556,11 +556,11 @@ slay initialize_memory_database() lit {
 }
 
 slay get_table_file_path(conn DatabaseConnection, table_name tea) tea {
-    ready (conn.database_type == "sqlite") {
+    lowkey (conn.database_type == "sqlite") {
         sus db_path tea = stringz.substring(conn.connection_string, 9, stringz.length(conn.connection_string))
         sus dir tea = fs.dirname(db_path)
         damn dir + "/" + table_name + ".csv"
-    } otherwise ready (conn.database_type == "file") {
+    } highkey lowkey (conn.database_type == "file") {
         sus db_path tea = stringz.substring(conn.connection_string, 7, stringz.length(conn.connection_string))
         damn db_path + "/" + table_name + ".csv"
     }
@@ -570,13 +570,13 @@ slay get_table_file_path(conn DatabaseConnection, table_name tea) tea {
 slay extract_table_name_from_query(query tea) tea {
     sus upper_query tea = stringz.to_upper(query)
     sus from_index drip = stringz.find(upper_query, "FROM ")
-    ready (from_index == -1) {
+    lowkey (from_index == -1) {
         damn ""
     }
     
     sus table_start drip = from_index + 5
     sus table_end drip = stringz.find_from(upper_query, " ", table_start)
-    ready (table_end == -1) {
+    lowkey (table_end == -1) {
         table_end = stringz.length(query)
     }
     
@@ -586,15 +586,15 @@ slay extract_table_name_from_query(query tea) tea {
 slay extract_table_name_from_insert(query tea) tea {
     sus upper_query tea = stringz.to_upper(query)
     sus into_index drip = stringz.find(upper_query, "INTO ")
-    ready (into_index == -1) {
+    lowkey (into_index == -1) {
         damn ""
     }
     
     sus table_start drip = into_index + 5
     sus table_end drip = stringz.find_from(upper_query, " ", table_start)
-    ready (table_end == -1) {
+    lowkey (table_end == -1) {
         table_end = stringz.find(query, "(")
-        ready (table_end == -1) {
+        lowkey (table_end == -1) {
             table_end = stringz.length(query)
         }
     }
@@ -604,14 +604,14 @@ slay extract_table_name_from_insert(query tea) tea {
 
 slay extract_values_from_insert(query tea) tea {
     sus values_start drip = stringz.find(query, "VALUES")
-    ready (values_start == -1) {
+    lowkey (values_start == -1) {
         damn ""
     }
     
     sus paren_start drip = stringz.find_from(query, "(", values_start)
     sus paren_end drip = stringz.find_from(query, ")", paren_start)
     
-    ready (paren_start == -1 || paren_end == -1) {
+    lowkey (paren_start == -1 || paren_end == -1) {
         damn ""
     }
     
@@ -621,7 +621,7 @@ slay extract_values_from_insert(query tea) tea {
 
 slay extract_values_array_from_insert(query tea) tea[value]{
     sus values_str tea = extract_values_from_insert(query)
-    ready (values_str == "") {
+    lowkey (values_str == "") {
         sus empty tea[value] = []
         damn empty
     }
@@ -636,7 +636,7 @@ slay escape_sql_value(value tea) tea {
 
 slay build_where_clause_from_json(conditions tea) tea {
     sus conditions_map map[tea]tea = json.parse_object(conditions)
-    ready (conditions_map == empty_map()) {
+    lowkey (conditions_map == empty_map()) {
         damn ""
     }
     
@@ -657,7 +657,7 @@ slay execute_parameterized_query(conn DatabaseConnection, query tea, params tea[
     bestie (i < params.length) {
         sus placeholder tea = "?"
         sus param_index drip = stringz.find(final_query, placeholder)
-        ready (param_index != -1) {
+        lowkey (param_index != -1) {
             sus before tea = stringz.substring(final_query, 0, param_index)
             sus after tea = stringz.substring(final_query, param_index + 1, stringz.length(final_query))
             final_query = before + params[i] + after
@@ -671,7 +671,7 @@ slay execute_parameterized_query(conn DatabaseConnection, query tea, params tea[
 slay find_memory_table(name tea) MemoryTable {
     sus i drip = 0
     bestie (i < global_memory_tables.length) {
-        ready (global_memory_tables[i].name == name) {
+        lowkey (global_memory_tables[i].name == name) {
             damn global_memory_tables[i]
         }
         i = i + 1
@@ -707,16 +707,16 @@ slay batch_insert(conn DatabaseConnection, table tea, records tea[value]) lit {
     begin_transaction(conn)
     
     bestie (i < records.length) {
-        ready (insert_record(conn, table, records[i])) {
+        lowkey (insert_record(conn, table, records[i])) {
             success_count = success_count + 1
-        } otherwise {
+        } highkey {
             rollback_transaction(conn)
             damn cringe
         }
         i = i + 1
     }
     
-    ready (commit_transaction(conn)) {
+    lowkey (commit_transaction(conn)) {
         vibez.spill("Batch insert completed: " + stringz.from_int(success_count) + " records")
         damn based
     }
@@ -729,17 +729,17 @@ fr fr ===== SCHEMA MANAGEMENT =====
 slay get_table_info(conn DatabaseConnection, table_name tea) tea {
     sus query tea = ""
     
-    ready (conn.database_type == "sqlite") {
+    lowkey (conn.database_type == "sqlite") {
         query = "PRAGMA table_info(" + table_name + ")"
-    } otherwise ready (conn.database_type == "postgresql") {
+    } highkey lowkey (conn.database_type == "postgresql") {
         query = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '" + table_name + "'"
-    } otherwise {
+    } highkey {
         fr fr For file-based, read first line for column names
         sus file_path tea = get_table_file_path(conn, table_name)
-        ready (fs.file_exists(file_path)) {
+        lowkey (fs.file_exists(file_path)) {
             sus content tea = fs.read_file(file_path)
             sus lines tea[value] = stringz.split(content, "\n")
-            ready (lines.length > 0) {
+            lowkey (lines.length > 0) {
                 damn lines[0]
             }
         }
@@ -747,7 +747,7 @@ slay get_table_info(conn DatabaseConnection, table_name tea) tea {
     }
     
     sus result QueryResult = execute_query(conn, query)
-    ready (result.success && result.rows.length > 0) {
+    lowkey (result.success && result.rows.length > 0) {
         damn stringz.join(result.rows, "|")
     }
     
@@ -776,7 +776,7 @@ slay create_migration_table(conn DatabaseConnection) lit {
 }
 
 slay apply_migration(conn DatabaseConnection, migration Migration) lit {
-    ready (!conn.is_connected) {
+    lowkey (!conn.is_connected) {
         damn cringe
     }
     
@@ -784,7 +784,7 @@ slay apply_migration(conn DatabaseConnection, migration Migration) lit {
     
     fr fr Execute migration SQL
     sus result QueryResult = execute_query(conn, migration.up_sql)
-    ready (!result.success) {
+    lowkey (!result.success) {
         rollback_transaction(conn)
         vibez.spill("Migration failed: " + migration.name + " - " + result.error_message)
         damn cringe
@@ -797,7 +797,7 @@ slay apply_migration(conn DatabaseConnection, migration Migration) lit {
         "applied_at": timez.format_iso8601(timez.now_millis())
     })
     
-    ready (insert_record(conn, "migrations", record_data)) {
+    lowkey (insert_record(conn, "migrations", record_data)) {
         commit_transaction(conn)
         vibez.spill("Migration applied: " + migration.name)
         damn based

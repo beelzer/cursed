@@ -19,7 +19,7 @@ squad LoggingMiddleware {
 
 # Implement RpcMiddleware interface for LoggingMiddleware
 slay logging_before_call(middleware &LoggingMiddleware, request RpcRequest) yikes<lit> {
-    ready (middleware.log_requests && !middleware.log_errors_only) {
+    lowkey (middleware.log_requests && !middleware.log_errors_only) {
         sus timestamp tea = timez.format_timestamp(timez.now())
         sus log_entry tea = "[" + timestamp + "] RPC Request - Method: " + request.method + 
                            ", ID: " + request.id + ", Params: " + request.params
@@ -31,14 +31,14 @@ slay logging_before_call(middleware &LoggingMiddleware, request RpcRequest) yike
 }
 
 slay logging_after_call(middleware &LoggingMiddleware, request RpcRequest, response RpcResponse) yikes<RpcResponse> {
-    ready (middleware.log_responses || (middleware.log_errors_only && response.error != "")) {
+    lowkey (middleware.log_responses || (middleware.log_errors_only && response.error != "")) {
         sus timestamp tea = timez.format_timestamp(timez.now())
-        sus status tea = ready (response.error != "") { "ERROR" } otherwise { "SUCCESS" }
+        sus status tea = lowkey (response.error != "") { "ERROR" } highkey { "SUCCESS" }
         
         sus log_entry tea = "[" + timestamp + "] RPC Response - Method: " + request.method + 
                            ", ID: " + response.id + ", Status: " + status
         
-        ready (response.error != "") {
+        lowkey (response.error != "") {
             log_entry = log_entry + ", Error: " + response.error
         }
         
@@ -78,7 +78,7 @@ slay metrics_before_call(middleware &MetricsMiddleware, request RpcRequest) yike
     middleware.method_counts[request.method] = current_count + 1
     
     # Record start time for response time calculation
-    ready (request.id != "") {
+    lowkey (request.id != "") {
         middleware.start_times[request.id] = timez.now_millis()
     }
     
@@ -87,14 +87,14 @@ slay metrics_before_call(middleware &MetricsMiddleware, request RpcRequest) yike
 
 slay metrics_after_call(middleware &MetricsMiddleware, request RpcRequest, response RpcResponse) yikes<RpcResponse> {
     # Track success/failure
-    ready (response.error != "") {
+    lowkey (response.error != "") {
         middleware.failed_requests += 1
-    } otherwise {
+    } highkey {
         middleware.successful_requests += 1
     }
     
     # Calculate response time
-    ready (request.id != "") {
+    lowkey (request.id != "") {
         sus start_time drip = middleware.start_times.get(request.id) fam {
             when _ -> damn response
         }
@@ -106,7 +106,7 @@ slay metrics_after_call(middleware &MetricsMiddleware, request RpcRequest, respo
         middleware.start_times.remove(request.id)
         
         # Limit response times array to last 1000 entries
-        ready (len(middleware.response_times) > 1000) {
+        lowkey (len(middleware.response_times) > 1000) {
             middleware.response_times = slice(middleware.response_times, 1, len(middleware.response_times))
         }
     }
@@ -129,7 +129,7 @@ slay new_metrics_middleware() MetricsMiddleware {
 # Get metrics report
 slay get_metrics_report(middleware &MetricsMiddleware) tea {
     sus avg_response_time drip = 0
-    ready (len(middleware.response_times) > 0) {
+    lowkey (len(middleware.response_times) > 0) {
         sus total drip = 0
         bestie (time in middleware.response_times) {
             total += time
@@ -138,7 +138,7 @@ slay get_metrics_report(middleware &MetricsMiddleware) tea {
     }
     
     sus success_rate drip = 0
-    ready (middleware.total_requests > 0) {
+    lowkey (middleware.total_requests > 0) {
         success_rate = (middleware.successful_requests * 100) / middleware.total_requests
     }
     
@@ -164,12 +164,12 @@ squad ValidationMiddleware {
 
 slay validation_before_call(middleware &ValidationMiddleware, request RpcRequest) yikes<lit> {
     # Basic request validation
-    ready (request.method == "") {
+    lowkey (request.method == "") {
         yikes "Method name is required"
     }
     
     # Check for reserved method names
-    ready (stringz.starts_with(request.method, "rpc.")) {
+    lowkey (stringz.starts_with(request.method, "rpc.")) {
         yikes "Method names starting with 'rpc.' are reserved"
     }
     
@@ -178,7 +178,7 @@ slay validation_before_call(middleware &ValidationMiddleware, request RpcRequest
         when _ -> damn based  # No schema, skip validation
     }
     
-    ready (middleware.strict_validation && request.params == "") {
+    lowkey (middleware.strict_validation && request.params == "") {
         yikes "Parameters required for method: " + request.method
     }
     
@@ -232,13 +232,13 @@ slay security_before_call(middleware &SecurityMiddleware, request RpcRequest) yi
     # Check if method requires authentication
     sus requires_auth lit = nah
     bestie (method in middleware.require_auth_for_methods) {
-        ready (method == request.method) {
+        lowkey (method == request.method) {
             requires_auth = based
             break
         }
     }
     
-    ready (requires_auth) {
+    lowkey (requires_auth) {
         # This would typically be handled at HTTP level, but can add checks here
         yikes "Authentication required for method: " + request.method
     }
@@ -282,13 +282,13 @@ slay caching_before_call(middleware &CachingMiddleware, request RpcRequest) yike
     # Check if method is cacheable
     sus is_cacheable lit = nah
     bestie (method in middleware.cacheable_methods) {
-        ready (method == request.method) {
+        lowkey (method == request.method) {
             is_cacheable = based
             break
         }
     }
     
-    ready (!is_cacheable) {
+    lowkey (!is_cacheable) {
         damn based
     }
     
@@ -302,7 +302,7 @@ slay caching_before_call(middleware &CachingMiddleware, request RpcRequest) yike
     
     # Check if cached entry is still valid
     sus now drip = timez.now()
-    ready (now - entry.timestamp > entry.ttl) {
+    lowkey (now - entry.timestamp > entry.ttl) {
         middleware.cache.remove(cache_key)
         damn based  # Cache expired
     }
@@ -314,20 +314,20 @@ slay caching_before_call(middleware &CachingMiddleware, request RpcRequest) yike
 
 slay caching_after_call(middleware &CachingMiddleware, request RpcRequest, response RpcResponse) yikes<RpcResponse> {
     # Only cache successful responses
-    ready (response.error != "") {
+    lowkey (response.error != "") {
         damn response
     }
     
     # Check if method is cacheable
     sus is_cacheable lit = nah
     bestie (method in middleware.cacheable_methods) {
-        ready (method == request.method) {
+        lowkey (method == request.method) {
             is_cacheable = based
             break
         }
     }
     
-    ready (!is_cacheable) {
+    lowkey (!is_cacheable) {
         damn response
     }
     
@@ -344,7 +344,7 @@ slay caching_after_call(middleware &CachingMiddleware, request RpcRequest, respo
     }
     
     # Enforce cache size limit
-    ready (len(middleware.cache) >= middleware.max_cache_size) {
+    lowkey (len(middleware.cache) >= middleware.max_cache_size) {
         # Simple eviction: remove oldest entry
         evict_oldest_cache_entry(middleware)
     }
@@ -365,13 +365,13 @@ slay evict_oldest_cache_entry(middleware &CachingMiddleware) {
     sus oldest_time drip = timez.now()
     
     bestie (key, entry in middleware.cache) {
-        ready (entry.timestamp < oldest_time) {
+        lowkey (entry.timestamp < oldest_time) {
             oldest_time = entry.timestamp
             oldest_key = key
         }
     }
     
-    ready (oldest_key != "") {
+    lowkey (oldest_key != "") {
         middleware.cache.remove(oldest_key)
     }
 }

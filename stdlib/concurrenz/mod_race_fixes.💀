@@ -113,7 +113,7 @@ slay mutex_lock(mutex *Mutex) lit {
     fr fr FIXED: Retry loop with timeout to prevent infinite busy-wait
     periodt {
         fr fr Try to acquire lock atomically using CAS
-        ready atomic_drip.atomic_cas_i32(mutex.lock_state, 0, 1) {
+        lowkey atomic_drip.atomic_cas_i32(mutex.lock_state, 0, 1) {
             fr fr Successfully acquired lock
             atomic_drip.atomic_store_i64(mutex.owner, current_owner)
             atomic_drip.memory_fence(ACQUIRE)
@@ -121,7 +121,7 @@ slay mutex_lock(mutex *Mutex) lit {
         }
         
         fr fr FIXED: Check timeout to prevent infinite waiting
-        ready timeout_cycles >= max_timeout {
+        lowkey timeout_cycles >= max_timeout {
             vibez.spill("Warning: Mutex lock timeout after", max_timeout, "cycles")
             damn cringe  fr fr Timeout to prevent deadlock
         }
@@ -130,7 +130,7 @@ slay mutex_lock(mutex *Mutex) lit {
         atomic_drip.atomic_increment_i32(mutex.waiters)
         
         fr fr FIXED: Proper blocking with signaling instead of pure busy-wait
-        ready atomic_drip.atomic_load_i32(mutex.waiters) > 10 {
+        lowkey atomic_drip.atomic_load_i32(mutex.waiters) > 10 {
             fr fr Many waiters - use blocking wait with signal
             atomic_drip.atomic_flag_store(mutex.signal_flag, cringe)
             
@@ -141,7 +141,7 @@ slay mutex_lock(mutex *Mutex) lit {
                 signal_timeout = signal_timeout + 1
                 timeout_cycles = timeout_cycles + 1
             }
-        } otherwise {
+        } highkey {
             fr fr Few waiters - use exponential backoff
             sus yield_cycles normie = 0
             bestie yield_cycles < backoff_count {
@@ -151,7 +151,7 @@ slay mutex_lock(mutex *Mutex) lit {
             }
             
             fr fr Increase backoff up to maximum
-            ready backoff_count < max_backoff {
+            lowkey backoff_count < max_backoff {
                 backoff_count = backoff_count * 2
             }
         }
@@ -159,7 +159,7 @@ slay mutex_lock(mutex *Mutex) lit {
         atomic_drip.atomic_decrement_i32(mutex.waiters)
         
         fr fr Check if lock became available before next attempt
-        ready atomic_drip.atomic_load_i32(mutex.lock_state) == 0 {
+        lowkey atomic_drip.atomic_load_i32(mutex.lock_state) == 0 {
             backoff_count = 1  fr fr Reset backoff for quick retry
         }
     }
@@ -167,13 +167,13 @@ slay mutex_lock(mutex *Mutex) lit {
 
 fr fr RACE-SAFE: Unlock mutex with proper signaling
 slay mutex_unlock(mutex *Mutex) lit {
-    ready mutex == 0 {
+    lowkey mutex == 0 {
         damn cringe
     }
     
     fr fr Verify we own the lock (safety check)
     sus current_owner thicc = get_current_goroutine_id()
-    ready atomic_drip.atomic_load_i64(mutex.owner) != current_owner {
+    lowkey atomic_drip.atomic_load_i64(mutex.owner) != current_owner {
         damn cringe  fr fr Not lock owner
     }
     
@@ -183,7 +183,7 @@ slay mutex_unlock(mutex *Mutex) lit {
     atomic_drip.atomic_store_i32(mutex.lock_state, 0)
     
     fr fr FIXED: Signal waiting goroutines
-    ready atomic_drip.atomic_load_i32(mutex.waiters) > 0 {
+    lowkey atomic_drip.atomic_load_i32(mutex.waiters) > 0 {
         atomic_drip.atomic_flag_store(mutex.signal_flag, based)  fr fr Wake up waiters
     }
     
@@ -212,17 +212,17 @@ slay create_channel(capacity normie) *Channel {
 
 fr fr RACE-SAFE: Send data through channel (INFINITE LOOP FIXED)
 slay channel_send(ch *Channel, data normie) lit {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn cringe  fr fr Invalid channel
     }
     
     fr fr Check if channel is closed (atomic read)
-    ready atomic_drip.atomic_flag_load(ch.closed) {
+    lowkey atomic_drip.atomic_flag_load(ch.closed) {
         damn cringe  fr fr Channel closed
     }
     
     fr fr For unbuffered channels (synchronous)
-    ready ch.capacity == 0 {
+    lowkey ch.capacity == 0 {
         fr fr FIXED: Atomic synchronous send with timeout
         atomic_drip.atomic_increment_i32(ch.send_waiters)
         
@@ -231,17 +231,17 @@ slay channel_send(ch *Channel, data normie) lit {
         
         fr fr FIXED: Wait for receiver with timeout and proper signaling
         periodt {
-            ready atomic_drip.atomic_load_i32(ch.recv_waiters) > 0 {
+            lowkey atomic_drip.atomic_load_i32(ch.recv_waiters) > 0 {
                 break  fr fr Receiver available
             }
             
-            ready atomic_drip.atomic_flag_load(ch.closed) {
+            lowkey atomic_drip.atomic_flag_load(ch.closed) {
                 atomic_drip.atomic_decrement_i32(ch.send_waiters)
                 damn cringe  fr fr Channel closed during wait
             }
             
             fr fr FIXED: Timeout check to prevent infinite spinning
-            ready sync_timeout >= max_sync_timeout {
+            lowkey sync_timeout >= max_sync_timeout {
                 atomic_drip.atomic_decrement_i32(ch.send_waiters)
                 vibez.spill("Warning: Channel send timeout")
                 damn cringe  fr fr Timeout to prevent deadlock
@@ -271,16 +271,16 @@ slay channel_send(ch *Channel, data normie) lit {
     periodt {
         sus current_size normie = atomic_drip.atomic_load_i32(ch.size)
         
-        ready current_size < ch.capacity {
+        lowkey current_size < ch.capacity {
             break  fr fr Space available
         }
         
-        ready atomic_drip.atomic_flag_load(ch.closed) {
+        lowkey atomic_drip.atomic_flag_load(ch.closed) {
             damn cringe  fr fr Channel closed
         }
         
         fr fr FIXED: Timeout check to prevent infinite spinning
-        ready buffer_timeout >= max_buffer_timeout {
+        lowkey buffer_timeout >= max_buffer_timeout {
             vibez.spill("Warning: Channel send buffer timeout")
             damn cringe  fr fr Timeout to prevent deadlock
         }
@@ -288,7 +288,7 @@ slay channel_send(ch *Channel, data normie) lit {
         atomic_drip.atomic_increment_i32(ch.send_waiters)
         
         fr fr FIXED: Proper blocking with signaling
-        ready atomic_drip.atomic_load_i32(ch.send_waiters) > 5 {
+        lowkey atomic_drip.atomic_load_i32(ch.send_waiters) > 5 {
             fr fr Many waiters - use signaling
             atomic_drip.atomic_flag_store(ch.recv_signal, based)  fr fr Signal need for receivers
             
@@ -298,7 +298,7 @@ slay channel_send(ch *Channel, data normie) lit {
                 signal_wait = signal_wait + 1
                 buffer_timeout = buffer_timeout + 1
             }
-        } otherwise {
+        } highkey {
             runtime_yield()  fr fr FIXED: Proper yielding
             buffer_timeout = buffer_timeout + 1
         }
@@ -312,12 +312,12 @@ slay channel_send(ch *Channel, data normie) lit {
         sus current_pos normie = atomic_drip.atomic_load_i32(ch.send_pos)
         
         fr fr Double-check capacity (race condition protection)
-        ready current_size >= ch.capacity {
+        lowkey current_size >= ch.capacity {
             continue  fr fr Retry if buffer became full
         }
         
         fr fr Atomic size and position update with CAS
-        ready atomic_drip.atomic_cas_i32(ch.size, current_size, current_size + 1) {
+        lowkey atomic_drip.atomic_cas_i32(ch.size, current_size, current_size + 1) {
             fr fr Successfully reserved slot
             sus buffer_index normie = current_pos % ch.capacity
             ch.buffer[buffer_index] = data
@@ -339,12 +339,12 @@ slay channel_send(ch *Channel, data normie) lit {
 
 fr fr RACE-SAFE: Receive data from channel (INFINITE LOOP FIXED)
 slay channel_receive(ch *Channel) normie {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn 0  fr fr Invalid channel
     }
     
     fr fr For unbuffered channels (synchronous)
-    ready ch.capacity == 0 {
+    lowkey ch.capacity == 0 {
         atomic_drip.atomic_increment_i32(ch.recv_waiters)
         
         sus sync_timeout normie = 0
@@ -352,17 +352,17 @@ slay channel_receive(ch *Channel) normie {
         
         fr fr FIXED: Wait for sender with timeout and signaling
         periodt {
-            ready atomic_drip.atomic_load_i32(ch.send_waiters) > 0 {
+            lowkey atomic_drip.atomic_load_i32(ch.send_waiters) > 0 {
                 break  fr fr Sender available
             }
             
-            ready atomic_drip.atomic_flag_load(ch.closed) {
+            lowkey atomic_drip.atomic_flag_load(ch.closed) {
                 atomic_drip.atomic_decrement_i32(ch.recv_waiters)
                 damn 0  fr fr Channel closed
             }
             
             fr fr FIXED: Timeout check to prevent infinite spinning
-            ready sync_timeout >= max_sync_timeout {
+            lowkey sync_timeout >= max_sync_timeout {
                 atomic_drip.atomic_decrement_i32(ch.recv_waiters)
                 vibez.spill("Warning: Channel receive timeout")
                 damn 0  fr fr Timeout to prevent deadlock
@@ -392,16 +392,16 @@ slay channel_receive(ch *Channel) normie {
     periodt {
         sus current_size normie = atomic_drip.atomic_load_i32(ch.size)
         
-        ready current_size > 0 {
+        lowkey current_size > 0 {
             break  fr fr Data available
         }
         
-        ready atomic_drip.atomic_flag_load(ch.closed) && current_size == 0 {
+        lowkey atomic_drip.atomic_flag_load(ch.closed) && current_size == 0 {
             damn 0  fr fr Channel closed and empty
         }
         
         fr fr FIXED: Timeout check to prevent infinite spinning
-        ready buffer_timeout >= max_buffer_timeout {
+        lowkey buffer_timeout >= max_buffer_timeout {
             vibez.spill("Warning: Channel receive buffer timeout")
             damn 0  fr fr Timeout to prevent deadlock
         }
@@ -409,7 +409,7 @@ slay channel_receive(ch *Channel) normie {
         atomic_drip.atomic_increment_i32(ch.recv_waiters)
         
         fr fr FIXED: Proper blocking with signaling
-        ready atomic_drip.atomic_load_i32(ch.recv_waiters) > 5 {
+        lowkey atomic_drip.atomic_load_i32(ch.recv_waiters) > 5 {
             fr fr Many waiters - use signaling
             atomic_drip.atomic_flag_store(ch.send_signal, based)  fr fr Signal need for senders
             
@@ -419,7 +419,7 @@ slay channel_receive(ch *Channel) normie {
                 signal_wait = signal_wait + 1
                 buffer_timeout = buffer_timeout + 1
             }
-        } otherwise {
+        } highkey {
             runtime_yield()  fr fr FIXED: Proper yielding
             buffer_timeout = buffer_timeout + 1
         }
@@ -433,12 +433,12 @@ slay channel_receive(ch *Channel) normie {
         sus current_pos normie = atomic_drip.atomic_load_i32(ch.recv_pos)
         
         fr fr Double-check data availability (race condition protection)
-        ready current_size == 0 {
+        lowkey current_size == 0 {
             continue  fr fr Retry if buffer became empty
         }
         
         fr fr Atomic size decrement with CAS
-        ready atomic_drip.atomic_cas_i32(ch.size, current_size, current_size - 1) {
+        lowkey atomic_drip.atomic_cas_i32(ch.size, current_size, current_size - 1) {
             fr fr Successfully reserved data slot
             sus buffer_index normie = current_pos % ch.capacity
             sus data normie = ch.buffer[buffer_index]
@@ -460,7 +460,7 @@ slay channel_receive(ch *Channel) normie {
 
 fr fr RACE-SAFE: Close channel with proper signaling
 slay channel_close(ch *Channel) lit {
-    ready ch == 0 {
+    lowkey ch == 0 {
         damn cringe
     }
     

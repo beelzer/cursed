@@ -248,16 +248,16 @@ slay drawz_clear_canvas_with_gradient(canvas Canvas, gradient Gradient) lit {
 }
 
 slay drawz_set_pixel_safe(canvas Canvas, x normie, y normie, color Color) lit {
-    ready (x >= canvas.clip_rect.x && x < canvas.clip_rect.x + canvas.clip_rect.width &&
+    lowkey (x >= canvas.clip_rect.x && x < canvas.clip_rect.x + canvas.clip_rect.width &&
            y >= canvas.clip_rect.y && y < canvas.clip_rect.y + canvas.clip_rect.height &&
            x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
         
         sus index normie = y * canvas.width + x
         sus new_rgba normie = drawz_color_to_rgba(color)
         
-        ready (canvas.blend_mode == BLEND_NORMAL) {
+        lowkey (canvas.blend_mode == BLEND_NORMAL) {
             canvas.pixels[index] = new_rgba
-        } otherwise {
+        } highkey {
             sus existing Color = drawz_rgba_to_color(canvas.pixels[index])
             sus blended Color = drawz_blend_colors_advanced(existing, color, canvas.blend_mode)
             canvas.pixels[index] = drawz_color_to_rgba(blended)
@@ -269,11 +269,11 @@ slay drawz_set_pixel_safe(canvas Canvas, x normie, y normie, color Color) lit {
 }
 
 slay drawz_set_pixel_with_depth(canvas Canvas, x normie, y normie, color Color, depth drip) lit {
-    ready (drawz_is_pixel_in_bounds(canvas, x, y)) {
+    lowkey (drawz_is_pixel_in_bounds(canvas, x, y)) {
         sus index normie = y * canvas.width + x
         
         fr fr Depth test
-        ready (depth < canvas.depth_buffer[index]) {
+        lowkey (depth < canvas.depth_buffer[index]) {
             canvas.depth_buffer[index] = depth
             drawz_set_pixel_safe(canvas, x, y, color)
             damn true
@@ -293,7 +293,7 @@ slay drawz_draw_line_antialiased(canvas Canvas, start Point2D, end Point2D) lit 
     
     sus steep lit = mathz.abs_normie(y1 - y0) > mathz.abs_normie(x1 - x0)
     
-    ready (steep) {
+    lowkey (steep) {
         fr fr Swap x and y coordinates
         sus temp drip = x0
         x0 = y0
@@ -303,7 +303,7 @@ slay drawz_draw_line_antialiased(canvas Canvas, start Point2D, end Point2D) lit 
         y1 = temp
     }
     
-    ready (x0 > x1) {
+    lowkey (x0 > x1) {
         fr fr Swap start and end
         sus temp drip = x0
         x0 = x1
@@ -315,7 +315,7 @@ slay drawz_draw_line_antialiased(canvas Canvas, start Point2D, end Point2D) lit 
     
     sus dx drip = x1 - x0
     sus dy drip = y1 - y0
-    sus gradient drip = ready (dx == 0.0) 1.0 otherwise dy / dx
+    sus gradient drip = lowkey (dx == 0.0) 1.0 highkey dy / dx
     
     fr fr Handle first endpoint
     sus xend normie = mathz.round(x0)
@@ -324,10 +324,10 @@ slay drawz_draw_line_antialiased(canvas Canvas, start Point2D, end Point2D) lit 
     sus xpxl1 normie = xend
     sus ypxl1 normie = mathz.floor(yend)
     
-    ready (steep) {
+    lowkey (steep) {
         drawz_plot_pixel_alpha(canvas, ypxl1, xpxl1, canvas.stroke_color, (1.0 - (yend - mathz.floor(yend))) * xgap)
         drawz_plot_pixel_alpha(canvas, ypxl1 + 1, xpxl1, canvas.stroke_color, (yend - mathz.floor(yend)) * xgap)
-    } otherwise {
+    } highkey {
         drawz_plot_pixel_alpha(canvas, xpxl1, ypxl1, canvas.stroke_color, (1.0 - (yend - mathz.floor(yend))) * xgap)
         drawz_plot_pixel_alpha(canvas, xpxl1, ypxl1 + 1, canvas.stroke_color, (yend - mathz.floor(yend)) * xgap)
     }
@@ -341,16 +341,16 @@ slay drawz_draw_line_antialiased(canvas Canvas, start Point2D, end Point2D) lit 
     sus xpxl2 normie = xend
     sus ypxl2 normie = mathz.floor(yend)
     
-    ready (steep) {
+    lowkey (steep) {
         drawz_plot_pixel_alpha(canvas, ypxl2, xpxl2, canvas.stroke_color, (1.0 - (yend - mathz.floor(yend))) * xgap)
         drawz_plot_pixel_alpha(canvas, ypxl2 + 1, xpxl2, canvas.stroke_color, (yend - mathz.floor(yend)) * xgap)
-    } otherwise {
+    } highkey {
         drawz_plot_pixel_alpha(canvas, xpxl2, ypxl2, canvas.stroke_color, (1.0 - (yend - mathz.floor(yend))) * xgap)
         drawz_plot_pixel_alpha(canvas, xpxl2, ypxl2 + 1, canvas.stroke_color, (yend - mathz.floor(yend)) * xgap)
     }
     
     fr fr Main loop
-    ready (steep) {
+    lowkey (steep) {
         sus x normie = xpxl1 + 1
         bestie (x < xpxl2) {
             drawz_plot_pixel_alpha(canvas, mathz.floor(intery), x, canvas.stroke_color, 1.0 - (intery - mathz.floor(intery)))
@@ -358,7 +358,7 @@ slay drawz_draw_line_antialiased(canvas Canvas, start Point2D, end Point2D) lit 
             intery = intery + gradient
             x = x + 1
         }
-    } otherwise {
+    } highkey {
         sus x normie = xpxl1 + 1
         bestie (x < xpxl2) {
             drawz_plot_pixel_alpha(canvas, x, mathz.floor(intery), canvas.stroke_color, 1.0 - (intery - mathz.floor(intery)))
@@ -377,7 +377,7 @@ slay drawz_draw_thick_line_antialiased(canvas Canvas, start Point2D, end Point2D
     sus dy drip = end.y - start.y
     sus length drip = mathz.sqrt(dx * dx + dy * dy)
     
-    ready (length < 0.001) {
+    lowkey (length < 0.001) {
         fr fr Draw circle for zero-length line
         sus circle Circle2D = {center: start, radius: thickness / 2.0}
         damn drawz_draw_circle_antialiased(canvas, circle, DRAW_MODE_FILL)
@@ -418,7 +418,7 @@ slay drawz_draw_dashed_line(canvas Canvas, start Point2D, end Point2D, dash_patt
         sus dash_length drip = dash_pattern[pattern_index % pattern_length]
         sus next_distance drip = mathz.min(current_distance + dash_length, total_length)
         
-        ready (drawing) {
+        lowkey (drawing) {
             sus segment_start Point2D = drawz_create_point(
                 start.x + dx * current_distance,
                 start.y + dy * current_distance
@@ -428,9 +428,9 @@ slay drawz_draw_dashed_line(canvas Canvas, start Point2D, end Point2D, dash_patt
                 start.y + dy * next_distance
             )
             
-            ready (canvas.anti_alias_enabled) {
+            lowkey (canvas.anti_alias_enabled) {
                 drawz_draw_line_antialiased(canvas, segment_start, segment_end)
-            } otherwise {
+            } highkey {
                 drawz_draw_line(canvas, segment_start, segment_end)
             }
         }
@@ -465,16 +465,16 @@ slay drawz_draw_circle_antialiased(canvas Canvas, circle Circle2D, mode normie) 
             sus dy drip = y - cy
             sus distance drip = mathz.sqrt(dx * dx + dy * dy)
             
-            ready (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
-                ready (distance <= radius) {
-                    sus alpha drip = ready (distance > radius - 1.0) 1.0 - (distance - (radius - 1.0)) otherwise 1.0
+            lowkey (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
+                lowkey (distance <= radius) {
+                    sus alpha drip = lowkey (distance > radius - 1.0) 1.0 - (distance - (radius - 1.0)) highkey 1.0
                     drawz_plot_pixel_alpha(canvas, x, y, canvas.fill_color, alpha)
                 }
             }
             
-            ready (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
+            lowkey (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
                 sus edge_distance drip = mathz.abs_normie(distance - radius)
-                ready (edge_distance < canvas.line_width / 2.0 + 1.0) {
+                lowkey (edge_distance < canvas.line_width / 2.0 + 1.0) {
                     sus alpha drip = 1.0 - mathz.clamp(edge_distance - canvas.line_width / 2.0, 0.0, 1.0)
                     drawz_plot_pixel_alpha(canvas, x, y, canvas.stroke_color, alpha)
                 }
@@ -509,17 +509,17 @@ slay drawz_draw_ellipse_antialiased(canvas Canvas, ellipse Ellipse2D, mode normi
             sus dy drip = y - cy
             sus ellipse_value drip = (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry)
             
-            ready (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
-                ready (ellipse_value <= 1.0) {
+            lowkey (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
+                lowkey (ellipse_value <= 1.0) {
                     sus distance_to_edge drip = 1.0 - ellipse_value
                     sus alpha drip = mathz.clamp(distance_to_edge, 0.0, 1.0)
                     drawz_plot_pixel_alpha(canvas, x, y, canvas.fill_color, alpha)
                 }
             }
             
-            ready (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
+            lowkey (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
                 sus edge_distance drip = mathz.abs_normie(1.0 - ellipse_value)
-                ready (edge_distance < 0.1) {
+                lowkey (edge_distance < 0.1) {
                     sus alpha drip = 1.0 - edge_distance * 10.0
                     drawz_plot_pixel_alpha(canvas, x, y, canvas.stroke_color, alpha)
                 }
@@ -542,7 +542,7 @@ slay drawz_draw_bezier_curve_adaptive(canvas Canvas, curve BezierCurve, toleranc
 }
 
 slay drawz_subdivide_bezier_curve(canvas Canvas, curve BezierCurve, tolerance drip, depth normie) lit {
-    ready (depth > 10) {  fr fr Prevent infinite recursion
+    lowkey (depth > 10) {  fr fr Prevent infinite recursion
         damn false
     }
     
@@ -554,11 +554,11 @@ slay drawz_subdivide_bezier_curve(canvas Canvas, curve BezierCurve, tolerance dr
     
     sus flatness drip = mathz.max(dx1 * dx1 + dy1 * dy1, dx2 * dx2 + dy2 * dy2)
     
-    ready (flatness < tolerance * tolerance) {
+    lowkey (flatness < tolerance * tolerance) {
         fr fr Curve is flat enough, draw line segment
-        ready (canvas.anti_alias_enabled) {
+        lowkey (canvas.anti_alias_enabled) {
             drawz_draw_line_antialiased(canvas, curve.start, curve.end)
-        } otherwise {
+        } highkey {
             drawz_draw_line(canvas, curve.start, curve.end)
         }
         damn true
@@ -603,25 +603,25 @@ slay drawz_split_bezier_curve(original BezierCurve, left BezierCurve, right Bezi
 fr fr ===== ENHANCED POLYGON RENDERING =====
 
 slay drawz_draw_polygon_antialiased(canvas Canvas, points Point2D[100], num_points normie, mode normie) lit {
-    ready (num_points < 3) {
+    lowkey (num_points < 3) {
         damn false
     }
     
-    ready (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_STROKE || mode == DRAW_MODE_BOTH) {
         fr fr Draw anti-aliased polygon outline
         sus i normie = 0
         bestie (i < num_points) {
             sus next_i normie = (i + 1) % num_points
-            ready (canvas.anti_alias_enabled) {
+            lowkey (canvas.anti_alias_enabled) {
                 drawz_draw_line_antialiased(canvas, points[i], points[next_i])
-            } otherwise {
+            } highkey {
                 drawz_draw_line(canvas, points[i], points[next_i])
             }
             i = i + 1
         }
     }
     
-    ready (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
+    lowkey (mode == DRAW_MODE_FILL || mode == DRAW_MODE_BOTH) {
         fr fr Anti-aliased polygon fill using edge sampling
         drawz_fill_polygon_antialiased(canvas, points, num_points)
     }
@@ -638,10 +638,10 @@ slay drawz_fill_polygon_antialiased(canvas Canvas, points Point2D[100], num_poin
     
     sus i normie = 1
     bestie (i < num_points) {
-        ready (points[i].x < min_x) min_x = points[i].x
-        ready (points[i].x > max_x) max_x = points[i].x
-        ready (points[i].y < min_y) min_y = points[i].y
-        ready (points[i].y > max_y) max_y = points[i].y
+        lowkey (points[i].x < min_x) min_x = points[i].x
+        lowkey (points[i].x > max_x) max_x = points[i].x
+        lowkey (points[i].y < min_y) min_y = points[i].y
+        lowkey (points[i].y > max_y) max_y = points[i].y
         i = i + 1
     }
     
@@ -659,7 +659,7 @@ slay drawz_fill_polygon_antialiased(canvas Canvas, points Point2D[100], num_poin
             bestie (sy < y_pixel + 1.0) {
                 sus sx drip = x_pixel
                 bestie (sx < x_pixel + 1.0) {
-                    ready (drawz_point_in_polygon(drawz_create_point(sx, sy), points, num_points)) {
+                    lowkey (drawz_point_in_polygon(drawz_create_point(sx, sy), points, num_points)) {
                         coverage = coverage + 1.0
                     }
                     sample_count = sample_count + 1
@@ -669,7 +669,7 @@ slay drawz_fill_polygon_antialiased(canvas Canvas, points Point2D[100], num_poin
             }
             
             sus alpha drip = coverage / sample_count
-            ready (alpha > 0.0) {
+            lowkey (alpha > 0.0) {
                 drawz_plot_pixel_alpha(canvas, x_pixel, y_pixel, canvas.fill_color, alpha)
             }
             
@@ -694,12 +694,12 @@ slay drawz_draw_text_enhanced(canvas Canvas, text tea, x normie, y normie, style
     sus line_start_x drip = x
     
     fr fr Apply text alignment
-    ready (style.alignment == 1 || style.alignment == 2) {  fr fr Center or Right
+    lowkey (style.alignment == 1 || style.alignment == 2) {  fr fr Center or Right
         sus text_width drip = drawz_measure_text_width(text, style)
-        ready (style.alignment == 1) {  fr fr Center
+        lowkey (style.alignment == 1) {  fr fr Center
             current_x = x - text_width / 2.0
             line_start_x = current_x
-        } otherwise {  fr fr Right
+        } highkey {  fr fr Right
             current_x = x - text_width
             line_start_x = current_x
         }
@@ -710,7 +710,7 @@ slay drawz_draw_text_enhanced(canvas Canvas, text tea, x normie, y normie, style
         sus char normie = stringz.char_at(text, i)
         
         fr fr Handle line breaks
-        ready (char == 10) {  fr fr '\n'
+        lowkey (char == 10) {  fr fr '\n'
             current_x = line_start_x
             current_y = current_y + style.line_height
             i = i + 1
@@ -721,14 +721,14 @@ slay drawz_draw_text_enhanced(canvas Canvas, text tea, x normie, y normie, style
         sus char_width drip = drawz_render_character_enhanced(canvas, char, current_x, current_y, style)
         
         fr fr Apply effects
-        ready (style.underline) {
+        lowkey (style.underline) {
             sus underline_y drip = current_y + metrics.descent * 0.5
             sus underline_start Point2D = drawz_create_point(current_x, underline_y)
             sus underline_end Point2D = drawz_create_point(current_x + char_width, underline_y)
             drawz_draw_line_antialiased(canvas, underline_start, underline_end)
         }
         
-        ready (style.strike_through) {
+        lowkey (style.strike_through) {
             sus strike_y drip = current_y - metrics.x_height * 0.5
             sus strike_start Point2D = drawz_create_point(current_x, strike_y)
             sus strike_end Point2D = drawz_create_point(current_x + char_width, strike_y)
@@ -749,14 +749,14 @@ slay drawz_render_character_enhanced(canvas Canvas, character normie, x drip, y 
     sus char_width drip = style.font_size * 0.6
     sus char_height drip = style.font_size
     
-    ready (style.bold) {
+    lowkey (style.bold) {
         fr fr Render character with extra thickness
         drawz_render_character_bold(canvas, character, x, y, char_width, char_height)
-    } otherwise {
+    } highkey {
         drawz_render_character_regular(canvas, character, x, y, char_width, char_height)
     }
     
-    ready (style.italic) {
+    lowkey (style.italic) {
         fr fr Apply italic slant effect
         drawz_apply_italic_transform(canvas, x, y, char_width, char_height)
     }
@@ -767,25 +767,25 @@ slay drawz_render_character_enhanced(canvas Canvas, character normie, x drip, y 
 fr fr ===== ENHANCED IMAGE PROCESSING FILTERS =====
 
 slay drawz_apply_filter(canvas Canvas, rect Rect2D, filter_type normie, strength drip) lit {
-    ready (filter_type == FILTER_BLUR) {
+    lowkey (filter_type == FILTER_BLUR) {
         damn drawz_apply_gaussian_blur(canvas, rect, strength)
-    } otherwise ready (filter_type == FILTER_SHARPEN) {
+    } highkey lowkey (filter_type == FILTER_SHARPEN) {
         damn drawz_apply_unsharp_mask(canvas, rect, strength)
-    } otherwise ready (filter_type == FILTER_EMBOSS) {
+    } highkey lowkey (filter_type == FILTER_EMBOSS) {
         damn drawz_apply_emboss_filter(canvas, rect, strength)
-    } otherwise ready (filter_type == FILTER_EDGE_DETECT) {
+    } highkey lowkey (filter_type == FILTER_EDGE_DETECT) {
         damn drawz_apply_edge_detection(canvas, rect, strength)
-    } otherwise ready (filter_type == FILTER_NOISE) {
+    } highkey lowkey (filter_type == FILTER_NOISE) {
         damn drawz_add_noise(canvas, rect, strength)
-    } otherwise ready (filter_type == FILTER_SEPIA) {
+    } highkey lowkey (filter_type == FILTER_SEPIA) {
         damn drawz_apply_sepia_tone(canvas, rect, strength)
-    } otherwise ready (filter_type == FILTER_GRAYSCALE) {
+    } highkey lowkey (filter_type == FILTER_GRAYSCALE) {
         damn drawz_convert_to_grayscale(canvas, rect)
-    } otherwise ready (filter_type == FILTER_INVERT) {
+    } highkey lowkey (filter_type == FILTER_INVERT) {
         damn drawz_invert_colors(canvas, rect)
-    } otherwise ready (filter_type == FILTER_BRIGHTNESS) {
+    } highkey lowkey (filter_type == FILTER_BRIGHTNESS) {
         damn drawz_adjust_brightness(canvas, rect, strength)
-    } otherwise ready (filter_type == FILTER_CONTRAST) {
+    } highkey lowkey (filter_type == FILTER_CONTRAST) {
         damn drawz_adjust_contrast(canvas, rect, strength)
     }
     
@@ -795,7 +795,7 @@ slay drawz_apply_filter(canvas Canvas, rect Rect2D, filter_type normie, strength
 slay drawz_apply_gaussian_blur(canvas Canvas, rect Rect2D, radius drip) lit {
     fr fr 2D Gaussian blur implementation
     sus kernel_size normie = mathz.min(31, mathz.max(3, radius * 6.0 + 1.0))  fr fr Ensure odd kernel size
-    ready (kernel_size % 2 == 0) kernel_size = kernel_size + 1
+    lowkey (kernel_size % 2 == 0) kernel_size = kernel_size + 1
     
     sus kernel drip[31]
     sus kernel_sum drip = 0.0
@@ -995,7 +995,7 @@ slay drawz_color_to_colorf(color Color) ColorF {
 }
 
 slay drawz_blend_colors_advanced(base Color, overlay Color, blend_mode normie) Color {
-    ready (overlay.a == 0) {
+    lowkey (overlay.a == 0) {
         damn base
     }
     
@@ -1003,19 +1003,19 @@ slay drawz_blend_colors_advanced(base Color, overlay Color, blend_mode normie) C
     sus overlay_f ColorF = drawz_color_to_colorf(overlay)
     sus result_f ColorF
     
-    ready (blend_mode == BLEND_MULTIPLY) {
+    lowkey (blend_mode == BLEND_MULTIPLY) {
         result_f.r = base_f.r * overlay_f.r
         result_f.g = base_f.g * overlay_f.g
         result_f.b = base_f.b * overlay_f.b
-    } otherwise ready (blend_mode == BLEND_SCREEN) {
+    } highkey lowkey (blend_mode == BLEND_SCREEN) {
         result_f.r = 1.0 - (1.0 - base_f.r) * (1.0 - overlay_f.r)
         result_f.g = 1.0 - (1.0 - base_f.g) * (1.0 - overlay_f.g)
         result_f.b = 1.0 - (1.0 - base_f.b) * (1.0 - overlay_f.b)
-    } otherwise ready (blend_mode == BLEND_OVERLAY) {
-        result_f.r = ready (base_f.r < 0.5) 2.0 * base_f.r * overlay_f.r otherwise 1.0 - 2.0 * (1.0 - base_f.r) * (1.0 - overlay_f.r)
-        result_f.g = ready (base_f.g < 0.5) 2.0 * base_f.g * overlay_f.g otherwise 1.0 - 2.0 * (1.0 - base_f.g) * (1.0 - overlay_f.g)
-        result_f.b = ready (base_f.b < 0.5) 2.0 * base_f.b * overlay_f.b otherwise 1.0 - 2.0 * (1.0 - base_f.b) * (1.0 - overlay_f.b)
-    } otherwise {
+    } highkey lowkey (blend_mode == BLEND_OVERLAY) {
+        result_f.r = lowkey (base_f.r < 0.5) 2.0 * base_f.r * overlay_f.r highkey 1.0 - 2.0 * (1.0 - base_f.r) * (1.0 - overlay_f.r)
+        result_f.g = lowkey (base_f.g < 0.5) 2.0 * base_f.g * overlay_f.g highkey 1.0 - 2.0 * (1.0 - base_f.g) * (1.0 - overlay_f.g)
+        result_f.b = lowkey (base_f.b < 0.5) 2.0 * base_f.b * overlay_f.b highkey 1.0 - 2.0 * (1.0 - base_f.b) * (1.0 - overlay_f.b)
+    } highkey {
         fr fr Default to normal blending
         sus alpha drip = overlay_f.a
         result_f.r = base_f.r * (1.0 - alpha) + overlay_f.r * alpha
@@ -1041,7 +1041,7 @@ slay drawz_point_in_polygon(point Point2D, polygon Point2D[100], num_points norm
     
     sus i normie = 0
     bestie (i < num_points) {
-        ready ((polygon[i].y > point.y) != (polygon[j].y > point.y) &&
+        lowkey ((polygon[i].y > point.y) != (polygon[j].y > point.y) &&
                (point.x < (polygon[j].x - polygon[i].x) * (point.y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)) {
             inside = !inside
         }
@@ -1053,7 +1053,7 @@ slay drawz_point_in_polygon(point Point2D, polygon Point2D[100], num_points norm
 }
 
 slay drawz_plot_pixel_alpha(canvas Canvas, x normie, y normie, color Color, alpha drip) lit {
-    ready (drawz_is_pixel_in_bounds(canvas, x, y)) {
+    lowkey (drawz_is_pixel_in_bounds(canvas, x, y)) {
         sus alpha_color Color = drawz_create_color(color.r, color.g, color.b, color.a * alpha)
         drawz_set_pixel_safe(canvas, x, y, alpha_color)
         damn true
@@ -1125,21 +1125,21 @@ slay drawz_draw_line(canvas Canvas, start Point2D, end Point2D) lit {
     
     sus dx normie = mathz.abs_normie(x1 - x0)
     sus dy normie = mathz.abs_normie(y1 - y0)
-    sus sx normie = ready (x0 < x1) 1 otherwise -1
-    sus sy normie = ready (y0 < y1) 1 otherwise -1
+    sus sx normie = lowkey (x0 < x1) 1 highkey -1
+    sus sy normie = lowkey (y0 < y1) 1 highkey -1
     sus err normie = dx - dy
     
     bestie (true) {
         drawz_set_pixel_safe(canvas, x0, y0, canvas.stroke_color)
         
-        ready (x0 == x1 && y0 == y1) break
+        lowkey (x0 == x1 && y0 == y1) break
         
         sus e2 normie = 2 * err
-        ready (e2 > -dy) {
+        lowkey (e2 > -dy) {
             err = err - dy
             x0 = x0 + sx
         }
-        ready (e2 < dx) {
+        lowkey (e2 < dx) {
             err = err + dx
             y0 = y0 + sy
         }
@@ -1150,7 +1150,7 @@ slay drawz_draw_line(canvas Canvas, start Point2D, end Point2D) lit {
 
 slay drawz_get_pixel(canvas Canvas, x normie, y normie) Color {
     sus color Color
-    ready (drawz_is_pixel_in_bounds(canvas, x, y)) {
+    lowkey (drawz_is_pixel_in_bounds(canvas, x, y)) {
         sus index normie = y * canvas.width + x
         sus rgba normie = canvas.pixels[index]
         color = drawz_rgba_to_color(rgba)

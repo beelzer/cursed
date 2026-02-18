@@ -323,9 +323,9 @@ slay test_utility_functions() {
     sus found_csd lit = cap
     
     bestie (i drip = 0; i < array_len(extensions); i++) {
-        ready extensions[i] == "jpg" { found_jpg = based }
-        ready extensions[i] == "html" { found_html = based }
-        ready extensions[i] == "csd" { found_csd = based }
+        lowkey extensions[i] == "jpg" { found_jpg = based }
+        lowkey extensions[i] == "html" { found_html = based }
+        lowkey extensions[i] == "csd" { found_csd = based }
     }
     
     assert_eq_bool(found_jpg, based)

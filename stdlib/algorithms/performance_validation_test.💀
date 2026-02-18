@@ -58,7 +58,7 @@ slay test_hashmap_performance() {
     i = 0
     periodt (i < SMALL_SIZE) {
         sus found lit = optimized_hashmap_contains(small_map, "key_" + i)
-        ready (found) {
+        lowkey (found) {
             lookup_count = lookup_count + 1
         }
         i = i + 1
@@ -80,7 +80,7 @@ slay test_hashmap_performance() {
     periodt (i < 100) {  fr fr Sample retrieval
         sus key tea = "medium_key_" + (i * 10)
         sus value tea = optimized_hashmap_get(medium_map, key)
-        ready (value != "") {
+        lowkey (value != "") {
             retrieval_count = retrieval_count + 1
         }
         i = i + 1
@@ -180,7 +180,7 @@ slay test_sorting_performance() {
     sus medium_sorted lit = verify_sorted(medium_hybrid)
     sus large_sorted lit = verify_sorted(large_optimized)
     
-    ready (small_sorted && medium_sorted && large_sorted) {
+    lowkey (small_sorted && medium_sorted && large_sorted) {
         vibez.spill("✓ All sorting results verified as correctly sorted")
     } else {
         vibez.spill("❌ Sorting verification failed")
@@ -210,7 +210,7 @@ slay test_scalability() {
         sus sorted_data drip[value] = optimized_sort_array(test_data)
         sus is_sorted lit = verify_sorted(sorted_data)
         
-        ready (is_sorted) {
+        lowkey (is_sorted) {
             vibez.spill("✓ Dataset size " + size + ": Successfully sorted")
         } else {
             vibez.spill("❌ Dataset size " + size + ": Sorting failed")

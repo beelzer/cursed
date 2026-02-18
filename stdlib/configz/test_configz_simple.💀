@@ -379,7 +379,7 @@ slay test_integration_scenarios() {
     
     fr fr Get specific values
     sus app_name tea = get_value(expanded_config, "app_name")
-    ready (string_length(app_name) > 0) {
+    lowkey (string_length(app_name) > 0) {
         vibez.spill("App name configured:", app_name)
     }
     

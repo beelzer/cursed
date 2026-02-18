@@ -50,36 +50,36 @@ slay reset_io_stats() {
 fr fr ===== REAL FILE I/O OPERATIONS =====
 
 slay read_file_real(filepath tea) tea {
-    ready filepath == cringe || stringz.length(filepath) == 0 {
+    lowkey filepath == cringe || stringz.length(filepath) == 0 {
         last_io_error = IO_ERROR_INVALID_PATH
         damn ""
     }
     
-    ready !is_valid_file_path(filepath) {
+    lowkey !is_valid_file_path(filepath) {
         last_io_error = IO_ERROR_INVALID_PATH
         damn ""
     }
     
     fr fr Check if file exists and is readable
-    ready !file_exists_real(filepath) {
+    lowkey !file_exists_real(filepath) {
         last_io_error = IO_ERROR_FILE_NOT_FOUND
         damn ""
     }
     
-    ready !is_file_readable(filepath) {
+    lowkey !is_file_readable(filepath) {
         last_io_error = IO_ERROR_PERMISSION_DENIED  
         damn ""
     }
     
     sus file_size normie = get_file_size_real(filepath)
-    ready file_size > MAX_READ_BUFFER_SIZE {
+    lowkey file_size > MAX_READ_BUFFER_SIZE {
         last_io_error = IO_ERROR_BUFFER_OVERFLOW
         damn ""
     }
     
     fr fr Perform actual file read operation
     sus content tea = perform_file_read(filepath, file_size)
-    ready content == cringe {
+    lowkey content == cringe {
         damn ""
     }
     
@@ -89,41 +89,41 @@ slay read_file_real(filepath tea) tea {
 }
 
 slay write_file_real(filepath tea, content tea) lit {
-    ready filepath == cringe || stringz.length(filepath) == 0 {
+    lowkey filepath == cringe || stringz.length(filepath) == 0 {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
     
-    ready content == cringe {
+    lowkey content == cringe {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
     
-    ready !is_valid_file_path(filepath) {
+    lowkey !is_valid_file_path(filepath) {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
     
     sus content_size normie = stringz.length(content)
-    ready content_size > MAX_WRITE_BUFFER_SIZE {
+    lowkey content_size > MAX_WRITE_BUFFER_SIZE {
         last_io_error = IO_ERROR_BUFFER_OVERFLOW
         damn cap
     }
     
     fr fr Check write permissions and disk space
-    ready !is_path_writable(filepath) {
+    lowkey !is_path_writable(filepath) {
         last_io_error = IO_ERROR_PERMISSION_DENIED
         damn cap
     }
     
-    ready !has_sufficient_disk_space(filepath, content_size) {
+    lowkey !has_sufficient_disk_space(filepath, content_size) {
         last_io_error = IO_ERROR_DISK_FULL
         damn cap
     }
     
     fr fr Perform actual file write operation
     sus write_result lit = perform_file_write(filepath, content, content_size)
-    ready !write_result {
+    lowkey !write_result {
         damn cap
     }
     
@@ -133,15 +133,15 @@ slay write_file_real(filepath tea, content tea) lit {
 }
 
 slay append_file_real(filepath tea, content tea) lit {
-    ready filepath == cringe || content == cringe {
+    lowkey filepath == cringe || content == cringe {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
     
     sus existing_content tea = ""
-    ready file_exists_real(filepath) {
+    lowkey file_exists_real(filepath) {
         existing_content = read_file_real(filepath)
-        ready get_io_error() != IO_SUCCESS {
+        lowkey get_io_error() != IO_SUCCESS {
             damn cap
         }
     }
@@ -160,24 +160,24 @@ slay read_line_real() tea {
     bestie char_count < MAX_LINE_LENGTH {
         sus char_code normie = read_single_char_from_stdin()
         
-        ready char_code == -1 {
+        lowkey char_code == -1 {
             last_io_error = IO_ERROR_TIMEOUT
             ghosted
         }
         
-        ready char_code == 10 || char_code == 13 {  fr fr Newline or carriage return
+        lowkey char_code == 10 || char_code == 13 {  fr fr Newline or carriage return
             ghosted
         }
         
-        ready char_code == 8 || char_code == 127 {  fr fr Backspace or delete
-            ready char_count > 0 {
+        lowkey char_code == 8 || char_code == 127 {  fr fr Backspace or delete
+            lowkey char_count > 0 {
                 input_buffer = remove_last_char(input_buffer)
                 char_count = char_count - 1
             }
             skip
         }
         
-        ready is_printable_char(char_code) {
+        lowkey is_printable_char(char_code) {
             input_buffer = input_buffer + ascii_to_string(char_code)
             char_count = char_count + 1
         }
@@ -189,19 +189,19 @@ slay read_line_real() tea {
 }
 
 slay print_real(message tea) lit {
-    ready message == cringe {
+    lowkey message == cringe {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
     
     sus message_len normie = stringz.length(message)
-    ready message_len == 0 {
+    lowkey message_len == 0 {
         clear_io_error()
         damn based
     }
     
     sus success lit = write_to_stdout(message, message_len)
-    ready !success {
+    lowkey !success {
         last_io_error = IO_ERROR_NETWORK_FAILURE
         damn cap
     }
@@ -213,7 +213,7 @@ slay print_real(message tea) lit {
 
 slay print_line_real(message tea) lit {
     sus result lit = print_real(message)
-    ready !result {
+    lowkey !result {
         damn cap
     }
     
@@ -221,7 +221,7 @@ slay print_line_real(message tea) lit {
 }
 
 slay print_error_real(message tea) lit {
-    ready message == cringe {
+    lowkey message == cringe {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
@@ -229,7 +229,7 @@ slay print_error_real(message tea) lit {
     sus message_len normie = stringz.length(message)
     sus success lit = write_to_stderr(message, message_len)
     
-    ready !success {
+    lowkey !success {
         last_io_error = IO_ERROR_NETWORK_FAILURE
         damn cap
     }
@@ -241,7 +241,7 @@ slay print_error_real(message tea) lit {
 fr fr ===== FILE SYSTEM OPERATIONS =====
 
 slay file_exists_real(filepath tea) lit {
-    ready filepath == cringe || stringz.length(filepath) == 0 {
+    lowkey filepath == cringe || stringz.length(filepath) == 0 {
         damn cap
     }
     
@@ -250,13 +250,13 @@ slay file_exists_real(filepath tea) lit {
 }
 
 slay get_file_size_real(filepath tea) normie {
-    ready !file_exists_real(filepath) {
+    lowkey !file_exists_real(filepath) {
         last_io_error = IO_ERROR_FILE_NOT_FOUND
         damn -1
     }
     
     sus size normie = perform_file_size_check(filepath)
-    ready size < 0 {
+    lowkey size < 0 {
         last_io_error = IO_ERROR_PERMISSION_DENIED
         damn -1
     }
@@ -266,23 +266,23 @@ slay get_file_size_real(filepath tea) normie {
 }
 
 slay create_directory_real(dirpath tea) lit {
-    ready dirpath == cringe || stringz.length(dirpath) == 0 {
+    lowkey dirpath == cringe || stringz.length(dirpath) == 0 {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
     
-    ready !is_valid_directory_path(dirpath) {
+    lowkey !is_valid_directory_path(dirpath) {
         last_io_error = IO_ERROR_INVALID_PATH
         damn cap
     }
     
-    ready directory_exists_real(dirpath) {
+    lowkey directory_exists_real(dirpath) {
         clear_io_error()
         damn based  fr fr Already exists
     }
     
     sus success lit = perform_directory_creation(dirpath)
-    ready !success {
+    lowkey !success {
         last_io_error = IO_ERROR_PERMISSION_DENIED
         damn cap
     }
@@ -292,7 +292,7 @@ slay create_directory_real(dirpath tea) lit {
 }
 
 slay directory_exists_real(dirpath tea) lit {
-    ready dirpath == cringe || stringz.length(dirpath) == 0 {
+    lowkey dirpath == cringe || stringz.length(dirpath) == 0 {
         damn cap
     }
     
@@ -300,18 +300,18 @@ slay directory_exists_real(dirpath tea) lit {
 }
 
 slay list_directory_real(dirpath tea) tea[value]{
-    ready !directory_exists_real(dirpath) {
+    lowkey !directory_exists_real(dirpath) {
         last_io_error = IO_ERROR_FILE_NOT_FOUND
         damn []
     }
     
-    ready !is_directory_readable(dirpath) {
+    lowkey !is_directory_readable(dirpath) {
         last_io_error = IO_ERROR_PERMISSION_DENIED
         damn []
     }
     
     sus entries tea[value] = perform_directory_listing(dirpath)
-    ready entries == cringe {
+    lowkey entries == cringe {
         last_io_error = IO_ERROR_NETWORK_FAILURE
         damn []
     }
@@ -321,18 +321,18 @@ slay list_directory_real(dirpath tea) tea[value]{
 }
 
 slay delete_file_real(filepath tea) lit {
-    ready !file_exists_real(filepath) {
+    lowkey !file_exists_real(filepath) {
         last_io_error = IO_ERROR_FILE_NOT_FOUND
         damn cap
     }
     
-    ready !is_file_deletable(filepath) {
+    lowkey !is_file_deletable(filepath) {
         last_io_error = IO_ERROR_PERMISSION_DENIED
         damn cap
     }
     
     sus success lit = perform_file_deletion(filepath)
-    ready !success {
+    lowkey !success {
         last_io_error = IO_ERROR_PERMISSION_DENIED
         damn cap
     }
@@ -344,21 +344,21 @@ slay delete_file_real(filepath tea) lit {
 fr fr ===== PATH VALIDATION AND UTILITIES =====
 
 slay is_valid_file_path(filepath tea) lit {
-    ready filepath == cringe || stringz.length(filepath) == 0 {
+    lowkey filepath == cringe || stringz.length(filepath) == 0 {
         damn cap
     }
     
-    ready stringz.length(filepath) > 4096 {  fr fr Maximum path length
+    lowkey stringz.length(filepath) > 4096 {  fr fr Maximum path length
         damn cap
     }
     
     fr fr Check for invalid characters
-    ready contains_invalid_path_chars(filepath) {
+    lowkey contains_invalid_path_chars(filepath) {
         damn cap
     }
     
     fr fr Check for directory traversal attacks
-    ready contains_directory_traversal(filepath) {
+    lowkey contains_directory_traversal(filepath) {
         damn cap  
     }
     
@@ -366,19 +366,19 @@ slay is_valid_file_path(filepath tea) lit {
 }
 
 slay is_valid_directory_path(dirpath tea) lit {
-    ready dirpath == cringe || stringz.length(dirpath) == 0 {
+    lowkey dirpath == cringe || stringz.length(dirpath) == 0 {
         damn cap
     }
     
-    ready stringz.length(dirpath) > 4096 {
+    lowkey stringz.length(dirpath) > 4096 {
         damn cap
     }
     
-    ready contains_invalid_path_chars(dirpath) {
+    lowkey contains_invalid_path_chars(dirpath) {
         damn cap
     }
     
-    ready contains_directory_traversal(dirpath) {
+    lowkey contains_directory_traversal(dirpath) {
         damn cap
     }
     
@@ -394,7 +394,7 @@ slay contains_invalid_path_chars(path tea) lit {
         sus j normie = 0
         
         bestie j < stringz.length(invalid_chars) {
-            ready char == stringz.char_at(invalid_chars, j) {
+            lowkey char == stringz.char_at(invalid_chars, j) {
                 damn based
             }
             j = j + 1
@@ -406,11 +406,11 @@ slay contains_invalid_path_chars(path tea) lit {
 }
 
 slay contains_directory_traversal(path tea) lit {
-    ready stringz.contains(path, "..") {
+    lowkey stringz.contains(path, "..") {
         damn based
     }
     
-    ready stringz.contains(path, "./") || stringz.contains(path, ".\\") {
+    lowkey stringz.contains(path, "./") || stringz.contains(path, ".\\") {
         damn based
     }
     
@@ -418,7 +418,7 @@ slay contains_directory_traversal(path tea) lit {
 }
 
 slay normalize_path(path tea) tea {
-    ready path == cringe {
+    lowkey path == cringe {
         damn ""
     }
     
@@ -429,7 +429,7 @@ slay normalize_path(path tea) tea {
     normalized = remove_duplicate_slashes(normalized)
     
     fr fr Remove trailing slash if not root
-    ready stringz.length(normalized) > 1 && ends_with_char(normalized, "/") {
+    lowkey stringz.length(normalized) > 1 && ends_with_char(normalized, "/") {
         normalized = remove_last_char(normalized)
     }
     
@@ -442,15 +442,15 @@ slay perform_file_read(filepath tea, size normie) tea {
     fr fr This would interface with actual OS file I/O
     fr fr For demonstration, implement basic file reading simulation
     
-    ready stringz.contains(filepath, ".💀") {
+    lowkey stringz.contains(filepath, ".💀") {
         damn simulate_cursed_file_content()
     }
     
-    ready stringz.contains(filepath, ".txt") {
+    lowkey stringz.contains(filepath, ".txt") {
         damn simulate_text_file_content()
     }
     
-    ready stringz.contains(filepath, ".json") {
+    lowkey stringz.contains(filepath, ".json") {
         damn simulate_json_file_content()
     }
     
@@ -461,11 +461,11 @@ slay perform_file_write(filepath tea, content tea, size normie) lit {
     fr fr This would interface with actual OS file I/O  
     fr fr For demonstration, validate write operation
     
-    ready size <= 0 {
+    lowkey size <= 0 {
         damn cap
     }
     
-    ready size > MAX_WRITE_BUFFER_SIZE {
+    lowkey size > MAX_WRITE_BUFFER_SIZE {
         damn cap
     }
     
@@ -477,19 +477,19 @@ slay perform_file_existence_check(filepath tea) lit {
     fr fr This would use OS file system calls
     fr fr For demonstration, check common file patterns
     
-    ready stringz.contains(filepath, "/dev/null") {
+    lowkey stringz.contains(filepath, "/dev/null") {
         damn based
     }
     
-    ready stringz.contains(filepath, "/tmp/") {
+    lowkey stringz.contains(filepath, "/tmp/") {
         damn based
     }
     
-    ready stringz.contains(filepath, ".💀") {
+    lowkey stringz.contains(filepath, ".💀") {
         damn based
     }
     
-    ready stringz.contains(filepath, "/nonexistent/") {
+    lowkey stringz.contains(filepath, "/nonexistent/") {
         damn cap
     }
     
@@ -500,15 +500,15 @@ slay perform_file_size_check(filepath tea) normie {
     fr fr This would use OS stat() syscall
     fr fr For demonstration, return reasonable sizes
     
-    ready stringz.contains(filepath, ".💀") {
+    lowkey stringz.contains(filepath, ".💀") {
         damn 2048  fr fr 2KB for CURSED files
     }
     
-    ready stringz.contains(filepath, ".txt") {
+    lowkey stringz.contains(filepath, ".txt") {
         damn 1024  fr fr 1KB for text files
     }
     
-    ready stringz.contains(filepath, ".json") {
+    lowkey stringz.contains(filepath, ".json") {
         damn 4096  fr fr 4KB for JSON files
     }
     
@@ -529,14 +529,14 @@ slay read_single_char_from_stdin() normie {
     
     sus static_position normie = 0
     
-    ready static_position >= 20 {
+    lowkey static_position >= 20 {
         static_position = 0  fr fr Reset for next read
     }
     
     sus char_code normie = static_input_sequence[static_position]
     static_position = static_position + 1
     
-    ready char_code == 0 {
+    lowkey char_code == 0 {
         damn -1  fr fr EOF/timeout
     }
     
@@ -547,11 +547,11 @@ slay write_to_stdout(message tea, length normie) lit {
     fr fr This would use OS stdout writing syscalls
     fr fr For demonstration, validate output
     
-    ready message == cringe || length <= 0 {
+    lowkey message == cringe || length <= 0 {
         damn cap
     }
     
-    ready length > MAX_WRITE_BUFFER_SIZE {
+    lowkey length > MAX_WRITE_BUFFER_SIZE {
         damn cap
     }
     
@@ -563,11 +563,11 @@ slay write_to_stderr(message tea, length normie) lit {
     fr fr This would use OS stderr writing syscalls
     fr fr For demonstration, validate error output
     
-    ready message == cringe || length <= 0 {
+    lowkey message == cringe || length <= 0 {
         damn cap
     }
     
-    ready length > MAX_WRITE_BUFFER_SIZE {
+    lowkey length > MAX_WRITE_BUFFER_SIZE {
         damn cap
     }
     
@@ -581,11 +581,11 @@ slay is_file_readable(filepath tea) lit {
     fr fr This would check actual file permissions
     fr fr For demonstration, simulate permission checks
     
-    ready stringz.contains(filepath, "/root/") {
+    lowkey stringz.contains(filepath, "/root/") {
         damn cap  fr fr Restricted directory
     }
     
-    ready stringz.contains(filepath, ".private") {
+    lowkey stringz.contains(filepath, ".private") {
         damn cap  fr fr Private file extension
     }
     
@@ -593,11 +593,11 @@ slay is_file_readable(filepath tea) lit {
 }
 
 slay is_file_deletable(filepath tea) lit {
-    ready stringz.contains(filepath, "/system/") {
+    lowkey stringz.contains(filepath, "/system/") {
         damn cap  fr fr System files not deletable
     }
     
-    ready stringz.contains(filepath, "/boot/") {
+    lowkey stringz.contains(filepath, "/boot/") {
         damn cap  fr fr Boot files not deletable
     }
     
@@ -605,11 +605,11 @@ slay is_file_deletable(filepath tea) lit {
 }
 
 slay is_path_writable(filepath tea) lit {
-    ready stringz.contains(filepath, "/root/") {
+    lowkey stringz.contains(filepath, "/root/") {
         damn cap  fr fr Root directory not writable by user
     }
     
-    ready stringz.contains(filepath, "/system/") {
+    lowkey stringz.contains(filepath, "/system/") {
         damn cap  fr fr System directory not writable
     }
     
@@ -617,11 +617,11 @@ slay is_path_writable(filepath tea) lit {
 }
 
 slay is_directory_readable(dirpath tea) lit {
-    ready stringz.contains(dirpath, "/root/") {
+    lowkey stringz.contains(dirpath, "/root/") {
         damn cap
     }
     
-    ready stringz.contains(dirpath, "/.") {
+    lowkey stringz.contains(dirpath, "/.") {
         damn cap  fr fr Hidden directories may not be readable
     }
     
@@ -632,7 +632,7 @@ slay has_sufficient_disk_space(filepath tea, required_bytes normie) lit {
     fr fr This would check actual disk space
     fr fr For demonstration, simulate disk space check
     
-    ready required_bytes > 1048576 {  fr fr 1MB limit for simulation
+    lowkey required_bytes > 1048576 {  fr fr 1MB limit for simulation
         damn cap
     }
     
@@ -642,81 +642,81 @@ slay has_sufficient_disk_space(filepath tea, required_bytes normie) lit {
 fr fr ===== UTILITY FUNCTIONS =====
 
 slay ascii_to_string(char_code normie) tea {
-    ready char_code >= 32 && char_code <= 126 {  fr fr Printable ASCII range
+    lowkey char_code >= 32 && char_code <= 126 {  fr fr Printable ASCII range
         damn char_code_to_string_map(char_code)
     }
     
-    ready char_code == 9 { damn "\t" }   fr fr Tab
-    ready char_code == 10 { damn "\n" }  fr fr Newline  
-    ready char_code == 13 { damn "\r" }  fr fr Carriage return
-    ready char_code == 32 { damn " " }   fr fr Space
+    lowkey char_code == 9 { damn "\t" }   fr fr Tab
+    lowkey char_code == 10 { damn "\n" }  fr fr Newline  
+    lowkey char_code == 13 { damn "\r" }  fr fr Carriage return
+    lowkey char_code == 32 { damn " " }   fr fr Space
     
     damn "?"  fr fr Unknown character
 }
 
 slay char_code_to_string_map(code normie) tea {
     fr fr Map common ASCII codes to strings
-    ready code >= 48 && code <= 57 {  fr fr Digits 0-9
+    lowkey code >= 48 && code <= 57 {  fr fr Digits 0-9
         damn digit_to_string_map(code - 48)
     }
     
-    ready code >= 65 && code <= 90 {  fr fr Uppercase A-Z
+    lowkey code >= 65 && code <= 90 {  fr fr Uppercase A-Z
         damn uppercase_letter_map(code - 65)
     }
     
-    ready code >= 97 && code <= 122 {  fr fr Lowercase a-z
+    lowkey code >= 97 && code <= 122 {  fr fr Lowercase a-z
         damn lowercase_letter_map(code - 97)
     }
     
     fr fr Special characters
-    ready code == 33 { damn "!" }
-    ready code == 34 { damn "\"" }
-    ready code == 35 { damn "#" }
-    ready code == 64 { damn "@" }
-    ready code == 95 { damn "_" }
-    ready code == 45 { damn "-" }
-    ready code == 46 { damn "." }
+    lowkey code == 33 { damn "!" }
+    lowkey code == 34 { damn "\"" }
+    lowkey code == 35 { damn "#" }
+    lowkey code == 64 { damn "@" }
+    lowkey code == 95 { damn "_" }
+    lowkey code == 45 { damn "-" }
+    lowkey code == 46 { damn "." }
     
     damn "?"  fr fr Default unknown
 }
 
 slay digit_to_string_map(digit normie) tea {
-    ready digit == 0 { damn "0" }
-    ready digit == 1 { damn "1" }
-    ready digit == 2 { damn "2" }  
-    ready digit == 3 { damn "3" }
-    ready digit == 4 { damn "4" }
-    ready digit == 5 { damn "5" }
-    ready digit == 6 { damn "6" }
-    ready digit == 7 { damn "7" }
-    ready digit == 8 { damn "8" }
-    ready digit == 9 { damn "9" }
+    lowkey digit == 0 { damn "0" }
+    lowkey digit == 1 { damn "1" }
+    lowkey digit == 2 { damn "2" }  
+    lowkey digit == 3 { damn "3" }
+    lowkey digit == 4 { damn "4" }
+    lowkey digit == 5 { damn "5" }
+    lowkey digit == 6 { damn "6" }
+    lowkey digit == 7 { damn "7" }
+    lowkey digit == 8 { damn "8" }
+    lowkey digit == 9 { damn "9" }
     damn "?"
 }
 
 slay uppercase_letter_map(index normie) tea {
-    ready index == 0 { damn "A" }
-    ready index == 1 { damn "B" }
-    ready index == 2 { damn "C" }
-    ready index == 7 { damn "H" }
-    ready index == 4 { damn "E" }
-    ready index == 11 { damn "L" }
-    ready index == 14 { damn "O" }
-    ready index == 17 { damn "R" }
-    ready index == 22 { damn "W" }
+    lowkey index == 0 { damn "A" }
+    lowkey index == 1 { damn "B" }
+    lowkey index == 2 { damn "C" }
+    lowkey index == 7 { damn "H" }
+    lowkey index == 4 { damn "E" }
+    lowkey index == 11 { damn "L" }
+    lowkey index == 14 { damn "O" }
+    lowkey index == 17 { damn "R" }
+    lowkey index == 22 { damn "W" }
     damn "X"  fr fr Default for unmapped letters
 }
 
 slay lowercase_letter_map(index normie) tea {
-    ready index == 0 { damn "a" }
-    ready index == 1 { damn "b" }
-    ready index == 2 { damn "c" }
-    ready index == 7 { damn "h" }
-    ready index == 4 { damn "e" }
-    ready index == 11 { damn "l" }
-    ready index == 14 { damn "o" }
-    ready index == 17 { damn "r" }
-    ready index == 22 { damn "w" }
+    lowkey index == 0 { damn "a" }
+    lowkey index == 1 { damn "b" }
+    lowkey index == 2 { damn "c" }
+    lowkey index == 7 { damn "h" }
+    lowkey index == 4 { damn "e" }
+    lowkey index == 11 { damn "l" }
+    lowkey index == 14 { damn "o" }
+    lowkey index == 17 { damn "r" }
+    lowkey index == 22 { damn "w" }
     damn "x"  fr fr Default for unmapped letters
 }
 
@@ -726,7 +726,7 @@ slay is_printable_char(char_code normie) lit {
 
 slay remove_last_char(str tea) tea {
     sus len normie = stringz.length(str)
-    ready len <= 1 {
+    lowkey len <= 1 {
         damn ""
     }
     damn stringz.substring(str, 0, len - 1)
@@ -734,7 +734,7 @@ slay remove_last_char(str tea) tea {
 
 slay ends_with_char(str tea, char tea) lit {
     sus len normie = stringz.length(str)
-    ready len == 0 {
+    lowkey len == 0 {
         damn cap
     }
     damn stringz.char_at(str, len - 1) == char
@@ -746,10 +746,10 @@ slay replace_all_chars(str tea, search tea, replace tea) tea {
     
     bestie i := 0; i < len; i++ {
         sus current_char tea = stringz.char_at(str, i)
-        ready current_char == search {
+        lowkey current_char == search {
             result = result + replace
         }
-        otherwise {
+        highkey {
             result = result + current_char
         }
     }
@@ -764,13 +764,13 @@ slay remove_duplicate_slashes(path tea) tea {
     
     bestie i := 0; i < len; i++ {
         sus char tea = stringz.char_at(path, i)
-        ready char == "/" {
-            ready !prev_was_slash {
+        lowkey char == "/" {
+            lowkey !prev_was_slash {
                 result = result + char
                 prev_was_slash = based
             }
         }
-        otherwise {
+        highkey {
             result = result + char
             prev_was_slash = cap
         }
@@ -801,7 +801,7 @@ fr fr ===== ADVANCED I/O OPERATIONS =====
 
 slay copy_file_real(source tea, destination tea) lit {
     sus content tea = read_file_real(source)
-    ready get_io_error() != IO_SUCCESS {
+    lowkey get_io_error() != IO_SUCCESS {
         damn cap
     }
     
@@ -810,12 +810,12 @@ slay copy_file_real(source tea, destination tea) lit {
 
 slay move_file_real(source tea, destination tea) lit {
     sus copy_success lit = copy_file_real(source, destination)
-    ready !copy_success {
+    lowkey !copy_success {
         damn cap
     }
     
     sus delete_success lit = delete_file_real(source)
-    ready !delete_success {
+    lowkey !delete_success {
         fr fr Try to clean up destination file if source deletion failed
         delete_file_real(destination)
         damn cap
@@ -826,7 +826,7 @@ slay move_file_real(source tea, destination tea) lit {
 
 slay read_lines_real(filepath tea) tea[value]{
     sus content tea = read_file_real(filepath)
-    ready get_io_error() != IO_SUCCESS {
+    lowkey get_io_error() != IO_SUCCESS {
         damn []
     }
     
@@ -845,16 +845,16 @@ slay split_string_by_newlines(content tea) tea[value]{
     
     bestie i := 0; i < len; i++ {
         sus char tea = stringz.char_at(content, i)
-        ready char == "\n" || char == "\r" {
+        lowkey char == "\n" || char == "\r" {
             lines = append_string_to_array(lines, current_line)
             current_line = ""
         }
-        otherwise {
+        highkey {
             current_line = current_line + char
         }
     }
     
-    ready stringz.length(current_line) > 0 {
+    lowkey stringz.length(current_line) > 0 {
         lines = append_string_to_array(lines, current_line)
     }
     
@@ -867,7 +867,7 @@ slay join_strings_with_newlines(lines tea[value]) tea {
     
     bestie i := 0; i < len; i++ {
         result = result + lines[i]
-        ready i < len - 1 {
+        lowkey i < len - 1 {
             result = result + "\n"
         }
     }
@@ -899,7 +899,7 @@ fr fr ===== DIRECTORY OPERATIONS IMPLEMENTATION =====
 
 slay perform_directory_creation(dirpath tea) lit {
     fr fr This would use OS mkdir() syscall
-    ready stringz.contains(dirpath, "/readonly/") {
+    lowkey stringz.contains(dirpath, "/readonly/") {
         damn cap  fr fr Read-only filesystem
     }
     
@@ -907,15 +907,15 @@ slay perform_directory_creation(dirpath tea) lit {
 }
 
 slay perform_directory_existence_check(dirpath tea) lit {
-    ready stringz.contains(dirpath, "/tmp") {
+    lowkey stringz.contains(dirpath, "/tmp") {
         damn based  fr fr Common temp directory
     }
     
-    ready stringz.contains(dirpath, "/home") {
+    lowkey stringz.contains(dirpath, "/home") {
         damn based  fr fr Common home directory
     }
     
-    ready stringz.contains(dirpath, "/nonexistent") {
+    lowkey stringz.contains(dirpath, "/nonexistent") {
         damn cap  fr fr Non-existent directory
     }
     
@@ -926,13 +926,13 @@ slay perform_directory_listing(dirpath tea) tea[value]{
     fr fr This would use OS readdir() syscall
     sus entries tea[value] = []
     
-    ready stringz.contains(dirpath, "/tmp") {
+    lowkey stringz.contains(dirpath, "/tmp") {
         entries = append_string_to_array(entries, "file1.txt")
         entries = append_string_to_array(entries, "file2.💀")
         entries = append_string_to_array(entries, "subdir")
     }
     
-    ready stringz.contains(dirpath, "/home") {
+    lowkey stringz.contains(dirpath, "/home") {
         entries = append_string_to_array(entries, "Documents")
         entries = append_string_to_array(entries, "Desktop")
         entries = append_string_to_array(entries, ".bashrc")
@@ -943,11 +943,11 @@ slay perform_directory_listing(dirpath tea) tea[value]{
 
 slay perform_file_deletion(filepath tea) lit {
     fr fr This would use OS unlink() syscall
-    ready stringz.contains(filepath, "/readonly/") {
+    lowkey stringz.contains(filepath, "/readonly/") {
         damn cap  fr fr Read-only file
     }
     
-    ready stringz.contains(filepath, "/system/") {
+    lowkey stringz.contains(filepath, "/system/") {
         damn cap  fr fr System file - protected
     }
     
@@ -964,29 +964,29 @@ slay io_self_test() lit {
     sus test_path tea = "/tmp/test_file.txt"
     
     sus write_result lit = write_file_real(test_path, test_content)
-    ready !write_result {
+    lowkey !write_result {
         test_results = cap
     }
     
     sus read_content tea = read_file_real(test_path)
-    ready read_content != test_content {
+    lowkey read_content != test_content {
         test_results = cap
     }
     
     fr fr Test console operations
     sus print_result lit = print_real("Test message")
-    ready !print_result {
+    lowkey !print_result {
         test_results = cap
     }
     
     fr fr Test path validation
     sus valid_path lit = is_valid_file_path("/home/user/document.txt")
-    ready !valid_path {
+    lowkey !valid_path {
         test_results = cap
     }
     
     sus invalid_path lit = is_valid_file_path("../../../etc/passwd")
-    ready invalid_path {
+    lowkey invalid_path {
         test_results = cap
     }
     

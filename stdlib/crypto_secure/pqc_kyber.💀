@@ -121,7 +121,7 @@ slay kyber_sample_noise(poly [normie], seed normie, eta normie) {
         
         fr fr Centered binomial: positive_bits - negative_bits
         poly[i] = (positive_bits - negative_bits) % kyber_q
-        ready poly[i] < 0 {
+        lowkey poly[i] < 0 {
             poly[i] = poly[i] + kyber_q
         }
     }

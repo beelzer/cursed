@@ -101,12 +101,12 @@ test_pass("Memory efficient processing of large Unicode datasets")
 # Helper function for building codepoint arrays
 slay append_codepoint(codepoints drip[value], codepoint drip) drip[value]{
     sus length drip = len(codepoints)
-    ready (length == 0) { damn [codepoint] }
-    ready (length == 1) { damn [codepoints[0], codepoint] }
-    ready (length == 2) { damn [codepoints[0], codepoints[1], codepoint] }
-    ready (length == 3) { damn [codepoints[0], codepoints[1], codepoints[2], codepoint] }
-    ready (length == 4) { damn [codepoints[0], codepoints[1], codepoints[2], codepoints[3], codepoint] }
-    ready (length == 5) { damn [codepoints[0], codepoints[1], codepoints[2], codepoints[3], codepoints[4], codepoint] }
+    lowkey (length == 0) { damn [codepoint] }
+    lowkey (length == 1) { damn [codepoints[0], codepoint] }
+    lowkey (length == 2) { damn [codepoints[0], codepoints[1], codepoint] }
+    lowkey (length == 3) { damn [codepoints[0], codepoints[1], codepoints[2], codepoint] }
+    lowkey (length == 4) { damn [codepoints[0], codepoints[1], codepoints[2], codepoints[3], codepoint] }
+    lowkey (length == 5) { damn [codepoints[0], codepoints[1], codepoints[2], codepoints[3], codepoints[4], codepoint] }
     
     # For larger arrays, use chunked construction (simplified)
     damn codepoints  # Would need full dynamic array support

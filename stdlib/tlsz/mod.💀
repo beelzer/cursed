@@ -100,7 +100,7 @@ fr fr Quick HTTPS GET with secure verification
 slay tlsz_https_get(url tea) yikes<tea> {
     fr fr Parse URL components
     sus url_parts tea[value] = parse_https_url(url)
-    ready (arrayz.length(url_parts) < 3) {
+    lowkey (arrayz.length(url_parts) < 3) {
         yikes "INVALID_URL: Unable to parse HTTPS URL"
     }
     
@@ -109,7 +109,7 @@ slay tlsz_https_get(url tea) yikes<tea> {
     sus port drip = 443
     
     fr fr Extract port if specified
-    ready (stringz.contains(hostname, ":")) {
+    lowkey (stringz.contains(hostname, ":")) {
         sus host_port tea[value] = stringz.split(hostname, ":")
         hostname = host_port[0]
         port = stringz.to_int(host_port[1])
@@ -138,7 +138,7 @@ fr fr Quick HTTPS POST with secure verification
 slay tlsz_https_post(url tea, data tea, content_type tea) yikes<tea> {
     fr fr Parse URL components
     sus url_parts tea[value] = parse_https_url(url)
-    ready (arrayz.length(url_parts) < 3) {
+    lowkey (arrayz.length(url_parts) < 3) {
         yikes "INVALID_URL: Unable to parse HTTPS URL"
     }
     
@@ -147,7 +147,7 @@ slay tlsz_https_post(url tea, data tea, content_type tea) yikes<tea> {
     sus port drip = 443
     
     fr fr Extract port if specified
-    ready (stringz.contains(hostname, ":")) {
+    lowkey (stringz.contains(hostname, ":")) {
         sus host_port tea[value] = stringz.split(hostname, ":")
         hostname = host_port[0]
         port = stringz.to_int(host_port[1])
@@ -262,7 +262,7 @@ slay tlsz_get_validity_period(cert X509Certificate) drip {
 fr fr Get days until certificate expires
 slay tlsz_days_until_expiry(cert X509Certificate) drip {
     sus current_time drip = timez.current_timestamp()
-    ready (cert.not_after <= current_time) {
+    lowkey (cert.not_after <= current_time) {
         damn 0  fr fr Already expired
     }
     damn (cert.not_after - current_time) / 86400  fr fr Convert seconds to days
@@ -301,18 +301,18 @@ slay tlsz_create_session(context TLSHandshakeContext) TLSSession {
 
 fr fr Check if session can be resumed
 slay tlsz_can_resume_session(session TLSSession, hostname tea, port drip) lit {
-    ready (!session.is_resumable) {
+    lowkey (!session.is_resumable) {
         damn cringe
     }
     
-    ready (session.hostname != hostname || session.port != port) {
+    lowkey (session.hostname != hostname || session.port != port) {
         damn cringe
     }
     
     fr fr Check session age (24 hours max)
     sus current_time drip = timez.current_timestamp()
     sus session_age drip = current_time - session.created_at
-    ready (session_age > 86400) {
+    lowkey (session_age > 86400) {
         damn cringe
     }
     
@@ -324,13 +324,13 @@ fr fr ===== ERROR REPORTING =====
 slay tlsz_format_verification_error(result VerificationResult) tea {
     fr fr Format verification error for user display
     
-    ready (result.is_valid) {
+    lowkey (result.is_valid) {
         damn "Certificate verification successful"
     }
     
     sus error_msg tea = "Certificate verification failed: " + result.error_message
     
-    ready (arrayz.length(result.warnings) > 0) {
+    lowkey (arrayz.length(result.warnings) > 0) {
         error_msg = error_msg + "\nWarnings:\n"
         sus i drip = 0
         bestie (i < arrayz.length(result.warnings)) {
@@ -347,16 +347,16 @@ slay tlsz_format_verification_error(result VerificationResult) tea {
 slay tlsz_format_revocation_status(status RevocationStatus) tea {
     fr fr Format revocation status for user display
     
-    ready (!status.is_revoked) {
+    lowkey (!status.is_revoked) {
         damn "Certificate is NOT revoked (checked via " + status.check_method + ")"
     }
     
     sus status_msg tea = "Certificate is REVOKED"
-    ready (status.revocation_reason != "") {
+    lowkey (status.revocation_reason != "") {
         status_msg = status_msg + " (reason: " + status.revocation_reason + ")"
     }
     
-    ready (status.revocation_time > 0) {
+    lowkey (status.revocation_time > 0) {
         status_msg = status_msg + " at " + timez.format_timestamp(status.revocation_time)
     }
     
@@ -370,7 +370,7 @@ fr fr ===== HELPER FUNCTIONS =====
 slay parse_https_url(url tea) tea[value]{
     fr fr Simple HTTPS URL parser
     
-    ready (!stringz.starts_with(url, "https://")) {
+    lowkey (!stringz.starts_with(url, "https://")) {
         damn []  fr fr Invalid URL
     }
     
@@ -380,10 +380,10 @@ slay parse_https_url(url tea) tea[value]{
     sus hostname tea = ""
     sus path tea = "/"
     
-    ready (slash_pos == -1) {
+    lowkey (slash_pos == -1) {
         hostname = url_without_scheme
         path = "/"
-    } otherwise {
+    } highkey {
         hostname = stringz.substring(url_without_scheme, 0, slash_pos)
         path = stringz.substring(url_without_scheme, slash_pos, stringz.length(url_without_scheme))
     }
@@ -401,11 +401,11 @@ slay generate_session_ticket() tea {
 
 slay read_file(file_path tea) yikes<tea> {
     fr fr Mock file reading - in production would use actual file I/O
-    ready (file_path == "") {
+    lowkey (file_path == "") {
         yikes "EMPTY_FILE_PATH"
     }
     
-    ready (!stringz.ends_with(file_path, ".pem") && !stringz.ends_with(file_path, ".crt")) {
+    lowkey (!stringz.ends_with(file_path, ".pem") && !stringz.ends_with(file_path, ".crt")) {
         yikes "UNSUPPORTED_FILE_TYPE"
     }
     
@@ -429,7 +429,7 @@ slay read_file(file_path tea) yikes<tea> {
 slay parse_pem_certificate(pem_data tea) yikes<X509Certificate> {
     fr fr Mock PEM certificate parsing
     
-    ready (!stringz.contains(pem_data, "-----BEGIN CERTIFICATE-----")) {
+    lowkey (!stringz.contains(pem_data, "-----BEGIN CERTIFICATE-----")) {
         yikes "INVALID_PEM_FORMAT"
     }
     
@@ -456,7 +456,7 @@ slay parse_pem_certificate(pem_data tea) yikes<X509Certificate> {
 slay parse_pem_certificate_chain(pem_data tea) yikes<X509Certificate[value]> {
     fr fr Mock PEM certificate chain parsing
     
-    ready (!stringz.contains(pem_data, "-----BEGIN CERTIFICATE-----")) {
+    lowkey (!stringz.contains(pem_data, "-----BEGIN CERTIFICATE-----")) {
         yikes "INVALID_PEM_FORMAT"
     }
     

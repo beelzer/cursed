@@ -16,40 +16,40 @@ bestie url_parse("http://example.com") {
     
     bestie url_get_scheme() == "http" {
         vibez.spill("✓ Scheme correct")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Scheme incorrect")
     }
     
     bestie url_get_host() == "example.com" {
         vibez.spill("✓ Host correct")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Host incorrect")
     }
     
     bestie url_get_port() == 80 {
         vibez.spill("✓ Port correct")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Port incorrect")
     }
     
     bestie url_is_valid() {
         vibez.spill("✓ URL is valid")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ URL is not valid")
     }
     
     bestie url_is_absolute() {
         vibez.spill("✓ URL is absolute")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ URL is not absolute")
     }
     
     bestie !url_is_secure() {
         vibez.spill("✓ HTTP is not secure")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ HTTP should not be secure")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse basic HTTP URL")
 }
 
@@ -62,22 +62,22 @@ bestie url_parse("https://example.com") {
     
     bestie url_get_scheme() == "https" {
         vibez.spill("✓ HTTPS scheme correct")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ HTTPS scheme incorrect")
     }
     
     bestie url_get_port() == 443 {
         vibez.spill("✓ HTTPS port correct")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ HTTPS port incorrect")
     }
     
     bestie url_is_secure() {
         vibez.spill("✓ HTTPS is secure")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ HTTPS should be secure")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse HTTPS URL")
 }
 
@@ -91,10 +91,10 @@ bestie url_parse("http://example.com") {
         
         bestie url_get_scheme() == "https" {
             vibez.spill("✓ Scheme updated correctly")
-        } otherwise {
+        } highkey {
             vibez.spill("✗ Scheme not updated")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Scheme setter failed")
     }
     
@@ -103,10 +103,10 @@ bestie url_parse("http://example.com") {
         
         bestie url_get_host() == "newhost.com" {
             vibez.spill("✓ Host updated correctly")
-        } otherwise {
+        } highkey {
             vibez.spill("✗ Host not updated")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Host setter failed")
     }
     
@@ -115,13 +115,13 @@ bestie url_parse("http://example.com") {
         
         bestie url_get_port() == 9000 {
             vibez.spill("✓ Port updated correctly")
-        } otherwise {
+        } highkey {
             vibez.spill("✗ Port not updated")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Port setter failed")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for component setter test")
 }
 
@@ -138,13 +138,13 @@ bestie url_parse("http://example.com") {
                 
                 bestie built_url != "" {
                     vibez.spill("✓ URL building works")
-                } otherwise {
+                } highkey {
                     vibez.spill("✗ URL building failed")
                 }
             }
         }
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for building test")
 }
 
@@ -165,15 +165,15 @@ bestie url_parse("https://example.com") {
                 sus name_value tea = url_get_query_param("name")
                 bestie name_value == "test" {
                     vibez.spill("✓ Query parameter value correct")
-                } otherwise {
+                } highkey {
                     vibez.spill("✗ Query parameter value incorrect: " + name_value)
                 }
-            } otherwise {
+            } highkey {
                 vibez.spill("✗ Query parameter not found")
             }
         }
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for query parameter test")
 }
 
@@ -184,20 +184,20 @@ vibez.spill("Test 6: Localhost detection")
 bestie url_parse("http://localhost:3000") {
     bestie url_is_localhost() {
         vibez.spill("✓ Localhost detected correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Localhost not detected")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse localhost URL")
 }
 
 bestie url_parse("http://127.0.0.1:8080") {
     bestie url_is_localhost() {
         vibez.spill("✓ 127.0.0.1 detected as localhost")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ 127.0.0.1 not detected as localhost")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse 127.0.0.1 URL")
 }
 
@@ -215,7 +215,7 @@ vibez.spill("Decoded: " + decoded)
 
 bestie decoded == original {
     vibez.spill("✓ Encoding/decoding works")
-} otherwise {
+} highkey {
     vibez.spill("✗ Encoding/decoding failed")
 }
 
@@ -226,10 +226,10 @@ vibez.spill("Test 8: URL normalization")
 bestie url_parse("http://example.com") {
     bestie url_normalize() {
         vibez.spill("✓ URL normalization works")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ URL normalization failed")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for normalization test")
 }
 
@@ -240,10 +240,10 @@ vibez.spill("Test 9: URL comparison")
 bestie url_parse("https://example.com/path") {
     bestie url_equals("https://example.com/path") {
         vibez.spill("✓ URL equality works")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ URL equality failed")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for comparison test")
 }
 
@@ -260,7 +260,7 @@ vibez.spill("Resolved: " + resolved)
 
 bestie resolved != "" {
     vibez.spill("✓ URL resolution works")
-} otherwise {
+} highkey {
     vibez.spill("✗ URL resolution failed")
 }
 
@@ -277,7 +277,7 @@ vibez.spill("Joined: " + joined)
 
 bestie joined != "" {
     vibez.spill("✓ URL joining works")
-} otherwise {
+} highkey {
     vibez.spill("✗ URL joining failed")
 }
 
@@ -290,10 +290,10 @@ bestie url_parse("/relative/path") {
     
     bestie url_is_relative() {
         vibez.spill("✓ Relative URL detected correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Relative URL not detected")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse relative URL")
 }
 
@@ -311,19 +311,19 @@ bestie url_parse("https://example.com") {
                 
                 bestie url_get_raw() == "" {
                     vibez.spill("✓ Raw URL cleared")
-                } otherwise {
+                } highkey {
                     vibez.spill("✗ Raw URL not cleared")
                 }
-            } otherwise {
+            } highkey {
                 vibez.spill("✗ URL not cleared")
             }
-        } otherwise {
+        } highkey {
             vibez.spill("✗ Clear function failed")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("✗ URL not parsed initially")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for clear test")
 }
 
@@ -334,22 +334,22 @@ vibez.spill("Test 14: Invalid port handling")
 bestie url_parse("https://example.com") {
     bestie !url_set_port(-1) {
         vibez.spill("✓ Invalid negative port rejected")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Invalid negative port accepted")
     }
     
     bestie !url_set_port(65536) {
         vibez.spill("✓ Invalid high port rejected")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Invalid high port accepted")
     }
     
     bestie url_set_port(8080) {
         vibez.spill("✓ Valid port accepted")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Valid port rejected")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for port validation test")
 }
 
@@ -372,10 +372,10 @@ bestie url_parse("https://example.com") {
     
     bestie base_url != "" {
         vibez.spill("✓ Utility functions work")
-    } otherwise {
+    } highkey {
         vibez.spill("✗ Utility functions failed")
     }
-} otherwise {
+} highkey {
     vibez.spill("✗ Failed to parse URL for utility function test")
 }
 

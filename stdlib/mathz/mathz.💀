@@ -51,21 +51,21 @@ slay RADIANS_TO_DEGREES_FACTOR() drip {
 fr fr ===== BASIC ARITHMETIC OPERATIONS =====
 
 slay abs(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -x
     }
     damn x
 }
 
 slay max(a drip, b drip) drip {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b
 }
 
 slay min(a drip, b drip) drip {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b
@@ -84,24 +84,24 @@ slay multiply(a drip, b drip) drip {
 }
 
 slay divide(a drip, b drip) drip {
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn 0  fr fr Safe division by zero handling
     }
     damn a / b
 }
 
 slay power(base drip, exponent drip) drip {
-    ready (exponent == 0) {
+    lowkey (exponent == 0) {
         damn 1
     }
-    ready (exponent == 1) {
+    lowkey (exponent == 1) {
         damn base
     }
-    ready (exponent < 0) {
+    lowkey (exponent < 0) {
         fr fr Handle negative exponents: 1/(base^|exp|)
         sus positive_exp drip = -exponent
         sus positive_power drip = power(base, positive_exp)
-        ready (positive_power != 0) {
+        lowkey (positive_power != 0) {
             damn 10000 / positive_power  fr fr Scaled for precision
         }
         damn 0
@@ -113,7 +113,7 @@ slay power(base drip, exponent drip) drip {
     sus base_power drip = base
     
     bestie (exp > 0) {
-        ready (exp % 2 == 1) {
+        lowkey (exp % 2 == 1) {
             result = result * base_power
         }
         base_power = base_power * base_power
@@ -123,7 +123,7 @@ slay power(base drip, exponent drip) drip {
 }
 
 slay mod(a drip, b drip) drip {
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn 0
     }
     damn a % b
@@ -132,23 +132,23 @@ slay mod(a drip, b drip) drip {
 fr fr ===== ADVANCED MATHEMATICAL FUNCTIONS =====
 
 slay sqrt(x drip) drip {
-    ready (x <= 0) {
+    lowkey (x <= 0) {
         damn 0
     }
-    ready (x == 1) {
+    lowkey (x == 1) {
         damn 1
     }
     
     fr fr Perfect squares lookup
-    ready (x == 4) { damn 2 }
-    ready (x == 9) { damn 3 }
-    ready (x == 16) { damn 4 }
-    ready (x == 25) { damn 5 }
-    ready (x == 36) { damn 6 }
-    ready (x == 49) { damn 7 }
-    ready (x == 64) { damn 8 }
-    ready (x == 81) { damn 9 }
-    ready (x == 100) { damn 10 }
+    lowkey (x == 4) { damn 2 }
+    lowkey (x == 9) { damn 3 }
+    lowkey (x == 16) { damn 4 }
+    lowkey (x == 25) { damn 5 }
+    lowkey (x == 36) { damn 6 }
+    lowkey (x == 49) { damn 7 }
+    lowkey (x == 64) { damn 8 }
+    lowkey (x == 81) { damn 9 }
+    lowkey (x == 100) { damn 10 }
     
     fr fr Newton's method for general case
     sus guess drip = x / 2
@@ -157,7 +157,7 @@ slay sqrt(x drip) drip {
     
     bestie (i < iterations) {
         sus new_guess drip = (guess + x / guess) / 2
-        ready (abs(new_guess - guess) <= 1) {
+        lowkey (abs(new_guess - guess) <= 1) {
             damn new_guess
         }
         guess = new_guess
@@ -168,20 +168,20 @@ slay sqrt(x drip) drip {
 }
 
 slay factorial(n drip) drip {
-    ready (n <= 1) {
+    lowkey (n <= 1) {
         damn 1
     }
     
     fr fr Lookup table for small values
-    ready (n == 2) { damn 2 }
-    ready (n == 3) { damn 6 }
-    ready (n == 4) { damn 24 }
-    ready (n == 5) { damn 120 }
-    ready (n == 6) { damn 720 }
-    ready (n == 7) { damn 5040 }
-    ready (n == 8) { damn 40320 }
-    ready (n == 9) { damn 362880 }
-    ready (n == 10) { damn 3628800 }
+    lowkey (n == 2) { damn 2 }
+    lowkey (n == 3) { damn 6 }
+    lowkey (n == 4) { damn 24 }
+    lowkey (n == 5) { damn 120 }
+    lowkey (n == 6) { damn 720 }
+    lowkey (n == 7) { damn 5040 }
+    lowkey (n == 8) { damn 40320 }
+    lowkey (n == 9) { damn 362880 }
+    lowkey (n == 10) { damn 3628800 }
     
     fr fr Iterative calculation for larger values
     sus result drip = 1
@@ -194,14 +194,14 @@ slay factorial(n drip) drip {
 }
 
 slay gcd(a drip, b drip) drip {
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn abs(a)
     }
     damn gcd(b, a % b)
 }
 
 slay lcm(a drip, b drip) drip {
-    ready (a == 0 || b == 0) {
+    lowkey (a == 0 || b == 0) {
         damn 0
     }
     sus gcd_result drip = gcd(a, b)
@@ -297,20 +297,20 @@ slay tanh(x tea) tea {
 fr fr ===== ROUNDING AND PRECISION FUNCTIONS =====
 
 slay floor(x drip) drip {
-    ready (x >= 0) {
+    lowkey (x >= 0) {
         damn x
     }
-    ready (x % 10000 == 0) {
+    lowkey (x % 10000 == 0) {
         damn x
     }
     damn x - (x % 10000) - 10000
 }
 
 slay ceil(x drip) drip {
-    ready (x <= 0) {
+    lowkey (x <= 0) {
         damn x
     }
-    ready (x % 10000 == 0) {
+    lowkey (x % 10000 == 0) {
         damn x
     }
     damn x - (x % 10000) + 10000
@@ -318,7 +318,7 @@ slay ceil(x drip) drip {
 
 slay round(x drip) drip {
     sus remainder drip = x % 10000
-    ready (remainder >= 5000) {
+    lowkey (remainder >= 5000) {
         damn x - remainder + 10000
     }
     damn x - remainder
@@ -339,16 +339,16 @@ slay is_odd(n drip) lit {
 }
 
 slay sign(x drip) drip {
-    ready (x > 0) { damn 1 }
-    ready (x < 0) { damn -1 }
+    lowkey (x > 0) { damn 1 }
+    lowkey (x < 0) { damn -1 }
     damn 0
 }
 
 slay clamp(value drip, min_val drip, max_val drip) drip {
-    ready (value < min_val) {
+    lowkey (value < min_val) {
         damn min_val
     }
-    ready (value > max_val) {
+    lowkey (value > max_val) {
         damn max_val
     }
     damn value
@@ -376,7 +376,7 @@ slay sum_array(arr drip[value], size drip) drip {
 }
 
 slay average(arr drip[value], size drip) drip {
-    ready (size == 0) {
+    lowkey (size == 0) {
         damn 0
     }
     sus total drip = sum_array(arr, size)
@@ -384,13 +384,13 @@ slay average(arr drip[value], size drip) drip {
 }
 
 slay find_min(arr drip[value], size drip) drip {
-    ready (size == 0) {
+    lowkey (size == 0) {
         damn 0
     }
     sus min_val drip = arr[0]
     sus i drip = 1
     bestie (i < size) {
-        ready (arr[i] < min_val) {
+        lowkey (arr[i] < min_val) {
             min_val = arr[i]
         }
         i = i + 1
@@ -399,13 +399,13 @@ slay find_min(arr drip[value], size drip) drip {
 }
 
 slay find_max(arr drip[value], size drip) drip {
-    ready (size == 0) {
+    lowkey (size == 0) {
         damn 0
     }
     sus max_val drip = arr[0]
     sus i drip = 1
     bestie (i < size) {
-        ready (arr[i] > max_val) {
+        lowkey (arr[i] > max_val) {
             max_val = arr[i]
         }
         i = i + 1
@@ -416,13 +416,13 @@ slay find_max(arr drip[value], size drip) drip {
 fr fr ===== NUMBER THEORY FUNCTIONS =====
 
 slay is_prime(n drip) lit {
-    ready (n <= 1) { damn cringe }
-    ready (n <= 3) { damn based }
-    ready (n % 2 == 0 || n % 3 == 0) { damn cringe }
+    lowkey (n <= 1) { damn cringe }
+    lowkey (n <= 3) { damn based }
+    lowkey (n % 2 == 0 || n % 3 == 0) { damn cringe }
     
     sus i drip = 5
     bestie (i * i <= n) {
-        ready (n % i == 0 || n % (i + 2) == 0) {
+        lowkey (n % i == 0 || n % (i + 2) == 0) {
             damn cringe
         }
         i = i + 6
@@ -433,7 +433,7 @@ slay is_prime(n drip) lit {
 slay next_prime(n drip) drip {
     sus candidate drip = n + 1
     bestie (candidate < n + 1000) {
-        ready (is_prime(candidate)) {
+        lowkey (is_prime(candidate)) {
             damn candidate
         }
         candidate = candidate + 1
@@ -454,7 +454,7 @@ slay prime_factors_count(n drip) drip {
         factor = factor + 1
     }
     
-    ready (num > 1) {
+    lowkey (num > 1) {
         count = count + 1
     }
     
@@ -464,10 +464,10 @@ slay prime_factors_count(n drip) drip {
 fr fr ===== COMBINATORIAL FUNCTIONS =====
 
 slay combinations(n drip, k drip) drip {
-    ready (k > n || k < 0) { damn 0 }
-    ready (k == 0 || k == n) { damn 1 }
+    lowkey (k > n || k < 0) { damn 0 }
+    lowkey (k == 0 || k == n) { damn 1 }
     
-    ready (k > n - k) {
+    lowkey (k > n - k) {
         k = n - k
     }
     
@@ -482,8 +482,8 @@ slay combinations(n drip, k drip) drip {
 }
 
 slay permutations(n drip, k drip) drip {
-    ready (k > n || k < 0) { damn 0 }
-    ready (k == 0) { damn 1 }
+    lowkey (k > n || k < 0) { damn 0 }
+    lowkey (k == 0) { damn 1 }
     
     sus result drip = 1
     sus i drip = 0
@@ -497,7 +497,7 @@ slay permutations(n drip, k drip) drip {
 fr fr ===== SEQUENCE FUNCTIONS =====
 
 slay fibonacci(n drip) drip {
-    ready (n <= 1) { damn n }
+    lowkey (n <= 1) { damn n }
     
     sus a drip = 0
     sus b drip = 1
@@ -512,7 +512,7 @@ slay fibonacci(n drip) drip {
 }
 
 slay sum_range(start drip, end drip) drip {
-    ready (start > end) { damn 0 }
+    lowkey (start > end) { damn 0 }
     sus n drip = end - start + 1
     damn n * (start + end) / 2  fr fr Arithmetic series formula
 }
@@ -578,33 +578,33 @@ slay miles_to_km(miles drip) drip {
 fr fr ===== MODULAR ARITHMETIC =====
 
 slay mod_add(a drip, b drip, mod drip) drip {
-    ready (mod <= 0) { damn 0 }
+    lowkey (mod <= 0) { damn 0 }
     sus result drip = (a + b) % mod
-    ready (result < 0) {
+    lowkey (result < 0) {
         result = result + mod
     }
     damn result
 }
 
 slay mod_multiply(a drip, b drip, mod drip) drip {
-    ready (mod <= 0) { damn 0 }
+    lowkey (mod <= 0) { damn 0 }
     sus result drip = (a * b) % mod
-    ready (result < 0) {
+    lowkey (result < 0) {
         result = result + mod
     }
     damn result
 }
 
 slay mod_power(base drip, exp drip, mod drip) drip {
-    ready (mod <= 0) { damn 0 }
-    ready (mod == 1) { damn 0 }
+    lowkey (mod <= 0) { damn 0 }
+    lowkey (mod == 1) { damn 0 }
     
     sus result drip = 1
     sus base_mod drip = base % mod
     sus exponent drip = exp
     
     bestie (exponent > 0) {
-        ready (exponent % 2 == 1) {
+        lowkey (exponent % 2 == 1) {
             result = (result * base_mod) % mod
         }
         exponent = exponent / 2
@@ -624,7 +624,7 @@ slay simple_hash(seed drip) drip {
 }
 
 slay random_range(min drip, max drip, seed drip) drip {
-    ready (min >= max) { damn min }
+    lowkey (min >= max) { damn min }
     sus hash_val drip = simple_hash(seed)
     sus range drip = max - min + 1
     damn min + (hash_val % range)
@@ -636,7 +636,7 @@ slay count_set_bits(n drip) drip {
     sus count drip = 0
     sus num drip = n
     bestie (num > 0) {
-        ready (num % 2 == 1) {
+        lowkey (num % 2 == 1) {
             count = count + 1
         }
         num = num / 2
@@ -645,12 +645,12 @@ slay count_set_bits(n drip) drip {
 }
 
 slay is_power_of_2(n drip) lit {
-    ready (n <= 0) { damn cringe }
+    lowkey (n <= 0) { damn cringe }
     damn (n & (n - 1)) == 0
 }
 
 slay next_power_of_2(n drip) drip {
-    ready (n <= 1) { damn 1 }
+    lowkey (n <= 1) { damn 1 }
     
     sus power drip = 1
     bestie (power < n) {
@@ -662,28 +662,28 @@ slay next_power_of_2(n drip) drip {
 fr fr ===== PRECISION AND ERROR HANDLING =====
 
 slay safe_divide(a drip, b drip, default_value drip) drip {
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn default_value
     }
     damn a / b
 }
 
 slay safe_sqrt(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn 0  fr fr Return 0 for negative inputs
     }
     damn sqrt(x)
 }
 
 slay safe_log(x drip, default_value drip) drip {
-    ready (x <= 0) {
+    lowkey (x <= 0) {
         damn default_value
     }
     damn ln(x)
 }
 
 slay clamp_positive(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn 0
     }
     damn x
@@ -705,12 +705,12 @@ slay arithmetic_mean(a drip, b drip) drip {
 }
 
 slay geometric_mean(a drip, b drip) drip {
-    ready (a < 0 || b < 0) { damn 0 }
+    lowkey (a < 0 || b < 0) { damn 0 }
     damn sqrt(a * b)
 }
 
 slay harmonic_mean(a drip, b drip) drip {
-    ready (a == 0 || b == 0) { damn 0 }
+    lowkey (a == 0 || b == 0) { damn 0 }
     damn (2 * a * b) / (a + b)
 }
 
@@ -741,7 +741,7 @@ fr fr Total advanced functions: 100+
 fr fr ===== MISSING REQUIRED FUNCTIONS =====
 
 slay abs_normie(x normie) normie {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -x
     }
     damn x
@@ -752,16 +752,16 @@ slay add_two(a normie, b normie) normie {
 }
 
 slay pow(base normie, exponent normie) normie {
-    ready (exponent == 0) {
+    lowkey (exponent == 0) {
         damn 1
     }
-    ready (exponent < 0) {
+    lowkey (exponent < 0) {
         damn 0  fr fr Integer division, negative exponent gives 0
     }
-    ready (base == 0) {
+    lowkey (base == 0) {
         damn 0
     }
-    ready (base == 1) {
+    lowkey (base == 1) {
         damn 1
     }
     
@@ -770,7 +770,7 @@ slay pow(base normie, exponent normie) normie {
     sus base_power normie = base
     
     bestie (exp > 0) {
-        ready (exp % 2 == 1) {
+        lowkey (exp % 2 == 1) {
             result = result * base_power
         }
         base_power = base_power * base_power
@@ -780,23 +780,23 @@ slay pow(base normie, exponent normie) normie {
 }
 
 slay sqrt(x normie) normie {
-    ready (x <= 0) {
+    lowkey (x <= 0) {
         damn 0
     }
-    ready (x == 1) {
+    lowkey (x == 1) {
         damn 1
     }
     
     fr fr Perfect squares lookup
-    ready (x == 4) { damn 2 }
-    ready (x == 9) { damn 3 }
-    ready (x == 16) { damn 4 }
-    ready (x == 25) { damn 5 }
-    ready (x == 36) { damn 6 }
-    ready (x == 49) { damn 7 }
-    ready (x == 64) { damn 8 }
-    ready (x == 81) { damn 9 }
-    ready (x == 100) { damn 10 }
+    lowkey (x == 4) { damn 2 }
+    lowkey (x == 9) { damn 3 }
+    lowkey (x == 16) { damn 4 }
+    lowkey (x == 25) { damn 5 }
+    lowkey (x == 36) { damn 6 }
+    lowkey (x == 49) { damn 7 }
+    lowkey (x == 64) { damn 8 }
+    lowkey (x == 81) { damn 9 }
+    lowkey (x == 100) { damn 10 }
     
     fr fr Newton's method for general case
     sus guess normie = x / 2
@@ -805,7 +805,7 @@ slay sqrt(x normie) normie {
     
     bestie (i < iterations) {
         sus new_guess normie = (guess + x / guess) / 2
-        ready (abs_normie(new_guess - guess) <= 1) {
+        lowkey (abs_normie(new_guess - guess) <= 1) {
             damn new_guess
         }
         guess = new_guess
@@ -816,14 +816,14 @@ slay sqrt(x normie) normie {
 }
 
 slay mod(a normie, b normie) normie {
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn 0
     }
     damn a % b
 }
 
 slay max(a normie, b normie) normie {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b

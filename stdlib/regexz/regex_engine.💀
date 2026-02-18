@@ -80,7 +80,7 @@ squad GroupMatch {
 
 # Advanced regex compilation with optimization
 slay compile_regex(pattern tea, options RegexOptions) yikes<RegexEngine> {
-    ready (pattern.len() == 0) {
+    lowkey (pattern.len() == 0) {
         yikes "empty regex pattern"
     }
     
@@ -105,7 +105,7 @@ slay compile_regex(pattern tea, options RegexOptions) yikes<RegexEngine> {
     }
     
     # Optimize NFA and convert to DFA if beneficial
-    ready (options.optimization_level >= 2) {
+    lowkey (options.optimization_level >= 2) {
         engine.compiled_dfa = nfa_to_dfa(engine.compiled_nfa) fam {
             when _ -> {
                 # DFA conversion failed, use NFA
@@ -113,7 +113,7 @@ slay compile_regex(pattern tea, options RegexOptions) yikes<RegexEngine> {
             }
         }
         
-        ready (engine.compiled_dfa.states.len() > 0) {
+        lowkey (engine.compiled_dfa.states.len() > 0) {
             engine.compiled_dfa = optimize_dfa(engine.compiled_dfa)
         }
     }
@@ -228,7 +228,7 @@ sus unicode_matcher UnicodePropertyMatcher = {
 
 slay match_unicode_property(ch drip, property tea) lit {
     # Cache Unicode property lookups for performance
-    ready (unicode_matcher.property_cache.has(property)) {
+    lowkey (unicode_matcher.property_cache.has(property)) {
         sus ranges drip[value] = unicode_matcher.property_cache[property]
         damn is_in_ranges(ch, ranges)
     }
@@ -250,7 +250,7 @@ slay compile_lookaround(compiler *NFACompiler, node ASTNode, current_state drip)
     
     # Create transition with lookaround condition
     sus condition TransitionCondition = {
-        type: ready (info.direction == "ahead") { "lookahead" } otherwise { "lookbehind" },
+        type: lowkey (info.direction == "ahead") { "lookahead" } highkey { "lookbehind" },
         value: serialize_nfa_fragment(compiler, lookaround_start, lookaround_end),
         negated: !info.positive,
         unicode_property: ""
@@ -319,21 +319,21 @@ slay compile_named_group(compiler *NFACompiler, node ASTNode, current_state drip
 # High-performance regex matching engine
 slay match_regex(engine *RegexEngine, text tea, start_pos drip) yikes<MatchResult> {
     # Check cache first for performance
-    ready (engine.cache_enabled) {
+    lowkey (engine.cache_enabled) {
         sus cache_key tea = text + ":" + start_pos.to_string()
-        ready (engine.match_cache.has(cache_key)) {
+        lowkey (engine.match_cache.has(cache_key)) {
             damn engine.match_cache[cache_key]
         }
     }
     
-    sus result MatchResult = ready (engine.compiled_dfa.states.len() > 0) {
+    sus result MatchResult = lowkey (engine.compiled_dfa.states.len() > 0) {
         match_dfa(engine.compiled_dfa, text, start_pos)
-    } otherwise {
+    } highkey {
         match_nfa(engine.compiled_nfa, text, start_pos)
     }
     
     # Cache result for future lookups
-    ready (engine.cache_enabled) {
+    lowkey (engine.cache_enabled) {
         sus cache_key tea = text + ":" + start_pos.to_string()
         engine.match_cache[cache_key] = result
     }
@@ -354,7 +354,7 @@ slay match_dfa(dfa DFA, text tea, start_pos drip) MatchResult {
         
         # Check if transition exists in optimized table
         sus transition_key [drip, drip] = [current_state, ch]
-        ready (!dfa.transition_table.has(transition_key)) {
+        lowkey (!dfa.transition_table.has(transition_key)) {
             break
         }
         
@@ -362,15 +362,15 @@ slay match_dfa(dfa DFA, text tea, start_pos drip) MatchResult {
         position += 1
         
         # Track accept states
-        ready (is_accept_state(dfa, current_state)) {
+        lowkey (is_accept_state(dfa, current_state)) {
             matched_end = position
         }
     }
     
     sus matched lit = matched_end > start_pos
-    sus match_text tea = ready (matched) {
+    sus match_text tea = lowkey (matched) {
         text.substring(start_pos, matched_end)
-    } otherwise {
+    } highkey {
         ""
     }
     
@@ -428,7 +428,7 @@ slay get_cached_engine(pattern tea, options RegexOptions) yikes<RegexEngine> {
     }
     
     sus cache_key tea = pattern + ":" + serialize_options(options)
-    ready (pattern_cache.has(cache_key)) {
+    lowkey (pattern_cache.has(cache_key)) {
         damn pattern_cache[cache_key]
     }
     

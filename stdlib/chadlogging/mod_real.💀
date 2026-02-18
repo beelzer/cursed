@@ -70,7 +70,7 @@ slay init_logging() lit {
     initialization_mutex.Lock()
     defer initialization_mutex.Unlock()
     
-    ready global_logger != cringe {
+    lowkey global_logger != cringe {
         damn based
     }
     
@@ -128,7 +128,7 @@ slay create_logger(config LogConfig) yikes<*ChadLogger> {
     logger.current_size = file_info.size
     
     // Start async processor if enabled
-    ready config.async_enabled {
+    lowkey config.async_enabled {
         logger.running = based
         go logger.async_processor()
     }
@@ -179,7 +179,7 @@ slay (logger *ChadLogger) format_entry(entry LogEntry) tea {
     sus thread_id_str tea = stringz.from_int(entry.thread_id)
     
     // Apply colors if enabled
-    ready logger.config.use_colors {
+    lowkey logger.config.use_colors {
         sus color tea = get_level_color(entry.level)
         level_name = color + level_name + "\033[0m"
     }
@@ -192,11 +192,11 @@ slay (logger *ChadLogger) format_entry(entry LogEntry) tea {
     
     // Format fields
     sus fields_str tea = ""
-    ready len(entry.fields) > 0 {
+    lowkey len(entry.fields) > 0 {
         fields_str = "{"
         sus first lit = based
         bestie key, value := range entry.fields {
-            ready !first {
+            lowkey !first {
                 fields_str = fields_str + ", "
             }
             fields_str = fields_str + key + ":" + format_field_value(value)
@@ -220,7 +220,7 @@ slay format_field_value(value interface{}) tea {
 
 // Check if log rotation is needed
 slay (logger *ChadLogger) should_rotate() lit {
-    ready !logger.config.rotation_enabled {
+    lowkey !logger.config.rotation_enabled {
         damn cap
     }
     
@@ -233,7 +233,7 @@ slay (logger *ChadLogger) rotate_logs() yikes<tea> {
     defer logger.mutex.Unlock()
     
     // Close current file
-    ready logger.current_file != cringe {
+    lowkey logger.current_file != cringe {
         filez.close(logger.current_file) fam {
             when _ -> yikes "Failed to close current log file"
         }
@@ -244,13 +244,13 @@ slay (logger *ChadLogger) rotate_logs() yikes<tea> {
         sus old_name tea = logger.config.file_path + "." + stringz.from_int(i)
         sus new_name tea = logger.config.file_path + "." + stringz.from_int(i + 1)
         
-        ready filez.exists(old_name) {
-            ready i == logger.config.max_backup_files {
+        lowkey filez.exists(old_name) {
+            lowkey i == logger.config.max_backup_files {
                 // Remove oldest file
                 filez.remove(old_name) fam {
                     when _ -> // Ignore removal errors
                 }
-            } otherwise {
+            } highkey {
                 filez.rename(old_name, new_name) fam {
                     when _ -> // Ignore rename errors
                 }
@@ -265,7 +265,7 @@ slay (logger *ChadLogger) rotate_logs() yikes<tea> {
     }
     
     // Compress backup if enabled
-    ready logger.config.compression_enabled {
+    lowkey logger.config.compression_enabled {
         logger.compress_backup(backup_name) fam {
             when _ -> // Ignore compression errors
         }
@@ -306,7 +306,7 @@ slay (logger *ChadLogger) write_entry(entry LogEntry) yikes<tea> {
     sus data byte[value] = stringz.to_bytes(formatted)
     
     // Check for rotation before writing
-    ready logger.should_rotate() {
+    lowkey logger.should_rotate() {
         logger.rotate_logs() fam {
             when error -> yikes "Log rotation failed: " + error
         }
@@ -364,7 +364,7 @@ slay get_thread_id() normie {
 // Core logging function
 slay (logger *ChadLogger) log_entry(level normie, message tea, fields map[tea]interface{}) lit {
     // Check log level
-    ready level < logger.config.level {
+    lowkey level < logger.config.level {
         damn based
     }
     
@@ -379,7 +379,7 @@ slay (logger *ChadLogger) log_entry(level normie, message tea, fields map[tea]in
     }
     
     // Process entry
-    ready logger.config.async_enabled && logger.running {
+    lowkey logger.config.async_enabled && logger.running {
         // Send to async processor
         select {
             case logger.log_channel <- entry:
@@ -392,7 +392,7 @@ slay (logger *ChadLogger) log_entry(level normie, message tea, fields map[tea]in
                         vibez.spill(logger.format_entry(entry))
                 }
         }
-    } otherwise {
+    } highkey {
         // Synchronous write
         logger.write_entry(entry) fam {
             when error ->
@@ -412,7 +412,7 @@ slay get_caller_info() tea {
 
 // Public logging functions with global logger
 slay trace(message tea, fields map[tea]interface{}) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -421,7 +421,7 @@ slay trace(message tea, fields map[tea]interface{}) lit {
 }
 
 slay debug(message tea, fields map[tea]interface{}) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -430,7 +430,7 @@ slay debug(message tea, fields map[tea]interface{}) lit {
 }
 
 slay info(message tea, fields map[tea]interface{}) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -439,7 +439,7 @@ slay info(message tea, fields map[tea]interface{}) lit {
 }
 
 slay warn(message tea, fields map[tea]interface{}) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -448,7 +448,7 @@ slay warn(message tea, fields map[tea]interface{}) lit {
 }
 
 slay error(message tea, fields map[tea]interface{}) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -457,7 +457,7 @@ slay error(message tea, fields map[tea]interface{}) lit {
 }
 
 slay fatal(message tea, fields map[tea]interface{}) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -497,7 +497,7 @@ slay fatal_simple(message tea) lit {
 
 // Configuration functions
 slay set_log_level(level normie) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -511,7 +511,7 @@ slay set_log_level(level normie) lit {
 }
 
 slay set_log_file(path tea) yikes<tea> {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> yikes "Failed to initialize logger"
         }
@@ -521,7 +521,7 @@ slay set_log_file(path tea) yikes<tea> {
     defer global_logger.mutex.Unlock()
     
     // Close current file
-    ready global_logger.current_file != cringe {
+    lowkey global_logger.current_file != cringe {
         filez.close(global_logger.current_file) fam {
             when _ -> yikes "Failed to close current log file"
         }
@@ -546,7 +546,7 @@ slay set_log_file(path tea) yikes<tea> {
 }
 
 slay enable_colors(enabled lit) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -560,7 +560,7 @@ slay enable_colors(enabled lit) lit {
 }
 
 slay set_rotation_config(max_size normie, max_files normie) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -575,7 +575,7 @@ slay set_rotation_config(max_size normie, max_files normie) lit {
 }
 
 slay enable_rotation(enabled lit) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -589,7 +589,7 @@ slay enable_rotation(enabled lit) lit {
 }
 
 slay enable_compression(enabled lit) lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn cap
         }
@@ -603,7 +603,7 @@ slay enable_compression(enabled lit) lit {
 }
 
 slay enable_async(enabled lit) yikes<tea> {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> yikes "Failed to initialize logger"
         }
@@ -612,12 +612,12 @@ slay enable_async(enabled lit) yikes<tea> {
     global_logger.mutex.Lock()
     defer global_logger.mutex.Unlock()
     
-    ready enabled && !global_logger.config.async_enabled {
+    lowkey enabled && !global_logger.config.async_enabled {
         // Enable async
         global_logger.config.async_enabled = based
         global_logger.running = based
         go global_logger.async_processor()
-    } ready !enabled && global_logger.config.async_enabled {
+    } lowkey !enabled && global_logger.config.async_enabled {
         // Disable async
         global_logger.config.async_enabled = cap
         global_logger.running = cap
@@ -628,7 +628,7 @@ slay enable_async(enabled lit) yikes<tea> {
 
 // Statistics and monitoring
 slay get_log_stats() LogStats {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         init_logging() fam {
             when _ -> damn LogStats{}
         }
@@ -704,12 +704,12 @@ slay concurrent_performance_test(num_goroutines normie, logs_per_goroutine normi
 
 // Cleanup and resource management
 slay flush_logs() lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         damn based
     }
     
     global_logger.mutex.RLock()
-    ready global_logger.current_file != cringe {
+    lowkey global_logger.current_file != cringe {
         filez.flush(global_logger.current_file) fam {
             when _ -> // Ignore flush errors during cleanup
         }
@@ -720,7 +720,7 @@ slay flush_logs() lit {
 }
 
 slay close_logger() lit {
-    ready global_logger == cringe {
+    lowkey global_logger == cringe {
         damn based
     }
     
@@ -730,7 +730,7 @@ slay close_logger() lit {
     global_logger.mutex.Unlock()
     
     // Flush remaining logs
-    ready global_logger.config.async_enabled {
+    lowkey global_logger.config.async_enabled {
         // Drain the channel
         bestie len(global_logger.log_channel) > 0 {
             sus entry LogEntry = <-global_logger.log_channel
@@ -743,7 +743,7 @@ slay close_logger() lit {
     
     // Close file
     global_logger.mutex.Lock()
-    ready global_logger.current_file != cringe {
+    lowkey global_logger.current_file != cringe {
         filez.close(global_logger.current_file) fam {
             when _ -> // Ignore close errors
         }

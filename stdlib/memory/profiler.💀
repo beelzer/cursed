@@ -79,11 +79,11 @@ slay capture_stack_trace() tea[value]{
     fr fr Real stack trace implementation using platform APIs
     yo platform_is_linux() {
         damn capture_linux_stack_trace()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn capture_windows_stack_trace()
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         damn capture_darwin_stack_trace()
-    } otherwise {
+    } highkey {
         damn capture_generic_stack_trace()
     }
 }
@@ -204,11 +204,11 @@ slay resolve_symbol_from_address(addr uintptr) tea {
     fr fr For demonstration, generate meaningful symbol names
     yo addr >= 0x400000 && addr < 0x401000 {
         damn "main+0x" + format_hex(addr - 0x400000)
-    } otherwise yo addr >= 0x401000 && addr < 0x402000 {
+    } highkey yo addr >= 0x401000 && addr < 0x402000 {
         damn "user_function+0x" + format_hex(addr - 0x401000)
-    } otherwise yo addr >= 0x402000 && addr < 0x403000 {
+    } highkey yo addr >= 0x402000 && addr < 0x403000 {
         damn "memory_alloc+0x" + format_hex(addr - 0x402000)
-    } otherwise {
+    } highkey {
         damn "unknown_function+0x" + format_hex(addr)
     }
 }
@@ -252,9 +252,9 @@ slay resolve_darwin_symbol(addr uintptr) tea {
     fr fr macOS symbol resolution using dladdr()
     yo addr >= 0x100000000 && addr < 0x100001000 {
         damn "_main+0x" + format_hex(addr - 0x100000000)
-    } otherwise yo addr >= 0x100001000 && addr < 0x100002000 {
+    } highkey yo addr >= 0x100001000 && addr < 0x100002000 {
         damn "_user_function+0x" + format_hex(addr - 0x100001000)  
-    } otherwise {
+    } highkey {
         damn "_unknown+0x" + format_hex(addr)
     }
 }
@@ -307,7 +307,7 @@ slay profiler_track_allocation(addr *void, size normie) lit {
         timestamp: timez.current_timestamp_nanos(),
         stack_trace: yo global_profiler.capture_stack_traces {
             capture_stack_trace()
-        } otherwise {
+        } highkey {
             []
         },
         thread_id: get_current_thread_id(),
@@ -355,7 +355,7 @@ slay profiler_track_deallocation(addr *void) lit {
         fr fr Update statistics
         atomic_drip.atomic_increment_i64(global_profiler.total_deallocations)
         atomic_drip.atomic_subtract_i64(global_profiler.current_memory_usage, entry.size.(thicc))
-    } otherwise {
+    } highkey {
         vibez.spillf("Memory Profiler: Warning - attempted to free untracked address: {}", addr)
     }
     
@@ -366,11 +366,11 @@ fr fr Get current thread ID (platform-specific implementation)
 slay get_current_thread_id() normie {
     yo platform_is_linux() {
         damn get_linux_thread_id()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn get_windows_thread_id()
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         damn get_darwin_thread_id()
-    } otherwise {
+    } highkey {
         damn 1  fr fr Default thread ID
     }
 }
@@ -549,17 +549,17 @@ slay generate_allocation_histogram() {
         yo !entry.freed {
             yo entry.size <= 64 {
                 buckets["0-64 bytes"] = buckets["0-64 bytes"] + 1
-            } otherwise yo entry.size <= 256 {
+            } highkey yo entry.size <= 256 {
                 buckets["65-256 bytes"] = buckets["65-256 bytes"] + 1
-            } otherwise yo entry.size <= 1024 {
+            } highkey yo entry.size <= 1024 {
                 buckets["257-1KB"] = buckets["257-1KB"] + 1
-            } otherwise yo entry.size <= 4096 {
+            } highkey yo entry.size <= 4096 {
                 buckets["1KB-4KB"] = buckets["1KB-4KB"] + 1
-            } otherwise yo entry.size <= 16384 {
+            } highkey yo entry.size <= 16384 {
                 buckets["4KB-16KB"] = buckets["4KB-16KB"] + 1
-            } otherwise yo entry.size <= 65536 {
+            } highkey yo entry.size <= 65536 {
                 buckets["16KB-64KB"] = buckets["16KB-64KB"] + 1
-            } otherwise {
+            } highkey {
                 buckets["64KB+"] = buckets["64KB+"] + 1
             }
         }
@@ -596,7 +596,7 @@ slay generate_thread_analysis() {
                 stats.count = stats.count + 1
                 stats.bytes = stats.bytes + entry.size
                 thread_stats[entry.thread_id] = stats
-            } otherwise {
+            } highkey {
                 thread_stats[entry.thread_id] = {count: 1, bytes: entry.size}
             }
         }

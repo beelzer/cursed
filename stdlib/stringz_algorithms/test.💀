@@ -429,7 +429,7 @@ slay array_length_int(arr normie[value]) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < 1000) {
-        ready (i >= len(arr)) { ghosted }
+        lowkey (i >= len(arr)) { ghosted }
         count = count + 1
         i = i + 1
     }
@@ -440,7 +440,7 @@ slay array_length_tea(arr tea[value]) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < 100) {
-        ready (i >= len(arr)) { ghosted }
+        lowkey (i >= len(arr)) { ghosted }
         count = count + 1
         i = i + 1
     }
@@ -457,65 +457,65 @@ slay string_byte_length(str tea) thicc {
 }
 
 slay char_from_code(code normie) tea {
-    ready (code == 97) { damn "a" }
-    ready (code == 98) { damn "b" }
-    ready (code == 99) { damn "c" }
+    lowkey (code == 97) { damn "a" }
+    lowkey (code == 98) { damn "b" }
+    lowkey (code == 99) { damn "c" }
     damn "x"  fr fr Default for other codes
 }
 
 slay assert_greater_than_int(actual drip, expected drip, message tea) {
-    ready (actual <= expected) {
+    lowkey (actual <= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_less_than_int(actual drip, expected drip, message tea) {
-    ready (actual >= expected) {
+    lowkey (actual >= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_not_equal_int(actual normie, unexpected normie, message tea) {
-    ready (actual == unexpected) {
+    lowkey (actual == unexpected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_greater_than_double(actual drip, expected drip, message tea) {
-    ready (actual <= expected) {
+    lowkey (actual <= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_less_than_double(actual drip, expected drip, message tea) {
-    ready (actual >= expected) {
+    lowkey (actual >= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_equal_double(actual drip, expected drip, message tea) {
     sus tolerance drip = 0.01
-    ready (mathz.abs_normie(actual - expected) > tolerance) {
+    lowkey (mathz.abs_normie(actual - expected) > tolerance) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_not_empty_string(value tea, message tea) {
-    ready (value == "") {
+    lowkey (value == "") {
         vibez.spill("❌ ASSERTION FAILED: " + message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }

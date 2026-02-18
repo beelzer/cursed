@@ -234,17 +234,17 @@ slay renderz_initialize(api normie, width normie, height normie) RenderContext {
     context.cull_mode = CULL_BACK
     context.wireframe_mode = false
     
-    ready (api == GRAPHICS_API_OPENGL) {
+    lowkey (api == GRAPHICS_API_OPENGL) {
         renderz_init_opengl(width, height)
-    } otherwise (api == GRAPHICS_API_VULKAN) {
+    } highkey (api == GRAPHICS_API_VULKAN) {
         renderz_init_vulkan(width, height)
-    } otherwise (api == GRAPHICS_API_DIRECTX11) {
+    } highkey (api == GRAPHICS_API_DIRECTX11) {
         renderz_init_directx11(width, height)
-    } otherwise (api == GRAPHICS_API_DIRECTX12) {
+    } highkey (api == GRAPHICS_API_DIRECTX12) {
         renderz_init_directx12(width, height)
-    } otherwise (api == GRAPHICS_API_METAL) {
+    } highkey (api == GRAPHICS_API_METAL) {
         renderz_init_metal(width, height)
-    } otherwise {
+    } highkey {
         renderz_init_software(width, height)
     }
     
@@ -253,17 +253,17 @@ slay renderz_initialize(api normie, width normie, height normie) RenderContext {
 }
 
 slay renderz_shutdown(context RenderContext) lit {
-    ready (context.api == GRAPHICS_API_OPENGL) {
+    lowkey (context.api == GRAPHICS_API_OPENGL) {
         renderz_cleanup_opengl()
-    } otherwise (context.api == GRAPHICS_API_VULKAN) {
+    } highkey (context.api == GRAPHICS_API_VULKAN) {
         renderz_cleanup_vulkan()
-    } otherwise (context.api == GRAPHICS_API_DIRECTX11) {
+    } highkey (context.api == GRAPHICS_API_DIRECTX11) {
         renderz_cleanup_directx11()
-    } otherwise (context.api == GRAPHICS_API_DIRECTX12) {
+    } highkey (context.api == GRAPHICS_API_DIRECTX12) {
         renderz_cleanup_directx12()
-    } otherwise (context.api == GRAPHICS_API_METAL) {
+    } highkey (context.api == GRAPHICS_API_METAL) {
         renderz_cleanup_metal()
-    } otherwise {
+    } highkey {
         renderz_cleanup_software()
     }
     
@@ -306,11 +306,11 @@ slay renderz_create_shader(vertex_source tea, fragment_source tea) Shader {
     shader.uniform_count = 0
     shader.compiled = false
     
-    ready (renderz_compile_shader_program(shader.id, vertex_source, fragment_source)) {
+    lowkey (renderz_compile_shader_program(shader.id, vertex_source, fragment_source)) {
         shader.compiled = true
         shader.uniform_count = renderz_discover_uniforms(shader.id, shader.uniforms)
         vibez.spill("Shader compiled successfully, ID:", shader.id)
-    } otherwise {
+    } highkey {
         vibez.spill("Error: Failed to compile shader")
     }
     
@@ -327,11 +327,11 @@ slay renderz_create_compute_shader(compute_source tea) Shader {
     shader.uniform_count = 0
     shader.compiled = false
     
-    ready (renderz_compile_compute_shader(shader.id, compute_source)) {
+    lowkey (renderz_compile_compute_shader(shader.id, compute_source)) {
         shader.compiled = true
         shader.uniform_count = renderz_discover_uniforms(shader.id, shader.uniforms)
         vibez.spill("Compute shader compiled successfully, ID:", shader.id)
-    } otherwise {
+    } highkey {
         vibez.spill("Error: Failed to compile compute shader")
     }
     
@@ -339,7 +339,7 @@ slay renderz_create_compute_shader(compute_source tea) Shader {
 }
 
 slay renderz_use_shader(shader Shader) lit {
-    ready (!shader.compiled) {
+    lowkey (!shader.compiled) {
         vibez.spill("Error: Cannot use uncompiled shader")
         damn false
     }
@@ -350,7 +350,7 @@ slay renderz_use_shader(shader Shader) lit {
 
 slay renderz_set_uniform_float(shader Shader, name tea, value drip) lit {
     sus location normie = renderz_get_uniform_location(shader.id, name)
-    ready (location == -1) {
+    lowkey (location == -1) {
         damn false
     }
     
@@ -360,7 +360,7 @@ slay renderz_set_uniform_float(shader Shader, name tea, value drip) lit {
 
 slay renderz_set_uniform_vec2(shader Shader, name tea, value Vec2) lit {
     sus location normie = renderz_get_uniform_location(shader.id, name)
-    ready (location == -1) {
+    lowkey (location == -1) {
         damn false
     }
     
@@ -370,7 +370,7 @@ slay renderz_set_uniform_vec2(shader Shader, name tea, value Vec2) lit {
 
 slay renderz_set_uniform_vec3(shader Shader, name tea, value Vec3) lit {
     sus location normie = renderz_get_uniform_location(shader.id, name)
-    ready (location == -1) {
+    lowkey (location == -1) {
         damn false
     }
     
@@ -380,7 +380,7 @@ slay renderz_set_uniform_vec3(shader Shader, name tea, value Vec3) lit {
 
 slay renderz_set_uniform_vec4(shader Shader, name tea, value Vec4) lit {
     sus location normie = renderz_get_uniform_location(shader.id, name)
-    ready (location == -1) {
+    lowkey (location == -1) {
         damn false
     }
     
@@ -390,7 +390,7 @@ slay renderz_set_uniform_vec4(shader Shader, name tea, value Vec4) lit {
 
 slay renderz_set_uniform_mat4(shader Shader, name tea, value Mat4) lit {
     sus location normie = renderz_get_uniform_location(shader.id, name)
-    ready (location == -1) {
+    lowkey (location == -1) {
         damn false
     }
     
@@ -412,11 +412,11 @@ slay renderz_create_texture(image_data imagez.ImageData) Texture {
     texture.wrap_s = 1 fr fr Repeat
     texture.wrap_t = 1 fr fr Repeat
     
-    ready (image_data.channels == 3) {
+    lowkey (image_data.channels == 3) {
         texture.format = TEXTURE_RGB8
-    } otherwise (image_data.channels == 4) {
+    } highkey (image_data.channels == 4) {
         texture.format = TEXTURE_RGBA8
-    } otherwise {
+    } highkey {
         texture.format = TEXTURE_RGB8
     }
     
@@ -512,7 +512,7 @@ slay renderz_create_uniform_buffer(size normie) Buffer {
 }
 
 slay renderz_update_buffer_data(buffer Buffer, data tea, offset normie) lit {
-    ready (!buffer.dynamic) {
+    lowkey (!buffer.dynamic) {
         vibez.spill("Error: Cannot update static buffer")
         damn false
     }
@@ -582,7 +582,7 @@ slay renderz_create_sphere_mesh(radius drip, segments normie, rings normie) Mesh
 }
 
 slay renderz_render_mesh(mesh Mesh, model_matrix Mat4) lit {
-    ready (!mesh.material.shader.compiled) {
+    lowkey (!mesh.material.shader.compiled) {
         vibez.spill("Error: Mesh has invalid shader")
         damn false
     }
@@ -741,7 +741,7 @@ slay renderz_create_render_target(width normie, height normie, samples normie) R
     renderz_attach_texture_to_framebuffer(target.id, target.color_texture.id, 0, false)
     renderz_attach_texture_to_framebuffer(target.id, target.depth_texture.id, 0, true)
     
-    ready (!renderz_check_framebuffer_complete(target.id)) {
+    lowkey (!renderz_check_framebuffer_complete(target.id)) {
         vibez.spill("Error: Incomplete framebuffer")
     }
     
@@ -837,7 +837,7 @@ slay renderz_vertex(position Vec3, normal Vec3, uv Vec2, color Vec4) Vertex {
 
 slay renderz_normalize_vec3(v Vec3) Vec3 {
     sus length drip = mathz_sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
-    ready (length == 0.0) {
+    lowkey (length == 0.0) {
         damn v
     }
     
@@ -864,9 +864,9 @@ slay renderz_identity_matrix() Mat4 {
     sus mat Mat4
     sus i normie = 0
     bestie (i < 16) {
-        ready (i == 0 || i == 5 || i == 10 || i == 15) {
+        lowkey (i == 0 || i == 5 || i == 10 || i == 15) {
             mat.m[i] = 1.0
-        } otherwise {
+        } highkey {
             mat.m[i] = 0.0
         }
         i = i + 1

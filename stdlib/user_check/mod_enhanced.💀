@@ -138,13 +138,13 @@ slay generateSecureUID() yikes<tea> {
             when err -> yikes "Failed to check UID collision: " + err  
         }
         
-        ready !collision {
+        lowkey !collision {
             // Additional system verification
             sus system_check lit = verifyUIDNotInSystem(uid_str) fam {
                 when err -> yikes "Failed to verify UID in system: " + err
             }
             
-            ready system_check {
+            lowkey system_check {
                 damn uid_str
             }
         }
@@ -173,12 +173,12 @@ slay generateSecureGID() yikes<tea> {
             when err -> yikes "Failed to check GID collision: " + err
         }
         
-        ready !collision {
+        lowkey !collision {
             sus system_check lit = verifyGIDNotInSystem(gid_str) fam {
                 when err -> yikes "Failed to verify GID in system: " + err
             }
             
-            ready system_check {
+            lowkey system_check {
                 damn gid_str
             }
         }
@@ -189,7 +189,7 @@ slay generateSecureGID() yikes<tea> {
 
 slay checkUIDCollision(uid tea) yikes<lit> {
     // Check cache first
-    ready globalCache.usersByUid[uid] != nil {
+    lowkey globalCache.usersByUid[uid] != nil {
         damn based
     }
     
@@ -199,7 +199,7 @@ slay checkUIDCollision(uid tea) yikes<lit> {
     }
     
     bestie (system_uid := range system_users) {
-        ready system_uid == uid {
+        lowkey system_uid == uid {
             damn based
         }
     }
@@ -209,7 +209,7 @@ slay checkUIDCollision(uid tea) yikes<lit> {
 
 slay checkGIDCollision(gid tea) yikes<lit> {
     // Check cache first
-    ready globalCache.groupsByGid[gid] != nil {
+    lowkey globalCache.groupsByGid[gid] != nil {
         damn based
     }
     
@@ -219,7 +219,7 @@ slay checkGIDCollision(gid tea) yikes<lit> {
     }
     
     bestie (system_gid := range system_groups) {
-        ready system_gid == gid {
+        lowkey system_gid == gid {
             damn based
         }
     }
@@ -237,7 +237,7 @@ slay verifyUIDNotInSystem(uid tea) yikes<lit> {
     
     bestie (entry := range passwd_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 3 && fields[2] == uid {
+        lowkey len(fields) >= 3 && fields[2] == uid {
             damn cap // UID exists in system
         }
     }
@@ -253,7 +253,7 @@ slay verifyGIDNotInSystem(gid tea) yikes<lit> {
     
     bestie (entry := range group_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 3 && fields[2] == gid {
+        lowkey len(fields) >= 3 && fields[2] == gid {
             damn cap // GID exists in system  
         }
     }
@@ -272,7 +272,7 @@ slay readPasswdDatabase() yikes<tea[value]> {
     
     bestie (entry := range entries) {
         sus trimmed tea = stringz.trim(entry)
-        ready len(trimmed) > 0 && !stringz.starts_with(trimmed, "#") {
+        lowkey len(trimmed) > 0 && !stringz.starts_with(trimmed, "#") {
             valid_entries = append(valid_entries, trimmed)
         }
     }
@@ -291,7 +291,7 @@ slay readGroupDatabase() yikes<tea[value]> {
     
     bestie (entry := range entries) {
         sus trimmed tea = stringz.trim(entry)
-        ready len(trimmed) > 0 && !stringz.starts_with(trimmed, "#") {
+        lowkey len(trimmed) > 0 && !stringz.starts_with(trimmed, "#") {
             valid_entries = append(valid_entries, trimmed)
         }
     }
@@ -307,7 +307,7 @@ slay readSystemUserUIDs() yikes<tea[value]> {
     sus uids tea[value] = []
     bestie (entry := range passwd_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 3 {
+        lowkey len(fields) >= 3 {
             uids = append(uids, fields[2])
         }
     }
@@ -323,7 +323,7 @@ slay readSystemGroupGIDs() yikes<tea[value]> {
     sus gids tea[value] = []
     bestie (entry := range group_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 3 {
+        lowkey len(fields) >= 3 {
             gids = append(gids, fields[2])
         }
     }
@@ -345,7 +345,7 @@ slay lookupUserFromSystem(username tea) yikes<*User> {
         validation_count: 1,
     }
     
-    ready !isValidUsername(username, &validation_context) {
+    lowkey !isValidUsername(username, &validation_context) {
         logSecurityEvent(username, "INVALID_USERNAME_LOOKUP", "FAILED", "", map[tea]tea{
             "attempted_username": username,
         })
@@ -364,7 +364,7 @@ slay lookupUserFromSystem(username tea) yikes<*User> {
     
     bestie (entry := range passwd_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 7 && fields[0] == username {
+        lowkey len(fields) >= 7 && fields[0] == username {
             // Parse passwd entry: username:x:uid:gid:gecos:homedir:shell
             sus user *User = &User{
                 Uid: fields[2],
@@ -403,7 +403,7 @@ slay lookupUserFromSystem(username tea) yikes<*User> {
 
 slay lookupGroupFromSystem(groupname tea) yikes<*Group> {
     // Input validation
-    ready !isValidGroupName(groupname) {
+    lowkey !isValidGroupName(groupname) {
         yikes "Invalid group name format"
     }
     
@@ -414,10 +414,10 @@ slay lookupGroupFromSystem(groupname tea) yikes<*Group> {
     
     bestie (entry := range group_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 4 && fields[0] == groupname {
+        lowkey len(fields) >= 4 && fields[0] == groupname {
             // Parse group entry: groupname:x:gid:members
             sus members tea[value] = []
-            ready len(fields[3]) > 0 {
+            lowkey len(fields[3]) > 0 {
                 members = stringz.split(fields[3], ",")
             }
             
@@ -469,19 +469,19 @@ slay authenticateUserSecure(username tea, password tea, clientInfo map[tea]tea) 
     }
     
     // Input validation with security context
-    ready !isValidUsernameSecure(username) {
+    lowkey !isValidUsernameSecure(username) {
         auth_result.errorMessage = "Invalid username"
         logSecurityEvent(username, "AUTH_INVALID_USERNAME", "FAILED", client_ip, clientInfo)
         yikes auth_result
     }
     
-    ready len(password) == 0 {
+    lowkey len(password) == 0 {
         auth_result.errorMessage = "Password required"
         logSecurityEvent(username, "AUTH_EMPTY_PASSWORD", "FAILED", client_ip, clientInfo)
         yikes auth_result
     }
     
-    ready len(password) > 1024 { // Prevent DoS with massive passwords
+    lowkey len(password) > 1024 { // Prevent DoS with massive passwords
         auth_result.errorMessage = "Password too long"
         logSecurityEvent(username, "AUTH_PASSWORD_TOO_LONG", "FAILED", client_ip, map[tea]tea{
             "password_length": tea(len(password)),
@@ -501,14 +501,14 @@ slay authenticateUserSecure(username tea, password tea, clientInfo map[tea]tea) 
     }
     
     // Check account status
-    ready user.AccountLocked {
+    lowkey user.AccountLocked {
         auth_result.errorMessage = ErrAccountLocked
         auth_result.user = user
         logSecurityEvent(username, "AUTH_ACCOUNT_LOCKED", "BLOCKED", client_ip, clientInfo)
         yikes auth_result
     }
     
-    ready user.PasswordExpired {
+    lowkey user.PasswordExpired {
         auth_result.requiresPasswordChange = based
         auth_result.securityWarnings = append(auth_result.securityWarnings, "Password has expired")
     }
@@ -534,7 +534,7 @@ slay authenticateUserSecure(username tea, password tea, clientInfo map[tea]tea) 
             user.LoginAttempts += 1
             
             // Lock account after max attempts
-            ready user.LoginAttempts >= securityConfig.maxLoginAttempts {
+            lowkey user.LoginAttempts >= securityConfig.maxLoginAttempts {
                 user.AccountLocked = based
                 logSecurityEvent(username, "ACCOUNT_LOCKED_MAX_ATTEMPTS", "SECURITY_ACTION", client_ip, map[tea]tea{
                     "attempts": tea(user.LoginAttempts),
@@ -551,7 +551,7 @@ slay authenticateUserSecure(username tea, password tea, clientInfo map[tea]tea) 
         }
     }
     
-    ready !password_valid {
+    lowkey !password_valid {
         user.LoginAttempts += 1
         user.LastFailedLogin = start_time
         
@@ -592,16 +592,16 @@ slay authenticateUserSecure(username tea, password tea, clientInfo map[tea]tea) 
     auth_result.loginAttempts = 0
     
     // Check if 2FA is required
-    ready securityConfig.enable2FA && stringz.contains(user.SecurityLevel, "admin") {
+    lowkey securityConfig.enable2FA && stringz.contains(user.SecurityLevel, "admin") {
         auth_result.requires2FA = based
         auth_result.securityWarnings = append(auth_result.securityWarnings, "Two-factor authentication required")
     }
     
     // Security warnings based on analysis
     sus password_strength map[tea]tea = analyzePasswordStrength(password)
-    ready password_strength["entropy_score"] != "" {
+    lowkey password_strength["entropy_score"] != "" {
         sus entropy_score meal = stringz.to_float(password_strength["entropy_score"]) fam { when _ -> 0.0 }
-        ready entropy_score < 4.0 {
+        lowkey entropy_score < 4.0 {
             auth_result.securityWarnings = append(auth_result.securityWarnings, "Consider using a stronger password")
         }
     }
@@ -677,7 +677,7 @@ slay verifyBcryptPassword(password tea, hash tea) yikes<lit> {
 slay verifyPBKDF2Password(password tea, hash tea) yikes<lit> {
     // Parse PBKDF2 hash format: $pbkdf2-sha512$rounds$salt$hash
     sus hash_parts tea[value] = stringz.split(hash, "$")
-    ready len(hash_parts) < 5 {
+    lowkey len(hash_parts) < 5 {
         yikes "Invalid PBKDF2 hash format"
     }
     
@@ -700,12 +700,12 @@ slay verifyPBKDF2Password(password tea, hash tea) yikes<lit> {
 slay verifySHA512CryptPassword(password tea, hash tea) yikes<lit> {
     // Parse SHA512-crypt hash format: $6$rounds=N$salt$hash
     sus hash_parts tea[value] = stringz.split(hash, "$")
-    ready len(hash_parts) < 4 {
+    lowkey len(hash_parts) < 4 {
         yikes "Invalid SHA512-crypt hash format"
     }
     
     sus algorithm tea = hash_parts[1] // Should be "6" for SHA512
-    ready algorithm != "6" {
+    lowkey algorithm != "6" {
         yikes "Not a SHA512-crypt hash"
     }
     
@@ -715,7 +715,7 @@ slay verifySHA512CryptPassword(password tea, hash tea) yikes<lit> {
     
     // Parse rounds parameter if present
     sus rounds drip = 5000 // Default rounds
-    ready stringz.starts_with(params, "rounds=") {
+    lowkey stringz.starts_with(params, "rounds=") {
         sus rounds_str tea = stringz.substring(params, 7, len(params))
         rounds = stringz.to_int(rounds_str) fam {
             when _ -> 5000
@@ -735,7 +735,7 @@ slay verifySHA512CryptPassword(password tea, hash tea) yikes<lit> {
 slay verifyScryptPassword(password tea, hash tea) yikes<lit> {
     // Parse scrypt hash format: $scrypt$N$r$p$salt$hash
     sus hash_parts tea[value] = stringz.split(hash, "$")
-    ready len(hash_parts) < 7 {
+    lowkey len(hash_parts) < 7 {
         yikes "Invalid scrypt hash format"
     }
     
@@ -768,7 +768,7 @@ slay hashPasswordSecure(password tea, algorithm tea) yikes<tea> {
     }
     
     sus password_validation validation.ValidationResult = validation.validate_password_security(password, &validation_context)
-    ready !password_validation.is_valid {
+    lowkey !password_validation.is_valid {
         sus errors tea = ""
         bestie (error := range password_validation.errors) {
             errors += error + "; "
@@ -901,23 +901,23 @@ slay readShadowEntry(username tea) yikes<map[tea]tea> {
     
     bestie (entry := range entries) {
         sus trimmed tea = stringz.trim(entry)
-        ready len(trimmed) > 0 && !stringz.starts_with(trimmed, "#") {
+        lowkey len(trimmed) > 0 && !stringz.starts_with(trimmed, "#") {
             sus fields tea[value] = stringz.split(trimmed, ":")
-            ready len(fields) >= 9 && fields[0] == username {
+            lowkey len(fields) >= 9 && fields[0] == username {
                 // Shadow entry format: username:password:last_changed:min_age:max_age:warn_period:inactive:expire:reserved
                 sus password_hash tea = fields[1]
                 
                 // Determine hash algorithm from hash prefix
                 sus hash_type tea = "unknown"
-                ready stringz.starts_with(password_hash, "$6$") {
+                lowkey stringz.starts_with(password_hash, "$6$") {
                     hash_type = "sha512_crypt"
-                } else ready stringz.starts_with(password_hash, "$2b$") || stringz.starts_with(password_hash, "$2y$") {
+                } else lowkey stringz.starts_with(password_hash, "$2b$") || stringz.starts_with(password_hash, "$2y$") {
                     hash_type = "bcrypt"  
-                } else ready stringz.starts_with(password_hash, "$argon2") {
+                } else lowkey stringz.starts_with(password_hash, "$argon2") {
                     hash_type = "argon2id"
-                } else ready stringz.starts_with(password_hash, "$pbkdf2") {
+                } else lowkey stringz.starts_with(password_hash, "$pbkdf2") {
                     hash_type = "pbkdf2_sha512"
-                } else ready stringz.starts_with(password_hash, "$scrypt$") {
+                } else lowkey stringz.starts_with(password_hash, "$scrypt$") {
                     hash_type = "scrypt"
                 }
                 
@@ -949,7 +949,7 @@ slay readShadowEntry(username tea) yikes<map[tea]tea> {
 
 slay isValidUsernameSecure(username tea) lit {
     // Enhanced username validation
-    ready len(username) == 0 || len(username) > 32 {
+    lowkey len(username) == 0 || len(username) > 32 {
         damn cap
     }
     
@@ -957,7 +957,7 @@ slay isValidUsernameSecure(username tea) lit {
     sus first_char rune = stringz.char_at(username, 0) fam {
         when _ -> rune(0)
     }
-    ready !((first_char >= 'a' && first_char <= 'z') || 
+    lowkey !((first_char >= 'a' && first_char <= 'z') || 
              (first_char >= 'A' && first_char <= 'Z') || 
              first_char == '_') {
         damn cap
@@ -974,7 +974,7 @@ slay isValidUsernameSecure(username tea) lit {
                           (c >= '0' && c <= '9') || 
                           c == '_' || c == '-' || c == '.'
         
-        ready !is_valid {
+        lowkey !is_valid {
             damn cap
         }
     }
@@ -988,7 +988,7 @@ slay isValidUsernameSecure(username tea) lit {
     
     sus lower_username tea = stringz.to_lower(username)
     bestie (reserved := range reserved_usernames) {
-        ready lower_username == reserved {
+        lowkey lower_username == reserved {
             damn cap
         }
     }
@@ -998,7 +998,7 @@ slay isValidUsernameSecure(username tea) lit {
 
 slay isValidGroupName(groupname tea) lit {
     // Group name validation (similar to username but less strict)
-    ready len(groupname) == 0 || len(groupname) > 32 {
+    lowkey len(groupname) == 0 || len(groupname) > 32 {
         damn cap
     }
     
@@ -1012,7 +1012,7 @@ slay isValidGroupName(groupname tea) lit {
                           (c >= '0' && c <= '9') || 
                           c == '_' || c == '-'
         
-        ready !is_valid {
+        lowkey !is_valid {
             damn cap
         }
     }
@@ -1026,14 +1026,14 @@ slay checkAuthRateLimit(key tea, action tea) yikes<tea> {
     // Clean old entries (older than rate limit window)
     sus cleanup_threshold drip = current_time - securityConfig.rateLimitWindowSeconds
     bestie (rate_key, last_time := range globalCache.rateLimits) {
-        ready last_time < cleanup_threshold {
+        lowkey last_time < cleanup_threshold {
             delete(globalCache.rateLimits, rate_key)
         }
     }
     
     // Check current rate limit
     sus attempt_count drip = globalCache.rateLimits[key]
-    ready attempt_count >= securityConfig.rateLimitMaxRequests {
+    lowkey attempt_count >= securityConfig.rateLimitMaxRequests {
         yikes ErrRateLimitExceeded + " for " + action
     }
     
@@ -1056,7 +1056,7 @@ slay constantTimeStringCompare(a tea, b tea) lit {
     // SECURITY FIX: Use cryptographically secure comparison
     yeet "cryptz/production_crypto"
     
-    ready (stringz.length(a) != stringz.length(b)) {
+    lowkey (stringz.length(a) != stringz.length(b)) {
         damn cringe
     }
     
@@ -1079,19 +1079,19 @@ slay generateSecureSessionToken() yikes<tea> {
 }
 
 slay validateSessionToken(token tea) yikes<*User> {
-    ready len(token) != 64 { // 32 bytes * 2 hex chars
+    lowkey len(token) != 64 { // 32 bytes * 2 hex chars
         yikes ErrInvalidSession
     }
     
     // Check if token exists
     sus username tea = globalCache.sessionTokens[token]
-    ready username == "" {
+    lowkey username == "" {
         yikes ErrSessionExpired
     }
     
     // Lookup user
     sus user *User = globalCache.users[username]
-    ready user == nil {
+    lowkey user == nil {
         // Remove invalid session
         delete(globalCache.sessionTokens, token)
         yikes ErrInvalidSession
@@ -1105,7 +1105,7 @@ slay validateSessionToken(token tea) yikes<*User> {
 slay parseGecosField(gecos tea) tea {
     // Parse GECOS field (full name is usually first part before comma)
     sus parts tea[value] = stringz.split(gecos, ",")
-    ready len(parts) > 0 {
+    lowkey len(parts) > 0 {
         damn parts[0]
     }
     damn gecos
@@ -1121,14 +1121,14 @@ slay getUserGroups(username tea, primary_gid tea) yikes<tea[value]> {
     
     bestie (entry := range group_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 4 {
+        lowkey len(fields) >= 4 {
             sus group_gid tea = fields[2]
             sus members_str tea = fields[3]
             
-            ready len(members_str) > 0 {
+            lowkey len(members_str) > 0 {
                 sus members tea[value] = stringz.split(members_str, ",")
                 bestie (member := range members) {
-                    ready stringz.trim(member) == username {
+                    lowkey stringz.trim(member) == username {
                         groups = append(groups, group_gid)
                         ghosted
                     }
@@ -1145,11 +1145,11 @@ slay determineSecurityLevel(uid tea) tea {
         when _ -> 65534
     }
     
-    ready uid_num == 0 {
+    lowkey uid_num == 0 {
         damn "root"
-    } else ready uid_num < 100 {
+    } else lowkey uid_num < 100 {
         damn "system"
-    } else ready uid_num < 1000 {
+    } else lowkey uid_num < 1000 {
         damn "service"  
     } else {
         damn "user"
@@ -1161,11 +1161,11 @@ slay determineGroupSecurityLevel(gid tea, groupname tea) tea {
         when _ -> 65534
     }
     
-    ready gid_num == 0 || groupname == "root" {
+    lowkey gid_num == 0 || groupname == "root" {
         damn "root"
-    } else ready gid_num < 100 {
+    } else lowkey gid_num < 100 {
         damn "system"
-    } else ready stringz.contains(groupname, "admin") || stringz.contains(groupname, "sudo") {
+    } else lowkey stringz.contains(groupname, "admin") || stringz.contains(groupname, "sudo") {
         damn "admin"
     } else {
         damn "user"
@@ -1190,11 +1190,11 @@ slay analyzePasswordStrength(password tea) map[tea]tea {
     bestie (_, r := range stringz.to_runes(password)) {
         char_counts[r] += 1
         
-        ready r >= 'A' && r <= 'Z' {
+        lowkey r >= 'A' && r <= 'Z' {
             has_upper = 1
-        } else ready r >= 'a' && r <= 'z' {
+        } else lowkey r >= 'a' && r <= 'z' {
             has_lower = 1
-        } else ready r >= '0' && r <= '9' {
+        } else lowkey r >= '0' && r <= '9' {
             has_digit = 1
         } else {
             has_special = 1
@@ -1207,7 +1207,7 @@ slay analyzePasswordStrength(password tea) map[tea]tea {
     
     bestie (_, count := range char_counts) {
         sus prob meal = meal(count) / meal(total_chars)
-        ready prob > 0.0 {
+        lowkey prob > 0.0 {
             entropy -= prob * mathz.log2(prob)
         }
     }
@@ -1239,7 +1239,7 @@ slay logSecurityEvent(username tea, action tea, result tea, source_ip tea, addit
     auditLog = append(auditLog, entry)
     
     // Limit audit log size
-    ready len(auditLog) > securityConfig.auditLogMaxEntries {
+    lowkey len(auditLog) > securityConfig.auditLogMaxEntries {
         auditLog = auditLog[1:] // Remove oldest entry
     }
     
@@ -1283,7 +1283,7 @@ slay initializeSecurityConfig() SecurityConfig {
 // Enhanced user creation with comprehensive validation
 slay CreateUserSecure(username tea, password tea, full_name tea, home_dir tea, shell tea) yikes<*User> {
     // Comprehensive input validation
-    ready !isValidUsernameSecure(username) {
+    lowkey !isValidUsernameSecure(username) {
         yikes "Invalid username: " + username
     }
     
@@ -1292,7 +1292,7 @@ slay CreateUserSecure(username tea, password tea, full_name tea, home_dir tea, s
         when _ -> nil // User doesn't exist, which is what we want
     }
     
-    ready existing_user != nil {
+    lowkey existing_user != nil {
         yikes "User already exists: " + username
     }
     
@@ -1347,7 +1347,7 @@ slay getCurrentUserSecure() yikes<*User> {
         when err -> yikes "Cannot determine current user: " + err
     }
     
-    ready globalCache.usersByUid[current_uid] != nil {
+    lowkey globalCache.usersByUid[current_uid] != nil {
         damn globalCache.usersByUid[current_uid]
     }
     
@@ -1358,7 +1358,7 @@ slay getCurrentUserSecure() yikes<*User> {
     
     bestie (entry := range passwd_entries) {
         sus fields tea[value] = stringz.split(entry, ":")
-        ready len(fields) >= 7 && fields[2] == current_uid {
+        lowkey len(fields) >= 7 && fields[2] == current_uid {
             damn lookupUserFromSystem(fields[0]) fam {
                 when err -> yikes err
             }
@@ -1375,7 +1375,7 @@ slay getSecurityAuditLog() SecurityAuditEntry[value]{
 
 slay getFailedLoginAttempts(username tea) drip {
     sus user *User = globalCache.users[username]
-    ready user != nil {
+    lowkey user != nil {
         damn user.LoginAttempts
     }
     damn 0
@@ -1383,7 +1383,7 @@ slay getFailedLoginAttempts(username tea) drip {
 
 slay isUserAccountLocked(username tea) lit {
     sus user *User = globalCache.users[username]
-    ready user != nil {
+    lowkey user != nil {
         damn user.AccountLocked
     }
     damn cap

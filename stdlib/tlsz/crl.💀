@@ -53,11 +53,11 @@ fr fr ===== CRL DOWNLOAD AND PARSING =====
 slay download_crl(crl_url tea) yikes<tea> {
     fr fr Download CRL from specified URL
     
-    ready (crl_url == "") {
+    lowkey (crl_url == "") {
         yikes "INVALID_CRL_URL: CRL URL is empty"
     }
     
-    ready (!stringz.starts_with(crl_url, "http://") && !stringz.starts_with(crl_url, "https://")) {
+    lowkey (!stringz.starts_with(crl_url, "http://") && !stringz.starts_with(crl_url, "https://")) {
         yikes "INVALID_CRL_URL: CRL URL must use HTTP or HTTPS"
     }
     
@@ -69,7 +69,7 @@ slay download_crl(crl_url tea) yikes<tea> {
         when _ -> yikes "CRL_DOWNLOAD_FAILED: Unable to download CRL from " + crl_url
     }
     
-    ready (crl_data == "") {
+    lowkey (crl_data == "") {
         yikes "EMPTY_CRL: Downloaded CRL is empty"
     }
     
@@ -79,18 +79,18 @@ slay download_crl(crl_url tea) yikes<tea> {
 slay parse_crl_data(crl_data tea) yikes<CertificateRevocationList> {
     fr fr Parse CRL data from PEM or DER format
     
-    ready (crl_data == "") {
+    lowkey (crl_data == "") {
         yikes "EMPTY_CRL_DATA: CRL data is empty"
     }
     
     sus decoded_data tea = ""
     
     fr fr Handle PEM format
-    ready (stringz.contains(crl_data, "-----BEGIN X509 CRL-----")) {
+    lowkey (stringz.contains(crl_data, "-----BEGIN X509 CRL-----")) {
         sus pem_start drip = stringz.index_of(crl_data, "-----BEGIN X509 CRL-----")
         sus pem_end drip = stringz.index_of(crl_data, "-----END X509 CRL-----")
         
-        ready (pem_start == -1 || pem_end == -1) {
+        lowkey (pem_start == -1 || pem_end == -1) {
             yikes "INVALID_PEM_FORMAT: Malformed PEM CRL"
         }
         
@@ -98,19 +98,19 @@ slay parse_crl_data(crl_data tea) yikes<CertificateRevocationList> {
         decoded_data = cryptz.base64_decode(stringz.replace(pem_content, "\n", "")) fam {
             when _ -> yikes "BASE64_DECODE_FAILED: Invalid base64 in PEM CRL"
         }
-    } otherwise {
+    } highkey {
         fr fr Assume DER format
         decoded_data = crl_data
     }
     
     fr fr Parse DER structure (simplified parsing)
-    ready (!stringz.starts_with(decoded_data, "CRL_")) {
+    lowkey (!stringz.starts_with(decoded_data, "CRL_")) {
         yikes "INVALID_CRL_FORMAT: Not a valid CRL format"
     }
     
     fr fr Extract CRL components
     sus crl_parts tea[value] = stringz.split(decoded_data, "_")
-    ready (arrayz.length(crl_parts) < 6) {
+    lowkey (arrayz.length(crl_parts) < 6) {
         yikes "MALFORMED_CRL: CRL structure is incomplete"
     }
     
@@ -165,26 +165,26 @@ slay validate_crl(crl CertificateRevocationList, ca_cert X509Certificate) yikes<
     
     fr fr 1. Check CRL freshness
     sus current_time drip = timez.current_timestamp()
-    ready (current_time > crl.tbs_cert_list.next_update) {
+    lowkey (current_time > crl.tbs_cert_list.next_update) {
         yikes "STALE_CRL: CRL has expired (next update: " + timez.format_timestamp(crl.tbs_cert_list.next_update) + ")"
     }
     
-    ready (crl.tbs_cert_list.this_update > current_time) {
+    lowkey (crl.tbs_cert_list.this_update > current_time) {
         yikes "FUTURE_CRL: CRL this_update is in the future"
     }
     
     fr fr 2. Verify CRL issuer matches CA
-    ready (!stringz.contains(crl.tbs_cert_list.issuer, ca_cert.subject)) {
+    lowkey (!stringz.contains(crl.tbs_cert_list.issuer, ca_cert.subject)) {
         yikes "ISSUER_MISMATCH: CRL issuer does not match CA certificate"
     }
     
     fr fr 3. Verify CRL signature (simplified)
-    ready (crl.signature == "") {
+    lowkey (crl.signature == "") {
         yikes "UNSIGNED_CRL: CRL is not signed"
     }
     
     fr fr 4. Check signature algorithm strength
-    ready (is_weak_signature_algorithm(crl.signature_algorithm)) {
+    lowkey (is_weak_signature_algorithm(crl.signature_algorithm)) {
         yikes "WEAK_CRL_SIGNATURE: CRL uses weak signature algorithm: " + crl.signature_algorithm
     }
     
@@ -197,7 +197,7 @@ slay is_weak_signature_algorithm(algorithm tea) lit {
     
     sus i drip = 0
     bestie (i < arrayz.length(weak_algorithms)) {
-        ready (algorithm == weak_algorithms[i]) {
+        lowkey (algorithm == weak_algorithms[i]) {
             damn based
         }
         i = i + 1
@@ -214,7 +214,7 @@ slay is_serial_in_crl(serial_number tea, crl CertificateRevocationList) lit {
     sus i drip = 0
     bestie (i < arrayz.length(crl.tbs_cert_list.revoked_certificates)) {
         sus revoked_cert RevokedCertificate = crl.tbs_cert_list.revoked_certificates[i]
-        ready (revoked_cert.user_certificate == serial_number) {
+        lowkey (revoked_cert.user_certificate == serial_number) {
             damn based
         }
         i = i + 1
@@ -229,12 +229,12 @@ slay get_crl_revocation_reason(serial_number tea, crl CertificateRevocationList)
     sus i drip = 0
     bestie (i < arrayz.length(crl.tbs_cert_list.revoked_certificates)) {
         sus revoked_cert RevokedCertificate = crl.tbs_cert_list.revoked_certificates[i]
-        ready (revoked_cert.user_certificate == serial_number) {
+        lowkey (revoked_cert.user_certificate == serial_number) {
             fr fr Look for reason code extension
             sus j drip = 0
             bestie (j < arrayz.length(revoked_cert.crl_entry_extensions)) {
                 sus extension CRLExtension = revoked_cert.crl_entry_extensions[j]
-                ready (extension.extn_id == "2.5.29.21") {  fr fr CRL Reason Code OID
+                lowkey (extension.extn_id == "2.5.29.21") {  fr fr CRL Reason Code OID
                     sus reason_code drip = stringz.to_int(extension.extn_value)
                     damn crl_revocation_reason_to_string(reason_code)
                 }
@@ -254,7 +254,7 @@ slay get_crl_revocation_time(serial_number tea, crl CertificateRevocationList) d
     sus i drip = 0
     bestie (i < arrayz.length(crl.tbs_cert_list.revoked_certificates)) {
         sus revoked_cert RevokedCertificate = crl.tbs_cert_list.revoked_certificates[i]
-        ready (revoked_cert.user_certificate == serial_number) {
+        lowkey (revoked_cert.user_certificate == serial_number) {
             damn revoked_cert.revocation_date
         }
         i = i + 1
@@ -266,16 +266,16 @@ slay get_crl_revocation_time(serial_number tea, crl CertificateRevocationList) d
 slay crl_revocation_reason_to_string(reason_code drip) tea {
     fr fr Convert CRL revocation reason code to string
     
-    ready (reason_code == 0) { damn "unspecified" }
-    ready (reason_code == 1) { damn "keyCompromise" }
-    ready (reason_code == 2) { damn "cACompromise" }
-    ready (reason_code == 3) { damn "affiliationChanged" }
-    ready (reason_code == 4) { damn "superseded" }
-    ready (reason_code == 5) { damn "cessationOfOperation" }
-    ready (reason_code == 6) { damn "certificateHold" }
-    ready (reason_code == 8) { damn "removeFromCRL" }
-    ready (reason_code == 9) { damn "privilegeWithdrawn" }
-    ready (reason_code == 10) { damn "aACompromise" }
+    lowkey (reason_code == 0) { damn "unspecified" }
+    lowkey (reason_code == 1) { damn "keyCompromise" }
+    lowkey (reason_code == 2) { damn "cACompromise" }
+    lowkey (reason_code == 3) { damn "affiliationChanged" }
+    lowkey (reason_code == 4) { damn "superseded" }
+    lowkey (reason_code == 5) { damn "cessationOfOperation" }
+    lowkey (reason_code == 6) { damn "certificateHold" }
+    lowkey (reason_code == 8) { damn "removeFromCRL" }
+    lowkey (reason_code == 9) { damn "privilegeWithdrawn" }
+    lowkey (reason_code == 10) { damn "aACompromise" }
     
     damn "unknown(" + stringz.from_int(reason_code) + ")"
 }
@@ -301,11 +301,11 @@ slay get_crl_info(crl CertificateRevocationList) CRLInfo {
     bestie (i < arrayz.length(crl.tbs_cert_list.crl_extensions)) {
         sus extension CRLExtension = crl.tbs_cert_list.crl_extensions[i]
         
-        ready (extension.extn_id == "2.5.29.35") {  fr fr Authority Key Identifier
+        lowkey (extension.extn_id == "2.5.29.35") {  fr fr Authority Key Identifier
             info.authority_key_identifier = extension.extn_value
         }
         
-        ready (extension.extn_id == "2.5.29.20") {  fr fr CRL Number
+        lowkey (extension.extn_id == "2.5.29.20") {  fr fr CRL Number
             info.crl_number = stringz.to_int(extension.extn_value)
         }
         
@@ -325,11 +325,11 @@ slay format_crl_info(info CRLInfo) tea {
     formatted = formatted + "  Revoked Certificates: " + stringz.from_int(info.revoked_count) + "\n"
     formatted = formatted + "  Signature Algorithm: " + info.signature_algorithm + "\n"
     
-    ready (info.crl_number > 0) {
+    lowkey (info.crl_number > 0) {
         formatted = formatted + "  CRL Number: " + stringz.from_int(info.crl_number) + "\n"
     }
     
-    ready (info.authority_key_identifier != "") {
+    lowkey (info.authority_key_identifier != "") {
         formatted = formatted + "  Authority Key ID: " + info.authority_key_identifier + "\n"
     }
     
@@ -344,7 +344,7 @@ slay is_delta_crl(crl CertificateRevocationList) lit {
     sus i drip = 0
     bestie (i < arrayz.length(crl.tbs_cert_list.crl_extensions)) {
         sus extension CRLExtension = crl.tbs_cert_list.crl_extensions[i]
-        ready (extension.extn_id == "2.5.29.27") {  fr fr Delta CRL Indicator OID
+        lowkey (extension.extn_id == "2.5.29.27") {  fr fr Delta CRL Indicator OID
             damn based
         }
         i = i + 1
@@ -359,7 +359,7 @@ slay get_delta_crl_base_number(crl CertificateRevocationList) drip {
     sus i drip = 0
     bestie (i < arrayz.length(crl.tbs_cert_list.crl_extensions)) {
         sus extension CRLExtension = crl.tbs_cert_list.crl_extensions[i]
-        ready (extension.extn_id == "2.5.29.27") {  fr fr Delta CRL Indicator OID
+        lowkey (extension.extn_id == "2.5.29.27") {  fr fr Delta CRL Indicator OID
             damn stringz.to_int(extension.extn_value)
         }
         i = i + 1
@@ -371,7 +371,7 @@ slay get_delta_crl_base_number(crl CertificateRevocationList) drip {
 slay merge_delta_crl(base_crl CertificateRevocationList, delta_crl CertificateRevocationList) yikes<CertificateRevocationList> {
     fr fr Merge Delta CRL with base CRL
     
-    ready (!is_delta_crl(delta_crl)) {
+    lowkey (!is_delta_crl(delta_crl)) {
         yikes "NOT_DELTA_CRL: Second CRL is not a Delta CRL"
     }
     
@@ -385,7 +385,7 @@ slay merge_delta_crl(base_crl CertificateRevocationList, delta_crl CertificateRe
         
         fr fr Check if already in base CRL
         sus already_revoked lit = is_serial_in_crl(delta_revoked.user_certificate, base_crl)
-        ready (!already_revoked) {
+        lowkey (!already_revoked) {
             merged_crl.tbs_cert_list.revoked_certificates = arrayz.append(merged_crl.tbs_cert_list.revoked_certificates, delta_revoked)
         }
         
@@ -431,9 +431,9 @@ slay get_cached_crl(cache CRLCache, url tea) CertificateRevocationList {
     sus i drip = 0
     bestie (i < arrayz.length(cache.cached_crls)) {
         sus cached CachedCRL = cache.cached_crls[i]
-        ready (cached.url == url) {
+        lowkey (cached.url == url) {
             fr fr Check if cache is still valid
-            ready (current_time - cached.cached_at < cache.cache_ttl) {
+            lowkey (current_time - cached.cached_at < cache.cache_ttl) {
                 damn cached.crl
             }
         }
@@ -459,14 +459,14 @@ slay cache_crl(cache CRLCache, url tea, crl CertificateRevocationList) CRLCache 
     cache.cached_crls = arrayz.append(cache.cached_crls, cached)
     
     // Implement LRU eviction when max_cache_size exceeded
-    ready (arrayz.len(cache.cached_crls) > cache.max_cache_size) {
+    lowkey (arrayz.len(cache.cached_crls) > cache.max_cache_size) {
         // Find oldest entry (LRU eviction)
         sus oldest_index drip = 0
         sus oldest_time drip = cache.cached_crls[0].last_access_time
         
         bestie (i < arrayz.len(cache.cached_crls)) {
             sus entry CrlCacheEntry = cache.cached_crls[i]
-            ready (entry.last_access_time < oldest_time) {
+            lowkey (entry.last_access_time < oldest_time) {
                 oldest_time = entry.last_access_time
                 oldest_index = i
             }
@@ -485,7 +485,7 @@ fr fr ===== EXAMPLE USAGE =====
 slay crl_check_example(cert X509Certificate) yikes<tea> {
     fr fr Example CRL certificate status check
     
-    ready (arrayz.length(cert.crl_urls) == 0) {
+    lowkey (arrayz.length(cert.crl_urls) == 0) {
         yikes "NO_CRL_URL: Certificate does not contain CRL URL"
     }
     
@@ -504,11 +504,11 @@ slay crl_check_example(cert X509Certificate) yikes<tea> {
     fr fr Check certificate status
     sus is_revoked lit = is_serial_in_crl(cert.serial_number, parsed_crl)
     
-    ready (is_revoked) {
+    lowkey (is_revoked) {
         sus revocation_reason tea = get_crl_revocation_reason(cert.serial_number, parsed_crl)
         sus revocation_time drip = get_crl_revocation_time(cert.serial_number, parsed_crl)
         damn "Certificate " + cert.serial_number + " is REVOKED (reason: " + revocation_reason + ", time: " + timez.format_timestamp(revocation_time) + ")"
-    } otherwise {
+    } highkey {
         damn "Certificate " + cert.serial_number + " is NOT REVOKED"
     }
 }

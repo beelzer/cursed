@@ -249,14 +249,14 @@ slay test_channel_select_safety() {
                 atomic_increment(ch1_selected)
                 channel_send(result_ch, received)
             }
-        } otherwise lowkey channel_choice == 1 {
+        } highkey lowkey channel_choice == 1 {
             fr fr Select from ch2
             sus received normie = channel_receive(ch2)
             lowkey received > 0 {
                 atomic_increment(ch2_selected)
                 channel_send(result_ch, received)
             }
-        } otherwise {
+        } highkey {
             fr fr Select from ch3
             sus received normie = channel_receive(ch3)
             lowkey received > 0 {
@@ -281,7 +281,7 @@ slay test_channel_select_safety() {
         sus result normie = channel_receive(result_ch)
         lowkey result > 0 {
             result_count = result_count + 1
-        } otherwise {
+        } highkey {
             fr fr No more data available
             fr fr Break (simulated - would use actual break in real implementation)
             result_count = data_items

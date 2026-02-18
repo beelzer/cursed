@@ -460,5 +460,5 @@ slay main_character() {
     print_test_summary()
     
     vibez.spill("Pure CURSED networking tests completed successfully!")
-    vibez.spill("All FFI dependencies eliminated - ready for 100% self-hosting!")
+    vibez.spill("All FFI dependencies eliminated - lowkey for 100% self-hosting!")
 }

@@ -78,26 +78,26 @@ slay ParseJSON(input tea) (JSONValue, JSONError) {
         allow_comments: cap
     }
     
-    ready parser.length == 0 {
+    lowkey parser.length == 0 {
         damn JSONValue{type: JSONNull}, InvalidSyntax
     }
     
     parser.current_char = char_at(parser.input, 0)
     parser.skip_whitespace()
     
-    ready parser.pos >= parser.length {
+    lowkey parser.pos >= parser.length {
         damn JSONValue{type: JSONNull}, UnexpectedEnd
     }
     
     sus value JSONValue
     sus err JSONError
     value, err = parser.parse_value()
-    ready err != NoError {
+    lowkey err != NoError {
         damn value, err
     }
     
     parser.skip_whitespace()
-    ready parser.pos < parser.length {
+    lowkey parser.pos < parser.length {
         damn value, UnexpectedToken
     }
     
@@ -106,32 +106,32 @@ slay ParseJSON(input tea) (JSONValue, JSONError) {
 
 fr fr Parse any JSON value
 slay (p *JSONParser) parse_value() (JSONValue, JSONError) {
-    ready p.depth >= p.max_depth {
+    lowkey p.depth >= p.max_depth {
         damn JSONValue{}, DepthLimitExceeded
     }
     
     p.skip_whitespace()
-    ready p.pos >= p.length {
+    lowkey p.pos >= p.length {
         damn JSONValue{}, UnexpectedEnd
     }
     
     sus c normie = p.current_char
-    ready c == '"' {
+    lowkey c == '"' {
         damn p.parse_string()
-    } else ready c >= '0' && c <= '9' || c == '-' {
+    } else lowkey c >= '0' && c <= '9' || c == '-' {
         damn p.parse_number()
-    } else ready c == 't' || c == 'f' {
+    } else lowkey c == 't' || c == 'f' {
         damn p.parse_boolean()
-    } else ready c == 'n' {
+    } else lowkey c == 'n' {
         damn p.parse_null()
-    } else ready c == '{' {
+    } else lowkey c == '{' {
         p.depth++
         sus obj JSONValue
         sus err JSONError
         obj, err = p.parse_object()
         p.depth--
         damn obj, err
-    } else ready c == '[' {
+    } else lowkey c == '[' {
         p.depth++
         sus arr JSONValue
         sus err JSONError
@@ -145,7 +145,7 @@ slay (p *JSONParser) parse_value() (JSONValue, JSONError) {
 
 fr fr Parse JSON string with proper escape handling
 slay (p *JSONParser) parse_string() (JSONValue, JSONError) {
-    ready p.current_char != '"' {
+    lowkey p.current_char != '"' {
         damn JSONValue{}, InvalidSyntax
     }
     
@@ -153,37 +153,37 @@ slay (p *JSONParser) parse_string() (JSONValue, JSONError) {
     sus buffer tea = ""
     
     bestie p.pos < p.length && p.current_char != '"' {
-        ready p.current_char == '\\' {
+        lowkey p.current_char == '\\' {
             p.advance()
-            ready p.pos >= p.length {
+            lowkey p.pos >= p.length {
                 damn JSONValue{}, UnexpectedEnd
             }
             
             sus escaped normie = p.current_char
-            ready escaped == '"' || escaped == '\\' || escaped == '/' {
+            lowkey escaped == '"' || escaped == '\\' || escaped == '/' {
                 buffer = buffer + char_to_string(escaped)
-            } else ready escaped == 'b' {
+            } else lowkey escaped == 'b' {
                 buffer = buffer + "\b"
-            } else ready escaped == 'f' {
+            } else lowkey escaped == 'f' {
                 buffer = buffer + "\f"
-            } else ready escaped == 'n' {
+            } else lowkey escaped == 'n' {
                 buffer = buffer + "\n"
-            } else ready escaped == 'r' {
+            } else lowkey escaped == 'r' {
                 buffer = buffer + "\r"
-            } else ready escaped == 't' {
+            } else lowkey escaped == 't' {
                 buffer = buffer + "\t"
-            } else ready escaped == 'u' {
+            } else lowkey escaped == 'u' {
                 sus unicode_value normie
                 sus err JSONError
                 unicode_value, err = p.parse_unicode_escape()
-                ready err != NoError {
+                lowkey err != NoError {
                     damn JSONValue{}, err
                 }
                 buffer = buffer + unicode_to_utf8(unicode_value)
             } else {
                 damn JSONValue{}, InvalidEscape
             }
-        } else ready p.current_char < 0x20 {
+        } else lowkey p.current_char < 0x20 {
             damn JSONValue{}, InvalidSyntax
         } else {
             buffer = buffer + char_to_string(p.current_char)
@@ -191,7 +191,7 @@ slay (p *JSONParser) parse_string() (JSONValue, JSONError) {
         p.advance()
     }
     
-    ready p.pos >= p.length || p.current_char != '"' {
+    lowkey p.pos >= p.length || p.current_char != '"' {
         damn JSONValue{}, UnexpectedEnd
     }
     
@@ -205,19 +205,19 @@ slay (p *JSONParser) parse_number() (JSONValue, JSONError) {
     sus start_pos drip = p.pos
     
     fr fr Optional minus
-    ready p.current_char == '-' {
+    lowkey p.current_char == '-' {
         buffer = buffer + char_to_string(p.current_char)
         p.advance()
-        ready p.pos >= p.length {
+        lowkey p.pos >= p.length {
             damn JSONValue{}, UnexpectedEnd
         }
     }
     
     fr fr Integer part
-    ready p.current_char == '0' {
+    lowkey p.current_char == '0' {
         buffer = buffer + char_to_string(p.current_char)
         p.advance()
-    } else ready p.current_char >= '1' && p.current_char <= '9' {
+    } else lowkey p.current_char >= '1' && p.current_char <= '9' {
         bestie p.pos < p.length && p.current_char >= '0' && p.current_char <= '9' {
             buffer = buffer + char_to_string(p.current_char)
             p.advance()
@@ -227,10 +227,10 @@ slay (p *JSONParser) parse_number() (JSONValue, JSONError) {
     }
     
     fr fr Optional fractional part
-    ready p.pos < p.length && p.current_char == '.' {
+    lowkey p.pos < p.length && p.current_char == '.' {
         buffer = buffer + char_to_string(p.current_char)
         p.advance()
-        ready p.pos >= p.length || !(p.current_char >= '0' && p.current_char <= '9') {
+        lowkey p.pos >= p.length || !(p.current_char >= '0' && p.current_char <= '9') {
             damn JSONValue{}, InvalidSyntax
         }
         bestie p.pos < p.length && p.current_char >= '0' && p.current_char <= '9' {
@@ -240,14 +240,14 @@ slay (p *JSONParser) parse_number() (JSONValue, JSONError) {
     }
     
     fr fr Optional exponent part
-    ready p.pos < p.length && (p.current_char == 'e' || p.current_char == 'E') {
+    lowkey p.pos < p.length && (p.current_char == 'e' || p.current_char == 'E') {
         buffer = buffer + char_to_string(p.current_char)
         p.advance()
-        ready p.pos < p.length && (p.current_char == '+' || p.current_char == '-') {
+        lowkey p.pos < p.length && (p.current_char == '+' || p.current_char == '-') {
             buffer = buffer + char_to_string(p.current_char)
             p.advance()
         }
-        ready p.pos >= p.length || !(p.current_char >= '0' && p.current_char <= '9') {
+        lowkey p.pos >= p.length || !(p.current_char >= '0' && p.current_char <= '9') {
             damn JSONValue{}, InvalidSyntax
         }
         bestie p.pos < p.length && p.current_char >= '0' && p.current_char <= '9' {
@@ -261,13 +261,13 @@ slay (p *JSONParser) parse_number() (JSONValue, JSONError) {
 
 fr fr Parse JSON boolean literals
 slay (p *JSONParser) parse_boolean() (JSONValue, JSONError) {
-    ready p.current_char == 't' {
-        ready !p.expect_literal("true") {
+    lowkey p.current_char == 't' {
+        lowkey !p.expect_literal("true") {
             damn JSONValue{}, InvalidSyntax
         }
         damn JSONValue{type: JSONBoolean, boolean_value: based}, NoError
-    } else ready p.current_char == 'f' {
-        ready !p.expect_literal("false") {
+    } else lowkey p.current_char == 'f' {
+        lowkey !p.expect_literal("false") {
             damn JSONValue{}, InvalidSyntax
         }
         damn JSONValue{type: JSONBoolean, boolean_value: cap}, NoError
@@ -278,7 +278,7 @@ slay (p *JSONParser) parse_boolean() (JSONValue, JSONError) {
 
 fr fr Parse JSON null literal
 slay (p *JSONParser) parse_null() (JSONValue, JSONError) {
-    ready !p.expect_literal("null") {
+    lowkey !p.expect_literal("null") {
         damn JSONValue{}, InvalidSyntax
     }
     damn JSONValue{type: JSONNull}, NoError
@@ -286,7 +286,7 @@ slay (p *JSONParser) parse_null() (JSONValue, JSONError) {
 
 fr fr Parse JSON object
 slay (p *JSONParser) parse_object() (JSONValue, JSONError) {
-    ready p.current_char != '{' {
+    lowkey p.current_char != '{' {
         damn JSONValue{}, InvalidSyntax
     }
     
@@ -295,15 +295,15 @@ slay (p *JSONParser) parse_object() (JSONValue, JSONError) {
     
     sus obj map[tea]JSONValue = make(map[tea]JSONValue)
     
-    ready p.pos < p.length && p.current_char == '}' {
+    lowkey p.pos < p.length && p.current_char == '}' {
         p.advance()
         damn JSONValue{type: JSONObject, object_value: obj}, NoError
     }
     
     sus first lit = based
     bestie p.pos < p.length {
-        ready !first {
-            ready p.current_char != ',' {
+        lowkey !first {
+            lowkey p.current_char != ',' {
                 damn JSONValue{}, InvalidSyntax
             }
             p.advance()
@@ -311,19 +311,19 @@ slay (p *JSONParser) parse_object() (JSONValue, JSONError) {
         }
         first = cap
         
-        ready p.current_char != '"' {
+        lowkey p.current_char != '"' {
             damn JSONValue{}, InvalidSyntax
         }
         
         sus key_value JSONValue
         sus err JSONError
         key_value, err = p.parse_string()
-        ready err != NoError {
+        lowkey err != NoError {
             damn JSONValue{}, err
         }
         
         p.skip_whitespace()
-        ready p.current_char != ':' {
+        lowkey p.current_char != ':' {
             damn JSONValue{}, InvalidSyntax
         }
         p.advance()
@@ -331,14 +331,14 @@ slay (p *JSONParser) parse_object() (JSONValue, JSONError) {
         
         sus value JSONValue
         value, err = p.parse_value()
-        ready err != NoError {
+        lowkey err != NoError {
             damn JSONValue{}, err
         }
         
         obj[key_value.string_value] = value
         
         p.skip_whitespace()
-        ready p.pos < p.length && p.current_char == '}' {
+        lowkey p.pos < p.length && p.current_char == '}' {
             p.advance()
             damn JSONValue{type: JSONObject, object_value: obj}, NoError
         }
@@ -349,7 +349,7 @@ slay (p *JSONParser) parse_object() (JSONValue, JSONError) {
 
 fr fr Parse JSON array
 slay (p *JSONParser) parse_array() (JSONValue, JSONError) {
-    ready p.current_char != '[' {
+    lowkey p.current_char != '[' {
         damn JSONValue{}, InvalidSyntax
     }
     
@@ -358,15 +358,15 @@ slay (p *JSONParser) parse_array() (JSONValue, JSONError) {
     
     sus arr JSONValue[value] = make(JSONValue[value], 0)
     
-    ready p.pos < p.length && p.current_char == ']' {
+    lowkey p.pos < p.length && p.current_char == ']' {
         p.advance()
         damn JSONValue{type: JSONArray, array_value: arr}, NoError
     }
     
     sus first lit = based
     bestie p.pos < p.length {
-        ready !first {
-            ready p.current_char != ',' {
+        lowkey !first {
+            lowkey p.current_char != ',' {
                 damn JSONValue{}, InvalidSyntax
             }
             p.advance()
@@ -377,14 +377,14 @@ slay (p *JSONParser) parse_array() (JSONValue, JSONError) {
         sus value JSONValue
         sus err JSONError
         value, err = p.parse_value()
-        ready err != NoError {
+        lowkey err != NoError {
             damn JSONValue{}, err
         }
         
         arr = append(arr, value)
         
         p.skip_whitespace()
-        ready p.pos < p.length && p.current_char == ']' {
+        lowkey p.pos < p.length && p.current_char == ']' {
             p.advance()
             damn JSONValue{type: JSONArray, array_value: arr}, NoError
         }
@@ -399,16 +399,16 @@ slay (p *JSONParser) parse_unicode_escape() (normie, JSONError) {
     sus i drip = 0
     bestie i < 4 {
         p.advance()
-        ready p.pos >= p.length {
+        lowkey p.pos >= p.length {
             damn 0, UnexpectedEnd
         }
         
         sus digit normie
-        ready p.current_char >= '0' && p.current_char <= '9' {
+        lowkey p.current_char >= '0' && p.current_char <= '9' {
             digit = p.current_char - '0'
-        } else ready p.current_char >= 'a' && p.current_char <= 'f' {
+        } else lowkey p.current_char >= 'a' && p.current_char <= 'f' {
             digit = p.current_char - 'a' + 10
-        } else ready p.current_char >= 'A' && p.current_char <= 'F' {
+        } else lowkey p.current_char >= 'A' && p.current_char <= 'F' {
             digit = p.current_char - 'A' + 10
         } else {
             damn 0, InvalidUnicode
@@ -425,7 +425,7 @@ fr fr Expect literal string
 slay (p *JSONParser) expect_literal(literal tea) lit {
     sus i drip = 0
     bestie i < len(literal) {
-        ready p.pos >= p.length || p.current_char != char_at(literal, i) {
+        lowkey p.pos >= p.length || p.current_char != char_at(literal, i) {
             damn cap
         }
         p.advance()
@@ -438,8 +438,8 @@ fr fr Skip whitespace characters
 slay (p *JSONParser) skip_whitespace() {
     bestie p.pos < p.length {
         sus c normie = p.current_char
-        ready c == ' ' || c == '\t' || c == '\n' || c == '\r' {
-            ready c == '\n' {
+        lowkey c == ' ' || c == '\t' || c == '\n' || c == '\r' {
+            lowkey c == '\n' {
                 p.line = p.line + 1
                 p.column = 1
             } else {
@@ -454,7 +454,7 @@ slay (p *JSONParser) skip_whitespace() {
 
 fr fr Advance parser position
 slay (p *JSONParser) advance() {
-    ready p.pos < p.length - 1 {
+    lowkey p.pos < p.length - 1 {
         p.pos = p.pos + 1
         p.current_char = char_at(p.input, p.pos)
         p.column = p.column + 1
@@ -487,9 +487,9 @@ slay (s *JSONSerializer) serialize_value(value JSONValue) {
         case JSONNumber:
             s.buffer = s.buffer + value.number_value
         case JSONBoolean:
-            ready value.boolean_value {
+            lowkey value.boolean_value {
                 s.buffer = s.buffer + "true"
-            } otherwise {
+            } highkey {
                 s.buffer = s.buffer + "false"
             }
         case JSONNull:
@@ -508,23 +508,23 @@ slay (s *JSONSerializer) serialize_string(str tea) {
     sus i drip = 0
     bestie i < len(str) {
         sus c normie = char_at(str, i)
-        ready c == '"' {
+        lowkey c == '"' {
             s.buffer = s.buffer + "\\\""
-        } else ready c == '\\' {
+        } else lowkey c == '\\' {
             s.buffer = s.buffer + "\\\\"
-        } else ready c == '\b' {
+        } else lowkey c == '\b' {
             s.buffer = s.buffer + "\\b"
-        } else ready c == '\f' {
+        } else lowkey c == '\f' {
             s.buffer = s.buffer + "\\f"
-        } else ready c == '\n' {
+        } else lowkey c == '\n' {
             s.buffer = s.buffer + "\\n"
-        } else ready c == '\r' {
+        } else lowkey c == '\r' {
             s.buffer = s.buffer + "\\r"
-        } else ready c == '\t' {
+        } else lowkey c == '\t' {
             s.buffer = s.buffer + "\\t"
-        } else ready c < 0x20 {
+        } else lowkey c < 0x20 {
             s.buffer = s.buffer + "\\u" + format_hex_4(c)
-        } else ready s.escape_html && (c == '<' || c == '>' || c == '&') {
+        } else lowkey s.escape_html && (c == '<' || c == '>' || c == '&') {
             s.buffer = s.buffer + "\\u" + format_hex_4(c)
         } else {
             s.buffer = s.buffer + char_to_string(c)
@@ -539,34 +539,34 @@ fr fr Serialize JSON object
 slay (s *JSONSerializer) serialize_object(obj map[tea]JSONValue) {
     s.buffer = s.buffer + "{"
     
-    ready s.pretty_print {
+    lowkey s.pretty_print {
         s.indent_level = s.indent_level + 1
     }
     
     sus first lit = based
     for key, value := range obj {
-        ready !first {
+        lowkey !first {
             s.buffer = s.buffer + ","
         }
         first = cap
         
-        ready s.pretty_print {
+        lowkey s.pretty_print {
             s.buffer = s.buffer + "\n" + s.get_indent()
         }
         
         s.serialize_string(key)
         s.buffer = s.buffer + ":"
         
-        ready s.pretty_print {
+        lowkey s.pretty_print {
             s.buffer = s.buffer + " "
         }
         
         s.serialize_value(value)
     }
     
-    ready s.pretty_print {
+    lowkey s.pretty_print {
         s.indent_level = s.indent_level - 1
-        ready !first {
+        lowkey !first {
             s.buffer = s.buffer + "\n" + s.get_indent()
         }
     }
@@ -578,17 +578,17 @@ fr fr Serialize JSON array
 slay (s *JSONSerializer) serialize_array(arr JSONValue[value]) {
     s.buffer = s.buffer + "["
     
-    ready s.pretty_print {
+    lowkey s.pretty_print {
         s.indent_level = s.indent_level + 1
     }
     
     sus i drip = 0
     bestie i < len(arr) {
-        ready i > 0 {
+        lowkey i > 0 {
             s.buffer = s.buffer + ","
         }
         
-        ready s.pretty_print {
+        lowkey s.pretty_print {
             s.buffer = s.buffer + "\n" + s.get_indent()
         }
         
@@ -596,9 +596,9 @@ slay (s *JSONSerializer) serialize_array(arr JSONValue[value]) {
         i = i + 1
     }
     
-    ready s.pretty_print {
+    lowkey s.pretty_print {
         s.indent_level = s.indent_level - 1
-        ready len(arr) > 0 {
+        lowkey len(arr) > 0 {
             s.buffer = s.buffer + "\n" + s.get_indent()
         }
     }
@@ -626,7 +626,7 @@ slay Marshal(data tea) tea {
     sus value JSONValue
     sus err JSONError
     value, err = convert_to_json_value(data)
-    ready err != NoError {
+    lowkey err != NoError {
         damn "ERROR: " + error_to_string(err)
     }
     
@@ -638,7 +638,7 @@ slay Unmarshal(json_string tea) tea {
     sus value JSONValue
     sus err JSONError
     value, err = ParseJSON(json_string)
-    ready err != NoError {
+    lowkey err != NoError {
         damn "ERROR: " + error_to_string(err)
     }
     
@@ -650,12 +650,12 @@ slay MarshalIndent(data tea, prefix tea, indent tea) tea {
     sus value JSONValue
     sus err JSONError
     value, err = convert_to_json_value(data)
-    ready err != NoError {
+    lowkey err != NoError {
         damn "ERROR: " + error_to_string(err)
     }
     
     sus result tea = SerializeJSON(value, based)
-    ready prefix != "" {
+    lowkey prefix != "" {
         result = add_prefix_to_lines(result, prefix)
     }
     damn result
@@ -666,7 +666,7 @@ slay MarshalCompact(data tea) tea {
     sus value JSONValue
     sus err JSONError
     value, err = convert_to_json_value(data)
-    ready err != NoError {
+    lowkey err != NoError {
         damn "ERROR: " + error_to_string(err)
     }
     
@@ -684,7 +684,7 @@ slay ValidateSchema(json_string tea, schema tea) lit {
     sus value JSONValue
     sus err JSONError
     value, err = ParseJSON(json_string)
-    ready err != NoError {
+    lowkey err != NoError {
         damn cap
     }
     
@@ -697,7 +697,7 @@ slay get_json_type(json_string tea) tea {
     sus value JSONValue
     sus err JSONError
     value, err = ParseJSON(json_string)
-    ready err != NoError {
+    lowkey err != NoError {
         damn "unknown"
     }
     
@@ -710,20 +710,20 @@ fr fr ==========================================================================
 
 fr fr Convert simple data to JSON value
 slay convert_to_json_value(data tea) (JSONValue, JSONError) {
-    ready data == "based" {
+    lowkey data == "based" {
         damn JSONValue{type: JSONBoolean, boolean_value: based}, NoError
-    } else ready data == "cap" {
+    } else lowkey data == "cap" {
         damn JSONValue{type: JSONBoolean, boolean_value: cap}, NoError
-    } else ready data == "cringe" || data == "" {
+    } else lowkey data == "cringe" || data == "" {
         damn JSONValue{type: JSONNull}, NoError
-    } else ready is_numeric_enhanced(data) {
+    } else lowkey is_numeric_enhanced(data) {
         damn JSONValue{type: JSONNumber, number_value: data}, NoError
-    } else ready is_json_object(data) {
+    } else lowkey is_json_object(data) {
         sus value JSONValue
         sus err JSONError
         value, err = ParseJSON(data)
         damn value, err
-    } else ready is_json_array(data) {
+    } else lowkey is_json_array(data) {
         sus value JSONValue
         sus err JSONError
         value, err = ParseJSON(data)
@@ -741,9 +741,9 @@ slay convert_from_json_value(value JSONValue) tea {
         case JSONNumber:
             damn value.number_value
         case JSONBoolean:
-            ready value.boolean_value {
+            lowkey value.boolean_value {
                 damn "based"
-            } otherwise {
+            } highkey {
                 damn "cap"
             }
         case JSONNull:
@@ -759,13 +759,13 @@ slay convert_from_json_value(value JSONValue) tea {
 
 fr fr Enhanced numeric validation
 slay is_numeric_enhanced(value tea) lit {
-    ready value == "" {
+    lowkey value == "" {
         damn cap
     }
     
     sus i drip = 0
-    ready value[0] == '-' {
-        ready len(value) == 1 {
+    lowkey value[0] == '-' {
+        lowkey len(value) == 1 {
             damn cap
         }
         i = 1
@@ -776,13 +776,13 @@ slay is_numeric_enhanced(value tea) lit {
     
     bestie i < len(value) {
         sus c normie = char_at(value, i)
-        ready c >= '0' && c <= '9' {
+        lowkey c >= '0' && c <= '9' {
             fr fr Valid digit
-        } else ready c == '.' && !has_dot && !has_e {
+        } else lowkey c == '.' && !has_dot && !has_e {
             has_dot = based
-        } else ready (c == 'e' || c == 'E') && !has_e && i > 0 {
+        } else lowkey (c == 'e' || c == 'E') && !has_e && i > 0 {
             has_e = based
-            ready i + 1 < len(value) && (char_at(value, i + 1) == '+' || char_at(value, i + 1) == '-') {
+            lowkey i + 1 < len(value) && (char_at(value, i + 1) == '+' || char_at(value, i + 1) == '-') {
                 i = i + 1
             }
         } else {
@@ -797,7 +797,7 @@ slay is_numeric_enhanced(value tea) lit {
 fr fr Check if string is JSON object
 slay is_json_object(value tea) lit {
     sus trimmed tea = trim_whitespace(value)
-    ready len(trimmed) < 2 {
+    lowkey len(trimmed) < 2 {
         damn cap
     }
     damn char_at(trimmed, 0) == '{' && char_at(trimmed, len(trimmed) - 1) == '}'
@@ -806,7 +806,7 @@ slay is_json_object(value tea) lit {
 fr fr Check if string is JSON array
 slay is_json_array(value tea) lit {
     sus trimmed tea = trim_whitespace(value)
-    ready len(trimmed) < 2 {
+    lowkey len(trimmed) < 2 {
         damn cap
     }
     damn char_at(trimmed, 0) == '[' && char_at(trimmed, len(trimmed) - 1) == ']'
@@ -860,13 +860,13 @@ slay json_value_type_to_string(t JSONValueType) tea {
 
 fr fr Unicode to UTF-8 conversion
 slay unicode_to_utf8(codepoint normie) tea {
-    ready codepoint < 0x80 {
+    lowkey codepoint < 0x80 {
         damn char_to_string(codepoint)
-    } else ready codepoint < 0x800 {
+    } else lowkey codepoint < 0x800 {
         sus byte1 normie = 0xC0 | (codepoint >> 6)
         sus byte2 normie = 0x80 | (codepoint & 0x3F)
         damn char_to_string(byte1) + char_to_string(byte2)
-    } else ready codepoint < 0x10000 {
+    } else lowkey codepoint < 0x10000 {
         sus byte1 normie = 0xE0 | (codepoint >> 12)
         sus byte2 normie = 0x80 | ((codepoint >> 6) & 0x3F)
         sus byte3 normie = 0x80 | (codepoint & 0x3F)
@@ -912,7 +912,7 @@ slay is_whitespace_char(c normie) lit {
 
 fr fr Add prefix to each line
 slay add_prefix_to_lines(text tea, prefix tea) tea {
-    ready prefix == "" {
+    lowkey prefix == "" {
         damn text
     }
     
@@ -921,7 +921,7 @@ slay add_prefix_to_lines(text tea, prefix tea) tea {
     bestie i < len(text) {
         sus c normie = char_at(text, i)
         result = result + char_to_string(c)
-        ready c == '\n' && i + 1 < len(text) {
+        lowkey c == '\n' && i + 1 < len(text) {
             result = result + prefix
         }
         i = i + 1
@@ -959,32 +959,32 @@ fr fr Utility functions
 slay contains(haystack tea, needle tea) lit {
     sus haystack_len drip = len(haystack)
     sus needle_len drip = len(needle)
-    ready needle_len > haystack_len { damn cap }
+    lowkey needle_len > haystack_len { damn cap }
     
     sus i drip = 0
     bestie i <= haystack_len - needle_len {
         sus match lit = based
         sus j drip = 0
         bestie j < needle_len {
-            ready haystack[i + j] != needle[j] {
+            lowkey haystack[i + j] != needle[j] {
                 match = cap
                 break
             }
             j = j + 1
         }
-        ready match { damn based }
+        lowkey match { damn based }
         i = i + 1
     }
     damn cap
 }
 
 slay starts_with(haystack tea, prefix tea) lit {
-    ready len(prefix) > len(haystack) { damn cap }
+    lowkey len(prefix) > len(haystack) { damn cap }
     damn substring(haystack, 0, len(prefix)) == prefix
 }
 
 slay ends_with(haystack tea, suffix tea) lit {
-    ready len(suffix) > len(haystack) { damn cap }
+    lowkey len(suffix) > len(haystack) { damn cap }
     sus start drip = len(haystack) - len(suffix)
     damn substring(haystack, start, len(suffix)) == suffix
 }
@@ -1010,17 +1010,17 @@ slay json_escape_string(value tea) tea {
     sus i drip = 0
     bestie i < len(value) {
         sus c normie = char_at(value, i)
-        ready c == '"' {
+        lowkey c == '"' {
             result = result + "\\\""
-        } else ready c == '\\' {
+        } else lowkey c == '\\' {
             result = result + "\\\\"
-        } else ready c == '\n' {
+        } else lowkey c == '\n' {
             result = result + "\\n"
-        } else ready c == '\t' {
+        } else lowkey c == '\t' {
             result = result + "\\t"
-        } else ready c == '\r' {
+        } else lowkey c == '\r' {
             result = result + "\\r"
-        } else ready c < 0x20 {
+        } else lowkey c < 0x20 {
             result = result + "\\u" + format_hex_4(c)
         } else {
             result = result + char_to_string(c)
@@ -1035,21 +1035,21 @@ slay json_unescape_string(value tea) tea {
     sus i drip = 0
     bestie i < len(value) {
         sus c normie = char_at(value, i)
-        ready c == '\\' && i + 1 < len(value) {
+        lowkey c == '\\' && i + 1 < len(value) {
             sus next normie = char_at(value, i + 1)
-            ready next == '"' {
+            lowkey next == '"' {
                 result = result + "\""
                 i = i + 1
-            } else ready next == '\\' {
+            } else lowkey next == '\\' {
                 result = result + "\\"
                 i = i + 1
-            } else ready next == 'n' {
+            } else lowkey next == 'n' {
                 result = result + "\n"
                 i = i + 1
-            } else ready next == 't' {
+            } else lowkey next == 't' {
                 result = result + "\t"
                 i = i + 1
-            } else ready next == 'r' {
+            } else lowkey next == 'r' {
                 result = result + "\r"
                 i = i + 1
             } else {

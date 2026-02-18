@@ -25,28 +25,28 @@ slay teardown_tests() {
         testz.int_to_string(tests_failed)
     ])
     
-    ready tests_failed == 0 {
+    lowkey tests_failed == 0 {
         vibez.spill("✅ All tests passed!")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Some tests failed!")
     }
 }
 
 slay assert_true(condition lit, test_name tea) {
-    ready condition == based {
+    lowkey condition == based {
         tests_passed++
         vibez.spillf("✅ PASS: %s", [test_name])
-    } otherwise {
+    } highkey {
         tests_failed++
         vibez.spillf("❌ FAIL: %s", [test_name])
     }
 }
 
 slay assert_equal(actual tea, expected tea, test_name tea) {
-    ready actual == expected {
+    lowkey actual == expected {
         tests_passed++
         vibez.spillf("✅ PASS: %s", [test_name])
-    } otherwise {
+    } highkey {
         tests_failed++
         vibez.spillf("❌ FAIL: %s - expected '%s', got '%s'", [test_name, expected, actual])
     }
@@ -207,18 +207,18 @@ slay test_file_operations() {
     sus test_content tea = "Hello, CURSED file I/O!"
     sus write_success lit, write_error tea = vibez.write_file(test_file_path, test_content)
     
-    ready write_error == "" {
+    lowkey write_error == "" {
         assert_true(write_success, "write_file() successful write")
-    } otherwise {
+    } highkey {
         assert_true(cap, "write_file() failed: " + write_error)
     }
     
     fr fr Test reading from file
     sus read_content tea, read_error tea = vibez.read_file(test_file_path)
     
-    ready read_error == "" {
+    lowkey read_error == "" {
         assert_equal(read_content, test_content, "read_file() content matches")
-    } otherwise {
+    } highkey {
         assert_true(cap, "read_file() failed: " + read_error)
     }
     
@@ -297,7 +297,7 @@ slay test_performance() {
     sus rapid_success normie = 0
     bestie i := 0; i < 100; i++ {
         sus result lit = vibez.spill("Performance test message")
-        ready result == based {
+        lowkey result == based {
             rapid_success++
         }
     }
@@ -329,14 +329,14 @@ slay test_integration() {
     sus combined tea = content1 + "\n" + content2
     
     sus write_success lit, write_error tea = vibez.write_file(test_file_path, combined)
-    ready write_error == "" {
+    lowkey write_error == "" {
         sus read_content tea, read_error tea = vibez.read_file(test_file_path)
-        ready read_error == "" {
+        lowkey read_error == "" {
             assert_equal(read_content, combined, "Integration: write then read")
-        } otherwise {
+        } highkey {
             assert_true(cap, "Integration test read failed: " + read_error)
         }
-    } otherwise {
+    } highkey {
         assert_true(cap, "Integration test write failed: " + write_error)
     }
     
@@ -398,7 +398,7 @@ fr fr Helper function to create test file content
 slay create_test_content(lines normie) tea {
     sus content tea = ""
     bestie i := 0; i < lines; i++ {
-        ready i > 0 {
+        lowkey i > 0 {
             content = content + "\n"
         }
         content = content + "Test line " + testz.int_to_string(i + 1)
@@ -410,7 +410,7 @@ fr fr Test result summary
 slay print_test_summary() {
     sus total_tests normie = tests_passed + tests_failed
     sus pass_rate drip = 0.0
-    ready total_tests > 0 {
+    lowkey total_tests > 0 {
         pass_rate = testz.int_to_float(tests_passed) / testz.int_to_float(total_tests)
     }
     
@@ -420,9 +420,9 @@ slay print_test_summary() {
     vibez.spillf("Failed: %s", [testz.int_to_string(tests_failed)])
     vibez.spillf("Pass rate: %s%%", [testz.float_to_string(pass_rate * 100.0)])
     
-    ready tests_failed == 0 {
+    lowkey tests_failed == 0 {
         vibez.spill("🎉 All tests passed successfully!")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️  Some tests need attention")
     }
 }

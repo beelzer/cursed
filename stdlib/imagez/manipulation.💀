@@ -18,7 +18,7 @@ slay resize_image(img Image, new_width drip, new_height drip, interpolation tea)
         when e -> yikes e
     }
     
-    ready (new_width <= 0 || new_height <= 0) {
+    lowkey (new_width <= 0 || new_height <= 0) {
         yikes "invalid resize dimensions"
     }
     
@@ -177,11 +177,11 @@ slay resize_bicubic(src Image, dst *Image) yikes<lit> {
 # Cubic interpolation weight function
 slay cubic_weight(x tea) tea {
     sus abs_x tea = abs_tea(x)
-    ready (abs_x <= 1.0) {
+    lowkey (abs_x <= 1.0) {
         damn 1.0 - 2.0 * abs_x * abs_x + abs_x * abs_x * abs_x
-    } otherwise ready (abs_x <= 2.0) {
+    } highkey lowkey (abs_x <= 2.0) {
         damn 4.0 - 8.0 * abs_x + 5.0 * abs_x * abs_x - abs_x * abs_x * abs_x
-    } otherwise {
+    } highkey {
         damn 0.0
     }
 }
@@ -192,11 +192,11 @@ slay crop_image(img Image, x drip, y drip, width drip, height drip) yikes<Image>
         when e -> yikes e
     }
     
-    ready (x < 0 || y < 0 || x + width > img.width || y + height > img.height) {
+    lowkey (x < 0 || y < 0 || x + width > img.width || y + height > img.height) {
         yikes "crop region exceeds image boundaries"
     }
     
-    ready (width <= 0 || height <= 0) {
+    lowkey (width <= 0 || height <= 0) {
         yikes "invalid crop dimensions"
     }
     
@@ -287,7 +287,7 @@ slay rotate_image(img Image, angle tea) yikes<Image> {
             sus src_x drip = drip(orig_x)
             sus src_y drip = drip(orig_y)
             
-            ready (src_x >= 0 && src_x < img.width && src_y >= 0 && src_y < img.height) {
+            lowkey (src_x >= 0 && src_x < img.width && src_y >= 0 && src_y < img.height) {
                 sus pixel drip[value] = get_pixel(img, src_x, src_y) fam {
                     when _ -> continue  # Skip invalid pixels
                 }
@@ -358,7 +358,7 @@ slay flip_vertical(img Image) yikes<Image> {
 
 # Scale image by percentage
 slay scale_image(img Image, scale_x tea, scale_y tea, interpolation tea) yikes<Image> {
-    ready (scale_x <= 0.0 || scale_y <= 0.0) {
+    lowkey (scale_x <= 0.0 || scale_y <= 0.0) {
         yikes "invalid scale factors"
     }
     
@@ -370,7 +370,7 @@ slay scale_image(img Image, scale_x tea, scale_y tea, interpolation tea) yikes<I
 
 # Fill image with solid color
 slay fill_image(img *Image, color drip[value]) yikes<lit> {
-    ready (len(color) < img.channels) {
+    lowkey (len(color) < img.channels) {
         yikes "color has insufficient channels"
     }
     
@@ -396,7 +396,7 @@ slay extract_channel(img Image, channel drip) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (channel < 0 || channel >= img.channels) {
+    lowkey (channel < 0 || channel >= img.channels) {
         yikes "invalid channel index"
     }
     
@@ -429,9 +429,9 @@ slay clamp_drip(value drip, min_val drip, max_val drip) drip {
 }
 
 slay max_drip(a drip, b drip) drip {
-    damn ready (a > b) { damn a } otherwise { damn b }
+    damn lowkey (a > b) { damn a } highkey { damn b }
 }
 
 slay min_drip(a drip, b drip) drip {
-    damn ready (a < b) { damn a } otherwise { damn b }
+    damn lowkey (a < b) { damn a } highkey { damn b }
 }

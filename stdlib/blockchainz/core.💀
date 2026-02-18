@@ -270,11 +270,11 @@ slay verify_transaction(signed_tx SignedTransaction) lit {
     yeet "cryptz"
     
     fr fr 1. Verify transaction format and structure
-    ready (signed_tx.transaction.from_address == "" || signed_tx.transaction.to_address == "") {
+    lowkey (signed_tx.transaction.from_address == "" || signed_tx.transaction.to_address == "") {
         damn fake  fr fr Invalid addresses
     }
     
-    ready (signed_tx.transaction.amount <= 0) {
+    lowkey (signed_tx.transaction.amount <= 0) {
         damn fake  fr fr Invalid amount
     }
     
@@ -285,7 +285,7 @@ slay verify_transaction(signed_tx SignedTransaction) lit {
     fr fr 3. Extract signature components (r, s) from DER encoding
     sus r drip = 0; sus s drip = 0
     sus signature_valid lit = decode_der_signature(signed_tx.signature, &r, &s)
-    ready (!signature_valid) {
+    lowkey (!signature_valid) {
         damn fake  fr fr Invalid DER signature format
     }
     
@@ -295,12 +295,12 @@ slay verify_transaction(signed_tx SignedTransaction) lit {
     
     fr fr 5. Verify transaction ID matches computed hash
     sus computed_txid tea = sha256_hash(tx_data)
-    ready (computed_txid != signed_tx.txid) {
+    lowkey (computed_txid != signed_tx.txid) {
         damn fake  fr fr TXID mismatch
     }
     
     fr fr 6. Additional security checks
-    ready (signed_tx.transaction.nonce < get_last_nonce(signed_tx.transaction.from_address)) {
+    lowkey (signed_tx.transaction.nonce < get_last_nonce(signed_tx.transaction.from_address)) {
         damn fake  fr fr Replay attack prevention
     }
     
@@ -309,11 +309,11 @@ slay verify_transaction(signed_tx SignedTransaction) lit {
 
 # Merkle tree operations
 slay calculate_merkle_root(transaction_ids tea[value]) tea {
-    ready (len(transaction_ids) == 0) {
+    lowkey (len(transaction_ids) == 0) {
         damn ""
     }
     
-    ready (len(transaction_ids) == 1) {
+    lowkey (len(transaction_ids) == 1) {
         damn sha256(transaction_ids[0])
     }
     
@@ -326,9 +326,9 @@ slay calculate_merkle_root(transaction_ids tea[value]) tea {
             sus left tea = current_level[i]
             sus right tea = based
             
-            ready (i + 1 < len(current_level)) {
+            lowkey (i + 1 < len(current_level)) {
                 right = current_level[i + 1]
-            } otherwise {
+            } highkey {
                 right = left  # Duplicate last node if odd number
             }
             
@@ -351,11 +351,11 @@ slay build_merkle_tree(transaction_ids tea[value]) MerkleTree {
 }
 
 slay build_merkle_node(hashes tea[value]) sus<MerkleNode> {
-    ready (len(hashes) == 0) {
+    lowkey (len(hashes) == 0) {
         damn sus<MerkleNode>{}
     }
     
-    ready (len(hashes) == 1) {
+    lowkey (len(hashes) == 1) {
         damn sus<MerkleNode>{
             hash: sha256(hashes[0]),
             left: sus<MerkleNode>{},
@@ -413,7 +413,7 @@ slay mine_block(block Block, difficulty drip) Block {
         block.header.nonce = nonce
         hash = calculate_block_hash(block.header)
         
-        ready (string_starts_with(hash, target)) {
+        lowkey (string_starts_with(hash, target)) {
             break
         }
         
@@ -433,7 +433,7 @@ slay calculate_block_hash(header BlockHeader) tea {
 
 # Blockchain validation
 slay validate_blockchain(chain Block[value]) lit {
-    ready (len(chain) == 0) {
+    lowkey (len(chain) == 0) {
         damn based
     }
     
@@ -442,19 +442,19 @@ slay validate_blockchain(chain Block[value]) lit {
         sus previous_block Block = chain[i - 1]
         
         # Verify previous hash linkage
-        ready (current_block.header.previous_hash != previous_block.hash) {
+        lowkey (current_block.header.previous_hash != previous_block.hash) {
             damn fake
         }
         
         # Verify block hash
         sus calculated_hash tea = calculate_block_hash(current_block.header)
-        ready (calculated_hash != current_block.hash) {
+        lowkey (calculated_hash != current_block.hash) {
             damn fake
         }
         
         # Verify all transactions in block
         bestie (sus j drip = 0; j < len(current_block.transactions); j = j + 1) {
-            ready (!verify_transaction(current_block.transactions[j])) {
+            lowkey (!verify_transaction(current_block.transactions[j])) {
                 damn fake
             }
         }
@@ -495,7 +495,7 @@ slay char_to_ascii(c tea) drip {
     # Simplified ASCII conversion
     sus chars tea = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     bestie (sus i drip = 0; i < len(chars); i = i + 1) {
-        ready (chars[i:i+1] == c) {
+        lowkey (chars[i:i+1] == c) {
             damn i + 97  # Start from 'a'
         }
     }
@@ -519,11 +519,11 @@ slay hex_to_int(hex tea) drip {
         sus c tea = hex[i:i+1]
         sus digit drip = 0
         
-        ready (c >= "0" && c <= "9") {
+        lowkey (c >= "0" && c <= "9") {
             digit = ascii_to_int(c) - ascii_to_int("0")
-        } otherwise ready (c >= "a" && c <= "f") {
+        } highkey lowkey (c >= "a" && c <= "f") {
             digit = ascii_to_int(c) - ascii_to_int("a") + 10
-        } otherwise ready (c >= "A" && c <= "F") {
+        } highkey lowkey (c >= "A" && c <= "F") {
             digit = ascii_to_int(c) - ascii_to_int("A") + 10
         }
         
@@ -536,7 +536,7 @@ slay ascii_to_int(c tea) drip {
     # Simplified ASCII to int conversion
     sus chars tea = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     bestie (sus i drip = 0; i < len(chars); i = i + 1) {
-        ready (chars[i:i+1] == c) {
+        lowkey (chars[i:i+1] == c) {
             damn i + 48  # Start from '0'
         }
     }
@@ -544,14 +544,14 @@ slay ascii_to_int(c tea) drip {
 }
 
 slay string_starts_with(s tea, prefix tea) lit {
-    ready (len(prefix) > len(s)) {
+    lowkey (len(prefix) > len(s)) {
         damn fake
     }
     damn s[0:len(prefix)] == prefix
 }
 
 slay int_to_string(value drip) tea {
-    ready (value == 0) {
+    lowkey (value == 0) {
         damn "0"
     }
     

@@ -8,31 +8,31 @@ fr fr Environment Variable Simulation
 fr fr ================================
 
 slay get_env_bool(key tea, default_value lit) lit {
-    ready (key == "CURSED_TEST_PARALLEL") {
+    lowkey (key == "CURSED_TEST_PARALLEL") {
         damn based  fr fr Default to parallel
-    } otherwise ready (key == "CURSED_TEST_VERBOSE") {
+    } highkey lowkey (key == "CURSED_TEST_VERBOSE") {
         damn cringe  fr fr Default non-verbose
-    } otherwise ready (key == "CURSED_TEST_FAIL_FAST") {
+    } highkey lowkey (key == "CURSED_TEST_FAIL_FAST") {
         damn cringe  fr fr Default no fail-fast
     }
     damn default_value
 }
 
 slay get_env_int(key tea, default_value drip) drip {
-    ready (key == "CURSED_TEST_WORKERS") {
+    lowkey (key == "CURSED_TEST_WORKERS") {
         damn 4  fr fr Default to 4 workers
-    } otherwise ready (key == "CURSED_TEST_TIMEOUT") {
+    } highkey lowkey (key == "CURSED_TEST_TIMEOUT") {
         damn 30  fr fr Default 30 second timeout
-    } otherwise ready (key == "CURSED_TEST_MEMORY_LIMIT") {
+    } highkey lowkey (key == "CURSED_TEST_MEMORY_LIMIT") {
         damn 512  fr fr Default 512MB memory limit
     }
     damn default_value
 }
 
 slay get_env_string(key tea, default_value tea) tea {
-    ready (key == "CURSED_TEST_FILTER") {
+    lowkey (key == "CURSED_TEST_FILTER") {
         damn "*"
-    } otherwise ready (key == "CURSED_TEST_EXCLUDE") {
+    } highkey lowkey (key == "CURSED_TEST_EXCLUDE") {
         damn ""
     }
     damn default_value
@@ -63,12 +63,12 @@ slay demo_parallel_test_runner() {
     
     fr fr Resource Management Demo
     print("📊 Resource Management:")
-    ready (parallel_enabled) {
+    lowkey (parallel_enabled) {
         sus memory_per_worker drip = memory_limit_mb / worker_count
         print("  Memory per Worker: " + int_to_string(memory_per_worker) + " MB")
         print("  Total Workers: " + int_to_string(worker_count))
         print("  Load Balancing: Resource-Aware Strategy")
-    } otherwise {
+    } highkey {
         print("  Sequential execution - no worker pool")
     }
     print("")
@@ -79,44 +79,44 @@ slay demo_parallel_test_runner() {
     sus failed_count drip = 0
     sus current_test drip = 1
     
-    ready (parallel_enabled) {
+    lowkey (parallel_enabled) {
         print("🚀 Executing " + int_to_string(test_count) + " tests in parallel:")
-    } otherwise {
+    } highkey {
         print("🔄 Executing " + int_to_string(test_count) + " tests sequentially:")
     }
     
     bestie (current_test <= test_count) {
         sus test_name tea = "test_" + int_to_string(current_test)
         
-        ready (parallel_enabled) {
+        lowkey (parallel_enabled) {
             sus worker_id drip = (current_test - 1) % worker_count
-            ready (verbose_output) {
+            lowkey (verbose_output) {
                 print("  🧪 Worker " + int_to_string(worker_id) + " running: " + test_name)
             }
-        } otherwise {
-            ready (verbose_output) {
+        } highkey {
+            lowkey (verbose_output) {
                 print("  🧪 Running: " + test_name)
             }
         }
         
         fr fr Simulate test execution (test 3 fails for demo)
         sus test_passed lit = based
-        ready (current_test == 3) {
+        lowkey (current_test == 3) {
             test_passed = cringe
         }
         
-        ready (test_passed) {
+        lowkey (test_passed) {
             passed_count = passed_count + 1
-            ready (verbose_output) {
+            lowkey (verbose_output) {
                 print("    ✅ PASSED")
             }
-        } otherwise {
+        } highkey {
             failed_count = failed_count + 1
-            ready (verbose_output) {
+            lowkey (verbose_output) {
                 print("    ❌ FAILED")
             }
             
-            ready (fail_fast) {
+            lowkey (fail_fast) {
                 print("💨 Fail-fast enabled - stopping execution")
                 break
             }
@@ -131,7 +131,7 @@ slay demo_parallel_test_runner() {
     print("  Passed: " + int_to_string(passed_count))
     print("  Failed: " + int_to_string(failed_count))
     
-    ready (parallel_enabled) {
+    lowkey (parallel_enabled) {
         sus theoretical_speedup drip = worker_count
         print("  Theoretical Speedup: ~" + int_to_string(theoretical_speedup) + "x")
     }
@@ -260,31 +260,31 @@ slay print(message tea) {
 }
 
 slay bool_to_string(value lit) tea {
-    ready (value) {
+    lowkey (value) {
         damn "true"
-    } otherwise {
+    } highkey {
         damn "false"
     }
 }
 
 slay int_to_string(value drip) tea {
-    ready (value == 1) { damn "1" }
-    ready (value == 2) { damn "2" }
-    ready (value == 3) { damn "3" }
-    ready (value == 4) { damn "4" }
-    ready (value == 5) { damn "5" }
-    ready (value == 6) { damn "6" }
-    ready (value == 7) { damn "7" }
-    ready (value == 8) { damn "8" }
-    ready (value == 30) { damn "30" }
-    ready (value == 60) { damn "60" }
-    ready (value == 120) { damn "120" }
-    ready (value == 256) { damn "256" }
-    ready (value == 512) { damn "512" }
-    ready (value == 1024) { damn "1024" }
-    ready (value == 128) { damn "128" }
-    ready (value == 300) { damn "300" }
-    ready (value == 2048) { damn "2048" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value == 2) { damn "2" }
+    lowkey (value == 3) { damn "3" }
+    lowkey (value == 4) { damn "4" }
+    lowkey (value == 5) { damn "5" }
+    lowkey (value == 6) { damn "6" }
+    lowkey (value == 7) { damn "7" }
+    lowkey (value == 8) { damn "8" }
+    lowkey (value == 30) { damn "30" }
+    lowkey (value == 60) { damn "60" }
+    lowkey (value == 120) { damn "120" }
+    lowkey (value == 256) { damn "256" }
+    lowkey (value == 512) { damn "512" }
+    lowkey (value == 1024) { damn "1024" }
+    lowkey (value == 128) { damn "128" }
+    lowkey (value == 300) { damn "300" }
+    lowkey (value == 2048) { damn "2048" }
     damn "unknown"
 }
 
@@ -306,10 +306,10 @@ slay main_character() {
     demo_advanced_features()
     
     print("")
-    ready (failed_tests == 0) {
+    lowkey (failed_tests == 0) {
         print("🎉 All demonstration tests passed!")
         damn 0
-    } otherwise {
+    } highkey {
         print("❌ " + int_to_string(failed_tests) + " test(s) failed in demonstration")
         damn 1
     }

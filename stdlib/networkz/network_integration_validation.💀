@@ -14,9 +14,9 @@ slay validate_enhanced_module_loading() {
     vibez.spill("\n📦 Module Loading Validation")
     
     // Test that enhanced networkz loads without conflicts
-    ready (dns_initialized || !dns_initialized) {  // Test global variable access
+    lowkey (dns_initialized || !dns_initialized) {  // Test global variable access
         vibez.spill("✅ Enhanced networkz module loaded successfully")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Failed to access enhanced networkz globals")
     }
     
@@ -40,8 +40,8 @@ slay validate_socket_creation() {
     vibez.spill("✅ Socket created successfully")
     vibez.spill("   Handle: " + stringz.from_int(socket.handle))
     vibez.spill("   Family: IPv" + stringz.from_int(socket.family))
-    vibez.spill("   Type: " + ready socket.socket_type == 1 { "TCP" } otherwise { "UDP" })
-    vibez.spill("   State: " + ready socket.state == 0 { "Closed" } otherwise { "Open" })
+    vibez.spill("   Type: " + lowkey socket.socket_type == 1 { "TCP" } highkey { "UDP" })
+    vibez.spill("   State: " + lowkey socket.state == 0 { "Closed" } highkey { "Open" })
 }
 
 slay validate_dns_resolution() {
@@ -68,9 +68,9 @@ slay validate_dns_resolution() {
     vibez.spill("   localhost → " + localhost_ip)
     
     // Validate IP address format
-    ready (is_valid_ip_address(localhost_ip)) {
+    lowkey (is_valid_ip_address(localhost_ip)) {
         vibez.spill("✅ Resolved IP is valid format")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️  Resolved IP format questionable: " + localhost_ip)
     }
 }
@@ -135,21 +135,21 @@ slay validate_http_functionality() {
     vibez.spill("   Request size: " + stringz.from_int(stringz.len(raw_request)) + " bytes")
     
     // Validate request format
-    ready (stringz.contains(raw_request, "GET /test HTTP/1.1")) {
+    lowkey (stringz.contains(raw_request, "GET /test HTTP/1.1")) {
         vibez.spill("✅ Request line formatted correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️  Request line format issues")
     }
     
-    ready (stringz.contains(raw_request, "Host: example.com")) {
+    lowkey (stringz.contains(raw_request, "Host: example.com")) {
         vibez.spill("✅ Host header present")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️  Host header missing")
     }
     
-    ready (stringz.contains(raw_request, "User-Agent: CURSED-Validation/1.0")) {
+    lowkey (stringz.contains(raw_request, "User-Agent: CURSED-Validation/1.0")) {
         vibez.spill("✅ User-Agent header correct")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️  User-Agent header issues")
     }
 }
@@ -167,9 +167,9 @@ slay validate_error_handling() {
     vibez.spill("   Timestamp: " + stringz.from_int(error.timestamp))
     
     // Test retry logic
-    ready (is_retryable_error(error)) {
+    lowkey (is_retryable_error(error)) {
         vibez.spill("✅ Error correctly identified as retryable")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Error correctly identified as non-retryable")
     }
     
@@ -179,7 +179,7 @@ slay validate_error_handling() {
             vibez.spill("✅ Invalid socket parameters correctly rejected")
             vibez.spill("   Error: " + err.message)
         }
-        otherwise -> {
+        highkey -> {
             vibez.spill("❌ Should have rejected invalid socket parameters")
         }
     }
@@ -199,9 +199,9 @@ slay validate_network_statistics() {
     
     sus updated_stats NetworkStats = get_network_statistics()
     
-    ready (updated_stats.total_tcp_connections >= initial_stats.total_tcp_connections) {
+    lowkey (updated_stats.total_tcp_connections >= initial_stats.total_tcp_connections) {
         vibez.spill("✅ Statistics updated after network activity")
-    } otherwise {
+    } highkey {
         vibez.spill("⚠️  Statistics may not be updating correctly")
     }
     
@@ -219,9 +219,9 @@ slay validate_utility_functions() {
     
     sus i drip = 0
     bestie (i < arrayz.len(valid_tests)) {
-        ready (is_valid_ip_address(valid_tests[i])) {
+        lowkey (is_valid_ip_address(valid_tests[i])) {
             vibez.spill("✅ " + valid_tests[i] + " correctly identified as valid IP")
-        } otherwise {
+        } highkey {
             vibez.spill("❌ " + valid_tests[i] + " should be valid IP")
         }
         i = i + 1
@@ -229,18 +229,18 @@ slay validate_utility_functions() {
     
     sus j drip = 0
     bestie (j < arrayz.len(invalid_tests)) {
-        ready (!is_valid_ip_address(invalid_tests[j])) {
+        lowkey (!is_valid_ip_address(invalid_tests[j])) {
             vibez.spill("✅ '" + invalid_tests[j] + "' correctly identified as invalid IP")
-        } otherwise {
+        } highkey {
             vibez.spill("❌ '" + invalid_tests[j] + "' should be invalid IP")
         }
         j = j + 1
     }
     
     // Test port validation
-    ready (is_port_in_use("127.0.0.1", 22)) {
+    lowkey (is_port_in_use("127.0.0.1", 22)) {
         vibez.spill("✅ System port correctly detected as in use")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Port usage detection working (not in use)")
     }
 }
@@ -256,20 +256,20 @@ slay validate_compatibility() {
     
     // Validate that CURSED language constructs work properly
     sus test_array drip[value] = [1, 2, 3, 4, 5]
-    ready (arrayz.len(test_array) == 5) {
+    lowkey (arrayz.len(test_array) == 5) {
         vibez.spill("✅ Array operations working correctly")
     }
     
     sus test_string tea = "network validation test"
-    ready (stringz.len(test_string) > 0) {
+    lowkey (stringz.len(test_string) > 0) {
         vibez.spill("✅ String operations working correctly")
     }
     
     // Test control flow
     sus control_test lit = based
-    ready (control_test) {
+    lowkey (control_test) {
         vibez.spill("✅ Control flow constructs working")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Control flow issues")
     }
 }

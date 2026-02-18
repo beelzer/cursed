@@ -43,7 +43,7 @@ slay demo_single_file_watching() {
     fr fr Create callback for file events
     sus file_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
         vibez.spill("📄 File Event: " + event_type_to_string(event.event_type) + " -> " + event.path)
-        ready (event.event_type == EVENT_MODIFIED) {
+        lowkey (event.event_type == EVENT_MODIFIED) {
             vibez.spill("   Content was modified at timestamp: " + int_to_string(event.timestamp))
         }
         damn based
@@ -51,7 +51,7 @@ slay demo_single_file_watching() {
     
     fr fr Start watching single file
     (watch_id, start_err) := start_file_watcher(DEMO_FILE, file_callback)
-    ready (start_err != "") {
+    lowkey (start_err != "") {
         vibez.spill("❌ Failed to start file watcher: " + start_err)
         damn
     }
@@ -65,9 +65,9 @@ slay demo_single_file_watching() {
     fr fr Wait and then stop
     sleep_ms(2000)
     sus stop_err tea = stop_file_watcher(watch_id)
-    ready (stop_err != "") {
+    lowkey (stop_err != "") {
         vibez.spill("❌ Failed to stop watcher: " + stop_err)
-    } otherwise {
+    } highkey {
         vibez.spill("🛑 Stopped file watcher")
     }
 }
@@ -78,16 +78,16 @@ slay demo_directory_watching() {
     
     sus dir_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
         vibez.spill("📁 Directory Event: " + event_type_to_string(event.event_type) + " -> " + event.path)
-        ready (event.is_directory) {
+        lowkey (event.is_directory) {
             vibez.spill("   📂 This is a directory event")
-        } otherwise {
+        } highkey {
             vibez.spill("   📄 This is a file event")
         }
         damn based
     }
     
     (watch_id, start_err) := start_directory_watcher(DEMO_DIRECTORY, cringe, dir_callback)
-    ready (start_err != "") {
+    lowkey (start_err != "") {
         vibez.spill("❌ Failed to start directory watcher: " + start_err)
         damn
     }
@@ -108,14 +108,14 @@ slay demo_recursive_directory_watching() {
     
     sus recursive_callback slay(WatchEvent) lit = slay(event WatchEvent) lit {
         vibez.spill("🔄 Recursive Event: " + event_type_to_string(event.event_type) + " -> " + event.path)
-        ready (contains_substring(event.path, "subdir")) {
+        lowkey (contains_substring(event.path, "subdir")) {
             vibez.spill("   🔍 Event in subdirectory detected!")
         }
         damn based
     }
     
     (watch_id, start_err) := start_directory_watcher(DEMO_DIRECTORY, based, recursive_callback)
-    ready (start_err != "") {
+    lowkey (start_err != "") {
         vibez.spill("❌ Failed to start recursive watcher: " + start_err)
         damn
     }
@@ -149,7 +149,7 @@ slay demo_filtered_watching() {
     }
     
     (watch_id, start_err) := start_watcher_with_filter(DEMO_DIRECTORY, filter, filtered_callback)
-    ready (start_err != "") {
+    lowkey (start_err != "") {
         vibez.spill("❌ Failed to start filtered watcher: " + start_err)
         damn
     }
@@ -179,7 +179,7 @@ slay demo_multiple_watchers() {
     }
     
     (id1, err1) := start_file_watcher(DEMO_FILE, callback1)
-    ready (err1 == "") {
+    lowkey (err1 == "") {
         watcher_ids[watcher_count] = id1
         watcher_count = watcher_count + 1
     }
@@ -191,7 +191,7 @@ slay demo_multiple_watchers() {
     }
     
     (id2, err2) := start_directory_watcher(DEMO_DIRECTORY, cringe, callback2)
-    ready (err2 == "") {
+    lowkey (err2 == "") {
         watcher_ids[watcher_count] = id2
         watcher_count = watcher_count + 1
     }
@@ -203,7 +203,7 @@ slay demo_multiple_watchers() {
     }
     
     (id3, err3) := start_directory_watcher(DEMO_DIRECTORY, based, callback3)
-    ready (err3 == "") {
+    lowkey (err3 == "") {
         watcher_ids[watcher_count] = id3
         watcher_count = watcher_count + 1
     }
@@ -212,7 +212,7 @@ slay demo_multiple_watchers() {
     
     fr fr Show active watchers
     (active_ids, list_err) := list_active_watchers()
-    ready (list_err == "") {
+    lowkey (list_err == "") {
         vibez.spill("📋 Active watchers: " + array_to_string(active_ids))
     }
     
@@ -324,7 +324,7 @@ slay setup_demo_environment() {
     vibez.spill("🔧 Setting up demo environment...")
     
     fr fr Create demo directory
-    ready (!directory_exists(DEMO_DIRECTORY)) {
+    lowkey (!directory_exists(DEMO_DIRECTORY)) {
         create_directory(DEMO_DIRECTORY)
     }
     
@@ -332,11 +332,11 @@ slay setup_demo_environment() {
     write_file(DEMO_FILE, "Initial demo file content\n")
     
     fr fr Create subdirectory for recursive tests
-    ready (!directory_exists("./watch_test_dir/subdir")) {
+    lowkey (!directory_exists("./watch_test_dir/subdir")) {
         create_directory("./watch_test_dir/subdir")
     }
     
-    vibez.spill("✅ Demo environment ready")
+    vibez.spill("✅ Demo environment lowkey")
 }
 
 slay cleanup_demo_environment() {
@@ -364,11 +364,11 @@ slay cleanup_demo_environment() {
 fr fr ===== UTILITY FUNCTIONS =====
 
 slay event_type_to_string(event_type drip) tea {
-    ready (event_type == EVENT_CREATED) { damn "CREATED" }
-    ready (event_type == EVENT_MODIFIED) { damn "MODIFIED" }
-    ready (event_type == EVENT_DELETED) { damn "DELETED" }
-    ready (event_type == EVENT_MOVED) { damn "MOVED" }
-    ready (event_type == EVENT_ATTRIBUTES) { damn "ATTRIBUTES" }
+    lowkey (event_type == EVENT_CREATED) { damn "CREATED" }
+    lowkey (event_type == EVENT_MODIFIED) { damn "MODIFIED" }
+    lowkey (event_type == EVENT_DELETED) { damn "DELETED" }
+    lowkey (event_type == EVENT_MOVED) { damn "MOVED" }
+    lowkey (event_type == EVENT_ATTRIBUTES) { damn "ATTRIBUTES" }
     damn "UNKNOWN"
 }
 
@@ -394,14 +394,14 @@ slay sleep_ms(milliseconds drip) {
 }
 
 slay array_to_string(ids drip[value]) tea {
-    ready (array_length(ids) == 0) {
+    lowkey (array_length(ids) == 0) {
         damn "[]"
     }
     
     sus result tea = "["
     sus i drip = 0
     bestie (i < array_length(ids)) {
-        ready (i > 0) {
+        lowkey (i > 0) {
             result = result + ", "
         }
         result = result + int_to_string(ids[i])
@@ -441,20 +441,20 @@ slay test_watcher_lifecycle() {
     
     fr fr Test valid path
     (watch_id, start_err) := start_file_watcher(DEMO_FILE, test_callback)
-    ready (start_err != "") {
+    lowkey (start_err != "") {
         vibez.spill("❌ Failed to start watcher for valid path")
         damn
     }
     
     fr fr Test status check
     (is_active, status_err) := get_watcher_status(watch_id)
-    ready (status_err != "" || !is_active) {
+    lowkey (status_err != "" || !is_active) {
         vibez.spill("❌ Watcher status check failed")
     }
     
     fr fr Test stop
     sus stop_err tea = stop_file_watcher(watch_id)
-    ready (stop_err != "") {
+    lowkey (stop_err != "") {
         vibez.spill("❌ Failed to stop watcher")
     }
     
@@ -478,7 +478,7 @@ slay test_event_filtering() {
     }
     
     (watch_id, start_err) := start_watcher_with_filter(DEMO_DIRECTORY, filter, filter_callback)
-    ready (start_err != "") {
+    lowkey (start_err != "") {
         vibez.spill("❌ Failed to start filtered watcher")
         damn
     }
@@ -490,9 +490,9 @@ slay test_event_filtering() {
     sleep_ms(1000)
     stop_file_watcher(watch_id)
     
-    ready (events_received == 0) {
+    lowkey (events_received == 0) {
         vibez.spill("⚠️  No events received (this might be expected in mock)")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Event filtering appears to work")
     }
 }
@@ -507,14 +507,14 @@ slay test_multiple_watchers_management() {
     (id2, err2) := start_directory_watcher(DEMO_DIRECTORY, cringe, dummy_callback)
     (id3, err3) := start_directory_watcher(DEMO_DIRECTORY, based, dummy_callback)
     
-    ready (err1 != "" || err2 != "" || err3 != "") {
+    lowkey (err1 != "" || err2 != "" || err3 != "") {
         vibez.spill("❌ Failed to start multiple watchers")
         damn
     }
     
     fr fr Check active watchers list
     (active_ids, list_err) := list_active_watchers()
-    ready (list_err != "" || array_length(active_ids) < 3) {
+    lowkey (list_err != "" || array_length(active_ids) < 3) {
         vibez.spill("❌ Active watchers list incorrect")
     }
     
@@ -533,20 +533,20 @@ slay test_error_handling() {
     
     fr fr Test invalid path
     (invalid_id, invalid_err) := start_file_watcher("nonexistent_path.txt", dummy_callback)
-    ready (invalid_err == "") {
+    lowkey (invalid_err == "") {
         vibez.spill("❌ Should have failed for invalid path")
         stop_file_watcher(invalid_id)
     }
     
     fr fr Test invalid watch ID
     sus stop_invalid_err tea = stop_file_watcher(99999)
-    ready (stop_invalid_err == "") {
+    lowkey (stop_invalid_err == "") {
         vibez.spill("❌ Should have failed for invalid watch ID")
     }
     
     fr fr Test empty path
     (empty_id, empty_err) := start_file_watcher("", dummy_callback)
-    ready (empty_err == "") {
+    lowkey (empty_err == "") {
         vibez.spill("❌ Should have failed for empty path")
         stop_file_watcher(empty_id)
     }

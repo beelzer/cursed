@@ -23,7 +23,7 @@ assert_eq_int(dynamic_arr[1], 20)
 
 // Test array bounds checking
 sus bounds_test drip[value] = [100, 200, 300]
-ready (len(bounds_test) > 2) {
+lowkey (len(bounds_test) > 2) {
     assert_eq_int(bounds_test[2], 300)
 }
 
@@ -67,7 +67,7 @@ assert_true(capacity(capacity_arr) >= 10)
 // Test array memory safety
 sus safe_arr drip[value] = [100, 200, 300]
 sus safe_len drip = len(safe_arr)
-ready (safe_len > 0) {
+lowkey (safe_len > 0) {
     assert_eq_int(safe_arr[0], 100)
 }
 

@@ -192,7 +192,7 @@ test_case("Coverage Instrumentation Helpers") {
     assert(string_contains(instrumented_function, "testFunc"))
     assert(string_contains(instrumented_function, "25"))
     
-    sus instrumented_branch tea = instrumentBranch(test_file, "if_condition", 30, "ready (x > 0) { damn x }")
+    sus instrumented_branch tea = instrumentBranch(test_file, "if_condition", 30, "lowkey (x > 0) { damn x }")
     assert(string_contains(instrumented_branch, "recordBranch"))
     assert(string_contains(instrumented_branch, "if_condition"))
     assert(string_contains(instrumented_branch, "30"))

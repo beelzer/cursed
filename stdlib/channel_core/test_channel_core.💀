@@ -155,7 +155,7 @@ sus select_chan1 normie = make_channel(1, "tea")
 sus select_chan2 normie = make_channel(1, "tea")
 
 fr fr Send to first channel
-channel_send(select_chan1, "ready")
+channel_send(select_chan1, "lowkey")
 
 fr fr Create select cases
 sus cases SelectCase[value] = []

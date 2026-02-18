@@ -8,7 +8,7 @@ yeet "arrayz"
 yeet "stringz"
 
 // Cross-platform signal types
-sus SignalType tea = ready {
+sus SignalType tea = lowkey {
     | "SIGHUP" -> 1
     | "SIGINT" -> 2
     | "SIGQUIT" -> 3
@@ -47,7 +47,7 @@ sus SignalType tea = ready {
 }
 
 // Signal action types
-sus SignalAction tea = ready {
+sus SignalAction tea = lowkey {
     | "default" -> 0    // SIG_DFL
     | "ignore" -> 1     // SIG_IGN
     | "custom" -> 2     // Custom handler
@@ -68,7 +68,7 @@ squad SignalInfo {
 sus SignalHandler tea = "function_pointer"
 
 // Signal error types
-sus SignalError tea = ready {
+sus SignalError tea = lowkey {
     | "platform_not_supported" -> "Platform not supported"
     | "invalid_signal" -> "Invalid signal number"
     | "permission_denied" -> "Permission denied"
@@ -89,11 +89,11 @@ squad SignalManager {
 // Platform detection
 slay get_signal_platform() tea {
     sus os_name tea = platformz.get_os_name()
-    ready (os_name == "linux" | os_name == "darwin" | os_name == "freebsd") {
+    lowkey (os_name == "linux" | os_name == "darwin" | os_name == "freebsd") {
         damn "unix"
-    } otherwise ready (os_name == "windows") {
+    } highkey lowkey (os_name == "windows") {
         damn "windows"
-    } otherwise {
+    } highkey {
         damn "unsupported"
     }
 }
@@ -101,7 +101,7 @@ slay get_signal_platform() tea {
 // Initialize signal manager
 slay signal_manager_create() SignalManager yikes<tea> {
     sus platform tea = get_signal_platform()
-    ready (platform == "unsupported") {
+    lowkey (platform == "unsupported") {
         yikes "Platform not supported for signal handling"
     }
     
@@ -116,11 +116,11 @@ slay signal_manager_create() SignalManager yikes<tea> {
     }
     
     // Initialize platform-specific signal handling
-    ready (platform == "unix") {
+    lowkey (platform == "unix") {
         unix_signal_init(manager) fam {
             when _ -> yikes "Unix signal initialization failed"
         }
-    } otherwise ready (platform == "windows") {
+    } highkey lowkey (platform == "windows") {
         windows_signal_init(manager) fam {
             when _ -> yikes "Windows signal initialization failed"
         }
@@ -135,7 +135,7 @@ slay unix_signal_init(manager SignalManager) yikes<tea> {
     // Install signal trampoline that forwards to CURSED
     sus result drip = platformz.syscall("signal_setup_trampoline", 
         get_cursed_signal_handler_address())
-    ready (result < 0) {
+    lowkey (result < 0) {
         yikes "Failed to setup signal trampoline"
     }
 }
@@ -145,7 +145,7 @@ slay windows_signal_init(manager SignalManager) yikes<tea> {
     // Set up console control handler
     sus result drip = platformz.win32_call("SetConsoleCtrlHandler", 
         get_cursed_console_handler_address(), 1)  // TRUE
-    ready (result == 0) {
+    lowkey (result == 0) {
         yikes "Failed to setup console control handler"
     }
 }
@@ -157,11 +157,11 @@ slay signal_register_handler(manager SignalManager, signal_name tea,
         when _ -> yikes "Invalid signal name"
     }
     
-    ready (manager.platform == "unix") {
+    lowkey (manager.platform == "unix") {
         unix_register_handler(signal_num, handler, action) fam {
             when _ -> yikes "Unix handler registration failed"
         }
-    } otherwise ready (manager.platform == "windows") {
+    } highkey lowkey (manager.platform == "windows") {
         windows_register_handler(signal_num, handler, action) fam {
             when _ -> yikes "Windows handler registration failed"
         }
@@ -172,34 +172,34 @@ slay signal_register_handler(manager SignalManager, signal_name tea,
 }
 
 slay unix_register_handler(signal_num drip, handler tea, action tea) yikes<tea> {
-    ready (action == "default") {
+    lowkey (action == "default") {
         sus result drip = platformz.syscall("signal", signal_num, 0)  // SIG_DFL
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to set default signal handler"
         }
-    } otherwise ready (action == "ignore") {
+    } highkey lowkey (action == "ignore") {
         sus result drip = platformz.syscall("signal", signal_num, 1)  // SIG_IGN
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to ignore signal"
         }
-    } otherwise ready (action == "custom") {
+    } highkey lowkey (action == "custom") {
         // Register custom handler through trampoline
         sus result drip = platformz.syscall("signal", signal_num, 
             get_cursed_signal_handler_address())
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to register custom signal handler"
         }
-    } otherwise ready (action == "block") {
+    } highkey lowkey (action == "block") {
         // Use sigprocmask to block signal
         sus mask drip = 1 << (signal_num - 1)  // Convert to bitmask
         sus result drip = platformz.syscall("sigprocmask", 1, mask, 0)  // SIG_BLOCK
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to block signal"
         }
-    } otherwise ready (action == "unblock") {
+    } highkey lowkey (action == "unblock") {
         sus mask drip = 1 << (signal_num - 1)
         sus result drip = platformz.syscall("sigprocmask", 2, mask, 0)  // SIG_UNBLOCK
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to unblock signal"
         }
     }
@@ -207,16 +207,16 @@ slay unix_register_handler(signal_num drip, handler tea, action tea) yikes<tea> 
 
 slay windows_register_handler(signal_num drip, handler tea, action tea) yikes<tea> {
     // Windows console control events
-    ready (signal_num == 2) {  // SIGINT / CTRL_C
+    lowkey (signal_num == 2) {  // SIGINT / CTRL_C
         // Handler is already registered via SetConsoleCtrlHandler
         // Just store the custom handler
-    } otherwise ready (signal_num == 3) {  // SIGQUIT / CTRL_BREAK
+    } highkey lowkey (signal_num == 3) {  // SIGQUIT / CTRL_BREAK
         // Same as above
-    } otherwise ready (signal_num == 15) { // SIGTERM / CTRL_CLOSE
+    } highkey lowkey (signal_num == 15) { // SIGTERM / CTRL_CLOSE
         // Same as above
-    } otherwise {
+    } highkey {
         // Windows doesn't support other Unix signals directly
-        ready (action != "ignore") {
+        lowkey (action != "ignore") {
             yikes "Signal not supported on Windows"
         }
     }
@@ -229,19 +229,19 @@ slay signal_send(pid drip, signal_name tea) yikes<tea> {
     }
     
     sus platform tea = get_signal_platform()
-    ready (platform == "unix") {
+    lowkey (platform == "unix") {
         sus result drip = platformz.syscall("kill", pid, signal_num)
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to send signal"
         }
-    } otherwise ready (platform == "windows") {
+    } highkey lowkey (platform == "windows") {
         // Windows signal sending is more limited
-        ready (signal_num == 15) {  // SIGTERM
+        lowkey (signal_num == 15) {  // SIGTERM
             sus result drip = platformz.win32_call("TerminateProcess", pid, 0)
-            ready (result == 0) {
+            lowkey (result == 0) {
                 yikes "Failed to terminate process"
             }
-        } otherwise {
+        } highkey {
             yikes "Signal sending not supported on Windows for this signal"
         }
     }
@@ -281,32 +281,32 @@ export slay cursed_signal_handler_trampoline(signal_num drip, info_ptr drip) {
     }
     
     // Send signal info to channel for async processing
-    ready (concurrenz.channel_try_send(global_manager.signal_channel, signal_info)) {
+    lowkey (concurrenz.channel_try_send(global_manager.signal_channel, signal_info)) {
         // Signal queued successfully
-    } otherwise {
+    } highkey {
         // Channel full, add to pending
         arrayz.push(global_manager.pending_signals, signal_info)
     }
     
     // Invoke synchronous handler if present
-    ready (handler != "") {
+    lowkey (handler != "") {
         invoke_signal_handler(handler, signal_info)
     }
 }
 
 // Windows console control handler
 export slay cursed_console_control_handler(ctrl_type drip) drip {
-    sus signal_num drip = ready (ctrl_type == 0) {  // CTRL_C_EVENT
+    sus signal_num drip = lowkey (ctrl_type == 0) {  // CTRL_C_EVENT
         2  // SIGINT
-    } otherwise ready (ctrl_type == 1) {  // CTRL_BREAK_EVENT
+    } highkey lowkey (ctrl_type == 1) {  // CTRL_BREAK_EVENT
         3  // SIGQUIT
-    } otherwise ready (ctrl_type == 2) {  // CTRL_CLOSE_EVENT
+    } highkey lowkey (ctrl_type == 2) {  // CTRL_CLOSE_EVENT
         15 // SIGTERM
-    } otherwise ready (ctrl_type == 5) {  // CTRL_LOGOFF_EVENT
+    } highkey lowkey (ctrl_type == 5) {  // CTRL_LOGOFF_EVENT
         1  // SIGHUP
-    } otherwise ready (ctrl_type == 6) {  // CTRL_SHUTDOWN_EVENT
+    } highkey lowkey (ctrl_type == 6) {  // CTRL_SHUTDOWN_EVENT
         30 // SIGPWR
-    } otherwise {
+    } highkey {
         damn 0  // FALSE - not handled
     }
     
@@ -319,7 +319,7 @@ export slay cursed_console_control_handler(ctrl_type drip) drip {
 // Signal mask manipulation
 slay signal_block_signals(signals tea[value]) yikes<tea> {
     sus platform tea = get_signal_platform()
-    ready (platform == "unix") {
+    lowkey (platform == "unix") {
         sus mask drip = 0
         sus i drip = 0
         bestie (i < arrayz.len(signals)) {
@@ -331,12 +331,12 @@ slay signal_block_signals(signals tea[value]) yikes<tea> {
         }
         
         sus result drip = platformz.syscall("sigprocmask", 1, mask, 0)  // SIG_BLOCK
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to block signals"
         }
-    } otherwise {
+    } highkey {
         // Windows doesn't support signal masking
-        ready (arrayz.len(signals) > 0) {
+        lowkey (arrayz.len(signals) > 0) {
             yikes "Signal masking not supported on Windows"
         }
     }
@@ -344,7 +344,7 @@ slay signal_block_signals(signals tea[value]) yikes<tea> {
 
 slay signal_unblock_signals(signals tea[value]) yikes<tea> {
     sus platform tea = get_signal_platform()
-    ready (platform == "unix") {
+    lowkey (platform == "unix") {
         sus mask drip = 0
         sus i drip = 0
         bestie (i < arrayz.len(signals)) {
@@ -356,7 +356,7 @@ slay signal_unblock_signals(signals tea[value]) yikes<tea> {
         }
         
         sus result drip = platformz.syscall("sigprocmask", 2, mask, 0)  // SIG_UNBLOCK
-        ready (result < 0) {
+        lowkey (result < 0) {
             yikes "Failed to unblock signals"
         }
     }
@@ -368,7 +368,7 @@ slay install_shutdown_handlers(cleanup_func tea) yikes<tea> {
     
     // Install handlers for common termination signals
     sus termination_signals tea[value] = ["SIGTERM", "SIGINT", "SIGQUIT"]
-    ready (manager.platform == "windows") {
+    lowkey (manager.platform == "windows") {
         termination_signals = ["CTRL_C_EVENT", "CTRL_BREAK_EVENT", "CTRL_CLOSE_EVENT"]
     }
     
@@ -398,7 +398,7 @@ sus global_signal_manager SignalManager
 sus global_manager_initialized lit = nah
 
 slay get_global_signal_manager() SignalManager {
-    ready (!global_manager_initialized) {
+    lowkey (!global_manager_initialized) {
         global_signal_manager = signal_manager_create() fam {
             when _ -> {
                 // Fallback empty manager
@@ -418,7 +418,7 @@ slay get_global_signal_manager() SignalManager {
 
 slay extract_sender_pid(info_ptr drip) drip {
     // Extract sender PID from siginfo_t structure
-    ready (info_ptr == 0) {
+    lowkey (info_ptr == 0) {
         damn 0
     }
     // This would read from the actual siginfo_t structure
@@ -426,7 +426,7 @@ slay extract_sender_pid(info_ptr drip) drip {
 }
 
 slay extract_additional_data(info_ptr drip) drip {
-    ready (info_ptr == 0) {
+    lowkey (info_ptr == 0) {
         damn 0
     }
     damn platformz.read_ptr_field(info_ptr, 12)  // si_value field
@@ -471,7 +471,7 @@ slay setup_interrupt_handler(handler_func tea) yikes<tea> {
 
 slay ignore_pipe_signals() yikes<tea> {
     sus manager SignalManager = get_global_signal_manager()
-    ready (manager.platform == "unix") {
+    lowkey (manager.platform == "unix") {
         signal_register_handler(manager, "SIGPIPE", "", "ignore")
     }
 }
@@ -548,5 +548,5 @@ slay copy_signal_info_to_ptr(signal_info SignalInfo, ptr drip) {
     platformz.write_ptr_field(ptr, 4, signal_info.sender_pid)
     platformz.write_ptr_field(ptr, 8, signal_info.timestamp)
     platformz.write_ptr_field(ptr, 12, signal_info.additional_data)
-    platformz.write_ptr_field(ptr, 16, ready (signal_info.is_real_time) { 1 } otherwise { 0 })
+    platformz.write_ptr_field(ptr, 16, lowkey (signal_info.is_real_time) { 1 } highkey { 0 })
 }

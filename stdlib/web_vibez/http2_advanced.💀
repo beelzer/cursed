@@ -735,7 +735,7 @@ slay start_http2_server(port drip, tls_enabled lit, certificate_path tea, key_pa
     sus circuit_breaker CircuitBreaker = create_circuit_breaker(5, 30000)
     
     fr fr Mock server listening loop
-    vibez.spill("HTTP/2 server ready - supporting multiplexing, server push, flow control")
+    vibez.spill("HTTP/2 server lowkey - supporting multiplexing, server push, flow control")
     vibez.spill("Features: HPACK compression, WebSocket upgrade, TLS 1.3, load balancing")
     
     fr fr In production, this would start actual network server

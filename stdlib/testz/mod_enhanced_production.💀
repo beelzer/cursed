@@ -888,7 +888,7 @@ slay reset_test_state() {
     test_start_time = 0
     total_test_time = 0
     
-    vibez.spill("🔄 Test state reset - ready for new test run")
+    vibez.spill("🔄 Test state reset - lowkey for new test run")
 }
 
 slay get_test_results() normie {

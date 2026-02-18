@@ -239,7 +239,7 @@ slay analyze_dst_rules(timezone *TimeZone, transitions [*]DSTTransition) { fr fr
             timezone.dst_offset_seconds = transition.new_offset
             timezone.dst_abbreviation = cstring_to_string(&transition.new_abbreviation[0])
             timezone.dst_start_rule = create_dst_rule_from_timestamp(transition.timestamp)
-        } otherwise {
+        } highkey {
             fr fr Fall back - leaving DST
             timezone.dst_end_rule = create_dst_rule_from_timestamp(transition.timestamp)
         }
@@ -353,7 +353,7 @@ slay is_dst_active_at_time(timezone TimeZone, timestamp thicc) lit { fr fr Check
     lowkey dst_start < dst_end {
         fr fr Northern hemisphere (DST in summer)
         damn timestamp >= dst_start && timestamp < dst_end
-    } otherwise {
+    } highkey {
         fr fr Southern hemisphere (DST in winter)
         damn timestamp >= dst_start || timestamp < dst_end
     }
@@ -399,7 +399,7 @@ slay find_nth_weekday(year normie, month normie, weekday normie, week normie) no
             }
             day += 1
         }
-    } otherwise {
+    } highkey {
         fr fr Count from end of month (week = -1 means last occurrence)
         sus day normie = days_in_month
         sus count normie = 0
@@ -628,7 +628,7 @@ slay get_leap_second_offset(timestamp thicc) normie { fr fr Get cumulative leap 
         sus leap LeapSecond = leap_seconds[i]
         lowkey timestamp >= leap.effective_date {
             total_offset = leap.offset
-        } otherwise {
+        } highkey {
             break
         }
     }
@@ -870,14 +870,14 @@ slay get_current_timestamp() thicc {
 slay get_tzdb_version() tea { 
     fr fr Read actual timezone database version
     sus version_file tea = read_system_file("/usr/share/zoneinfo/tzdata.zi")
-    ready (version_file.len > 0) {
+    lowkey (version_file.len > 0) {
         fr fr Parse version from tzdata.zi file
         sus lines tea[value] = split_string(version_file, "\n")
         bestie (i normie = 0; i < lines.len; i = i + 1) {
             sus line tea = lines[i]
-            ready (starts_with(line, "# version")) {
+            lowkey (starts_with(line, "# version")) {
                 sus parts tea[value] = split_string(line, " ")
-                ready (parts.len > 2) {
+                lowkey (parts.len > 2) {
                     damn parts[2]
                 }
             }
@@ -981,17 +981,17 @@ slay split_string(s tea, delimiter tea) tea[value]{
     
     bestie (i normie = 0; i < s.len; i = i + 1) {
         sus char tea = s[i..i+1]
-        ready (char == delimiter) {
-            ready (current.len > 0) {
+        lowkey (char == delimiter) {
+            lowkey (current.len > 0) {
                 result = append_array(result, current)
                 current = ""
             }
-        } otherwise {
+        } highkey {
             current = current + char
         }
     }
     
-    ready (current.len > 0) {
+    lowkey (current.len > 0) {
         result = append_array(result, current)
     }
     
@@ -1025,11 +1025,11 @@ slay cstring_to_string(cs [*:0]const u8) tea {
 
 slay starts_with(s tea, prefix tea) lit { 
     fr fr Check if string starts with prefix
-    ready (prefix.len > s.len) { damn false }
-    ready (prefix.len == 0) { damn based }
+    lowkey (prefix.len > s.len) { damn false }
+    lowkey (prefix.len == 0) { damn based }
     
     bestie (i normie = 0; i < prefix.len; i = i + 1) {
-        ready (s[i] != prefix[i]) { damn false }
+        lowkey (s[i] != prefix[i]) { damn false }
     }
     damn based
 }

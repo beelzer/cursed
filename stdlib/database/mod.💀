@@ -122,7 +122,7 @@ slay connect_sqlite(database_path tea) tea {
 
 fr fr Universal connection function
 slay connect_database(config DatabaseConfig) tea {
-    ready config.db_type {
+    lowkey config.db_type {
         DB_POSTGRES -> {
             damn connect_postgres(config)
         }
@@ -182,7 +182,7 @@ slay execute_query(connection_id tea, query tea, params tea[value]) QueryResult 
     bestie i := 0; i < params.length; i++ {
         vibez.spill(stringz.format("Parameter {}: {}", i, params[i]))
     } fr fr Simulate query execution
-    ready {
+    lowkey {
         stringz.contains(query, "SELECT") -> {
             result.columns = ["id", "name", "email"]
             result.rows = [

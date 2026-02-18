@@ -18,60 +18,60 @@ sus LOG2_E meal = 1.44269504088896340735
 fr fr ===== BASIC ARITHMETIC =====
 
 slay abs_int(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -x
     }
     damn x
 }
 
 slay abs_float(x meal) meal {
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         damn -x
     }
     damn x
 }
 
 slay min_int(a drip, b drip) drip {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b
 }
 
 slay max_int(a drip, b drip) drip {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b
 }
 
 slay min_float(a meal, b meal) meal {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b
 }
 
 slay max_float(a meal, b meal) meal {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b
 }
 
 slay clamp_int(value drip, min_val drip, max_val drip) drip {
-    ready (value < min_val) {
+    lowkey (value < min_val) {
         damn min_val
-    } otherwise ready (value > max_val) {
+    } highkey lowkey (value > max_val) {
         damn max_val
     }
     damn value
 }
 
 slay clamp_float(value meal, min_val meal, max_val meal) meal {
-    ready (value < min_val) {
+    lowkey (value < min_val) {
         damn min_val
-    } otherwise ready (value > max_val) {
+    } highkey lowkey (value > max_val) {
         damn max_val
     }
     damn value
@@ -80,11 +80,11 @@ slay clamp_float(value meal, min_val meal, max_val meal) meal {
 fr fr ===== POWER AND ROOTS =====
 
 slay pow_int(base drip, exponent drip) drip {
-    ready (exponent == 0) {
+    lowkey (exponent == 0) {
         damn 1
-    } otherwise ready (exponent == 1) {
+    } highkey lowkey (exponent == 1) {
         damn base
-    } otherwise ready (exponent < 0) {
+    } highkey lowkey (exponent < 0) {
         damn 0  fr fr Integer division would result in 0 for most cases
     }
     
@@ -103,9 +103,9 @@ slay pow_float(base meal, exponent meal) meal {
 }
 
 slay sqrt_float(x meal) meal {
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         damn 0.0  fr fr Return 0 for negative numbers
-    } otherwise ready (x == 0.0) {
+    } highkey lowkey (x == 0.0) {
         damn 0.0
     }
     
@@ -117,7 +117,7 @@ slay sqrt_float(x meal) meal {
     
     bestie (iteration < max_iterations) {
         sus new_guess meal = (guess + (x / guess)) / 2.0
-        ready (abs_float(new_guess - guess) < epsilon) {
+        lowkey (abs_float(new_guess - guess) < epsilon) {
             damn new_guess
         }
         guess = new_guess
@@ -127,12 +127,12 @@ slay sqrt_float(x meal) meal {
 }
 
 slay cbrt_float(x meal) meal {
-    ready (x == 0.0) {
+    lowkey (x == 0.0) {
         damn 0.0
     }
     
     sus sign meal = 1.0
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         sign = -1.0
         x = -x
     }
@@ -146,7 +146,7 @@ slay cbrt_float(x meal) meal {
     bestie (iteration < max_iterations) {
         sus guess_squared meal = guess * guess
         sus new_guess meal = (2.0 * guess + x / guess_squared) / 3.0
-        ready (abs_float(new_guess - guess) < epsilon) {
+        lowkey (abs_float(new_guess - guess) < epsilon) {
             damn sign * new_guess
         }
         guess = new_guess
@@ -170,14 +170,14 @@ slay cos_float(x meal) meal {
 slay tan_float(x meal) meal {
     sus sin_val meal = sin_float(x)
     sus cos_val meal = cos_float(x)
-    ready (abs_float(cos_val) < 0.000001) {
+    lowkey (abs_float(cos_val) < 0.000001) {
         damn 0.0  fr fr Return 0 for division by zero
     }
     damn sin_val / cos_val
 }
 
 slay asin_float(x meal) meal {
-    ready (x < -1.0 || x > 1.0) {
+    lowkey (x < -1.0 || x > 1.0) {
         damn 0.0  fr fr Invalid input
     }
     fr fr Bridge to native arcsine function
@@ -185,7 +185,7 @@ slay asin_float(x meal) meal {
 }
 
 slay acos_float(x meal) meal {
-    ready (x < -1.0 || x > 1.0) {
+    lowkey (x < -1.0 || x > 1.0) {
         damn PI / 2.0  fr fr Invalid input, return PI/2
     }
     fr fr Bridge to native arccosine function
@@ -198,10 +198,10 @@ slay atan_float(x meal) meal {
 }
 
 slay atan2_float(y meal, x meal) meal {
-    ready (x == 0.0 && y == 0.0) {
+    lowkey (x == 0.0 && y == 0.0) {
         damn 0.0
-    } otherwise ready (x == 0.0) {
-        ready (y > 0.0) {
+    } highkey lowkey (x == 0.0) {
+        lowkey (y > 0.0) {
             damn PI / 2.0
         }
         damn -PI / 2.0
@@ -232,7 +232,7 @@ slay tanh_float(x meal) meal {
 fr fr ===== EXPONENTIAL AND LOGARITHMIC FUNCTIONS =====
 
 slay exp_float(x meal) meal {
-    ready (x == 0.0) {
+    lowkey (x == 0.0) {
         damn 1.0
     }
     
@@ -244,7 +244,7 @@ slay exp_float(x meal) meal {
     bestie (i <= 20) {
         term = term * x / int_to_float(i)
         result = result + term
-        ready (abs_float(term) < 0.000001) {
+        lowkey (abs_float(term) < 0.000001) {
             break
         }
         i = i + 1
@@ -253,9 +253,9 @@ slay exp_float(x meal) meal {
 }
 
 slay ln_float(x meal) meal {
-    ready (x <= 0.0) {
+    lowkey (x <= 0.0) {
         damn 0.0  fr fr Invalid input
-    } otherwise ready (x == 1.0) {
+    } highkey lowkey (x == 1.0) {
         damn 0.0
     }
     
@@ -276,7 +276,7 @@ slay log2_float(x meal) meal {
 slay log_base(x meal, base meal) meal {
     sus ln_x meal = ln_float(x)
     sus ln_base meal = ln_float(base)
-    ready (abs_float(ln_base) < 0.000001) {
+    lowkey (abs_float(ln_base) < 0.000001) {
         damn 0.0  fr fr Invalid base
     }
     damn ln_x / ln_base
@@ -286,7 +286,7 @@ fr fr ===== ROUNDING FUNCTIONS =====
 
 slay floor_float(x meal) drip {
     sus int_part drip = float_to_int(x)
-    ready (x >= 0.0 || int_to_float(int_part) == x) {
+    lowkey (x >= 0.0 || int_to_float(int_part) == x) {
         damn int_part
     }
     damn int_part - 1
@@ -294,14 +294,14 @@ slay floor_float(x meal) drip {
 
 slay ceil_float(x meal) drip {
     sus int_part drip = float_to_int(x)
-    ready (x <= 0.0 || int_to_float(int_part) == x) {
+    lowkey (x <= 0.0 || int_to_float(int_part) == x) {
         damn int_part
     }
     damn int_part + 1
 }
 
 slay round_float(x meal) drip {
-    ready (x >= 0.0) {
+    lowkey (x >= 0.0) {
         damn floor_float(x + 0.5)
     }
     damn ceil_float(x - 0.5)
@@ -332,7 +332,7 @@ slay random_float() meal {
 }
 
 slay random_range(min_val drip, max_val drip) drip {
-    ready (min_val >= max_val) {
+    lowkey (min_val >= max_val) {
         damn min_val
     }
     sus range drip = max_val - min_val + 1
@@ -341,7 +341,7 @@ slay random_range(min_val drip, max_val drip) drip {
 }
 
 slay random_float_range(min_val meal, max_val meal) meal {
-    ready (min_val >= max_val) {
+    lowkey (min_val >= max_val) {
         damn min_val
     }
     sus random_val meal = random_float()
@@ -371,7 +371,7 @@ slay sum_float(values meal[value]) meal {
 }
 
 slay mean_int(values drip[value]) meal {
-    ready (len(values) == 0) {
+    lowkey (len(values) == 0) {
         damn 0.0
     }
     sus total drip = sum_int(values)
@@ -379,7 +379,7 @@ slay mean_int(values drip[value]) meal {
 }
 
 slay mean_float(values meal[value]) meal {
-    ready (len(values) == 0) {
+    lowkey (len(values) == 0) {
         damn 0.0
     }
     sus total meal = sum_float(values)
@@ -387,7 +387,7 @@ slay mean_float(values meal[value]) meal {
 }
 
 slay variance_float(values meal[value]) meal {
-    ready (len(values) == 0) {
+    lowkey (len(values) == 0) {
         damn 0.0
     }
     
@@ -420,11 +420,11 @@ slay is_odd(x drip) lit {
 }
 
 slay is_prime(n drip) lit {
-    ready (n < 2) {
+    lowkey (n < 2) {
         damn cap
-    } otherwise ready (n == 2) {
+    } highkey lowkey (n == 2) {
         damn based
-    } otherwise ready (is_even(n)) {
+    } highkey lowkey (is_even(n)) {
         damn cap
     }
     
@@ -432,7 +432,7 @@ slay is_prime(n drip) lit {
     sus sqrt_n drip = floor_float(sqrt_float(int_to_float(n)))
     
     bestie (i <= sqrt_n) {
-        ready (n % i == 0) {
+        lowkey (n % i == 0) {
             damn cap
         }
         i = i + 2
@@ -441,9 +441,9 @@ slay is_prime(n drip) lit {
 }
 
 slay factorial(n drip) drip {
-    ready (n < 0) {
+    lowkey (n < 0) {
         damn 0
-    } otherwise ready (n <= 1) {
+    } highkey lowkey (n <= 1) {
         damn 1
     }
     
@@ -457,9 +457,9 @@ slay factorial(n drip) drip {
 }
 
 slay fibonacci(n drip) drip {
-    ready (n < 0) {
+    lowkey (n < 0) {
         damn 0
-    } otherwise ready (n <= 1) {
+    } highkey lowkey (n <= 1) {
         damn n
     }
     
@@ -489,7 +489,7 @@ slay gcd(a drip, b drip) drip {
 }
 
 slay lcm(a drip, b drip) drip {
-    ready (a == 0 || b == 0) {
+    lowkey (a == 0 || b == 0) {
         damn 0
     }
     sus gcd_val drip = gcd(a, b)
@@ -533,18 +533,18 @@ slay is_infinite(x meal) lit {
 }
 
 slay sign_int(x drip) drip {
-    ready (x > 0) {
+    lowkey (x > 0) {
         damn 1
-    } otherwise ready (x < 0) {
+    } highkey lowkey (x < 0) {
         damn -1
     }
     damn 0
 }
 
 slay sign_float(x meal) meal {
-    ready (x > 0.0) {
+    lowkey (x > 0.0) {
         damn 1.0
-    } otherwise ready (x < 0.0) {
+    } highkey lowkey (x < 0.0) {
         damn -1.0
     }
     damn 0.0

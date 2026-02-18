@@ -78,7 +78,7 @@ squad Counter {
     }
     
     slay add(value drip, labels map<tea, tea>) {
-        ready (value < 0) {
+        lowkey (value < 0) {
             vibez.spill("Warning: Counter values should not be negative")
             damn nil
         }
@@ -130,7 +130,7 @@ squad Counter {
         
         bestie (pair := range pairs) {
             sus parts tea[value] = stringz.split(pair, "=", 2)
-            ready (len(parts) == 2) {
+            lowkey (len(parts) == 2) {
                 result[parts[0]] = parts[1]
             }
         }
@@ -219,7 +219,7 @@ squad Gauge {
         
         bestie (pair := range pairs) {
             sus parts tea[value] = stringz.split(pair, "=", 2)
-            ready (len(parts) == 2) {
+            lowkey (len(parts) == 2) {
                 result[parts[0]] = parts[1]
             }
         }
@@ -235,7 +235,7 @@ squad Histogram {
     slay create_histogram(name tea, help tea, label_names tea[value], buckets drip[value]) Histogram {
         // Ensure buckets are sorted and include +Inf
         sus sorted_buckets drip[value] = sort_buckets(buckets)
-        ready (sorted_buckets[len(sorted_buckets)-1] != mathz.inf()) {
+        lowkey (sorted_buckets[len(sorted_buckets)-1] != mathz.inf()) {
             sorted_buckets = append(sorted_buckets, mathz.inf())
         }
         
@@ -262,7 +262,7 @@ squad Histogram {
         
         // Update buckets
         bestie (i, bucket := range hist_value.buckets) {
-            ready (value <= bucket.upper_bound) {
+            lowkey (value <= bucket.upper_bound) {
                 hist_value.buckets[i].count += 1
             }
         }
@@ -515,7 +515,7 @@ squad PrometheusHandler {
                         output += name
                         
                         // Add labels
-                        ready (len(metric.labels) > 0) {
+                        lowkey (len(metric.labels) > 0) {
                             output += "{"
                             sus label_pairs tea[value] = []
                             bestie (label_name, label_value := range metric.labels) {
@@ -527,7 +527,7 @@ squad PrometheusHandler {
                         
                         output += " " + format_float(metric.value)
                         
-                        ready (metric.timestamp > 0) {
+                        lowkey (metric.timestamp > 0) {
                             output += " " + to_string(metric.timestamp)
                         }
                         
@@ -565,7 +565,7 @@ squad PrometheusHandler {
     }
     
     slay format_labels(labels map<tea, tea>) tea {
-        ready (len(labels) == 0) {
+        lowkey (len(labels) == 0) {
             damn ""
         }
         
@@ -787,13 +787,13 @@ slay sort_buckets(buckets drip[value]) drip[value]{
 
 slay format_float(value drip) tea {
     // Format float with appropriate precision
-    ready (value == mathz.inf()) {
+    lowkey (value == mathz.inf()) {
         damn "+Inf"
     }
-    ready (value == -mathz.inf()) {
+    lowkey (value == -mathz.inf()) {
         damn "-Inf"
     }
-    ready (mathz.is_nan(value)) {
+    lowkey (mathz.is_nan(value)) {
         damn "NaN"
     }
     
@@ -852,7 +852,7 @@ slay example_prometheus_usage() yikes<tea> {
     
     // Example HTTP server setup (simplified)
     // httpz.serve_http("0.0.0.0:8080", slay(request httpz.Request) httpz.Response {
-    //     ready (request.path == "/metrics") {
+    //     lowkey (request.path == "/metrics") {
     //         damn prometheus_handler.handle_metrics(request)
     //     }
     //     // ... other routes ...

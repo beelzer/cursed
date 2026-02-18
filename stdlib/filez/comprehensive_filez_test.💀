@@ -1,6 +1,6 @@
 fr fr COMPREHENSIVE FILEZ ENHANCED RUNTIME INTEGRATION TEST SUITE
 fr fr Tests all advanced file I/O operations with proper error handling
-fr fr P0 critical - validates production-ready filesystem operations
+fr fr P0 critical - validates production-lowkey filesystem operations
 
 yeet "filez_runtime_enhanced"
 yeet "testz"
@@ -435,12 +435,12 @@ slay test_performance_operations() {
         sus chunk tea = read_file_chunk(buffered_handle, chunk_size) fam {
             when _ -> {
                 vibez.spill("Read operation completed, total bytes:", total_read)
-                ready
+                lowkey
             }
         }
         total_read = total_read + string_length(chunk)
-        ready (string_length(chunk) < chunk_size) {
-            ready
+        lowkey (string_length(chunk) < chunk_size) {
+            lowkey
         }
     }
     
@@ -473,7 +473,7 @@ slay run_all_filez_tests() {
     
     vibez.spill("\n🎉 Enhanced Filez Test Suite Complete!")
     vibez.spill("All advanced file I/O operations validated with proper error handling")
-    vibez.spill("P0 critical file operations are production-ready! 🚀")
+    vibez.spill("P0 critical file operations are production-lowkey! 🚀")
 }
 
 fr fr Mock time function for performance testing

@@ -27,7 +27,7 @@ slay main_character() {
     test_configuration_modes()
     
     vibez.spill("✅ All linter tests completed!")
-    vibez.spill("🚀 CURSED Linter is production-ready with 42 critical rules!")
+    vibez.spill("🚀 CURSED Linter is production-lowkey with 42 critical rules!")
 }
 
 slay test_style_rules() {
@@ -53,25 +53,25 @@ slay test_style_rules() {
     
     vibez.spill("Testing long line violation...")
     sus long_line_issues LintIssue[value] = lint_and_get_issues(long_line_test, config, "style_test.💀")
-    ready (len(long_line_issues) > 0) {
+    lowkey (len(long_line_issues) > 0) {
         vibez.spill("  ✅ Rule 1 (line-too-long) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 1 (line-too-long) failed to trigger")
     }
     
     vibez.spill("Testing variable naming violation...")
     sus var_naming_issues LintIssue[value] = lint_and_get_issues(camel_case_test, config, "style_test.💀")
-    ready (len(var_naming_issues) > 0) {
+    lowkey (len(var_naming_issues) > 0) {
         vibez.spill("  ✅ Rule 2 (variable-naming) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 2 (variable-naming) failed to trigger")
     }
     
     vibez.spill("Testing function naming violation...")
     sus func_naming_issues LintIssue[value] = lint_and_get_issues(function_naming_test, config, "style_test.💀")
-    ready (len(func_naming_issues) > 0) {
+    lowkey (len(func_naming_issues) > 0) {
         vibez.spill("  ✅ Rule 3 (function-naming) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 3 (function-naming) failed to trigger")
     }
     
@@ -101,41 +101,41 @@ slay test_security_rules() {
     
     vibez.spill("Testing hardcoded secret detection...")
     sus secret_issues LintIssue[value] = lint_and_get_issues(hardcoded_secret_test, config, "security_test.💀")
-    ready (len(secret_issues) > 0) {
+    lowkey (len(secret_issues) > 0) {
         vibez.spill("  ✅ Rule 6 (hardcoded-secret) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 6 (hardcoded-secret) failed to trigger")
     }
     
     vibez.spill("Testing API key pattern detection...")
     sus api_issues LintIssue[value] = lint_and_get_issues(api_key_test, config, "security_test.💀")
-    ready (len(api_issues) > 0) {
+    lowkey (len(api_issues) > 0) {
         vibez.spill("  ✅ Rule 7 (api-key-pattern) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 7 (api-key-pattern) failed to trigger")
     }
     
     vibez.spill("Testing SQL injection detection...")
     sus sql_issues LintIssue[value] = lint_and_get_issues(sql_injection_test, config, "security_test.💀")
-    ready (len(sql_issues) > 0) {
+    lowkey (len(sql_issues) > 0) {
         vibez.spill("  ✅ Rule 8 (sql-injection) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 8 (sql-injection) failed to trigger")
     }
     
     vibez.spill("Testing unsafe operation detection...")
     sus unsafe_issues LintIssue[value] = lint_and_get_issues(unsafe_operation_test, config, "security_test.💀")
-    ready (len(unsafe_issues) > 0) {
+    lowkey (len(unsafe_issues) > 0) {
         vibez.spill("  ✅ Rule 9 (unsafe-operation) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 9 (unsafe-operation) failed to trigger")
     }
     
     vibez.spill("Testing weak cryptography detection...")
     sus crypto_issues LintIssue[value] = lint_and_get_issues(weak_crypto_test, config, "security_test.💀")
-    ready (len(crypto_issues) > 0) {
+    lowkey (len(crypto_issues) > 0) {
         vibez.spill("  ✅ Rule 10 (weak-crypto) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 10 (weak-crypto) failed to trigger")
     }
     
@@ -165,41 +165,41 @@ slay test_safety_rules() {
     
     vibez.spill("Testing division by zero detection...")
     sus div_zero_issues LintIssue[value] = lint_and_get_issues(division_zero_test, config, "safety_test.💀")
-    ready (len(div_zero_issues) > 0) {
+    lowkey (len(div_zero_issues) > 0) {
         vibez.spill("  ✅ Rule 16 (division-by-zero) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 16 (division-by-zero) failed to trigger")
     }
     
     vibez.spill("Testing unsafe array access detection...")
     sus array_issues LintIssue[value] = lint_and_get_issues(unsafe_array_test, config, "safety_test.💀")
-    ready (len(array_issues) > 0) {
+    lowkey (len(array_issues) > 0) {
         vibez.spill("  ✅ Rule 17 (unsafe-array-access) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 17 (unsafe-array-access) failed to trigger")
     }
     
     vibez.spill("Testing null dereference detection...")
     sus null_issues LintIssue[value] = lint_and_get_issues(null_deref_test, config, "safety_test.💀")
-    ready (len(null_issues) > 0) {
+    lowkey (len(null_issues) > 0) {
         vibez.spill("  ✅ Rule 18 (null-dereference) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 18 (null-dereference) failed to trigger")
     }
     
     vibez.spill("Testing memory leak detection...")
     sus memory_issues LintIssue[value] = lint_and_get_issues(memory_leak_test, config, "safety_test.💀")
-    ready (len(memory_issues) > 0) {
+    lowkey (len(memory_issues) > 0) {
         vibez.spill("  ✅ Rule 19 (memory-leak) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 19 (memory-leak) failed to trigger")
     }
     
     vibez.spill("Testing integer overflow detection...")
     sus overflow_issues LintIssue[value] = lint_and_get_issues(overflow_test, config, "safety_test.💀")
-    ready (len(overflow_issues) > 0) {
+    lowkey (len(overflow_issues) > 0) {
         vibez.spill("  ✅ Rule 20 (integer-overflow) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 20 (integer-overflow) failed to trigger")
     }
     
@@ -229,41 +229,41 @@ slay test_performance_rules() {
     
     vibez.spill("Testing inefficient string concatenation...")
     sus concat_issues LintIssue[value] = lint_and_get_issues(inefficient_concat_test, config, "performance_test.💀")
-    ready (len(concat_issues) > 0) {
+    lowkey (len(concat_issues) > 0) {
         vibez.spill("  ✅ Rule 26 (inefficient-string-concat) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 26 (inefficient-string-concat) failed to trigger")
     }
     
     vibez.spill("Testing unnecessary array copying...")
     sus copy_issues LintIssue[value] = lint_and_get_issues(array_copy_test, config, "performance_test.💀")
-    ready (len(copy_issues) > 0) {
+    lowkey (len(copy_issues) > 0) {
         vibez.spill("  ✅ Rule 27 (unnecessary-array-copy) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 27 (unnecessary-array-copy) failed to trigger")
     }
     
     vibez.spill("Testing redundant computation...")
     sus redundant_issues LintIssue[value] = lint_and_get_issues(redundant_test, config, "performance_test.💀")
-    ready (len(redundant_issues) > 0) {
+    lowkey (len(redundant_issues) > 0) {
         vibez.spill("  ✅ Rule 28 (redundant-computation) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 28 (redundant-computation) failed to trigger")
     }
     
     vibez.spill("Testing expensive loop operation...")
     sus expensive_issues LintIssue[value] = lint_and_get_issues(expensive_loop_test, config, "performance_test.💀")
-    ready (len(expensive_issues) > 0) {
+    lowkey (len(expensive_issues) > 0) {
         vibez.spill("  ✅ Rule 29 (expensive-loop-operation) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 29 (expensive-loop-operation) failed to trigger")
     }
     
     vibez.spill("Testing inefficient data structure...")
     sus ds_issues LintIssue[value] = lint_and_get_issues(inefficient_ds_test, config, "performance_test.💀")
-    ready (len(ds_issues) > 0) {
+    lowkey (len(ds_issues) > 0) {
         vibez.spill("  ✅ Rule 30 (inefficient-data-structure) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 30 (inefficient-data-structure) failed to trigger")
     }
     
@@ -281,10 +281,10 @@ slay test_pattern_rules() {
     sus magic_number_test tea = "sus timeout drip = 5000"
     
     // Rule 38: Code duplication
-    sus duplication_test tea = "ready (condition_that_is_very_long_and_complex) { process() }\nready (condition_that_is_very_long_and_complex) { process() }"
+    sus duplication_test tea = "lowkey (condition_that_is_very_long_and_complex) { process() }\nready (condition_that_is_very_long_and_complex) { process() }"
     
     // Rule 39: Complex boolean
-    sus complex_boolean_test tea = "ready (a && b && c || d && !e || f) { process() }"
+    sus complex_boolean_test tea = "lowkey (a && b && c || d && !e || f) { process() }"
     
     // Rule 40: Long parameter list
     sus long_params_test tea = "slay process(a drip, b drip, c drip, d drip, e drip, f drip) { }"
@@ -299,49 +299,49 @@ slay test_pattern_rules() {
     
     vibez.spill("Testing dead code detection...")
     sus dead_issues LintIssue[value] = lint_and_get_issues(dead_code_test, config, "pattern_test.💀")
-    ready (len(dead_issues) > 0) {
+    lowkey (len(dead_issues) > 0) {
         vibez.spill("  ✅ Rule 36 (dead-code) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 36 (dead-code) failed to trigger")
     }
     
     vibez.spill("Testing magic number detection...")
     sus magic_issues LintIssue[value] = lint_and_get_issues(magic_number_test, config, "pattern_test.💀")
-    ready (len(magic_issues) > 0) {
+    lowkey (len(magic_issues) > 0) {
         vibez.spill("  ✅ Rule 37 (magic-numbers) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 37 (magic-numbers) failed to trigger")
     }
     
     vibez.spill("Testing complex boolean detection...")
     sus boolean_issues LintIssue[value] = lint_and_get_issues(complex_boolean_test, config, "pattern_test.💀")
-    ready (len(boolean_issues) > 0) {
+    lowkey (len(boolean_issues) > 0) {
         vibez.spill("  ✅ Rule 39 (complex-boolean) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 39 (complex-boolean) failed to trigger")
     }
     
     vibez.spill("Testing long parameter list detection...")
     sus param_issues LintIssue[value] = lint_and_get_issues(long_params_test, config, "pattern_test.💀")
-    ready (len(param_issues) > 0) {
+    lowkey (len(param_issues) > 0) {
         vibez.spill("  ✅ Rule 40 (long-parameter-list) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 40 (long-parameter-list) failed to trigger")
     }
     
     vibez.spill("Testing inconsistent error handling...")
     sus error_issues LintIssue[value] = lint_and_get_issues(inconsistent_error_test, config, "pattern_test.💀")
-    ready (len(error_issues) > 0) {
+    lowkey (len(error_issues) > 0) {
         vibez.spill("  ✅ Rule 41 (inconsistent-error-handling) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 41 (inconsistent-error-handling) failed to trigger")
     }
     
     vibez.spill("Testing missing return detection...")
     sus return_issues LintIssue[value] = lint_and_get_issues(missing_return_test, config, "pattern_test.💀")
-    ready (len(return_issues) > 0) {
+    lowkey (len(return_issues) > 0) {
         vibez.spill("  ✅ Rule 42 (missing-return) triggered correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Rule 42 (missing-return) failed to trigger")
     }
     
@@ -372,9 +372,9 @@ slay test_configuration_modes() {
     sus min_issues LintIssue[value] = lint_and_get_issues(test_code, min_config, "config_test.💀")
     vibez.spill("  Minimal mode found " + int_to_str(len(min_issues)) + " issues")
     
-    ready (len(prod_issues) >= len(dev_issues) && len(dev_issues) >= len(min_issues)) {
+    lowkey (len(prod_issues) >= len(dev_issues) && len(dev_issues) >= len(min_issues)) {
         vibez.spill("  ✅ Configuration hierarchy working correctly")
-    } otherwise {
+    } highkey {
         vibez.spill("  ❌ Configuration hierarchy issue detected")
     }
     

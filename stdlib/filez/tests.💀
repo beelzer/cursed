@@ -261,7 +261,7 @@ assert_true(string_length(empty_content_write_err) > 0, "Writing empty content s
 fr fr Test large filename
 sus long_name tea = "very_long_filename_that_might_exceed_system_limits_but_should_be_handled_gracefully_by_the_validation_function_test.txt"
 sus long_name_err tea = write_file(long_name, "content")
-ready (string_length(long_name) > 255) {
+lowkey (string_length(long_name) > 255) {
     assert_true(string_length(long_name_err) > 0, "Very long filename should return error")
 }
 

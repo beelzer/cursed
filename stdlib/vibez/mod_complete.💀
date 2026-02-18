@@ -46,7 +46,7 @@ slay spill(key tea, value lit) {
     runtime_print_string(": ")
     lowkey value == based {
         runtime_print_string("true")
-    } otherwise {
+    } highkey {
         runtime_print_string("false")
     }
     runtime_print_string("\n")

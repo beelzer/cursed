@@ -10,7 +10,7 @@ fr fr ===== ADVANCED FFT IMPLEMENTATION =====
 
 slay audioz_fft_radix2_production(complex_data drip[4096], size normie) lit {
     fr fr Cooley-Tukey Radix-2 FFT with optimizations
-    ready (!audioz_is_power_of_two(size)) {
+    lowkey (!audioz_is_power_of_two(size)) {
         vibez.spill("Error: FFT size must be power of 2")
         damn false
     }
@@ -77,7 +77,7 @@ slay audioz_bit_reversal_optimized(complex_data drip[4096], size normie) lit {
         }
         j ^= bit
         
-        ready (i < j) {
+        lowkey (i < j) {
             fr fr Swap complex pairs
             sus temp_r drip = complex_data[i * 2]
             sus temp_i drip = complex_data[i * 2 + 1]
@@ -107,7 +107,7 @@ slay audioz_lanczos_resampling(input_samples tea, input_frames normie, output_fr
             sus weight_sum drip = 0.0
             
             bestie (sus in_idx normie = start_idx; in_idx <= end_idx; in_idx++) {
-                ready (in_idx >= 0 && in_idx < input_frames) {
+                lowkey (in_idx >= 0 && in_idx < input_frames) {
                     sus distance drip = mathz_int_to_float(in_idx) - center_pos
                     sus weight drip = audioz_lanczos_kernel(distance, kernel_size)
                     
@@ -117,13 +117,13 @@ slay audioz_lanczos_resampling(input_samples tea, input_frames normie, output_fr
                 }
             }
             
-            ready (weight_sum > 0.0001) {
+            lowkey (weight_sum > 0.0001) {
                 output_sample /= weight_sum
             }
             
             fr fr Clamp output
-            ready (output_sample > 1.0) { output_sample = 1.0 }
-            ready (output_sample < -1.0) { output_sample = -1.0 }
+            lowkey (output_sample > 1.0) { output_sample = 1.0 }
+            lowkey (output_sample < -1.0) { output_sample = -1.0 }
             
             audioz_set_sample_float(output_buffer, out_idx, channel, channels, output_sample)
         }
@@ -134,11 +134,11 @@ slay audioz_lanczos_resampling(input_samples tea, input_frames normie, output_fr
 
 slay audioz_lanczos_kernel(x drip, a normie) drip {
     fr fr Lanczos windowed sinc kernel
-    ready (mathz_abs(x) >= mathz_int_to_float(a)) {
+    lowkey (mathz_abs(x) >= mathz_int_to_float(a)) {
         damn 0.0
     }
     
-    ready (mathz_abs(x) < 0.0001) {
+    lowkey (mathz_abs(x) < 0.0001) {
         damn 1.0
     }
     
@@ -202,31 +202,31 @@ slay audioz_calculate_biquad_coefficients(filter AudioFilter, sample_rate normie
     sus alpha drip = sin_omega / (2.0 * filter.q_factor)
     sus A drip = mathz_pow(10.0, filter.gain / 40.0)
     
-    ready (filter.filter_type == FILTER_LOWPASS) {
+    lowkey (filter.filter_type == FILTER_LOWPASS) {
         coeffs[0] = (1.0 - cos_omega) / 2.0  fr fr b0
         coeffs[1] = 1.0 - cos_omega          fr fr b1
         coeffs[2] = (1.0 - cos_omega) / 2.0  fr fr b2
         coeffs[3] = -2.0 * cos_omega         fr fr a1
         coeffs[4] = 1.0 - alpha              fr fr a2
-    } otherwise (filter.filter_type == FILTER_HIGHPASS) {
+    } highkey (filter.filter_type == FILTER_HIGHPASS) {
         coeffs[0] = (1.0 + cos_omega) / 2.0  fr fr b0
         coeffs[1] = -(1.0 + cos_omega)       fr fr b1
         coeffs[2] = (1.0 + cos_omega) / 2.0  fr fr b2
         coeffs[3] = -2.0 * cos_omega         fr fr a1
         coeffs[4] = 1.0 - alpha              fr fr a2
-    } otherwise (filter.filter_type == FILTER_BANDPASS) {
+    } highkey (filter.filter_type == FILTER_BANDPASS) {
         coeffs[0] = filter.q_factor * alpha  fr fr b0
         coeffs[1] = 0.0                      fr fr b1
         coeffs[2] = -filter.q_factor * alpha fr fr b2
         coeffs[3] = -2.0 * cos_omega         fr fr a1
         coeffs[4] = 1.0 - alpha              fr fr a2
-    } otherwise (filter.filter_type == FILTER_NOTCH) {
+    } highkey (filter.filter_type == FILTER_NOTCH) {
         coeffs[0] = 1.0                      fr fr b0
         coeffs[1] = -2.0 * cos_omega         fr fr b1
         coeffs[2] = 1.0                      fr fr b2
         coeffs[3] = -2.0 * cos_omega         fr fr a1
         coeffs[4] = 1.0 - alpha              fr fr a2
-    } otherwise (filter.filter_type == FILTER_PEAKING) {
+    } highkey (filter.filter_type == FILTER_PEAKING) {
         coeffs[0] = 1.0 + alpha * A          fr fr b0
         coeffs[1] = -2.0 * cos_omega         fr fr b1
         coeffs[2] = 1.0 - alpha * A          fr fr b2
@@ -287,15 +287,15 @@ slay audioz_multiband_compressor_production(samples tea, frames normie, channels
                 sus abs_input drip = mathz_abs(band_input)
                 
                 fr fr Envelope follower
-                ready (abs_input > envelope_state[band][channel]) {
+                lowkey (abs_input > envelope_state[band][channel]) {
                     envelope_state[band][channel] = abs_input + (envelope_state[band][channel] - abs_input) * attack_coeff
-                } otherwise {
+                } highkey {
                     envelope_state[band][channel] = abs_input + (envelope_state[band][channel] - abs_input) * release_coeff
                 }
                 
                 fr fr Calculate gain reduction
                 sus gain_reduction drip = 1.0
-                ready (envelope_state[band][channel] > thresholds[band]) {
+                lowkey (envelope_state[band][channel] > thresholds[band]) {
                     sus over_threshold drip = envelope_state[band][channel] - thresholds[band]
                     sus compressed_over drip = over_threshold / ratios[band]
                     gain_reduction = (thresholds[band] + compressed_over) / envelope_state[band][channel]
@@ -306,8 +306,8 @@ slay audioz_multiband_compressor_production(samples tea, frames normie, channels
             }
             
             fr fr Apply final limiting and clipping protection
-            ready (output_sample > 0.95) { output_sample = 0.95 }
-            ready (output_sample < -0.95) { output_sample = -0.95 }
+            lowkey (output_sample > 0.95) { output_sample = 0.95 }
+            lowkey (output_sample < -0.95) { output_sample = -0.95 }
             
             audioz_set_sample_float(output_buffer, frame, channel, channels, output_sample)
         }
@@ -376,8 +376,8 @@ slay audioz_convolution_reverb_production(samples tea, frames normie, channels n
                 sus overlap_pos normie = (frame_pos + i) * channels + channel
                 
                 sus mixed_sample drip = dry_sample + wet_sample
-                ready (mixed_sample > 1.0) { mixed_sample = 1.0 }
-                ready (mixed_sample < -1.0) { mixed_sample = -1.0 }
+                lowkey (mixed_sample > 1.0) { mixed_sample = 1.0 }
+                lowkey (mixed_sample < -1.0) { mixed_sample = -1.0 }
                 
                 audioz_set_sample_float(output_buffer, frame_pos + i, channel, channels, mixed_sample)
             }

@@ -478,7 +478,7 @@ slay array_length(arr tea[value]) drip {
     sus count drip = 0
     sus i drip = 0
     bestie (i < 100) {  fr fr Reasonable upper bound
-        ready (i >= len(arr)) { ghosted }
+        lowkey (i >= len(arr)) { ghosted }
         count = count + 1
         i = i + 1
     }
@@ -486,43 +486,43 @@ slay array_length(arr tea[value]) drip {
 }
 
 slay assert_greater_than_int(actual drip, expected drip, message tea) {
-    ready (actual <= expected) {
+    lowkey (actual <= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected greater than: " + int_to_string(expected))
         vibez.spill("   Actual: " + int_to_string(actual))
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_less_than_int(actual drip, expected drip, message tea) {
-    ready (actual >= expected) {
+    lowkey (actual >= expected) {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected less than: " + int_to_string(expected))
         vibez.spill("   Actual: " + int_to_string(actual))
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay assert_not_empty_string(value tea, message tea) {
-    ready (value == "") {
+    lowkey (value == "") {
         vibez.spill("❌ ASSERTION FAILED: " + message)
         vibez.spill("   Expected non-empty string")
-    } otherwise {
+    } highkey {
         vibez.spill("✅ " + message)
     }
 }
 
 slay int_to_string(value drip) tea {
-    ready (value == 0) { damn "0" }
-    ready (value == 1) { damn "1" }
-    ready (value == 2) { damn "2" }
-    ready (value == 3) { damn "3" }
-    ready (value == 4) { damn "4" }
-    ready (value == 5) { damn "5" }
-    ready (value < 10) { damn "single_digit" }
-    ready (value < 100) { damn "double_digit" }
+    lowkey (value == 0) { damn "0" }
+    lowkey (value == 1) { damn "1" }
+    lowkey (value == 2) { damn "2" }
+    lowkey (value == 3) { damn "3" }
+    lowkey (value == 4) { damn "4" }
+    lowkey (value == 5) { damn "5" }
+    lowkey (value < 10) { damn "single_digit" }
+    lowkey (value < 100) { damn "double_digit" }
     damn "large_number"
 }
 

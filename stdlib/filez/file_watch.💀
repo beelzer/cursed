@@ -40,7 +40,7 @@ be_like FileWatcher squad {
 // Pure CURSED implementation using system calls
 slay create_file_watcher() *FileWatcher yikes WatchError {
     sus watcher *FileWatcher = main_character.allocate(@sizeof(FileWatcher))
-    ready (!watcher) {
+    lowkey (!watcher) {
         yikes WatchError{message: "failed to allocate watcher", code: 1}
     }
     
@@ -55,7 +55,7 @@ slay create_file_watcher() *FileWatcher yikes WatchError {
 }
 
 slay start_watching(watcher *FileWatcher, path tea, recursive lit, callback slay(WatchEvent) -> vibes) WatchError yikes vibes {
-    ready (!watcher) {
+    lowkey (!watcher) {
         yikes WatchError{message: "invalid watcher", code: 2}
     }
     
@@ -71,7 +71,7 @@ slay start_watching(watcher *FileWatcher, path tea, recursive lit, callback slay
         0, 0, 0, 0, 0
     )
     
-    ready (result < 0) {
+    lowkey (result < 0) {
         yikes WatchError{message: "failed to initialize file watching", code: 3}
     }
     
@@ -96,7 +96,7 @@ slay add_watch_path(watcher *FileWatcher, path tea) vibes {
         0, 0, 0
     )
     
-    ready (result < 0) {
+    lowkey (result < 0) {
         vibez.spill("Warning: failed to add watch for path: ", path)
     }
 }
@@ -114,7 +114,7 @@ slay monitor_events(watcher *FileWatcher) vibes {
             0, 0, 0
         )
         
-        ready (bytes_read > 0) {
+        lowkey (bytes_read > 0) {
             process_events(watcher, &buffer[0], bytes_read)
         }
         
@@ -145,7 +145,7 @@ slay process_events(watcher *FileWatcher, buffer *lit, size thicc) vibes {
         }
         
         // Call user callback
-        ready (watcher.callback) {
+        lowkey (watcher.callback) {
             watcher.callback(event)
         }
         
@@ -154,14 +154,14 @@ slay process_events(watcher *FileWatcher, buffer *lit, size thicc) vibes {
 }
 
 slay stop_watching(watcher *FileWatcher) vibes {
-    ready (!watcher) {
+    lowkey (!watcher) {
         damn
     }
     
     watcher.running = cringe
     
     // Close file descriptor using pure CURSED system call
-    ready (watcher.platform_handle > 0) {
+    lowkey (watcher.platform_handle > 0) {
         cursed_runtime_syscall(
             3,  // close system call
             watcher.platform_handle,
@@ -172,7 +172,7 @@ slay stop_watching(watcher *FileWatcher) vibes {
 }
 
 slay destroy_file_watcher(watcher *FileWatcher) vibes {
-    ready (!watcher) {
+    lowkey (!watcher) {
         damn
     }
     
@@ -203,7 +203,7 @@ slay cursed_file_watcher_create() *FileWatcher {
 }
 
 slay cursed_file_watcher_start(watcher *FileWatcher, path_ptr *lit, path_len thicc, recursive lit) lit {
-    ready (!watcher || !path_ptr || path_len == 0) {
+    lowkey (!watcher || !path_ptr || path_len == 0) {
         damn cringe
     }
     
@@ -230,7 +230,7 @@ slay cursed_file_watcher_destroy(watcher *FileWatcher) vibes {
 }
 
 slay cursed_file_watcher_is_running(watcher *FileWatcher) lit {
-    ready (!watcher) {
+    lowkey (!watcher) {
         damn cringe
     }
     damn watcher.running

@@ -28,7 +28,7 @@ squad ProcessInfo {
 
 # Core process execution
 slay execute_command(command tea) ProcessResult {
-    ready (command == "") {
+    lowkey (command == "") {
         damn ProcessResult {
             exit_code: 1,
             stdout: "",
@@ -52,7 +52,7 @@ slay execute_command(command tea) ProcessResult {
 
 slay run_command(cmd tea) tea {
     sus result ProcessResult = execute_command(cmd)
-    ready (result.exit_code == 0) {
+    lowkey (result.exit_code == 0) {
         damn result.stdout
     }
     damn "Error: " + result.stderr
@@ -130,7 +130,7 @@ slay get_current_pid() drip {
 }
 
 slay kill_process(pid drip) lit {
-    ready (pid <= 0) {
+    lowkey (pid <= 0) {
         damn nocap
     }
     
@@ -144,7 +144,7 @@ slay get_current_directory() tea {
 }
 
 slay change_directory(path tea) lit {
-    ready (path == "") {
+    lowkey (path == "") {
         damn nocap
     }
     
@@ -154,11 +154,11 @@ slay change_directory(path tea) lit {
 
 slay get_environment_variable(name tea) tea {
     # Simulate common environment variables
-    ready (name == "HOME") {
+    lowkey (name == "HOME") {
         damn "/home/cursed"
-    } otherwise ready (name == "PATH") {
+    } highkey lowkey (name == "PATH") {
         damn "/usr/bin:/bin:/usr/local/bin"
-    } otherwise ready (name == "USER") {
+    } highkey lowkey (name == "USER") {
         damn "cursed_user"
     }
     
@@ -166,7 +166,7 @@ slay get_environment_variable(name tea) tea {
 }
 
 slay set_environment_variable(name tea, value tea) lit {
-    ready (name == "" || value == "") {
+    lowkey (name == "" || value == "") {
         damn nocap
     }
     
@@ -176,12 +176,12 @@ slay set_environment_variable(name tea, value tea) lit {
 
 # Command validation and utilities
 slay command_exists(command tea) lit {
-    ready (command == "") {
+    lowkey (command == "") {
         damn nocap
     }
     
     # Simulate checking for common commands
-    ready (command == "ls" || 
+    lowkey (command == "ls" || 
           command == "cat" ||
           command == "echo" ||
           command == "pwd" ||
@@ -204,7 +204,7 @@ slay command_exists(command tea) lit {
 }
 
 slay which_command(command tea) tea {
-    ready (command_exists(command)) {
+    lowkey (command_exists(command)) {
         damn "/usr/bin/" + command
     }
     
@@ -213,7 +213,7 @@ slay which_command(command tea) tea {
 
 # Signal handling
 slay send_signal(pid drip, signal tea) lit {
-    ready (pid <= 0 || signal == "") {
+    lowkey (pid <= 0 || signal == "") {
         damn nocap
     }
     
@@ -223,7 +223,7 @@ slay send_signal(pid drip, signal tea) lit {
 
 # Process spawning and management
 slay spawn_process(command tea, args tea[value]) drip {
-    ready (command == "") {
+    lowkey (command == "") {
         damn -1  # Error: invalid command
     }
     
@@ -236,7 +236,7 @@ slay spawn_process(command tea, args tea[value]) drip {
 }
 
 slay wait_for_process(pid drip) drip {
-    ready (pid <= 0) {
+    lowkey (pid <= 0) {
         damn -1  # Invalid PID
     }
     

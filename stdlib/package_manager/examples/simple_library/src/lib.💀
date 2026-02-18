@@ -22,7 +22,7 @@ slay multiply(a normie, b normie) normie {
 
 // Division operation with error handling
 slay divide(a normie, b normie) (normie, tea) {
-    ready (b == 0.0) {
+    lowkey (b == 0.0) {
         damn 0.0, "Division by zero error"
     }
     damn a / b, ""
@@ -30,15 +30,15 @@ slay divide(a normie, b normie) (normie, tea) {
 
 // Power operation
 slay power(base normie, exponent normie) normie {
-    ready (exponent == 0.0) {
+    lowkey (exponent == 0.0) {
         damn 1.0
     }
     
-    ready (exponent == 1.0) {
+    lowkey (exponent == 1.0) {
         damn base
     }
     
-    ready (exponent < 0.0) {
+    lowkey (exponent < 0.0) {
         damn 1.0 / power(base, -exponent)
     }
     
@@ -56,11 +56,11 @@ slay power(base normie, exponent normie) normie {
 
 // Square root operation (simplified implementation)
 slay sqrt(x normie) (normie, tea) {
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         damn 0.0, "Cannot compute square root of negative number"
     }
     
-    ready (x == 0.0) {
+    lowkey (x == 0.0) {
         damn 0.0, ""
     }
     
@@ -74,7 +74,7 @@ slay sqrt(x normie) (normie, tea) {
         sus new_guess normie = (guess + x / guess) / 2.0
         sus diff normie = abs(new_guess - guess)
         
-        ready (diff < precision) {
+        lowkey (diff < precision) {
             damn new_guess, ""
         }
         
@@ -87,7 +87,7 @@ slay sqrt(x normie) (normie, tea) {
 
 // Absolute value
 slay abs(x normie) normie {
-    ready (x < 0.0) {
+    lowkey (x < 0.0) {
         damn -x
     }
     damn x
@@ -95,7 +95,7 @@ slay abs(x normie) normie {
 
 // Maximum of two numbers
 slay max(a normie, b normie) normie {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b
@@ -103,7 +103,7 @@ slay max(a normie, b normie) normie {
 
 // Minimum of two numbers
 slay min(a normie, b normie) normie {
-    ready (a < b) {
+    lowkey (a < b) {
         damn a
     }
     damn b
@@ -111,12 +111,12 @@ slay min(a normie, b normie) normie {
 
 // Calculate factorial (for integer inputs)
 slay factorial(n drip) drip {
-    ready (n < 0) {
+    lowkey (n < 0) {
         vibez.spill("Error: Factorial of negative number is undefined")
         damn 0
     }
     
-    ready (n == 0 || n == 1) {
+    lowkey (n == 0 || n == 1) {
         damn 1
     }
     
@@ -125,7 +125,7 @@ slay factorial(n drip) drip {
 
 // Greatest Common Divisor using Euclidean algorithm
 slay gcd(a drip, b drip) drip {
-    ready (b == 0) {
+    lowkey (b == 0) {
         damn abs_int(a)
     }
     damn gcd(b, a % b)
@@ -133,7 +133,7 @@ slay gcd(a drip, b drip) drip {
 
 // Least Common Multiple
 slay lcm(a drip, b drip) drip {
-    ready (a == 0 || b == 0) {
+    lowkey (a == 0 || b == 0) {
         damn 0
     }
     damn abs_int(a * b) / gcd(a, b)
@@ -141,7 +141,7 @@ slay lcm(a drip, b drip) drip {
 
 // Helper function for integer absolute value
 slay abs_int(x drip) drip {
-    ready (x < 0) {
+    lowkey (x < 0) {
         damn -x
     }
     damn x
@@ -149,21 +149,21 @@ slay abs_int(x drip) drip {
 
 // Check if a number is prime
 slay is_prime(n drip) lit {
-    ready (n < 2) {
+    lowkey (n < 2) {
         damn cringe
     }
     
-    ready (n == 2) {
+    lowkey (n == 2) {
         damn based
     }
     
-    ready (n % 2 == 0) {
+    lowkey (n % 2 == 0) {
         damn cringe
     }
     
     sus i drip = 3
     bestie (i * i <= n) {
-        ready (n % i == 0) {
+        lowkey (n % i == 0) {
             damn cringe
         }
         i = i + 2
@@ -174,7 +174,7 @@ slay is_prime(n drip) lit {
 
 // Calculate percentage
 slay percentage(part normie, total normie) (normie, tea) {
-    ready (total == 0.0) {
+    lowkey (total == 0.0) {
         damn 0.0, "Cannot calculate percentage with zero total"
     }
     
@@ -183,9 +183,9 @@ slay percentage(part normie, total normie) (normie, tea) {
 
 // Round to nearest integer
 slay round(x normie) drip {
-    ready (x >= 0.0) {
+    lowkey (x >= 0.0) {
         damn x + 0.5
-    } otherwise {
+    } highkey {
         damn x - 0.5
     }
 }
@@ -218,7 +218,7 @@ slay format_number(x normie, decimal_places drip) tea {
     
     sus result tea = to_string(int_part)
     
-    ready (decimal_places > 0) {
+    lowkey (decimal_places > 0) {
         result = concat_str(result, ".")
         
         sus i drip = 0
@@ -282,9 +282,9 @@ slay demo_library() {
     vibez.spill("6 * 7 = {}", multiply(6.0, 7.0))
     
     sus div_result, div_error = divide(15.0, 3.0)
-    ready (div_error == "") {
+    lowkey (div_error == "") {
         vibez.spill("15 / 3 = {}", div_result)
-    } otherwise {
+    } highkey {
         vibez.spill("Division error: {}", div_error)
     }
     
@@ -294,7 +294,7 @@ slay demo_library() {
     vibez.spill("2^8 = {}", power(2.0, 8.0))
     
     sus sqrt_result, sqrt_error = sqrt(16.0)
-    ready (sqrt_error == "") {
+    lowkey (sqrt_error == "") {
         vibez.spill("sqrt(16) = {}", sqrt_result)
     }
     
@@ -315,7 +315,7 @@ slay demo_library() {
     vibez.spill("")
     vibez.spill("Practical Calculations:")
     sus perc_result, perc_error = percentage(25.0, 100.0)
-    ready (perc_error == "") {
+    lowkey (perc_error == "") {
         vibez.spill("25 out of 100 = {}%", perc_result)
     }
     

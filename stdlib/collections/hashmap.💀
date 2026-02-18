@@ -286,7 +286,7 @@ fr fr ================================
 
 slay string_length(s tea) normie {
     fr fr Real string length calculation using builtin runtime function
-    ready (s == "") {
+    lowkey (s == "") {
         damn 0
     }
     damn builtin_string_len(s)
@@ -294,11 +294,11 @@ slay string_length(s tea) normie {
 
 slay string_char_at(s tea, index normie) normie {
     fr fr Real character extraction using builtin runtime function
-    ready (s == "" || index < 0) {
+    lowkey (s == "" || index < 0) {
         damn 0
     }
     sus len normie = string_length(s)
-    ready (index >= len) {
+    lowkey (index >= len) {
         damn 0
     }
     damn builtin_string_char_at(s, index)

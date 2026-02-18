@@ -79,13 +79,13 @@ fr fr Get strategy name for display
 slay get_strategy_name(strategy normie) tea {
     yo strategy == THREAD_ID_STRATEGY_OS_NATIVE {
         damn "OS Native"
-    } otherwise yo strategy == THREAD_ID_STRATEGY_TLS_SLOT {
+    } highkey yo strategy == THREAD_ID_STRATEGY_TLS_SLOT {
         damn "TLS Slot"
-    } otherwise yo strategy == THREAD_ID_STRATEGY_PTHREAD {
+    } highkey yo strategy == THREAD_ID_STRATEGY_PTHREAD {
         damn "Pthread"
-    } otherwise yo strategy == THREAD_ID_STRATEGY_HASH_STACK {
+    } highkey yo strategy == THREAD_ID_STRATEGY_HASH_STACK {
         damn "Hash Stack"
-    } otherwise {
+    } highkey {
         damn "Unknown"
     }
 }
@@ -168,18 +168,18 @@ slay get_os_thread_id(strategy normie) thicc {
     yo strategy == THREAD_ID_STRATEGY_OS_NATIVE {
         yo platform_is_linux() {
             damn get_linux_thread_id()
-        } otherwise yo platform_is_windows() {
+        } highkey yo platform_is_windows() {
             damn get_windows_thread_id()
-        } otherwise yo platform_is_darwin() {
+        } highkey yo platform_is_darwin() {
             damn get_darwin_thread_id()
-        } otherwise {
+        } highkey {
             damn get_generic_thread_id()
         }
-    } otherwise yo strategy == THREAD_ID_STRATEGY_PTHREAD {
+    } highkey yo strategy == THREAD_ID_STRATEGY_PTHREAD {
         damn get_pthread_thread_id()
-    } otherwise yo strategy == THREAD_ID_STRATEGY_HASH_STACK {
+    } highkey yo strategy == THREAD_ID_STRATEGY_HASH_STACK {
         damn get_hash_based_thread_id()
-    } otherwise {
+    } highkey {
         damn get_tls_thread_id()
     }
 }
@@ -350,11 +350,11 @@ fr fr Get thread stack information
 slay get_thread_stack_base() *void {
     yo platform_is_linux() {
         damn get_linux_stack_base()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn get_windows_stack_base()
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         damn get_darwin_stack_base()
-    } otherwise {
+    } highkey {
         damn get_generic_stack_base()
     }
 }
@@ -362,11 +362,11 @@ slay get_thread_stack_base() *void {
 slay get_thread_stack_size() normie {
     yo platform_is_linux() {
         damn get_linux_stack_size()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn get_windows_stack_size()
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         damn get_darwin_stack_size()
-    } otherwise {
+    } highkey {
         damn get_generic_stack_size()
     }
 }
@@ -374,11 +374,11 @@ slay get_thread_stack_size() normie {
 slay get_thread_stack_guard_size() normie {
     yo platform_is_linux() {
         damn get_linux_stack_guard_size()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn get_windows_stack_guard_size()
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         damn get_darwin_stack_guard_size()
-    } otherwise {
+    } highkey {
         damn 4096  fr fr Default guard page size
     }
 }
@@ -471,11 +471,11 @@ fr fr Get thread CPU affinity
 slay get_thread_cpu_affinity() thicc {
     yo platform_is_linux() {
         damn get_linux_cpu_affinity()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn get_windows_cpu_affinity()
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         damn get_darwin_cpu_affinity()
-    } otherwise {
+    } highkey {
         damn 0xFFFFFFFF  fr fr All CPUs
     }
 }
@@ -513,9 +513,9 @@ fr fr Get thread NUMA node
 slay get_thread_numa_node() normie {
     yo platform_is_linux() {
         damn get_linux_numa_node()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn get_windows_numa_node()
-    } otherwise {
+    } highkey {
         damn 0  fr fr Default to node 0
     }
 }
@@ -543,11 +543,11 @@ fr fr Get thread priority
 slay get_thread_priority() normie {
     yo platform_is_linux() {
         damn get_linux_thread_priority()
-    } otherwise yo platform_is_windows() {
+    } highkey yo platform_is_windows() {
         damn get_windows_thread_priority()
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         damn get_darwin_thread_priority()
-    } otherwise {
+    } highkey {
         damn 0  fr fr Normal priority
     }
 }
@@ -658,7 +658,7 @@ fr fr Set OS-level thread name
 slay set_os_thread_name(name tea) {
     yo platform_is_linux() {
         set_linux_thread_name(name)
-    } otherwise yo platform_is_darwin() {
+    } highkey yo platform_is_darwin() {
         set_darwin_thread_name(name)
     }
     fr fr Windows doesn't have equivalent API in older versions
@@ -796,7 +796,7 @@ slay get_thread_stack_usage() normie {
     
     yo current_stack > stack_base {
         damn normie(current_stack - stack_base)
-    } otherwise {
+    } highkey {
         damn normie(stack_base - current_stack)
     }
 }

@@ -401,7 +401,7 @@ slay test_gpu_acceleration() cringe {
     sus gpu_available lit = gpu_initialize_complete()
     fr fr Note: In test environment, GPU may not be available, so we test both paths
     
-    ready (gpu_available) {
+    lowkey (gpu_available) {
         vibez.spill("GPU available for testing")
         
         fr fr Test GPU matrix multiplication
@@ -434,7 +434,7 @@ slay test_gpu_acceleration() cringe {
         assert_true(conv_success, "GPU convolution success")
         
         gpu_cleanup_complete()
-    } otherwise {
+    } highkey {
         vibez.spill("GPU not available, testing CPU fallbacks")
         
         fr fr Even without GPU, the functions should work via CPU fallback
@@ -615,25 +615,25 @@ slay test_numerical_stability() cringe {
 
 fr fr Helper functions for testing
 slay assert_eq_meal(actual meal, expected meal, message tea) cringe {
-    ready (abs_meal(actual - expected) < 0.0001) {
+    lowkey (abs_meal(actual - expected) < 0.0001) {
         vibez.spill("✓ ", message)
-    } otherwise {
+    } highkey {
         vibez.spill("✗ ", message, " - Expected: ", expected, ", Actual: ", actual)
     }
 }
 
 slay assert_eq_drip(actual drip, expected drip, message tea) cringe {
-    ready (actual == expected) {
+    lowkey (actual == expected) {
         vibez.spill("✓ ", message)
-    } otherwise {
+    } highkey {
         vibez.spill("✗ ", message, " - Expected: ", expected, ", Actual: ", actual)
     }
 }
 
 slay assert_true(condition lit, message tea) cringe {
-    ready (condition) {
+    lowkey (condition) {
         vibez.spill("✓ ", message)
-    } otherwise {
+    } highkey {
         vibez.spill("✗ ", message)
     }
 }

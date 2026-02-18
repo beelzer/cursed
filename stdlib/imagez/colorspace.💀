@@ -18,23 +18,23 @@ slay rgb_to_hsv_precise(rgb RGB) HSV {
     
     # Hue calculation
     sus h tea = 0.0
-    ready (delta > 0.0) {
-        ready (max_val == r) {
+    lowkey (delta > 0.0) {
+        lowkey (max_val == r) {
             h = 60.0 * ((g - b) / delta)
-            ready (g < b) {
+            lowkey (g < b) {
                 h = h + 360.0
             }
-        } otherwise ready (max_val == g) {
+        } highkey lowkey (max_val == g) {
             h = 60.0 * (2.0 + (b - r) / delta)
-        } otherwise {
+        } highkey {
             h = 60.0 * (4.0 + (r - g) / delta)
         }
     }
     
     # Saturation calculation
-    sus s tea = ready (max_val == 0.0) {
+    sus s tea = lowkey (max_val == 0.0) {
         damn 0.0
-    } otherwise {
+    } highkey {
         damn delta / max_val
     }
     
@@ -66,17 +66,17 @@ slay hsv_to_rgb_precise(hsv HSV) RGB {
     sus g tea = 0.0
     sus b tea = 0.0
     
-    ready (h < 60.0) {
+    lowkey (h < 60.0) {
         r = c; g = x; b = 0.0
-    } otherwise ready (h < 120.0) {
+    } highkey lowkey (h < 120.0) {
         r = x; g = c; b = 0.0
-    } otherwise ready (h < 180.0) {
+    } highkey lowkey (h < 180.0) {
         r = 0.0; g = c; b = x
-    } otherwise ready (h < 240.0) {
+    } highkey lowkey (h < 240.0) {
         r = 0.0; g = x; b = c
-    } otherwise ready (h < 300.0) {
+    } highkey lowkey (h < 300.0) {
         r = x; g = 0.0; b = c
-    } otherwise {
+    } highkey {
         r = c; g = 0.0; b = x
     }
     
@@ -112,21 +112,21 @@ slay rgb_to_xyz(rgb RGB) tea[value]{
     sus b tea = rgb.b / 255.0
     
     # Apply gamma correction
-    r = ready (r > 0.04045) {
+    r = lowkey (r > 0.04045) {
         damn pow((r + 0.055) / 1.055, 2.4)
-    } otherwise {
+    } highkey {
         damn r / 12.92
     }
     
-    g = ready (g > 0.04045) {
+    g = lowkey (g > 0.04045) {
         damn pow((g + 0.055) / 1.055, 2.4)
-    } otherwise {
+    } highkey {
         damn g / 12.92
     }
     
-    b = ready (b > 0.04045) {
+    b = lowkey (b > 0.04045) {
         damn pow((b + 0.055) / 1.055, 2.4)
-    } otherwise {
+    } highkey {
         damn b / 12.92
     }
     
@@ -155,21 +155,21 @@ slay xyz_to_rgb(xyz tea[value]) RGB {
     sus b tea = x * 0.0556434 + y * -0.2040259 + z * 1.0572252
     
     # Apply inverse gamma correction
-    r = ready (r > 0.0031308) {
+    r = lowkey (r > 0.0031308) {
         damn 1.055 * pow(r, 1.0/2.4) - 0.055
-    } otherwise {
+    } highkey {
         damn 12.92 * r
     }
     
-    g = ready (g > 0.0031308) {
+    g = lowkey (g > 0.0031308) {
         damn 1.055 * pow(g, 1.0/2.4) - 0.055
-    } otherwise {
+    } highkey {
         damn 12.92 * g
     }
     
-    b = ready (b > 0.0031308) {
+    b = lowkey (b > 0.0031308) {
         damn 1.055 * pow(b, 1.0/2.4) - 0.055
-    } otherwise {
+    } highkey {
         damn 12.92 * b
     }
     
@@ -191,9 +191,9 @@ slay xyz_to_lab(xyz tea[value]) LAB {
     sus fy tea = lab_f_function(xyz[1] / yn)
     sus fz tea = lab_f_function(xyz[2] / zn)
     
-    sus l tea = ready (xyz[1] / yn > 0.008856) {
+    sus l tea = lowkey (xyz[1] / yn > 0.008856) {
         damn 116.0 * fy - 16.0
-    } otherwise {
+    } highkey {
         damn 903.3 * (xyz[1] / yn)
     }
     
@@ -223,18 +223,18 @@ slay lab_to_xyz(lab LAB) tea[value]{
 
 # LAB color space helper functions
 slay lab_f_function(t tea) tea {
-    ready (t > 0.008856) {
+    lowkey (t > 0.008856) {
         damn pow(t, 1.0/3.0)
-    } otherwise {
+    } highkey {
         damn (7.787 * t) + (16.0/116.0)
     }
 }
 
 slay lab_f_inverse(t tea) tea {
     sus t3 tea = t * t * t
-    ready (t3 > 0.008856) {
+    lowkey (t3 > 0.008856) {
         damn t3
-    } otherwise {
+    } highkey {
         damn (t - 16.0/116.0) / 7.787
     }
 }
@@ -247,7 +247,7 @@ slay rgb_to_cmyk(rgb RGB) tea[value]{
     
     sus k tea = 1.0 - max_tea(max_tea(r, g), b)
     
-    ready (k == 1.0) {
+    lowkey (k == 1.0) {
         damn [0.0, 0.0, 0.0, 1.0]
     }
     
@@ -260,7 +260,7 @@ slay rgb_to_cmyk(rgb RGB) tea[value]{
 
 # CMYK to RGB conversion
 slay cmyk_to_rgb(cmyk tea[value]) RGB {
-    ready (len(cmyk) < 4) {
+    lowkey (len(cmyk) < 4) {
         damn RGB{r: 0, g: 0, b: 0}
     }
     
@@ -286,7 +286,7 @@ slay convert_image_colorspace(img Image, target_colorspace tea) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (img.color_space == target_colorspace) {
+    lowkey (img.color_space == target_colorspace) {
         damn clone_image(img)  # Already in target color space
     }
     
@@ -303,11 +303,11 @@ slay convert_image_colorspace(img Image, target_colorspace tea) yikes<Image> {
 
 # Convert image to RGB color space
 slay convert_to_rgb(img Image) yikes<Image> {
-    ready (img.color_space == "RGB" && img.channels == 3) {
+    lowkey (img.color_space == "RGB" && img.channels == 3) {
         damn clone_image(img)
     }
     
-    ready (img.color_space == "RGBA" && img.channels == 4) {
+    lowkey (img.color_space == "RGBA" && img.channels == 4) {
         # Remove alpha channel
         sus result Image = create_image(img.width, img.height, 3)
         result.format = img.format
@@ -330,7 +330,7 @@ slay convert_to_rgb(img Image) yikes<Image> {
         damn result
     }
     
-    ready (img.color_space == "GRAYSCALE") {
+    lowkey (img.color_space == "GRAYSCALE") {
         # Convert grayscale to RGB
         sus result Image = create_image(img.width, img.height, 3)
         result.format = img.format
@@ -359,11 +359,11 @@ slay convert_to_rgb(img Image) yikes<Image> {
 
 # Convert image to RGBA color space
 slay convert_to_rgba(img Image) yikes<Image> {
-    ready (img.color_space == "RGBA" && img.channels == 4) {
+    lowkey (img.color_space == "RGBA" && img.channels == 4) {
         damn clone_image(img)
     }
     
-    ready (img.color_space == "RGB" && img.channels == 3) {
+    lowkey (img.color_space == "RGB" && img.channels == 3) {
         # Add alpha channel (fully opaque)
         sus result Image = create_image(img.width, img.height, 4)
         result.format = img.format
@@ -391,7 +391,7 @@ slay convert_to_rgba(img Image) yikes<Image> {
 
 # Convert image to HSV color space
 slay convert_to_hsv(img Image) yikes<Image> {
-    ready (img.channels < 3) {
+    lowkey (img.channels < 3) {
         yikes "HSV conversion requires at least 3 channels"
     }
     
@@ -430,7 +430,7 @@ slay convert_to_hsv(img Image) yikes<Image> {
 
 # Convert image to LAB color space
 slay convert_to_lab_image(img Image) yikes<Image> {
-    ready (img.channels < 3) {
+    lowkey (img.channels < 3) {
         yikes "LAB conversion requires at least 3 channels"
     }
     
@@ -466,7 +466,7 @@ slay convert_to_lab_image(img Image) yikes<Image> {
 
 # Convert image to CMYK color space
 slay convert_to_cmyk(img Image) yikes<Image> {
-    ready (img.channels < 3) {
+    lowkey (img.channels < 3) {
         yikes "CMYK conversion requires at least 3 channels"
     }
     
@@ -506,7 +506,7 @@ slay adjust_color_temperature(img Image, temperature drip) yikes<Image> {
         when e -> yikes e
     }
     
-    ready (img.channels < 3) {
+    lowkey (img.channels < 3) {
         yikes "color temperature adjustment requires at least 3 channels"
     }
     
@@ -514,14 +514,14 @@ slay adjust_color_temperature(img Image, temperature drip) yikes<Image> {
     
     # Calculate temperature adjustment factors
     sus temp_factor tea = temperature / 100.0
-    sus red_factor tea = ready (temp_factor > 0.0) {
+    sus red_factor tea = lowkey (temp_factor > 0.0) {
         damn 1.0 + temp_factor * 0.3
-    } otherwise {
+    } highkey {
         damn 1.0
     }
-    sus blue_factor tea = ready (temp_factor < 0.0) {
+    sus blue_factor tea = lowkey (temp_factor < 0.0) {
         damn 1.0 - temp_factor * 0.3
-    } otherwise {
+    } highkey {
         damn 1.0
     }
     
@@ -545,7 +545,7 @@ slay adjust_color_temperature(img Image, temperature drip) yikes<Image> {
             adjusted_pixel = append(adjusted_pixel, new_blue)
             
             # Preserve alpha channel if present
-            ready (img.channels == 4) {
+            lowkey (img.channels == 4) {
                 adjusted_pixel = append(adjusted_pixel, pixel[3])
             }
             
@@ -564,11 +564,11 @@ slay white_balance(img Image, red_gain tea, green_gain tea, blue_gain tea) yikes
         when e -> yikes e
     }
     
-    ready (img.channels < 3) {
+    lowkey (img.channels < 3) {
         yikes "white balance requires at least 3 channels"
     }
     
-    ready (red_gain <= 0.0 || green_gain <= 0.0 || blue_gain <= 0.0) {
+    lowkey (red_gain <= 0.0 || green_gain <= 0.0 || blue_gain <= 0.0) {
         yikes "invalid white balance gains"
     }
     
@@ -587,7 +587,7 @@ slay white_balance(img Image, red_gain tea, green_gain tea, blue_gain tea) yikes
             ]
             
             # Preserve alpha channel if present
-            ready (img.channels == 4) {
+            lowkey (img.channels == 4) {
                 balanced_pixel = append(balanced_pixel, pixel[3])
             }
             

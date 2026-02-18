@@ -778,7 +778,7 @@ slay decision_tree_find_best_split(features meal[value], labels meal[value], sta
                 sus sample_idx normie = i * num_features + feature_idx
                 lowkey features[sample_idx] <= threshold {
                     left_count = left_count + 1
-                } otherwise {
+                } highkey {
                     right_count = right_count + 1
                 }
                 i = i + 1
@@ -1197,7 +1197,7 @@ slay q_learning_choose_action(agent QLearningAgent, state normie) normie {
     lowkey random_val < agent.epsilon {
         fr fr Explore: choose random action
         damn random_range(0, agent.num_actions)
-    } otherwise {
+    } highkey {
         fr fr Exploit: choose best action
         sus best_action normie = 0
         sus best_value meal = agent.q_table[state][0]

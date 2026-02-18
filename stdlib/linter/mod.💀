@@ -112,30 +112,30 @@ slay lint_code(source tea, config LinterConfig, file_path tea) LintIssue[value]{
         sus trimmed tea = trim_str(line)
         
         // Skip empty lines and comments for most checks
-        ready (len_str(trimmed) > 0 && !starts_with(trimmed, "//")) {
+        lowkey (len_str(trimmed) > 0 && !starts_with(trimmed, "//")) {
             
             // === CRITICAL RULE 1-5: STYLE ENFORCEMENT ===
-            ready (config.check_naming) {
+            lowkey (config.check_naming) {
                 check_style_rules(issues, line, line_num, config, file_path)
             }
             
             // === CRITICAL RULE 6-15: SECURITY ANALYSIS ===
-            ready (config.check_security) {
+            lowkey (config.check_security) {
                 check_security_rules(issues, line, line_num, file_path)
             }
             
             // === CRITICAL RULE 16-25: SAFETY PATTERNS ===
-            ready (config.check_safety) {
+            lowkey (config.check_safety) {
                 check_safety_rules(issues, line, line_num, file_path)
             }
             
             // === CRITICAL RULE 26-35: PERFORMANCE OPTIMIZATION ===
-            ready (config.check_performance) {
+            lowkey (config.check_performance) {
                 check_performance_rules(issues, line, line_num, file_path)
             }
             
             // === CRITICAL RULE 36-42: PATTERN DETECTION ===
-            ready (config.check_patterns) {
+            lowkey (config.check_patterns) {
                 check_pattern_rules(issues, line, line_num, file_path)
             }
             
@@ -147,11 +147,11 @@ slay lint_code(source tea, config LinterConfig, file_path tea) LintIssue[value]{
             function_parameters = function_state_result.parameters
             
             // Check complexity limits
-            ready (function_complexity > config.max_function_complexity) {
+            lowkey (function_complexity > config.max_function_complexity) {
                 add_complexity_issue(issues, line_num, function_complexity, config.max_function_complexity, file_path)
             }
             
-            ready (nesting_level > config.max_nesting_depth) {
+            lowkey (nesting_level > config.max_nesting_depth) {
                 add_nesting_issue(issues, line_num, nesting_level, config.max_nesting_depth, file_path)
             }
         }
@@ -165,7 +165,7 @@ slay lint_code(source tea, config LinterConfig, file_path tea) LintIssue[value]{
 // === CRITICAL RULES 1-5: STYLE ENFORCEMENT ===
 slay check_style_rules(issues LintIssue[value], line tea, line_num drip, config LinterConfig, file_path tea) {
     // RULE 1: Line length enforcement
-    ready (len_str(line) > config.max_line_length) {
+    lowkey (len_str(line) > config.max_line_length) {
         sus issue LintIssue = LintIssue{
             rule_id: "line-too-long",
             severity: "warning",
@@ -180,7 +180,7 @@ slay check_style_rules(issues LintIssue[value], line tea, line_num drip, config 
     }
     
     // RULE 2: Variable naming conventions
-    ready (contains_str(line, "sus ") && (contains_camel_case(line) || contains_pascal_case(line))) {
+    lowkey (contains_str(line, "sus ") && (contains_camel_case(line) || contains_pascal_case(line))) {
         sus issue LintIssue = LintIssue{
             rule_id: "variable-naming",
             severity: "warning",
@@ -195,7 +195,7 @@ slay check_style_rules(issues LintIssue[value], line tea, line_num drip, config 
     }
     
     // RULE 3: Function naming conventions
-    ready (contains_str(line, "slay ") && (contains_camel_case(line) || contains_pascal_case(line))) {
+    lowkey (contains_str(line, "slay ") && (contains_camel_case(line) || contains_pascal_case(line))) {
         sus issue LintIssue = LintIssue{
             rule_id: "function-naming",
             severity: "warning",
@@ -210,7 +210,7 @@ slay check_style_rules(issues LintIssue[value], line tea, line_num drip, config 
     }
     
     // RULE 4: Trailing whitespace
-    ready (ends_with_whitespace(line)) {
+    lowkey (ends_with_whitespace(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "trailing-whitespace",
             severity: "info",
@@ -225,7 +225,7 @@ slay check_style_rules(issues LintIssue[value], line tea, line_num drip, config 
     }
     
     // RULE 5: Mixed indentation
-    ready (has_mixed_indentation(line)) {
+    lowkey (has_mixed_indentation(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "mixed-indentation",
             severity: "warning",
@@ -243,7 +243,7 @@ slay check_style_rules(issues LintIssue[value], line tea, line_num drip, config 
 // === CRITICAL RULES 6-15: SECURITY ANALYSIS ===
 slay check_security_rules(issues LintIssue[value], line tea, line_num drip, file_path tea) {
     // RULE 6: Hardcoded secrets detection
-    ready (contains_hardcoded_secret(line)) {
+    lowkey (contains_hardcoded_secret(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "hardcoded-secret",
             severity: "error",
@@ -258,7 +258,7 @@ slay check_security_rules(issues LintIssue[value], line tea, line_num drip, file
     }
     
     // RULE 7: API key patterns
-    ready (contains_api_key_pattern(line)) {
+    lowkey (contains_api_key_pattern(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "api-key-pattern",
             severity: "error", 
@@ -273,7 +273,7 @@ slay check_security_rules(issues LintIssue[value], line tea, line_num drip, file
     }
     
     // RULE 8: SQL injection vulnerabilities  
-    ready (contains_sql_injection_risk(line)) {
+    lowkey (contains_sql_injection_risk(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "sql-injection",
             severity: "error",
@@ -288,7 +288,7 @@ slay check_security_rules(issues LintIssue[value], line tea, line_num drip, file
     }
     
     // RULE 9: Unsafe operations
-    ready (contains_unsafe_operation(line)) {
+    lowkey (contains_unsafe_operation(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "unsafe-operation",
             severity: "warning",
@@ -303,7 +303,7 @@ slay check_security_rules(issues LintIssue[value], line tea, line_num drip, file
     }
     
     // RULE 10: Weak cryptography
-    ready (contains_weak_crypto(line)) {
+    lowkey (contains_weak_crypto(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "weak-crypto",
             severity: "error",
@@ -321,7 +321,7 @@ slay check_security_rules(issues LintIssue[value], line tea, line_num drip, file
 // === CRITICAL RULES 16-25: SAFETY PATTERNS ===
 slay check_safety_rules(issues LintIssue[value], line tea, line_num drip, file_path tea) {
     // RULE 16: Division by zero
-    ready (contains_division_by_zero(line)) {
+    lowkey (contains_division_by_zero(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "division-by-zero",
             severity: "error",
@@ -336,7 +336,7 @@ slay check_safety_rules(issues LintIssue[value], line tea, line_num drip, file_p
     }
     
     // RULE 17: Array bounds checking
-    ready (contains_unsafe_array_access(line)) {
+    lowkey (contains_unsafe_array_access(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "unsafe-array-access",
             severity: "warning",
@@ -351,7 +351,7 @@ slay check_safety_rules(issues LintIssue[value], line tea, line_num drip, file_p
     }
     
     // RULE 18: Null pointer dereference
-    ready (contains_null_dereference_risk(line)) {
+    lowkey (contains_null_dereference_risk(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "null-dereference",
             severity: "error",
@@ -366,7 +366,7 @@ slay check_safety_rules(issues LintIssue[value], line tea, line_num drip, file_p
     }
     
     // RULE 19: Memory leak patterns
-    ready (contains_memory_leak_pattern(line)) {
+    lowkey (contains_memory_leak_pattern(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "memory-leak",
             severity: "warning",
@@ -381,7 +381,7 @@ slay check_safety_rules(issues LintIssue[value], line tea, line_num drip, file_p
     }
     
     // RULE 20: Integer overflow risks
-    ready (contains_integer_overflow_risk(line)) {
+    lowkey (contains_integer_overflow_risk(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "integer-overflow",
             severity: "warning",
@@ -399,7 +399,7 @@ slay check_safety_rules(issues LintIssue[value], line tea, line_num drip, file_p
 // === CRITICAL RULES 26-35: PERFORMANCE OPTIMIZATION ===
 slay check_performance_rules(issues LintIssue[value], line tea, line_num drip, file_path tea) {
     // RULE 26: String concatenation in loops
-    ready (contains_inefficient_string_concat(line)) {
+    lowkey (contains_inefficient_string_concat(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "inefficient-string-concat",
             severity: "info",
@@ -414,7 +414,7 @@ slay check_performance_rules(issues LintIssue[value], line tea, line_num drip, f
     }
     
     // RULE 27: Unnecessary array copying
-    ready (contains_unnecessary_array_copy(line)) {
+    lowkey (contains_unnecessary_array_copy(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "unnecessary-array-copy",
             severity: "info", 
@@ -429,7 +429,7 @@ slay check_performance_rules(issues LintIssue[value], line tea, line_num drip, f
     }
     
     // RULE 28: Redundant computations
-    ready (contains_redundant_computation(line)) {
+    lowkey (contains_redundant_computation(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "redundant-computation",
             severity: "info",
@@ -444,7 +444,7 @@ slay check_performance_rules(issues LintIssue[value], line tea, line_num drip, f
     }
     
     // RULE 29: Expensive operations in loops
-    ready (contains_expensive_loop_operation(line)) {
+    lowkey (contains_expensive_loop_operation(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "expensive-loop-operation",
             severity: "warning",
@@ -459,7 +459,7 @@ slay check_performance_rules(issues LintIssue[value], line tea, line_num drip, f
     }
     
     // RULE 30: Inefficient data structures
-    ready (contains_inefficient_data_structure(line)) {
+    lowkey (contains_inefficient_data_structure(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "inefficient-data-structure",
             severity: "info",
@@ -477,7 +477,7 @@ slay check_performance_rules(issues LintIssue[value], line tea, line_num drip, f
 // === CRITICAL RULES 36-42: PATTERN DETECTION ===
 slay check_pattern_rules(issues LintIssue[value], line tea, line_num drip, file_path tea) {
     // RULE 36: Dead code detection
-    ready (contains_dead_code(line)) {
+    lowkey (contains_dead_code(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "dead-code",
             severity: "warning",
@@ -492,7 +492,7 @@ slay check_pattern_rules(issues LintIssue[value], line tea, line_num drip, file_
     }
     
     // RULE 37: Magic numbers
-    ready (contains_magic_numbers(line)) {
+    lowkey (contains_magic_numbers(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "magic-numbers",
             severity: "info",
@@ -507,7 +507,7 @@ slay check_pattern_rules(issues LintIssue[value], line tea, line_num drip, file_
     }
     
     // RULE 38: Duplicated code patterns
-    ready (contains_code_duplication(line)) {
+    lowkey (contains_code_duplication(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "code-duplication",
             severity: "info",
@@ -522,7 +522,7 @@ slay check_pattern_rules(issues LintIssue[value], line tea, line_num drip, file_
     }
     
     // RULE 39: Complex boolean expressions
-    ready (contains_complex_boolean(line)) {
+    lowkey (contains_complex_boolean(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "complex-boolean",
             severity: "info",
@@ -537,7 +537,7 @@ slay check_pattern_rules(issues LintIssue[value], line tea, line_num drip, file_
     }
     
     // RULE 40: Long parameter lists
-    ready (contains_long_parameter_list(line)) {
+    lowkey (contains_long_parameter_list(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "long-parameter-list",
             severity: "warning",
@@ -552,7 +552,7 @@ slay check_pattern_rules(issues LintIssue[value], line tea, line_num drip, file_
     }
     
     // RULE 41: Inconsistent error handling
-    ready (contains_inconsistent_error_handling(line)) {
+    lowkey (contains_inconsistent_error_handling(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "inconsistent-error-handling",
             severity: "warning",
@@ -567,7 +567,7 @@ slay check_pattern_rules(issues LintIssue[value], line tea, line_num drip, file_
     }
     
     // RULE 42: Missing return statements
-    ready (contains_missing_return(line)) {
+    lowkey (contains_missing_return(line)) {
         sus issue LintIssue = LintIssue{
             rule_id: "missing-return",
             severity: "error",
@@ -597,23 +597,23 @@ slay track_function_state(line tea, current_in_function lit, current_complexity 
     sus parameters drip = current_parameters
     
     // Function start
-    ready (contains_str(line, "slay ")) {
+    lowkey (contains_str(line, "slay ")) {
         in_function = based
         complexity = 1
         parameters = count_function_parameters(line)
     }
     
     // Function end
-    ready (in_function && contains_str(line, "}") && !contains_str(line, "{")) {
+    lowkey (in_function && contains_str(line, "}") && !contains_str(line, "{")) {
         in_function = cringe
         complexity = 0
         parameters = 0
     }
     
     // Complexity increment
-    ready (in_function) {
-        ready (contains_str(line, "ready ") || contains_str(line, "bestie ") || 
-               contains_str(line, "catch ") || contains_str(line, "otherwise")) {
+    lowkey (in_function) {
+        lowkey (contains_str(line, "lowkey ") || contains_str(line, "bestie ") || 
+               contains_str(line, "catch ") || contains_str(line, "highkey")) {
             complexity = complexity + 1
         }
     }
@@ -635,7 +635,7 @@ slay update_nesting_level(line tea, current_level drip) drip {
     level = level + open_count - close_count
     
     // Ensure we don't go negative
-    ready (level < 0) {
+    lowkey (level < 0) {
         level = 0
     }
     
@@ -657,7 +657,7 @@ slay contains_hardcoded_secret(line tea) lit {
     
     sus i drip = 0
     bestie (i < len(secret_patterns)) {
-        ready (contains_str(line, secret_patterns[i]) && 
+        lowkey (contains_str(line, secret_patterns[i]) && 
                (contains_str(line, "\"") || contains_str(line, "'"))) {
             damn based
         }
@@ -682,7 +682,7 @@ slay contains_api_key_pattern(line tea) lit {
     
     sus i drip = 0
     bestie (i < len(api_prefixes)) {
-        ready (contains_str(line, api_prefixes[i])) {
+        lowkey (contains_str(line, api_prefixes[i])) {
             damn based
         }
         i = i + 1
@@ -710,7 +710,7 @@ slay contains_unsafe_operation(line tea) lit {
     
     sus i drip = 0
     bestie (i < len(unsafe_patterns)) {
-        ready (contains_str(line, unsafe_patterns[i])) {
+        lowkey (contains_str(line, unsafe_patterns[i])) {
             damn based
         }
         i = i + 1
@@ -731,7 +731,7 @@ slay contains_weak_crypto(line tea) lit {
     
     sus i drip = 0
     bestie (i < len(weak_functions)) {
-        ready (contains_str(line, weak_functions[i])) {
+        lowkey (contains_str(line, weak_functions[i])) {
             damn based
         }
         i = i + 1
@@ -788,10 +788,10 @@ slay contains_expensive_loop_operation(line tea) lit {
         "network_call("
     ]
     
-    ready (contains_str(line, "bestie")) {
+    lowkey (contains_str(line, "bestie")) {
         sus i drip = 0
         bestie (i < len(expensive_ops)) {
-            ready (contains_str(line, expensive_ops[i])) {
+            lowkey (contains_str(line, expensive_ops[i])) {
                 damn based
             }
             i = i + 1
@@ -823,20 +823,20 @@ slay contains_magic_numbers(line tea) lit {
 
 slay contains_code_duplication(line tea) lit {
     // Simplified - would need more sophisticated analysis
-    damn (len_str(line) > 50 && contains_str(line, "ready"))
+    damn (len_str(line) > 50 && contains_str(line, "lowkey"))
 }
 
 slay contains_complex_boolean(line tea) lit {
     sus bool_operators drip = 0
-    ready (contains_str(line, "&&")) { bool_operators = bool_operators + 1 }
-    ready (contains_str(line, "||")) { bool_operators = bool_operators + 1 }
-    ready (contains_str(line, "!")) { bool_operators = bool_operators + 1 }
+    lowkey (contains_str(line, "&&")) { bool_operators = bool_operators + 1 }
+    lowkey (contains_str(line, "||")) { bool_operators = bool_operators + 1 }
+    lowkey (contains_str(line, "!")) { bool_operators = bool_operators + 1 }
     
     damn bool_operators > 2
 }
 
 slay contains_long_parameter_list(line tea) lit {
-    ready (contains_str(line, "slay ")) {
+    lowkey (contains_str(line, "slay ")) {
         sus param_count drip = count_function_parameters(line)
         damn param_count > 4
     }
@@ -864,14 +864,14 @@ slay contains_camel_case(line tea) lit {
     sus i drip = 0
     bestie (i < len_str(line)) {
         sus char tea = char_at(line, i)
-        ready (char >= "a" && char <= "z") { 
+        lowkey (char >= "a" && char <= "z") { 
             has_lower = based 
             consecutive_upper = 0
         }
-        ready (char >= "A" && char <= "Z") { 
+        lowkey (char >= "A" && char <= "Z") { 
             has_upper = based
             consecutive_upper = consecutive_upper + 1
-            ready (consecutive_upper > 1) {
+            lowkey (consecutive_upper > 1) {
                 damn cringe  // PascalCase, not camelCase
             }
         }
@@ -887,7 +887,7 @@ slay contains_pascal_case(line tea) lit {
 }
 
 slay ends_with_whitespace(line tea) lit {
-    ready (len_str(line) > 0) {
+    lowkey (len_str(line) > 0) {
         sus last_char tea = char_at(line, len_str(line) - 1)
         damn (last_char == " " || last_char == "\t")
     }
@@ -902,9 +902,9 @@ slay has_mixed_indentation(line tea) lit {
     sus i drip = 0
     bestie (i < len_str(line)) {
         sus char tea = char_at(line, i)
-        ready (char == " " && leading_whitespace_only) { has_spaces = based }
-        ready (char == "\t" && leading_whitespace_only) { has_tabs = based }
-        ready (char != " " && char != "\t") { leading_whitespace_only = cringe }
+        lowkey (char == " " && leading_whitespace_only) { has_spaces = based }
+        lowkey (char == "\t" && leading_whitespace_only) { has_tabs = based }
+        lowkey (char != " " && char != "\t") { leading_whitespace_only = cringe }
         i = i + 1
     }
     
@@ -918,15 +918,15 @@ slay count_function_parameters(line tea) drip {
     sus i drip = 0
     bestie (i < len_str(line)) {
         sus char tea = char_at(line, i)
-        ready (char == "(") { in_params = based }
-        ready (char == ")") { in_params = cringe }
-        ready (in_params && char == ",") { param_count = param_count + 1 }
+        lowkey (char == "(") { in_params = based }
+        lowkey (char == ")") { in_params = cringe }
+        lowkey (in_params && char == ",") { param_count = param_count + 1 }
         i = i + 1
     }
     
     // If we found parameters, add 1 for the first parameter
-    ready (in_params || contains_str(line, "(") && contains_str(line, ")")) {
-        ready (param_count > 0 || (contains_str(line, "(") && !contains_str(line, "()"))) {
+    lowkey (in_params || contains_str(line, "(") && contains_str(line, ")")) {
+        lowkey (param_count > 0 || (contains_str(line, "(") && !contains_str(line, "()"))) {
             param_count = param_count + 1
         }
     }
@@ -939,7 +939,7 @@ slay count_char_occurrences(line tea, target tea) drip {
     sus i drip = 0
     bestie (i < len_str(line)) {
         sus char tea = char_at(line, i)
-        ready (char == target) { count = count + 1 }
+        lowkey (char == target) { count = count + 1 }
         i = i + 1
     }
     damn count
@@ -949,7 +949,7 @@ slay contains_digit_pattern(line tea) lit {
     sus i drip = 0
     bestie (i < len_str(line)) {
         sus char tea = char_at(line, i)
-        ready (char >= "0" && char <= "9") {
+        lowkey (char >= "0" && char <= "9") {
             damn based
         }
         i = i + 1
@@ -962,7 +962,7 @@ slay find_camel_case_pos(line tea) drip {
     sus i drip = 0
     bestie (i < len_str(line)) {
         sus char tea = char_at(line, i)
-        ready (char >= "A" && char <= "Z" && i > 0) {
+        lowkey (char >= "A" && char <= "Z" && i > 0) {
             damn i + 1
         }
         i = i + 1
@@ -975,7 +975,7 @@ slay find_secret_position(line tea) drip {
     sus i drip = 0
     bestie (i < len(secret_words)) {
         sus pos drip = index_of(line, secret_words[i])
-        ready (pos != -1) {
+        lowkey (pos != -1) {
             damn pos + 1
         }
         i = i + 1
@@ -988,7 +988,7 @@ slay find_api_key_position(line tea) drip {
     sus i drip = 0
     bestie (i < len(prefixes)) {
         sus pos drip = index_of(line, prefixes[i])
-        ready (pos != -1) {
+        lowkey (pos != -1) {
             damn pos + 1
         }
         i = i + 1
@@ -998,7 +998,7 @@ slay find_api_key_position(line tea) drip {
 
 slay find_sql_concat_position(line tea) drip {
     sus pos drip = index_of(line, "+")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1006,7 +1006,7 @@ slay find_sql_concat_position(line tea) drip {
 
 slay find_unsafe_position(line tea) drip {
     sus pos drip = index_of(line, "unsafe_")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1017,7 +1017,7 @@ slay find_crypto_function_position(line tea) drip {
     sus i drip = 0
     bestie (i < len(crypto_funcs)) {
         sus pos drip = index_of(line, crypto_funcs[i])
-        ready (pos != -1) {
+        lowkey (pos != -1) {
             damn pos + 1
         }
         i = i + 1
@@ -1028,15 +1028,15 @@ slay find_crypto_function_position(line tea) drip {
 // Additional position finders for comprehensive error reporting
 slay find_division_position(line tea) drip {
     sus pos drip = index_of(line, "/ 0")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     pos = index_of(line, "% 0")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     damn 1
 }
 
 slay find_array_access_position(line tea) drip {
     sus pos drip = index_of(line, "[")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1044,7 +1044,7 @@ slay find_array_access_position(line tea) drip {
 
 slay find_null_deref_position(line tea) drip {
     sus pos drip = index_of(line, "null")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1052,23 +1052,23 @@ slay find_null_deref_position(line tea) drip {
 
 slay find_allocation_position(line tea) drip {
     sus pos drip = index_of(line, "malloc(")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     pos = index_of(line, "new ")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     damn 1
 }
 
 slay find_arithmetic_position(line tea) drip {
     sus pos drip = index_of(line, "*")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     pos = index_of(line, "+")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     damn 1
 }
 
 slay find_string_concat_position(line tea) drip {
     sus pos drip = index_of(line, "+")
-    ready (pos != -1 && contains_str(line, "\"")) {
+    lowkey (pos != -1 && contains_str(line, "\"")) {
         damn pos + 1
     }
     damn 1
@@ -1076,7 +1076,7 @@ slay find_string_concat_position(line tea) drip {
 
 slay find_array_copy_position(line tea) drip {
     sus pos drip = index_of(line, "copy(")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1084,7 +1084,7 @@ slay find_array_copy_position(line tea) drip {
 
 slay find_redundant_computation_position(line tea) drip {
     sus pos drip = index_of(line, "len(")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1095,7 +1095,7 @@ slay find_expensive_operation_position(line tea) drip {
     sus i drip = 0
     bestie (i < len(expensive_ops)) {
         sus pos drip = index_of(line, expensive_ops[i])
-        ready (pos != -1) {
+        lowkey (pos != -1) {
             damn pos + 1
         }
         i = i + 1
@@ -1105,7 +1105,7 @@ slay find_expensive_operation_position(line tea) drip {
 
 slay find_data_structure_position(line tea) drip {
     sus pos drip = index_of(line, "linear_search")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1115,7 +1115,7 @@ slay find_magic_number_position(line tea) drip {
     sus i drip = 0
     bestie (i < len_str(line)) {
         sus char tea = char_at(line, i)
-        ready (char >= "0" && char <= "9") {
+        lowkey (char >= "0" && char <= "9") {
             damn i + 1
         }
         i = i + 1
@@ -1125,15 +1125,15 @@ slay find_magic_number_position(line tea) drip {
 
 slay find_boolean_complexity_position(line tea) drip {
     sus pos drip = index_of(line, "&&")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     pos = index_of(line, "||")
-    ready (pos != -1) { damn pos + 1 }
+    lowkey (pos != -1) { damn pos + 1 }
     damn 1
 }
 
 slay find_parameter_list_position(line tea) drip {
     sus pos drip = index_of(line, "(")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1141,7 +1141,7 @@ slay find_parameter_list_position(line tea) drip {
 
 slay find_error_handling_position(line tea) drip {
     sus pos drip = index_of(line, "error")
-    ready (pos != -1) {
+    lowkey (pos != -1) {
         damn pos + 1
     }
     damn 1
@@ -1191,10 +1191,10 @@ slay calculate_stats(issues LintIssue[value]) LinterStats {
     sus i drip = 0
     bestie (i < len(issues)) {
         sus issue LintIssue = issues[i]
-        ready (issue.severity == "error") { stats.errors = stats.errors + 1 }
-        ready (issue.severity == "warning") { stats.warnings = stats.warnings + 1 }
-        ready (issue.severity == "info") { stats.infos = stats.infos + 1 }
-        ready (issue.severity == "hint") { stats.hints = stats.hints + 1 }
+        lowkey (issue.severity == "error") { stats.errors = stats.errors + 1 }
+        lowkey (issue.severity == "warning") { stats.warnings = stats.warnings + 1 }
+        lowkey (issue.severity == "info") { stats.infos = stats.infos + 1 }
+        lowkey (issue.severity == "hint") { stats.hints = stats.hints + 1 }
         i = i + 1
     }
     
@@ -1202,7 +1202,7 @@ slay calculate_stats(issues LintIssue[value]) LinterStats {
 }
 
 slay format_results(issues LintIssue[value], file_path tea) tea {
-    ready (len(issues) == 0) {
+    lowkey (len(issues) == 0) {
         damn "✅ No lint issues found! Your CURSED code is absolutely fire! 🔥\n"
     }
     
@@ -1213,16 +1213,16 @@ slay format_results(issues LintIssue[value], file_path tea) tea {
     // Summary with enhanced stats
     output = concat_str(output, "📊 Summary for " + file_path + ":\n")
     output = concat_str(output, "   Total Issues: " + int_to_str(stats.total_issues) + "\n")
-    ready (stats.errors > 0) {
+    lowkey (stats.errors > 0) {
         output = concat_str(output, "   🚨 Errors: " + int_to_str(stats.errors) + "\n")
     }
-    ready (stats.warnings > 0) {
+    lowkey (stats.warnings > 0) {
         output = concat_str(output, "   ⚠️  Warnings: " + int_to_str(stats.warnings) + "\n")
     }
-    ready (stats.infos > 0) {
+    lowkey (stats.infos > 0) {
         output = concat_str(output, "   ℹ️  Info: " + int_to_str(stats.infos) + "\n")
     }
-    ready (stats.hints > 0) {
+    lowkey (stats.hints > 0) {
         output = concat_str(output, "   💡 Hints: " + int_to_str(stats.hints) + "\n")
     }
     output = concat_str(output, "\n")
@@ -1234,7 +1234,7 @@ slay format_results(issues LintIssue[value], file_path tea) tea {
         sus category tea = categories[c]
         sus category_issues LintIssue[value] = filter_issues_by_category(issues, category)
         
-        ready (len(category_issues) > 0) {
+        lowkey (len(category_issues) > 0) {
             output = concat_str(output, "🔍 " + uppercase_first(category) + " Issues (" + int_to_str(len(category_issues)) + "):\n")
             output = concat_str(output, "-------------------\n")
             
@@ -1244,7 +1244,7 @@ slay format_results(issues LintIssue[value], file_path tea) tea {
                 sus icon tea = get_severity_icon(issue.severity)
                 
                 output = concat_str(output, icon + " Line " + int_to_str(issue.line))
-                ready (issue.column > 1) {
+                lowkey (issue.column > 1) {
                     output = concat_str(output, ":" + int_to_str(issue.column))
                 }
                 output = concat_str(output, " - " + issue.message + "\n")
@@ -1265,7 +1265,7 @@ slay format_results(issues LintIssue[value], file_path tea) tea {
     output = concat_str(output, "   ✅ Performance Optimization (Rules 26-35)\n")
     output = concat_str(output, "   ✅ Pattern Detection (Rules 36-42)\n\n")
     
-    ready (stats.errors > 0) {
+    lowkey (stats.errors > 0) {
         output = concat_str(output, "🚨 Critical: Fix errors before production deployment!\n")
     }
     
@@ -1277,7 +1277,7 @@ slay filter_issues_by_category(issues LintIssue[value], category tea) LintIssue[
     sus i drip = 0
     bestie (i < len(issues)) {
         sus issue LintIssue = issues[i]
-        ready (issue.category == category) {
+        lowkey (issue.category == category) {
             push(filtered, issue)
         }
         i = i + 1
@@ -1286,16 +1286,16 @@ slay filter_issues_by_category(issues LintIssue[value], category tea) LintIssue[
 }
 
 slay get_severity_icon(severity tea) tea {
-    ready (severity == "error") { damn "🚨" }
-    ready (severity == "warning") { damn "⚠️" }
-    ready (severity == "info") { damn "ℹ️" }
+    lowkey (severity == "error") { damn "🚨" }
+    lowkey (severity == "warning") { damn "⚠️" }
+    lowkey (severity == "info") { damn "ℹ️" }
     damn "💡"
 }
 
 slay uppercase_first(text tea) tea {
-    ready (len_str(text) > 0) {
+    lowkey (len_str(text) > 0) {
         sus first_char tea = char_at(text, 0)
-        ready (first_char >= "a" && first_char <= "z") {
+        lowkey (first_char >= "a" && first_char <= "z") {
             sus upper_char tea = char_to_upper(first_char)
             sus rest tea = substring(text, 1, len_str(text))
             damn upper_char + rest
@@ -1344,9 +1344,9 @@ slay badFunction(param1 tea, param2 tea, param3 tea, param4 tea, param5 tea, par
     sus password tea = "hardcoded_secret_123"
     sus result drip = someValue / 0
     bestie (true) {
-        ready (condition1 && condition2 && condition3 && condition4) {
-            ready (nested_condition) {
-                ready (deeply_nested) {
+        lowkey (condition1 && condition2 && condition3 && condition4) {
+            lowkey (nested_condition) {
+                lowkey (deeply_nested) {
                     sus longStringConcatenation tea = ""
                     bestie (i < 1000) {
                         longStringConcatenation = longStringConcatenation + "data"

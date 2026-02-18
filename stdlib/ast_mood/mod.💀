@@ -603,7 +603,7 @@ slay ast_metrics_analysis(root normie) tea {
          expressions + " expressions"
 }
 
-fr fr AST manipulation module is now complete and production-ready
+fr fr AST manipulation module is now complete and production-lowkey
 fr fr Supports all major compiler infrastructure operations:
 fr fr - Node creation and modification
 fr fr - Tree traversal (preorder, postorder)

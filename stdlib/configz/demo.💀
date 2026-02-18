@@ -484,7 +484,7 @@ slay demo_advanced_features() lit {
     sus i drip = 0
     bestie (i < origin_count) {
         sus origin ConfigValue = allowed_origins[i]
-        ready (origin.type == "string") {
+        lowkey (origin.type == "string") {
             vibez.spill("    - " + origin.string_value)
         }
         i = i + 1
@@ -585,7 +585,7 @@ slay demo_web_server_config() lit {
     vibez.spill("  SSL: " + (db_ssl ? "enabled" : "disabled"))
     vibez.spill("  Pool Size: " + number_to_string(pool_size))
     
-    vibez.spill("  ✓ Web server ready to start with validated configuration")
+    vibez.spill("  ✓ Web server lowkey to start with validated configuration")
     
     damn based
 }
@@ -655,7 +655,7 @@ slay demo_microservice_config() lit {
     vibez.spill("  Tracing: " + (tracing_enabled ? "enabled" : "disabled"))
     vibez.spill("  Log Level: " + log_level)
     
-    vibez.spill("  ✓ Microservice ready for container deployment")
+    vibez.spill("  ✓ Microservice lowkey for container deployment")
     
     damn based
 }
@@ -664,7 +664,7 @@ fr fr ===== MAIN DEMO RUNNER =====
 
 slay run_comprehensive_configz_demo() lit {
     vibez.spill("🔧 CONFIGZ - Advanced Configuration Management Demo")
-    vibez.spill("This demo showcases production-ready configuration management features")
+    vibez.spill("This demo showcases production-lowkey configuration management features")
     vibez.spill("")
     
     fr fr Run all demo scenarios

@@ -126,22 +126,22 @@ fr fr ==========================================================================
 
 fr fr Allocate stack memory for new goroutine
 slay allocate_goroutine_stack(size normie) *GoroutineStack {
-    ready size < 1024 {
+    lowkey size < 1024 {
         size = DEFAULT_STACK_SIZE  fr fr Minimum viable stack size
     }
-    ready size > MAX_STACK_SIZE {
+    lowkey size > MAX_STACK_SIZE {
         size = MAX_STACK_SIZE     fr fr Prevent excessive memory usage
     }
     
     sus stack *GoroutineStack = memory.allocate(GoroutineStack)
-    ready stack == 0 {
+    lowkey stack == 0 {
         damn 0  fr fr Allocation failed
     }
     
     fr fr Allocate stack memory with guard pages
     stack.stack_size = size
     stack.stack_memory = memory.allocate_aligned(size + 4096, 4096)  fr fr Extra page for guards
-    ready stack.stack_memory == 0 {
+    lowkey stack.stack_memory == 0 {
         memory.free(stack)
         damn 0
     }
@@ -169,11 +169,11 @@ slay allocate_goroutine_stack(size normie) *GoroutineStack {
 
 fr fr Free goroutine stack memory
 slay free_goroutine_stack(stack *GoroutineStack) {
-    ready stack == 0 {
+    lowkey stack == 0 {
         damn  fr fr Nothing to free
     }
     
-    ready stack.stack_memory != 0 {
+    lowkey stack.stack_memory != 0 {
         memory.free_aligned(stack.stack_memory)
     }
     memory.free(stack)
@@ -181,18 +181,18 @@ slay free_goroutine_stack(stack *GoroutineStack) {
 
 fr fr Check for stack overflow/underflow
 slay check_stack_integrity(stack *GoroutineStack) lit {
-    ready stack == 0 {
+    lowkey stack == 0 {
         damn cap  fr fr Invalid stack
     }
     
     fr fr Check for stack overflow (stack pointer below base)
-    ready stack.stack_pointer < stack.stack_memory {
+    lowkey stack.stack_pointer < stack.stack_memory {
         vibez.spill("🚨 GOROUTINE STACK OVERFLOW DETECTED!")
         damn cap
     }
     
     fr fr Check for stack underflow (stack pointer above base)
-    ready stack.stack_pointer > stack.stack_base {
+    lowkey stack.stack_pointer > stack.stack_base {
         vibez.spill("🚨 GOROUTINE STACK UNDERFLOW DETECTED!")
         damn cap
     }
@@ -206,7 +206,7 @@ fr fr ==========================================================================
 
 fr fr Initialize work-stealing queue
 slay init_work_queue(queue *WorkStealingQueue, capacity normie) lit {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn cap
     }
     
@@ -222,19 +222,19 @@ slay init_work_queue(queue *WorkStealingQueue, capacity normie) lit {
 
 fr fr Add task to work queue (FIFO for local, LIFO for stealing)
 slay enqueue_work(queue *WorkStealingQueue, task_function thicc, context_data thicc, priority normie) lit {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn cap
     }
     
     fr fr Check queue capacity using atomic operations
     sus current_size normie = atomic_drip.atomic_load_i32(&queue.size, atomic_drip.ACQUIRE)
-    ready current_size >= queue.max_capacity {
+    lowkey current_size >= queue.max_capacity {
         damn cap  fr fr Queue is full
     }
     
     fr fr Create new work node
     sus node *WorkQueueNode = memory.allocate(WorkQueueNode)
-    ready node == 0 {
+    lowkey node == 0 {
         damn cap  fr fr Allocation failed
     }
     
@@ -247,11 +247,11 @@ slay enqueue_work(queue *WorkStealingQueue, task_function thicc, context_data th
     fr fr ATOMIC: Add to tail of queue
     periodt {
         sus old_tail thicc = atomic_drip.atomic_load_i64(&queue.tail, atomic_drip.ACQUIRE)
-        ready atomic_drip.compare_and_swap_i64(&queue.tail, old_tail, node, atomic_drip.ACQREL) {
-            ready old_tail != 0 {
+        lowkey atomic_drip.compare_and_swap_i64(&queue.tail, old_tail, node, atomic_drip.ACQREL) {
+            lowkey old_tail != 0 {
                 sus old_tail_node *WorkQueueNode = old_tail
                 old_tail_node.next_node = node
-            } otherwise {
+            } highkey {
                 fr fr First node in queue
                 atomic_drip.atomic_store_i64(&queue.head, node, atomic_drip.RELEASE)
             }
@@ -265,13 +265,13 @@ slay enqueue_work(queue *WorkStealingQueue, task_function thicc, context_data th
 
 fr fr Dequeue task from work queue (local worker - FIFO)
 slay dequeue_work_local(queue *WorkStealingQueue) thicc {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn 0
     }
     
     periodt {
         sus current_head thicc = atomic_drip.atomic_load_i64(&queue.head, atomic_drip.ACQUIRE)
-        ready current_head == 0 {
+        lowkey current_head == 0 {
             damn 0  fr fr Queue is empty
         }
         
@@ -279,8 +279,8 @@ slay dequeue_work_local(queue *WorkStealingQueue) thicc {
         sus next_node thicc = head_node.next_node
         
         fr fr ATOMIC: Update head pointer
-        ready atomic_drip.compare_and_swap_i64(&queue.head, current_head, next_node, atomic_drip.ACQREL) {
-            ready next_node == 0 {
+        lowkey atomic_drip.compare_and_swap_i64(&queue.head, current_head, next_node, atomic_drip.ACQREL) {
+            lowkey next_node == 0 {
                 fr fr Queue is now empty, update tail
                 atomic_drip.compare_and_swap_i64(&queue.tail, current_head, 0, atomic_drip.ACQREL)
             }
@@ -295,7 +295,7 @@ slay dequeue_work_local(queue *WorkStealingQueue) thicc {
 
 fr fr Steal task from work queue (work stealer - LIFO from tail)
 slay steal_work(queue *WorkStealingQueue) thicc {
-    ready queue == 0 {
+    lowkey queue == 0 {
         damn 0
     }
     
@@ -304,7 +304,7 @@ slay steal_work(queue *WorkStealingQueue) thicc {
     fr fr Work stealing typically takes from the tail (LIFO)
     periodt {
         sus current_tail thicc = atomic_drip.atomic_load_i64(&queue.tail, atomic_drip.ACQUIRE)
-        ready current_tail == 0 {
+        lowkey current_tail == 0 {
             damn 0  fr fr Queue is empty
         }
         
@@ -312,7 +312,7 @@ slay steal_work(queue *WorkStealingQueue) thicc {
         
         fr fr For simplicity, we'll steal the head instead (real implementation would be more complex)
         sus stolen_task thicc = dequeue_work_local(queue)
-        ready stolen_task != 0 {
+        lowkey stolen_task != 0 {
             atomic_drip.atomic_add_i32(&queue.successful_steals, 1, atomic_drip.RELAXED)
             damn stolen_task
         }
@@ -330,7 +330,7 @@ fr fr ==========================================================================
 fr fr Create new goroutine context
 slay create_goroutine_context(parent_id thicc, stack_size normie) *GoroutineContext {
     sus ctx *GoroutineContext = memory.allocate(GoroutineContext)
-    ready ctx == 0 {
+    lowkey ctx == 0 {
         damn 0
     }
     
@@ -345,7 +345,7 @@ slay create_goroutine_context(parent_id thicc, stack_size normie) *GoroutineCont
     
     fr fr Allocate stack for goroutine
     sus stack *GoroutineStack = allocate_goroutine_stack(stack_size)
-    ready stack == 0 {
+    lowkey stack == 0 {
         memory.free(ctx)
         damn 0
     }
@@ -353,7 +353,7 @@ slay create_goroutine_context(parent_id thicc, stack_size normie) *GoroutineCont
     
     fr fr Allocate register storage (simplified - 32 registers)
     ctx.registers = memory.allocate_array(thicc, 32)
-    ready ctx.registers == 0 {
+    lowkey ctx.registers == 0 {
         free_goroutine_stack(stack)
         memory.free(ctx)
         damn 0
@@ -364,17 +364,17 @@ slay create_goroutine_context(parent_id thicc, stack_size normie) *GoroutineCont
 
 fr fr Destroy goroutine context and cleanup resources
 slay destroy_goroutine_context(ctx *GoroutineContext) {
-    ready ctx == 0 {
+    lowkey ctx == 0 {
         damn
     }
     
     fr fr Free stack memory
-    ready ctx.stack.stack_memory != 0 {
+    lowkey ctx.stack.stack_memory != 0 {
         free_goroutine_stack(&ctx.stack)
     }
     
     fr fr Free register storage
-    ready ctx.registers != 0 {
+    lowkey ctx.registers != 0 {
         memory.free(ctx.registers)
     }
     
@@ -384,12 +384,12 @@ slay destroy_goroutine_context(ctx *GoroutineContext) {
 
 fr fr Switch goroutine context (simplified - real implementation would use assembly)
 slay switch_goroutine_context(from_ctx *GoroutineContext, to_ctx *GoroutineContext) {
-    ready from_ctx == 0 || to_ctx == 0 {
+    lowkey from_ctx == 0 || to_ctx == 0 {
         damn
     }
     
     fr fr Save current context (simplified)
-    ready from_ctx.state == GOROUTINE_RUNNING {
+    lowkey from_ctx.state == GOROUTINE_RUNNING {
         from_ctx.state = GOROUTINE_YIELDED
         
         fr fr Save register state (simplified - in real implementation would save all CPU state)
@@ -426,12 +426,12 @@ fr fr ==========================================================================
 
 fr fr Initialize the global goroutine scheduler
 slay init_goroutine_scheduler(num_workers normie) lit {
-    ready global_scheduler != 0 {
+    lowkey global_scheduler != 0 {
         damn based  fr fr Already initialized
     }
     
     sus scheduler *GoroutineScheduler = memory.allocate(GoroutineScheduler)
-    ready scheduler == 0 {
+    lowkey scheduler == 0 {
         damn cap  fr fr Allocation failed
     }
     
@@ -448,7 +448,7 @@ slay init_goroutine_scheduler(num_workers normie) lit {
     
     fr fr Allocate worker threads
     scheduler.worker_threads = memory.allocate_array(WorkerThread, num_workers)
-    ready scheduler.worker_threads == 0 {
+    lowkey scheduler.worker_threads == 0 {
         memory.free(scheduler)
         damn cap
     }
@@ -486,7 +486,7 @@ slay init_goroutine_scheduler(num_workers normie) lit {
 
 fr fr Shutdown the goroutine scheduler
 slay shutdown_goroutine_scheduler() {
-    ready global_scheduler == 0 {
+    lowkey global_scheduler == 0 {
         damn  fr fr Not initialized
     }
     
@@ -499,7 +499,7 @@ slay shutdown_goroutine_scheduler() {
     }
     
     fr fr Cleanup worker threads
-    ready scheduler.worker_threads != 0 {
+    lowkey scheduler.worker_threads != 0 {
         memory.free(scheduler.worker_threads)
     }
     
@@ -510,9 +510,9 @@ slay shutdown_goroutine_scheduler() {
 
 fr fr Spawn new goroutine with work-stealing scheduler
 slay spawn_goroutine(task_function thicc, context_data thicc, stack_size normie, priority normie) thicc {
-    ready global_scheduler == 0 {
+    lowkey global_scheduler == 0 {
         fr fr Initialize scheduler if not done
-        ready init_goroutine_scheduler(get_cpu_count()) == cap {
+        lowkey init_goroutine_scheduler(get_cpu_count()) == cap {
             damn 0  fr fr Failed to initialize
         }
     }
@@ -521,14 +521,14 @@ slay spawn_goroutine(task_function thicc, context_data thicc, stack_size normie,
     
     fr fr Check goroutine limits
     sus current_count normie = atomic_drip.atomic_load_i32(&scheduler.active_goroutines, atomic_drip.ACQUIRE)
-    ready current_count >= scheduler.max_goroutines {
+    lowkey current_count >= scheduler.max_goroutines {
         vibez.spill("🚨 Maximum goroutine limit reached:", scheduler.max_goroutines)
         damn 0
     }
     
     fr fr Create goroutine context
     sus ctx *GoroutineContext = create_goroutine_context(0, stack_size)
-    ready ctx == 0 {
+    lowkey ctx == 0 {
         damn 0
     }
     
@@ -543,9 +543,9 @@ slay spawn_goroutine(task_function thicc, context_data thicc, stack_size normie,
     sus selected_worker *WorkerThread = &scheduler.worker_threads[worker_index]
     
     fr fr Add to worker's local queue
-    ready enqueue_work(&selected_worker.local_queue, task_function, context_data, priority) == cap {
+    lowkey enqueue_work(&selected_worker.local_queue, task_function, context_data, priority) == cap {
         fr fr Local queue full, try global queue
-        ready enqueue_work(&scheduler.global_queue, task_function, context_data, priority) == cap {
+        lowkey enqueue_work(&scheduler.global_queue, task_function, context_data, priority) == cap {
             fr fr Both queues full, cleanup and fail
             destroy_goroutine_context(ctx)
             atomic_drip.atomic_sub_i32(&scheduler.active_goroutines, 1, atomic_drip.RELEASE)
@@ -559,7 +559,7 @@ slay spawn_goroutine(task_function thicc, context_data thicc, stack_size normie,
 fr fr Worker thread main loop (simplified - would run in separate OS threads)
 slay worker_thread_loop(worker *WorkerThread) {
     sus scheduler *GoroutineScheduler = global_scheduler
-    ready scheduler == 0 {
+    lowkey scheduler == 0 {
         damn
     }
     
@@ -569,19 +569,19 @@ slay worker_thread_loop(worker *WorkerThread) {
         sus task_to_run thicc = 0
         sus task_context thicc = 0
         
-        ready local_task != 0 {
+        lowkey local_task != 0 {
             sus task_node *WorkQueueNode = local_task
             task_to_run = task_node.task_function
             task_context = task_node.context_data
             memory.free(task_node)
-        } otherwise {
+        } highkey {
             fr fr No local work, try work stealing
-            ready scheduler.load_balancer_enabled {
+            lowkey scheduler.load_balancer_enabled {
                 sus steal_target normie = worker.steal_target
                 sus target_worker *WorkerThread = &scheduler.worker_threads[steal_target]
                 sus stolen_task thicc = steal_work(&target_worker.local_queue)
                 
-                ready stolen_task != 0 {
+                lowkey stolen_task != 0 {
                     sus stolen_node *WorkQueueNode = stolen_task
                     task_to_run = stolen_node.task_function
                     task_context = stolen_node.context_data
@@ -589,10 +589,10 @@ slay worker_thread_loop(worker *WorkerThread) {
                     
                     fr fr Update steal target (round-robin)
                     worker.steal_target = (steal_target + 1) % scheduler.num_workers
-                } otherwise {
+                } highkey {
                     fr fr No work to steal, try global queue
                     sus global_task thicc = dequeue_work_local(&scheduler.global_queue)
-                    ready global_task != 0 {
+                    lowkey global_task != 0 {
                         sus global_node *WorkQueueNode = global_task
                         task_to_run = global_node.task_function
                         task_context = global_node.context_data
@@ -603,7 +603,7 @@ slay worker_thread_loop(worker *WorkerThread) {
         }
         
         fr fr Execute task if we found one
-        ready task_to_run != 0 {
+        lowkey task_to_run != 0 {
             worker.total_tasks_processed = worker.total_tasks_processed + 1
             atomic_drip.atomic_add_i64(&scheduler.stats.total_context_switches, 1, atomic_drip.RELAXED)
             
@@ -613,7 +613,7 @@ slay worker_thread_loop(worker *WorkerThread) {
             fr fr Decrement active goroutine count
             atomic_drip.atomic_sub_i32(&scheduler.active_goroutines, 1, atomic_drip.RELEASE)
             atomic_drip.atomic_add_i64(&scheduler.stats.total_goroutines_completed, 1, atomic_drip.RELAXED)
-        } otherwise {
+        } highkey {
             fr fr No work available, yield CPU
             runtime_yield_cpu()
         }
@@ -632,7 +632,7 @@ slay stan(task_function thicc, context_data thicc) thicc {
         real_goroutine_tracking.create_goroutine_context_full(
             parent_id, DEFAULT_STACK_SIZE, 128, "goroutine", "stan call")
     
-    ready context == 0 {
+    lowkey context == 0 {
         damn 0
     }
     
@@ -661,7 +661,7 @@ slay goroutine_id() thicc {
 
 fr fr Get goroutine scheduler statistics
 slay get_scheduler_stats() *SchedulerStats {
-    ready global_scheduler == 0 {
+    lowkey global_scheduler == 0 {
         damn 0
     }
     damn &global_scheduler.stats
@@ -688,7 +688,7 @@ slay runtime_yield_cpu() {
 
 fr fr Execute goroutine function (wrapper for task execution)
 slay execute_goroutine_function(func_ptr thicc, context thicc) {
-    ready func_ptr == 0 {
+    lowkey func_ptr == 0 {
         damn
     }
     
@@ -733,7 +733,7 @@ struct GoroutineAllocator {
 
 fr fr Initialize goroutine allocator
 slay init_goroutine_allocator(allocator *GoroutineAllocator, arena_size normie) lit {
-    ready allocator == 0 {
+    lowkey allocator == 0 {
         damn cap
     }
     
@@ -744,7 +744,7 @@ slay init_goroutine_allocator(allocator *GoroutineAllocator, arena_size normie) 
     
     fr fr Allocate arena memory
     allocator.arena_memory = memory.allocate_aligned(arena_size, 64)  fr fr 64-byte aligned
-    ready allocator.arena_memory == 0 {
+    lowkey allocator.arena_memory == 0 {
         damn cap
     }
     
@@ -753,7 +753,7 @@ slay init_goroutine_allocator(allocator *GoroutineAllocator, arena_size normie) 
 
 fr fr Allocate memory from goroutine arena
 slay goroutine_allocate(allocator *GoroutineAllocator, size normie) thicc {
-    ready allocator == 0 || size == 0 {
+    lowkey allocator == 0 || size == 0 {
         damn 0
     }
     
@@ -762,7 +762,7 @@ slay goroutine_allocate(allocator *GoroutineAllocator, size normie) thicc {
     
     fr fr Atomic allocation from arena
     sus old_used normie = atomic_drip.atomic_add_i32(&allocator.arena_used, aligned_size, atomic_drip.SEQCST)
-    ready old_used + aligned_size > allocator.arena_size {
+    lowkey old_used + aligned_size > allocator.arena_size {
         fr fr Revert allocation - arena full
         atomic_drip.atomic_sub_i32(&allocator.arena_used, aligned_size, atomic_drip.SEQCST)
         damn 0
@@ -774,11 +774,11 @@ slay goroutine_allocate(allocator *GoroutineAllocator, size normie) thicc {
 
 fr fr Free goroutine allocator
 slay free_goroutine_allocator(allocator *GoroutineAllocator) {
-    ready allocator == 0 {
+    lowkey allocator == 0 {
         damn
     }
     
-    ready allocator.arena_memory != 0 {
+    lowkey allocator.arena_memory != 0 {
         memory.free_aligned(allocator.arena_memory)
     }
     

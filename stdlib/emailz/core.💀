@@ -145,11 +145,11 @@ slay email_format_error(message tea) EmailError {
 
 // Creates a basic SMTP client for plain connections
 slay create_smtp_client(host tea, port drip) yikes<SmtpClient> {
-    ready (stringz.len(host) == 0) {
+    lowkey (stringz.len(host) == 0) {
         yikes smtp_connection_error("SMTP host cannot be empty")
     }
     
-    ready (port <= 0 || port > 65535) {
+    lowkey (port <= 0 || port > 65535) {
         yikes smtp_connection_error("Invalid SMTP port number")
     }
     
@@ -205,7 +205,7 @@ slay connect_smtp(client SmtpClient) yikes<SmtpResponse> {
         when err -> yikes smtp_connection_error("Invalid server greeting format")
     }
     
-    ready (response.code != 220) {
+    lowkey (response.code != 220) {
         yikes smtp_connection_error(stringz.concat(["Server rejected connection: ", response.message]))
     }
     
@@ -228,7 +228,7 @@ slay ehlo_smtp(client SmtpClient, hostname tea) yikes<SmtpResponse> {
         when err -> yikes smtp_connection_error("Invalid EHLO response format")
     }
     
-    ready (response.code == 250) {
+    lowkey (response.code == 250) {
         // Parse capabilities from multi-line response
         client.capabilities = parse_ehlo_capabilities(response_text)
     }
@@ -238,7 +238,7 @@ slay ehlo_smtp(client SmtpClient, hostname tea) yikes<SmtpResponse> {
 
 // Upgrades connection to TLS using STARTTLS
 slay starttls_smtp(client SmtpClient) yikes<SmtpResponse> {
-    ready (!supports_capability(client, "STARTTLS")) {
+    lowkey (!supports_capability(client, "STARTTLS")) {
         yikes smtp_connection_error("Server does not support STARTTLS")
     }
     
@@ -256,7 +256,7 @@ slay starttls_smtp(client SmtpClient) yikes<SmtpResponse> {
         when err -> yikes smtp_connection_error("Invalid STARTTLS response")
     }
     
-    ready (response.code == 220) {
+    lowkey (response.code == 220) {
         // Upgrade connection to TLS (implementation would use TLS library)
         // For now, we'll mark the connection as TLS-enabled
         client.use_tls = based
@@ -271,7 +271,7 @@ slay starttls_smtp(client SmtpClient) yikes<SmtpResponse> {
 
 // Authenticates using SASL PLAIN mechanism (RFC 4616)
 slay auth_plain(client SmtpClient, username tea, password tea) yikes<SmtpResponse> {
-    ready (!supports_capability(client, "AUTH PLAIN") && !supports_capability(client, "AUTH")) {
+    lowkey (!supports_capability(client, "AUTH PLAIN") && !supports_capability(client, "AUTH")) {
         yikes smtp_auth_error("Server does not support PLAIN authentication", 0)
     }
     
@@ -293,7 +293,7 @@ slay auth_plain(client SmtpClient, username tea, password tea) yikes<SmtpRespons
         when err -> yikes smtp_connection_error("Invalid AUTH response")
     }
     
-    ready (response.code == 235) {
+    lowkey (response.code == 235) {
         client.authenticated = based
     }
     
@@ -302,7 +302,7 @@ slay auth_plain(client SmtpClient, username tea, password tea) yikes<SmtpRespons
 
 // Authenticates using LOGIN mechanism
 slay auth_login(client SmtpClient, username tea, password tea) yikes<SmtpResponse> {
-    ready (!supports_capability(client, "AUTH LOGIN")) {
+    lowkey (!supports_capability(client, "AUTH LOGIN")) {
         yikes smtp_auth_error("Server does not support LOGIN authentication", 0)
     }
     
@@ -321,7 +321,7 @@ slay auth_login(client SmtpClient, username tea, password tea) yikes<SmtpRespons
         when err -> yikes smtp_connection_error("Invalid AUTH LOGIN response")
     }
     
-    ready (response1.code != 334) {
+    lowkey (response1.code != 334) {
         yikes smtp_auth_error("AUTH LOGIN failed at username prompt", response1.code)
     }
     
@@ -340,7 +340,7 @@ slay auth_login(client SmtpClient, username tea, password tea) yikes<SmtpRespons
         when err -> yikes smtp_connection_error("Invalid password prompt response")
     }
     
-    ready (response2.code != 334) {
+    lowkey (response2.code != 334) {
         yikes smtp_auth_error("AUTH LOGIN failed at password prompt", response2.code)
     }
     
@@ -359,7 +359,7 @@ slay auth_login(client SmtpClient, username tea, password tea) yikes<SmtpRespons
         when err -> yikes smtp_connection_error("Invalid final AUTH response")
     }
     
-    ready (final_response.code == 235) {
+    lowkey (final_response.code == 235) {
         client.authenticated = based
     }
     
@@ -368,7 +368,7 @@ slay auth_login(client SmtpClient, username tea, password tea) yikes<SmtpRespons
 
 // Authenticates using CRAM-MD5 mechanism (RFC 2195)
 slay auth_cram_md5(client SmtpClient, username tea, password tea) yikes<SmtpResponse> {
-    ready (!supports_capability(client, "AUTH CRAM-MD5")) {
+    lowkey (!supports_capability(client, "AUTH CRAM-MD5")) {
         yikes smtp_auth_error("Server does not support CRAM-MD5 authentication", 0)
     }
     
@@ -387,7 +387,7 @@ slay auth_cram_md5(client SmtpClient, username tea, password tea) yikes<SmtpResp
         when err -> yikes smtp_connection_error("Invalid CRAM-MD5 challenge response")
     }
     
-    ready (challenge_response.code != 334) {
+    lowkey (challenge_response.code != 334) {
         yikes smtp_auth_error("CRAM-MD5 challenge failed", challenge_response.code)
     }
     
@@ -413,7 +413,7 @@ slay auth_cram_md5(client SmtpClient, username tea, password tea) yikes<SmtpResp
         when err -> yikes smtp_connection_error("Invalid CRAM-MD5 final response")
     }
     
-    ready (final_response.code == 235) {
+    lowkey (final_response.code == 235) {
         client.authenticated = based
     }
     
@@ -427,7 +427,7 @@ slay auto_authenticate(client SmtpClient, username tea, password tea) yikes<Smtp
     client.password = password
     
     // Try CRAM-MD5 first (most secure)
-    ready (supports_capability(client, "AUTH CRAM-MD5")) {
+    lowkey (supports_capability(client, "AUTH CRAM-MD5")) {
         sus response SmtpResponse = auth_cram_md5(client, username, password) fam {
             when err -> {
                 // CRAM-MD5 failed, try other methods
@@ -438,7 +438,7 @@ slay auto_authenticate(client SmtpClient, username tea, password tea) yikes<Smtp
     }
     
     // Try PLAIN authentication
-    ready (supports_capability(client, "AUTH PLAIN")) {
+    lowkey (supports_capability(client, "AUTH PLAIN")) {
         sus response SmtpResponse = auth_plain(client, username, password) fam {
             when err -> {
                 // PLAIN failed, try LOGIN
@@ -449,7 +449,7 @@ slay auto_authenticate(client SmtpClient, username tea, password tea) yikes<Smtp
     }
     
     // Try LOGIN authentication as last resort
-    ready (supports_capability(client, "AUTH LOGIN")) {
+    lowkey (supports_capability(client, "AUTH LOGIN")) {
         sus response SmtpResponse = auth_login(client, username, password) fam {
             when err -> yikes err
         }
@@ -466,11 +466,11 @@ slay auto_authenticate(client SmtpClient, username tea, password tea) yikes<Smtp
 // Creates a simple plain text email
 slay create_email(from tea, to tea, subject tea, body tea) yikes<Email> {
     // Validate email addresses
-    ready (!validate_email_address(from)) {
+    lowkey (!validate_email_address(from)) {
         yikes email_format_error(stringz.concat(["Invalid from address: ", from]))
     }
     
-    ready (!validate_email_address(to)) {
+    lowkey (!validate_email_address(to)) {
         yikes email_format_error(stringz.concat(["Invalid to address: ", to]))
     }
     
@@ -514,7 +514,7 @@ slay create_html_email(from tea, to tea, subject tea, html_body tea, text_body t
 
 // Adds a recipient to the TO field
 slay add_recipient(email Email, address tea) yikes<Email> {
-    ready (!validate_email_address(address)) {
+    lowkey (!validate_email_address(address)) {
         yikes email_format_error(stringz.concat(["Invalid recipient address: ", address]))
     }
     
@@ -524,7 +524,7 @@ slay add_recipient(email Email, address tea) yikes<Email> {
 
 // Adds a recipient to the CC field
 slay add_cc_recipient(email Email, address tea) yikes<Email> {
-    ready (!validate_email_address(address)) {
+    lowkey (!validate_email_address(address)) {
         yikes email_format_error(stringz.concat(["Invalid CC address: ", address]))
     }
     
@@ -534,7 +534,7 @@ slay add_cc_recipient(email Email, address tea) yikes<Email> {
 
 // Adds a recipient to the BCC field
 slay add_bcc_recipient(email Email, address tea) yikes<Email> {
-    ready (!validate_email_address(address)) {
+    lowkey (!validate_email_address(address)) {
         yikes email_format_error(stringz.concat(["Invalid BCC address: ", address]))
     }
     
@@ -544,12 +544,12 @@ slay add_bcc_recipient(email Email, address tea) yikes<Email> {
 
 // Adds a custom header to the email
 slay add_custom_header(email Email, name tea, value tea) yikes<Email> {
-    ready (stringz.len(name) == 0) {
+    lowkey (stringz.len(name) == 0) {
         yikes email_format_error("Header name cannot be empty")
     }
     
     // Validate header name (no spaces, colons, or control characters)
-    ready (stringz.contains(name, " ") || stringz.contains(name, ":") || stringz.contains(name, "\r") || stringz.contains(name, "\n")) {
+    lowkey (stringz.contains(name, " ") || stringz.contains(name, ":") || stringz.contains(name, "\r") || stringz.contains(name, "\n")) {
         yikes email_format_error(stringz.concat(["Invalid header name: ", name]))
     }
     
@@ -564,7 +564,7 @@ slay add_custom_header(email Email, name tea, value tea) yikes<Email> {
 
 // Sets the Reply-To address
 slay set_reply_to(email Email, address tea) yikes<Email> {
-    ready (stringz.len(address) > 0 && !validate_email_address(address)) {
+    lowkey (stringz.len(address) > 0 && !validate_email_address(address)) {
         yikes email_format_error(stringz.concat(["Invalid Reply-To address: ", address]))
     }
     
@@ -606,7 +606,7 @@ slay add_file_attachment(email Email, file_path tea, content_type tea) yikes<Ema
     email.attachments = arrayz.push(email.attachments, attachment)
     
     // Update email to multipart/mixed if needed
-    ready (stringz.equals(email.content_type, "text/plain") || stringz.equals(email.content_type, "text/html")) {
+    lowkey (stringz.equals(email.content_type, "text/plain") || stringz.equals(email.content_type, "text/html")) {
         email.content_type = "multipart/mixed"
         email.boundary = generate_mime_boundary()
     }
@@ -616,7 +616,7 @@ slay add_file_attachment(email Email, file_path tea, content_type tea) yikes<Ema
 
 // Adds an attachment from raw data
 slay add_attachment_from_data(email Email, filename tea, content_type tea, data tea) yikes<Email> {
-    ready (stringz.len(filename) == 0) {
+    lowkey (stringz.len(filename) == 0) {
         yikes email_format_error("Attachment filename cannot be empty")
     }
     
@@ -633,7 +633,7 @@ slay add_attachment_from_data(email Email, filename tea, content_type tea, data 
     email.attachments = arrayz.push(email.attachments, attachment)
     
     // Update content type if needed
-    ready (stringz.equals(email.content_type, "text/plain") || stringz.equals(email.content_type, "text/html")) {
+    lowkey (stringz.equals(email.content_type, "text/plain") || stringz.equals(email.content_type, "text/html")) {
         email.content_type = "multipart/mixed"
         email.boundary = generate_mime_boundary()
     }
@@ -665,7 +665,7 @@ slay add_inline_image(email Email, image_path tea, content_id tea) yikes<Email> 
     email.attachments = arrayz.push(email.attachments, attachment)
     
     // Update to multipart/related for inline images
-    ready (!stringz.contains(email.content_type, "multipart")) {
+    lowkey (!stringz.contains(email.content_type, "multipart")) {
         email.content_type = "multipart/related"
         email.boundary = generate_mime_boundary()
     }
@@ -679,7 +679,7 @@ slay add_inline_image(email Email, image_path tea, content_id tea) yikes<Email> 
 
 // Sends an email through the SMTP connection
 slay send_email(client SmtpClient, email Email) yikes<SmtpResponse> {
-    ready (!client.authenticated) {
+    lowkey (!client.authenticated) {
         yikes smtp_auth_error("Client must be authenticated before sending email", 0)
     }
     
@@ -697,7 +697,7 @@ slay send_email(client SmtpClient, email Email) yikes<SmtpResponse> {
         when err -> yikes smtp_connection_error("Invalid MAIL FROM response")
     }
     
-    ready (mail_response.code != 250) {
+    lowkey (mail_response.code != 250) {
         yikes create_email_error("smtp_command", "MAIL FROM rejected", mail_response.code, mail_response.message)
     }
     
@@ -721,7 +721,7 @@ slay send_email(client SmtpClient, email Email) yikes<SmtpResponse> {
             when err -> yikes smtp_connection_error("Invalid RCPT TO response")
         }
         
-        ready (rcpt_response.code != 250 && rcpt_response.code != 251) {
+        lowkey (rcpt_response.code != 250 && rcpt_response.code != 251) {
             yikes create_email_error("smtp_command", stringz.concat(["RCPT TO rejected for ", recipient]), rcpt_response.code, rcpt_response.message)
         }
         
@@ -742,7 +742,7 @@ slay send_email(client SmtpClient, email Email) yikes<SmtpResponse> {
         when err -> yikes smtp_connection_error("Invalid DATA response")
     }
     
-    ready (data_response.code != 354) {
+    lowkey (data_response.code != 354) {
         yikes create_email_error("smtp_command", "DATA command rejected", data_response.code, data_response.message)
     }
     
@@ -797,13 +797,13 @@ slay quit_smtp(client SmtpClient) yikes<SmtpResponse> {
 
 // Validates an email address format (basic RFC 5322 validation)
 slay validate_email_address(address tea) lit {
-    ready (stringz.len(address) == 0) {
+    lowkey (stringz.len(address) == 0) {
         damn cap
     }
     
     // Must contain exactly one @ symbol
     sus at_count drip = stringz.count(address, "@")
-    ready (at_count != 1) {
+    lowkey (at_count != 1) {
         damn cap
     }
     
@@ -813,26 +813,26 @@ slay validate_email_address(address tea) lit {
     sus domain tea = stringz.substring(address, at_pos + 1, stringz.len(address))
     
     // Basic validation rules
-    ready (stringz.len(local) == 0 || stringz.len(domain) == 0) {
+    lowkey (stringz.len(local) == 0 || stringz.len(domain) == 0) {
         damn cap
     }
     
-    ready (stringz.len(local) > 64 || stringz.len(domain) > 253) {
+    lowkey (stringz.len(local) > 64 || stringz.len(domain) > 253) {
         damn cap
     }
     
     // Domain must contain at least one dot
-    ready (!stringz.contains(domain, ".")) {
+    lowkey (!stringz.contains(domain, ".")) {
         damn cap
     }
     
     // No consecutive dots
-    ready (stringz.contains(address, "..")) {
+    lowkey (stringz.contains(address, "..")) {
         damn cap
     }
     
     // No leading/trailing dots
-    ready (stringz.starts_with(address, ".") || stringz.ends_with(address, ".")) {
+    lowkey (stringz.starts_with(address, ".") || stringz.ends_with(address, ".")) {
         damn cap
     }
     
@@ -841,12 +841,12 @@ slay validate_email_address(address tea) lit {
 
 // Normalizes email address (removes extra whitespace, converts to lowercase domain)
 slay normalize_email_address(address tea) tea {
-    ready (stringz.len(address) == 0) {
+    lowkey (stringz.len(address) == 0) {
         damn ""
     }
     
     sus trimmed tea = stringz.trim(address)
-    ready (!validate_email_address(trimmed)) {
+    lowkey (!validate_email_address(trimmed)) {
         damn trimmed  // Return as-is if invalid
     }
     
@@ -863,7 +863,7 @@ slay normalize_email_address(address tea) tea {
 // Extracts domain from email address
 slay extract_domain(address tea) tea {
     sus at_pos drip = stringz.find_first(address, "@")
-    ready (at_pos == -1) {
+    lowkey (at_pos == -1) {
         damn ""
     }
     damn stringz.substring(address, at_pos + 1, stringz.len(address))
@@ -935,7 +935,7 @@ slay format_date_header() tea {
 
 // Helper function to format numbers with leading zero
 slay format_two_digit(value drip) tea {
-    ready (value < 10) {
+    lowkey (value < 10) {
         damn stringz.concat(["0", string_from_drip(value)])
     }
     damn string_from_drip(value)
@@ -956,7 +956,7 @@ slay format_email_for_sending(email Email) tea {
     headers = arrayz.push(headers, stringz.concat(["To: ", stringz.join(email.to, ", ")]))
     
     // Optional TO headers
-    ready (arrayz.len(email.cc) > 0) {
+    lowkey (arrayz.len(email.cc) > 0) {
         headers = arrayz.push(headers, stringz.concat(["Cc: ", stringz.join(email.cc, ", ")]))
     }
     
@@ -966,22 +966,22 @@ slay format_email_for_sending(email Email) tea {
     headers = arrayz.push(headers, stringz.concat(["Message-ID: ", email.message_id]))
     
     // Reply-To if set
-    ready (stringz.len(email.reply_to) > 0) {
+    lowkey (stringz.len(email.reply_to) > 0) {
         headers = arrayz.push(headers, stringz.concat(["Reply-To: ", email.reply_to]))
     }
     
     // MIME headers
     headers = arrayz.push(headers, "MIME-Version: 1.0")
     
-    ready (arrayz.len(email.attachments) > 0 || stringz.len(email.body_html) > 0) {
+    lowkey (arrayz.len(email.attachments) > 0 || stringz.len(email.body_html) > 0) {
         headers = arrayz.push(headers, stringz.concat(["Content-Type: ", email.content_type, "; boundary=\"", email.boundary, "\""]))
-    } otherwise {
+    } highkey {
         headers = arrayz.push(headers, stringz.concat(["Content-Type: ", email.content_type, "; charset=", email.encoding]))
     }
     
     // Priority headers
     sus priority_value tea = get_priority_header_value(email.priority)
-    ready (stringz.len(priority_value) > 0) {
+    lowkey (stringz.len(priority_value) > 0) {
         headers = arrayz.push(headers, stringz.concat(["X-Priority: ", priority_value]))
     }
     
@@ -1005,12 +1005,12 @@ slay format_email_for_sending(email Email) tea {
 // Formats email body based on content type and attachments
 slay format_email_body(email Email) tea {
     // Simple text email
-    ready (stringz.equals(email.content_type, "text/plain") && arrayz.len(email.attachments) == 0) {
+    lowkey (stringz.equals(email.content_type, "text/plain") && arrayz.len(email.attachments) == 0) {
         damn email.body_text
     }
     
     // Simple HTML email
-    ready (stringz.equals(email.content_type, "text/html") && arrayz.len(email.attachments) == 0) {
+    lowkey (stringz.equals(email.content_type, "text/html") && arrayz.len(email.attachments) == 0) {
         damn email.body_html
     }
     
@@ -1018,7 +1018,7 @@ slay format_email_body(email Email) tea {
     sus parts tea[value] = []
     
     // Add text part if present
-    ready (stringz.len(email.body_text) > 0) {
+    lowkey (stringz.len(email.body_text) > 0) {
         sus text_part tea = stringz.concat([
             "--", email.boundary, "\r\n",
             "Content-Type: text/plain; charset=", email.encoding, "\r\n",
@@ -1029,7 +1029,7 @@ slay format_email_body(email Email) tea {
     }
     
     // Add HTML part if present
-    ready (stringz.len(email.body_html) > 0) {
+    lowkey (stringz.len(email.body_html) > 0) {
         sus html_part tea = stringz.concat([
             "--", email.boundary, "\r\n",
             "Content-Type: text/html; charset=", email.encoding, "\r\n", 
@@ -1062,10 +1062,10 @@ slay format_attachment_part(attachment EmailAttachment, boundary tea) tea {
     part_headers = arrayz.push(part_headers, stringz.concat(["Content-Type: ", attachment.content_type]))
     part_headers = arrayz.push(part_headers, stringz.concat(["Content-Transfer-Encoding: ", attachment.encoding]))
     
-    ready (stringz.equals(attachment.disposition, "inline") && stringz.len(attachment.content_id) > 0) {
+    lowkey (stringz.equals(attachment.disposition, "inline") && stringz.len(attachment.content_id) > 0) {
         part_headers = arrayz.push(part_headers, stringz.concat(["Content-Disposition: inline"]))
         part_headers = arrayz.push(part_headers, stringz.concat(["Content-ID: <", attachment.content_id, ">"]))
-    } otherwise {
+    } highkey {
         part_headers = arrayz.push(part_headers, stringz.concat(["Content-Disposition: attachment; filename=\"", attachment.filename, "\""]))
     }
     
@@ -1075,7 +1075,7 @@ slay format_attachment_part(attachment EmailAttachment, boundary tea) tea {
 
 // Base64 encoding for attachments and authentication
 slay encode_base64(data tea) tea {
-    ready (stringz.len(data) == 0) {
+    lowkey (stringz.len(data) == 0) {
         damn ""
     }
     
@@ -1099,7 +1099,7 @@ slay encode_base64(data tea) tea {
         }
         
         // Pad incomplete chunks
-        ready (chunk_size < 3) {
+        lowkey (chunk_size < 3) {
             chunk = chunk << (8 * (3 - chunk_size))
             padding = 3 - chunk_size
         }
@@ -1115,10 +1115,10 @@ slay encode_base64(data tea) tea {
     }
     
     // Add padding
-    ready (padding == 1) {
+    lowkey (padding == 1) {
         result = stringz.substring(result, 0, stringz.len(result) - 1)
         result = stringz.concat([result, "="])
-    } otherwise ready (padding == 2) {
+    } highkey lowkey (padding == 2) {
         result = stringz.substring(result, 0, stringz.len(result) - 2)
         result = stringz.concat([result, "=="])
     }
@@ -1128,7 +1128,7 @@ slay encode_base64(data tea) tea {
 
 // Base64 decoding
 slay decode_base64(encoded tea) yikes<tea> {
-    ready (stringz.len(encoded) == 0) {
+    lowkey (stringz.len(encoded) == 0) {
         damn ""
     }
     
@@ -1136,7 +1136,7 @@ slay decode_base64(encoded tea) yikes<tea> {
     sus clean_encoded tea = stringz.replace_all(stringz.replace_all(encoded, "\r", ""), "\n", "")
     sus len drip = stringz.len(clean_encoded)
     
-    ready (len % 4 != 0) {
+    lowkey (len % 4 != 0) {
         yikes email_format_error("Invalid base64 length - must be multiple of 4")
     }
     
@@ -1155,9 +1155,9 @@ slay decode_base64(encoded tea) yikes<tea> {
                 when err -> yikes err
             }
             
-            ready (stringz.equals(char, "=")) {
+            lowkey (stringz.equals(char, "=")) {
                 padding = padding + 1
-            } otherwise {
+            } highkey {
                 chunk = (chunk << 6) | value
             }
             j = j + 1
@@ -1167,13 +1167,13 @@ slay decode_base64(encoded tea) yikes<tea> {
         chunk = chunk >> (2 * padding)
         
         // Extract bytes
-        ready (padding < 3) {
+        lowkey (padding < 3) {
             result = stringz.concat([result, byte_to_char((chunk >> 16) & 255)])
         }
-        ready (padding < 2) {
+        lowkey (padding < 2) {
             result = stringz.concat([result, byte_to_char((chunk >> 8) & 255)])
         }
-        ready (padding < 1) {
+        lowkey (padding < 1) {
             result = stringz.concat([result, byte_to_char(chunk & 255)])
         }
         
@@ -1185,7 +1185,7 @@ slay decode_base64(encoded tea) yikes<tea> {
 
 // Helper function to parse SMTP responses
 slay parse_smtp_response(response_text tea) yikes<SmtpResponse> {
-    ready (stringz.len(response_text) < 3) {
+    lowkey (stringz.len(response_text) < 3) {
         yikes create_email_error("smtp_parse", "Invalid SMTP response format", 0, response_text)
     }
     
@@ -1208,7 +1208,7 @@ slay supports_capability(client SmtpClient, capability tea) lit {
     sus i drip = 0
     bestie (i < arrayz.len(client.capabilities)) {
         sus cap tea = client.capabilities[i]
-        ready (stringz.contains(stringz.to_upper(cap), stringz.to_upper(capability))) {
+        lowkey (stringz.contains(stringz.to_upper(cap), stringz.to_upper(capability))) {
             damn based
         }
         i = i + 1
@@ -1224,7 +1224,7 @@ slay parse_ehlo_capabilities(response_text tea) tea[value]{
     sus i drip = 1  // Skip first line (250-hostname greeting)
     bestie (i < arrayz.len(lines)) {
         sus line tea = stringz.trim(lines[i])
-        ready (stringz.starts_with(line, "250-") || stringz.starts_with(line, "250 ")) {
+        lowkey (stringz.starts_with(line, "250-") || stringz.starts_with(line, "250 ")) {
             sus capability tea = stringz.trim(stringz.substring(line, 4, stringz.len(line)))
             capabilities = arrayz.push(capabilities, capability)
         }
@@ -1263,22 +1263,22 @@ slay sanitize_header_value(value tea) tea {
 
 slay extract_filename_from_path(path tea) tea {
     sus last_slash drip = stringz.find_last(path, "/")
-    ready (last_slash == -1) {
+    lowkey (last_slash == -1) {
         damn path
     }
     damn stringz.substring(path, last_slash + 1, stringz.len(path))
 }
 
 slay get_content_type_from_extension(filename tea) tea {
-    ready (stringz.ends_with(filename, ".pdf")) {
+    lowkey (stringz.ends_with(filename, ".pdf")) {
         damn "application/pdf"
-    } otherwise ready (stringz.ends_with(filename, ".jpg") || stringz.ends_with(filename, ".jpeg")) {
+    } highkey lowkey (stringz.ends_with(filename, ".jpg") || stringz.ends_with(filename, ".jpeg")) {
         damn "image/jpeg"
-    } otherwise ready (stringz.ends_with(filename, ".png")) {
+    } highkey lowkey (stringz.ends_with(filename, ".png")) {
         damn "image/png"
-    } otherwise ready (stringz.ends_with(filename, ".txt")) {
+    } highkey lowkey (stringz.ends_with(filename, ".txt")) {
         damn "text/plain"
-    } otherwise {
+    } highkey {
         damn "application/octet-stream"
     }
 }
@@ -1294,7 +1294,7 @@ slay get_priority_header_value(priority EmailPriority) tea {
 }
 
 slay generate_random_string(length drip) tea {
-    ready (length <= 0) {
+    lowkey (length <= 0) {
         damn ""
     }
     
@@ -1315,7 +1315,7 @@ slay generate_random_string(length drip) tea {
 
 slay compute_hmac_md5(key tea, data tea) tea {
     // Simplified HMAC-MD5 implementation for CRAM-MD5 authentication
-    ready (stringz.len(key) == 0 || stringz.len(data) == 0) {
+    lowkey (stringz.len(key) == 0 || stringz.len(data) == 0) {
         damn ""
     }
     
@@ -1323,7 +1323,7 @@ slay compute_hmac_md5(key tea, data tea) tea {
     sus block_size drip = 64
     sus padded_key tea = key
     
-    ready (stringz.len(key) > block_size) {
+    lowkey (stringz.len(key) > block_size) {
         // If key is longer than block size, hash it first
         padded_key = compute_simple_md5(key)
     }
@@ -1338,9 +1338,9 @@ slay compute_hmac_md5(key tea, data tea) tea {
     sus i drip = 0
     
     bestie (i < block_size) {
-        sus key_byte drip = ready (i < stringz.len(padded_key)) {
+        sus key_byte drip = lowkey (i < stringz.len(padded_key)) {
             damn char_to_byte(stringz.char_at(padded_key, i))
-        } otherwise {
+        } highkey {
             damn 0
         }
         
@@ -1353,14 +1353,14 @@ slay compute_hmac_md5(key tea, data tea) tea {
         sus padded_key tea = ""
         
         fr fr Key padding per RFC 2104
-        ready stringz.len(key) > block_size {
+        lowkey stringz.len(key) > block_size {
             padded_key = sha256_hash(key)  fr fr Hash long keys
-        } otherwise ready stringz.len(key) < block_size {
+        } highkey lowkey stringz.len(key) < block_size {
             padded_key = key
             bestie stringz.len(padded_key) < block_size {
                 padded_key = padded_key + char(0)
             }
-        } otherwise {
+        } highkey {
             padded_key = key
         }
         
@@ -1389,12 +1389,12 @@ slay compute_hmac_md5(key tea, data tea) tea {
 }
 
 slay string_from_drip(value drip) tea {
-    ready (value == 0) {
+    lowkey (value == 0) {
         damn "0"
     }
     
     sus is_negative lit = (value < 0)
-    sus abs_value drip = ready (is_negative) { damn -value } otherwise { damn value }
+    sus abs_value drip = lowkey (is_negative) { damn -value } highkey { damn value }
     
     sus result tea = ""
     bestie (abs_value > 0) {
@@ -1404,7 +1404,7 @@ slay string_from_drip(value drip) tea {
         abs_value = abs_value / 10
     }
     
-    ready (is_negative) {
+    lowkey (is_negative) {
         result = stringz.concat(["-", result])
     }
     
@@ -1412,17 +1412,17 @@ slay string_from_drip(value drip) tea {
 }
 
 slay drip_from_string(value tea) yikes<drip> {
-    ready (stringz.len(value) == 0) {
+    lowkey (stringz.len(value) == 0) {
         yikes email_format_error("Empty string cannot be converted to number")
     }
     
     sus trimmed tea = stringz.trim(value)
-    ready (stringz.len(trimmed) == 0) {
+    lowkey (stringz.len(trimmed) == 0) {
         yikes email_format_error("Whitespace-only string cannot be converted to number")
     }
     
     sus is_negative lit = stringz.starts_with(trimmed, "-")
-    sus start_pos drip = ready (is_negative) { damn 1 } otherwise { damn 0 }
+    sus start_pos drip = lowkey (is_negative) { damn 1 } highkey { damn 0 }
     
     sus result drip = 0
     sus i drip = start_pos
@@ -1436,7 +1436,7 @@ slay drip_from_string(value tea) yikes<drip> {
         i = i + 1
     }
     
-    ready (is_negative) {
+    lowkey (is_negative) {
         result = -result
     }
     
@@ -1449,19 +1449,19 @@ slay drip_from_string(value tea) yikes<drip> {
 
 // Converts a base64 character to its 6-bit value
 slay base64_char_value(char tea) yikes<drip> {
-    ready (char >= "A" && char <= "Z") {
+    lowkey (char >= "A" && char <= "Z") {
         damn char_to_byte(char) - char_to_byte("A")
-    } otherwise ready (char >= "a" && char <= "z") {
+    } highkey lowkey (char >= "a" && char <= "z") {
         damn char_to_byte(char) - char_to_byte("a") + 26
-    } otherwise ready (char >= "0" && char <= "9") {
+    } highkey lowkey (char >= "0" && char <= "9") {
         damn char_to_byte(char) - char_to_byte("0") + 52
-    } otherwise ready (stringz.equals(char, "+")) {
+    } highkey lowkey (stringz.equals(char, "+")) {
         damn 62
-    } otherwise ready (stringz.equals(char, "/")) {
+    } highkey lowkey (stringz.equals(char, "/")) {
         damn 63
-    } otherwise ready (stringz.equals(char, "=")) {
+    } highkey lowkey (stringz.equals(char, "=")) {
         damn 0  // Padding character
-    } otherwise {
+    } highkey {
         yikes email_format_error(stringz.concat(["Invalid base64 character: ", char]))
     }
 }
@@ -1470,39 +1470,39 @@ slay base64_char_value(char tea) yikes<drip> {
 slay char_to_byte(char tea) drip {
     // Simple ASCII character to byte conversion
     // This would typically use the language's built-in character encoding
-    ready (stringz.equals(char, "A")) { damn 65 }
-    ready (stringz.equals(char, "B")) { damn 66 }
-    ready (stringz.equals(char, "C")) { damn 67 }
-    ready (stringz.equals(char, "D")) { damn 68 }
-    ready (stringz.equals(char, "E")) { damn 69 }
-    ready (stringz.equals(char, "F")) { damn 70 }
-    ready (stringz.equals(char, "G")) { damn 71 }
-    ready (stringz.equals(char, "H")) { damn 72 }
-    ready (stringz.equals(char, "I")) { damn 73 }
-    ready (stringz.equals(char, "J")) { damn 74 }
-    ready (stringz.equals(char, "a")) { damn 97 }
-    ready (stringz.equals(char, "b")) { damn 98 }
-    ready (stringz.equals(char, "0")) { damn 48 }
-    ready (stringz.equals(char, "1")) { damn 49 }
-    ready (stringz.equals(char, "9")) { damn 57 }
-    ready (stringz.equals(char, "+")) { damn 43 }
-    ready (stringz.equals(char, "/")) { damn 47 }
-    ready (stringz.equals(char, "=")) { damn 61 }
-    ready (stringz.equals(char, " ")) { damn 32 }
-    ready (stringz.equals(char, "\r")) { damn 13 }
-    ready (stringz.equals(char, "\n")) { damn 10 }
-    ready (stringz.equals(char, "\t")) { damn 9 }
-    ready (stringz.equals(char, "\0")) { damn 0 }
-    ready (stringz.equals(char, "@")) { damn 64 }
-    ready (stringz.equals(char, ".")) { damn 46 }
-    ready (stringz.equals(char, "-")) { damn 45 }
-    ready (stringz.equals(char, "_")) { damn 95 }
-    ready (stringz.equals(char, ":")) { damn 58 }
-    ready (stringz.equals(char, ";")) { damn 59 }
-    ready (stringz.equals(char, "<")) { damn 60 }
-    ready (stringz.equals(char, ">")) { damn 62 }
-    ready (stringz.equals(char, "!")) { damn 33 }
-    ready (stringz.equals(char, "?")) { damn 63 }
+    lowkey (stringz.equals(char, "A")) { damn 65 }
+    lowkey (stringz.equals(char, "B")) { damn 66 }
+    lowkey (stringz.equals(char, "C")) { damn 67 }
+    lowkey (stringz.equals(char, "D")) { damn 68 }
+    lowkey (stringz.equals(char, "E")) { damn 69 }
+    lowkey (stringz.equals(char, "F")) { damn 70 }
+    lowkey (stringz.equals(char, "G")) { damn 71 }
+    lowkey (stringz.equals(char, "H")) { damn 72 }
+    lowkey (stringz.equals(char, "I")) { damn 73 }
+    lowkey (stringz.equals(char, "J")) { damn 74 }
+    lowkey (stringz.equals(char, "a")) { damn 97 }
+    lowkey (stringz.equals(char, "b")) { damn 98 }
+    lowkey (stringz.equals(char, "0")) { damn 48 }
+    lowkey (stringz.equals(char, "1")) { damn 49 }
+    lowkey (stringz.equals(char, "9")) { damn 57 }
+    lowkey (stringz.equals(char, "+")) { damn 43 }
+    lowkey (stringz.equals(char, "/")) { damn 47 }
+    lowkey (stringz.equals(char, "=")) { damn 61 }
+    lowkey (stringz.equals(char, " ")) { damn 32 }
+    lowkey (stringz.equals(char, "\r")) { damn 13 }
+    lowkey (stringz.equals(char, "\n")) { damn 10 }
+    lowkey (stringz.equals(char, "\t")) { damn 9 }
+    lowkey (stringz.equals(char, "\0")) { damn 0 }
+    lowkey (stringz.equals(char, "@")) { damn 64 }
+    lowkey (stringz.equals(char, ".")) { damn 46 }
+    lowkey (stringz.equals(char, "-")) { damn 45 }
+    lowkey (stringz.equals(char, "_")) { damn 95 }
+    lowkey (stringz.equals(char, ":")) { damn 58 }
+    lowkey (stringz.equals(char, ";")) { damn 59 }
+    lowkey (stringz.equals(char, "<")) { damn 60 }
+    lowkey (stringz.equals(char, ">")) { damn 62 }
+    lowkey (stringz.equals(char, "!")) { damn 33 }
+    lowkey (stringz.equals(char, "?")) { damn 63 }
     
     // Default fallback for unknown characters
     damn 65  // 'A'
@@ -1510,50 +1510,50 @@ slay char_to_byte(char tea) drip {
 
 // Converts byte value to character
 slay byte_to_char(byte drip) tea {
-    ready (byte == 65) { damn "A" }
-    ready (byte == 66) { damn "B" }
-    ready (byte == 67) { damn "C" }
-    ready (byte == 97) { damn "a" }
-    ready (byte == 98) { damn "b" }
-    ready (byte == 99) { damn "c" }
-    ready (byte == 48) { damn "0" }
-    ready (byte == 49) { damn "1" }
-    ready (byte == 50) { damn "2" }
-    ready (byte == 57) { damn "9" }
-    ready (byte == 32) { damn " " }
-    ready (byte == 13) { damn "\r" }
-    ready (byte == 10) { damn "\n" }
-    ready (byte == 9) { damn "\t" }
-    ready (byte == 0) { damn "\0" }
-    ready (byte == 64) { damn "@" }
-    ready (byte == 46) { damn "." }
-    ready (byte == 45) { damn "-" }
-    ready (byte == 95) { damn "_" }
-    ready (byte == 58) { damn ":" }
-    ready (byte == 59) { damn ";" }
-    ready (byte == 60) { damn "<" }
-    ready (byte == 62) { damn ">" }
-    ready (byte == 33) { damn "!" }
-    ready (byte == 63) { damn "?" }
-    ready (byte >= 65 && byte <= 90) { damn "A" }  // A-Z fallback
-    ready (byte >= 97 && byte <= 122) { damn "a" } // a-z fallback
-    ready (byte >= 48 && byte <= 57) { damn "0" }  // 0-9 fallback
+    lowkey (byte == 65) { damn "A" }
+    lowkey (byte == 66) { damn "B" }
+    lowkey (byte == 67) { damn "C" }
+    lowkey (byte == 97) { damn "a" }
+    lowkey (byte == 98) { damn "b" }
+    lowkey (byte == 99) { damn "c" }
+    lowkey (byte == 48) { damn "0" }
+    lowkey (byte == 49) { damn "1" }
+    lowkey (byte == 50) { damn "2" }
+    lowkey (byte == 57) { damn "9" }
+    lowkey (byte == 32) { damn " " }
+    lowkey (byte == 13) { damn "\r" }
+    lowkey (byte == 10) { damn "\n" }
+    lowkey (byte == 9) { damn "\t" }
+    lowkey (byte == 0) { damn "\0" }
+    lowkey (byte == 64) { damn "@" }
+    lowkey (byte == 46) { damn "." }
+    lowkey (byte == 45) { damn "-" }
+    lowkey (byte == 95) { damn "_" }
+    lowkey (byte == 58) { damn ":" }
+    lowkey (byte == 59) { damn ";" }
+    lowkey (byte == 60) { damn "<" }
+    lowkey (byte == 62) { damn ">" }
+    lowkey (byte == 33) { damn "!" }
+    lowkey (byte == 63) { damn "?" }
+    lowkey (byte >= 65 && byte <= 90) { damn "A" }  // A-Z fallback
+    lowkey (byte >= 97 && byte <= 122) { damn "a" } // a-z fallback
+    lowkey (byte >= 48 && byte <= 57) { damn "0" }  // 0-9 fallback
     
     damn "?"  // Unknown character fallback
 }
 
 // Converts character to digit (0-9)
 slay char_to_digit(char tea) yikes<drip> {
-    ready (stringz.equals(char, "0")) { damn 0 }
-    ready (stringz.equals(char, "1")) { damn 1 }
-    ready (stringz.equals(char, "2")) { damn 2 }
-    ready (stringz.equals(char, "3")) { damn 3 }
-    ready (stringz.equals(char, "4")) { damn 4 }
-    ready (stringz.equals(char, "5")) { damn 5 }
-    ready (stringz.equals(char, "6")) { damn 6 }
-    ready (stringz.equals(char, "7")) { damn 7 }
-    ready (stringz.equals(char, "8")) { damn 8 }
-    ready (stringz.equals(char, "9")) { damn 9 }
+    lowkey (stringz.equals(char, "0")) { damn 0 }
+    lowkey (stringz.equals(char, "1")) { damn 1 }
+    lowkey (stringz.equals(char, "2")) { damn 2 }
+    lowkey (stringz.equals(char, "3")) { damn 3 }
+    lowkey (stringz.equals(char, "4")) { damn 4 }
+    lowkey (stringz.equals(char, "5")) { damn 5 }
+    lowkey (stringz.equals(char, "6")) { damn 6 }
+    lowkey (stringz.equals(char, "7")) { damn 7 }
+    lowkey (stringz.equals(char, "8")) { damn 8 }
+    lowkey (stringz.equals(char, "9")) { damn 9 }
     
     yikes email_format_error(stringz.concat(["Not a digit: ", char]))
 }

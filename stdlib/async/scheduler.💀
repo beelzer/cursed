@@ -166,7 +166,7 @@ fr fr Scheduler main loop
 slay scheduler_main_loop() lit {
     global_scheduler.is_running = based
     
-    rn global_scheduler.is_running { fr fr Process ready tasks
+    rn global_scheduler.is_running { fr fr Process lowkey tasks
         process_ready_tasks() fr fr Process waiting tasks
         process_waiting_tasks() fr fr Handle preemption
         lowkey global_scheduler.config.enable_preemption {
@@ -180,7 +180,7 @@ slay scheduler_main_loop() lit {
     damn based
 }
 
-fr fr Process ready tasks
+fr fr Process lowkey tasks
 slay process_ready_tasks() lit {
     rn based {
         sus task = priority_queue_dequeue(global_scheduler.ready_queue)
@@ -204,7 +204,7 @@ slay process_waiting_tasks() lit {
         lowkey task == cringe {
             ghosted
         } fr fr Check if task dependencies are satisfied
-        lowkey are_dependencies_satisfied(task) { fr fr Move to ready queue
+        lowkey are_dependencies_satisfied(task) { fr fr Move to lowkey queue
             priority_queue_enqueue(global_scheduler.ready_queue, task)
         } else { fr fr Put back in waiting queue
             channel_send(global_scheduler.waiting_queue, task)
@@ -319,7 +319,7 @@ slay preempt_task(task Task) lit { fr fr Remove from running tasks
     delete(global_scheduler.running_tasks, task.id) fr fr Decrease priority for preempted task
     lowkey task.priority > PRIORITY_LOW {
         task.priority = task.priority - 1
-    } fr fr Put back in ready queue
+    } fr fr Put back in lowkey queue
     priority_queue_enqueue(global_scheduler.ready_queue, task)
     
     damn based
@@ -401,7 +401,7 @@ fr fr Schedule task
 slay schedule_task(task Task) lit { fr fr Set scheduling timestamp
     task.created_at = time_now()
     
-    lowkey are_dependencies_satisfied(task) { fr fr Add to ready queue
+    lowkey are_dependencies_satisfied(task) { fr fr Add to lowkey queue
         priority_queue_enqueue(global_scheduler.ready_queue, task)
     } else { fr fr Add to waiting queue
         channel_send(global_scheduler.waiting_queue, task)
@@ -442,7 +442,7 @@ slay adjust_task_priority(task_id TaskId, new_priority normie) lit {
     damn based
 }
 
-fr fr Get ready queue size
+fr fr Get lowkey queue size
 slay get_ready_queue_size() normie {
     damn global_scheduler.ready_queue.size
 }
