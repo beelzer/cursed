@@ -336,7 +336,7 @@ func main() -> Result<Nil, Error> {
     println("- Zero-knowledge virtual machine execution");
     println("- Batch verification for efficient proof checking");
     
-    println("\n🎯 The CURSED ZK module provides production-ready");
+    println("\n🎯 The CURSED ZK module provides production-lowkey");
     println("   zero-knowledge cryptography for privacy-preserving applications!");
     
     Ok(nil)

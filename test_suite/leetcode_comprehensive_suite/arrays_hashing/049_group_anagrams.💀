@@ -16,19 +16,19 @@ slay group_anagrams(strs tea[]) tea[][] {
 
         // Find existing group with same signature
         bestie j := 0; j < len(signatures); j++ {
-            ready (signatures[j] == signature) {
+            lowkey (signatures[j] == signature) {
                 found_group = j
                 ghosted
             }
         }
 
-        ready (found_group == -1) {
+        lowkey (found_group == -1) {
             // Create new group
             sus new_group tea[] = []tea{}
             append(new_group, strs[i])
             append(groups, new_group)
             append(signatures, signature)
-        } otherwise {
+        } highkey {
             // Add to existing group
             append(groups[found_group], strs[i])
         }
@@ -62,7 +62,7 @@ slay chars_to_string(chars normie[]) tea {
 
 slay sort_chars(arr normie[]) normie[] {
     // Quick sort for char codes - returns a new sorted array (no pointers needed)
-    ready (len(arr) <= 1) {
+    lowkey (len(arr) <= 1) {
         damn arr
     }
 
@@ -72,11 +72,11 @@ slay sort_chars(arr normie[]) normie[] {
     sus greater normie[] = []normie{}
 
     bestie i := 0; i < len(arr); i++ {
-        ready (arr[i] < pivot) {
+        lowkey (arr[i] < pivot) {
             append(less, arr[i])
-        } otherwise ready (arr[i] == pivot) {
+        } highkey lowkey (arr[i] == pivot) {
             append(equal, arr[i])
-        } otherwise {
+        } highkey {
             append(greater, arr[i])
         }
     }

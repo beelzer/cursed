@@ -11,18 +11,18 @@ slay main_character() normie {
     
 fr fr Simple if-else
     sus x normie = 10
-    ready (x > 5) {
+    lowkey (x > 5) {
         vibez.spill("x is greater than 5")
-    } otherwise {
+    } highkey {
         vibez.spill("x is 5 or less")
     }
     
 fr fr Nested if statements
     sus y normie = 15
-    ready (x > 0) {
-        ready (y > x) {
+    lowkey (x > 0) {
+        lowkey (y > x) {
             vibez.spill("Both x and y are positive, y > x")
-        } otherwise {
+        } highkey {
             vibez.spill("Both positive, but y <= x")
         }
     }
@@ -31,36 +31,36 @@ fr fr Complex boolean conditions
     sus a lit = based
     sus b lit = cringe
     
-    ready ((a && !b) || (x > y)) {
+    lowkey ((a && !b) || (x > y)) {
         vibez.spill("Complex boolean condition 1 passed")
     }
     
-    ready (a || b && (x == 10)) {
+    lowkey (a || b && (x == 10)) {
         vibez.spill("Complex boolean condition 2 passed")
     }
     
 fr fr Multiple else-if chain (if supported)
     sus grade normie = 85
-    ready (grade >= 90) {
+    lowkey (grade >= 90) {
         vibez.spill("Grade A")
-    } otherwise ready (grade >= 80) {
+    } highkey lowkey (grade >= 80) {
         vibez.spill("Grade B")
-    } otherwise ready (grade >= 70) {
+    } highkey lowkey (grade >= 70) {
         vibez.spill("Grade C")
-    } otherwise {
+    } highkey {
         vibez.spill("Grade F")
     }
     
 fr fr Control flow with function calls
     sus result lit = check_condition(x, y)
-    ready (result) {
+    lowkey (result) {
         vibez.spill("Function returned true")
-    } otherwise {
+    } highkey {
         vibez.spill("Function returned false")
     }
     
 fr fr Control flow with expressions
-    ready ((x + y) > 20 && (x * 2) < 25) {
+    lowkey ((x + y) > 20 && (x * 2) < 25) {
         vibez.spill("Expression-based condition passed")
     }
     

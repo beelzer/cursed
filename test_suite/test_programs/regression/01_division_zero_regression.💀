@@ -19,7 +19,7 @@ slay main_character() {
     
     vibez.spill("Testing zero divisor detection...")
     sus divisor = 0
-    ready (divisor == 0) {
+    lowkey (divisor == 0) {
         vibez.spill("Zero divisor detected - preventing division")
     } basic {
         vibez.spill("Division would be:", 42 / divisor)
@@ -27,7 +27,7 @@ slay main_character() {
     
     vibez.spill("Testing computed zero...")
     sus computed_zero = 5 - 5
-    ready (computed_zero == 0) {
+    lowkey (computed_zero == 0) {
         vibez.spill("Computed zero detected - safe")
     }
     

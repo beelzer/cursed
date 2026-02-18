@@ -38,7 +38,7 @@ slay init_database(data_dir tea) yikes<void> {
 
 # User management functions
 slay save_user(user User) yikes<void> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -51,7 +51,7 @@ slay save_user(user User) yikes<void> {
 }
 
 slay load_user(user_id drip) yikes<User> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -66,7 +66,7 @@ slay load_user(user_id drip) yikes<User> {
 }
 
 slay find_user_by_username(username tea) yikes<User> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -87,7 +87,7 @@ slay find_user_by_username(username tea) yikes<User> {
             next # Skip corrupted files
         }
         
-        ready (user.username == username) {
+        lowkey (user.username == username) {
             damn user
         }
     }
@@ -96,7 +96,7 @@ slay find_user_by_username(username tea) yikes<User> {
 }
 
 slay list_all_users() yikes<[]User> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -124,7 +124,7 @@ slay list_all_users() yikes<[]User> {
 
 # Session management functions
 slay save_session(session Session) yikes<void> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -137,7 +137,7 @@ slay save_session(session Session) yikes<void> {
 }
 
 slay load_session(token tea) yikes<Session> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -152,7 +152,7 @@ slay load_session(token tea) yikes<Session> {
 }
 
 slay delete_session(token tea) yikes<void> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -164,7 +164,7 @@ slay delete_session(token tea) yikes<void> {
 
 # Metrics storage functions
 slay save_metrics(metrics SystemMetrics) yikes<void> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -177,7 +177,7 @@ slay save_metrics(metrics SystemMetrics) yikes<void> {
 }
 
 slay get_recent_metrics(count drip) yikes<[]SystemMetrics> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -207,7 +207,7 @@ slay get_recent_metrics(count drip) yikes<[]SystemMetrics> {
 
 # Chat message storage
 slay save_chat_message(message ChatMessage) yikes<void> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -220,7 +220,7 @@ slay save_chat_message(message ChatMessage) yikes<void> {
 }
 
 slay get_recent_messages(count drip) yikes<[]ChatMessage> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -327,7 +327,7 @@ slay generate_message_id() drip {
 }
 
 slay cleanup_expired_sessions() yikes<drip> {
-    ready (!db.initialized) {
+    lowkey (!db.initialized) {
         yikes "Database not initialized"
     }
     
@@ -349,7 +349,7 @@ slay cleanup_expired_sessions() yikes<drip> {
             next # Skip corrupted files
         }
         
-        ready (session.expires_at < current_time) {
+        lowkey (session.expires_at < current_time) {
             filez.delete_file(file_path) fam {
                 # Ignore delete errors
             }

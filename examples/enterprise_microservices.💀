@@ -162,7 +162,7 @@ squad UserService {
     
     slay create_user(user_data User) yikes<User> {
         // Validate input
-        ready (len(user_data.email) == 0) {
+        lowkey (len(user_data.email) == 0) {
             self.metrics.record_error("validation", "warning")
             yikes "email is required"
         }
@@ -209,7 +209,7 @@ squad UserService {
             }
         }
         
-        ready (len(result) == 0) {
+        lowkey (len(result) == 0) {
             yikes "user not found"
         }
         
@@ -229,7 +229,7 @@ squad UserService {
             }
         }
         
-        ready (len(result) == 0) {
+        lowkey (len(result) == 0) {
             yikes "user not found"
         }
         
@@ -258,7 +258,7 @@ squad UserService {
             }
         }
         
-        ready (len(result) == 0) {
+        lowkey (len(result) == 0) {
             yikes "user not found"
         }
         
@@ -493,7 +493,7 @@ squad OrderService {
             }
         }
         
-        ready (len(result) == 0) {
+        lowkey (len(result) == 0) {
             yikes "order not found"
         }
         
@@ -690,7 +690,7 @@ squad PaymentService {
             when _ -> "unknown"
         }
         
-        ready (event_type == "order.created") {
+        lowkey (event_type == "order.created") {
             sus event_data map<tea, drip> = jsonz.unmarshal<map<tea, drip>>(message.value) fam {
                 when err -> yikes "failed to parse order event: " + err
             }
@@ -748,7 +748,7 @@ squad PaymentService {
     }
     
     slay publish_payment_event(result PaymentResult) yikes<tea> {
-        sus event_type tea = ready (result.status == "success") "payment.completed" otherwise "payment.failed"
+        sus event_type tea = lowkey (result.status == "success") "payment.completed" highkey "payment.failed"
         
         sus event_data map<tea, drip> = {
             "event_type": event_type,
@@ -852,7 +852,7 @@ squad APIGateway {
     slay create_auth_middleware() httpz.Middleware {
         damn slay(req httpz.Request, next slay()) httpz.Response {
             // Skip auth for health and metrics endpoints
-            ready (req.path == "/health" || req.path == "/metrics") {
+            lowkey (req.path == "/health" || req.path == "/metrics") {
                 damn next()
             }
             
@@ -863,7 +863,7 @@ squad APIGateway {
                 }
             }
             
-            ready (!stringz.starts_with(auth_header, "Bearer ")) {
+            lowkey (!stringz.starts_with(auth_header, "Bearer ")) {
                 self.metrics.record_error("authentication", "warning")
                 damn httpz.error_response(401, "Invalid authorization header format")
             }
@@ -892,7 +892,7 @@ squad APIGateway {
                 when _ -> req.remote_addr
             }
             
-            ready (!self.rate_limiter.allow(client_ip)) {
+            lowkey (!self.rate_limiter.allow(client_ip)) {
                 self.metrics.record_error("rate_limit", "warning")
                 damn httpz.error_response(429, "Rate limit exceeded")
             }
@@ -909,7 +909,7 @@ squad APIGateway {
             response.headers["access-control-allow-methods"] = "GET, POST, PUT, DELETE, OPTIONS"
             response.headers["access-control-allow-headers"] = "content-type, authorization"
             
-            ready (req.method == "OPTIONS") {
+            lowkey (req.method == "OPTIONS") {
                 response.status_code = 200
                 response.body = []
             }
@@ -958,12 +958,12 @@ squad RateLimiter {
         }
         
         // Reset window if needed
-        ready (now - limit.window_start > self.time_window) {
+        lowkey (now - limit.window_start > self.time_window) {
             limit.requests = 0
             limit.window_start = now
         }
         
-        ready (limit.requests >= self.max_requests) {
+        lowkey (limit.requests >= self.max_requests) {
             damn false
         }
         
@@ -989,7 +989,7 @@ squad UserServiceClient {
             when err -> yikes err
         }
         
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             yikes "user service error: " + to_string(response.status_code)
         }
         
@@ -1018,7 +1018,7 @@ squad PaymentGateway {
             when err -> yikes err
         }
         
-        ready (response.status_code != 200) {
+        lowkey (response.status_code != 200) {
             yikes "payment gateway error: " + to_string(response.status_code)
         }
         
@@ -1067,7 +1067,7 @@ slay start_microservices_platform() yikes<tea> {
     vibez.spill("✅ All services started successfully")
     vibez.spill("📊 Metrics available at http://localhost:8080/metrics")
     vibez.spill("🔍 API Gateway available at http://localhost:8080")
-    vibez.spill("💾 Database connections pooled and ready")
+    vibez.spill("💾 Database connections pooled and lowkey")
     vibez.spill("📨 Kafka event streaming active")
     vibez.spill("🔐 OAuth 2.0 authentication enabled")
     

@@ -16,11 +16,11 @@ slay test_proper_variable_declaration() {
     vibez.spill("Calculated variable:", calculated_var)
     
     // Test 2: Variable scope within blocks
-    ready (properly_declared > 40) {
+    lowkey (properly_declared > 40) {
         sus block_var normie = properly_declared * 2
         vibez.spill("Block variable:", block_var)
         
-        ready (block_var > 80) {
+        lowkey (block_var > 80) {
             sus nested_var normie = block_var + 10
             vibez.spill("Nested variable:", nested_var)
         }
@@ -120,11 +120,11 @@ slay test_variable_scope_isolation() {
     sus outer_var normie = 100
     vibez.spill("Outer variable:", outer_var)
     
-    ready (outer_var > 50) {
+    lowkey (outer_var > 50) {
         sus inner_var normie = outer_var + 25
         vibez.spill("Inner variable:", inner_var)
         
-        ready (inner_var > 100) {
+        lowkey (inner_var > 100) {
             sus deep_var normie = inner_var + outer_var
             vibez.spill("Deep variable:", deep_var)
             
@@ -156,13 +156,13 @@ slay test_variable_lifecycle_patterns() {
     bestie stage := 1; stage <= 5; stage++ {
         vibez.spill("Lifecycle stage", stage, "value:", lifecycle_var)
         
-        ready (stage == 1) {
+        lowkey (stage == 1) {
             lifecycle_var = 10
-        } else ready (stage == 2) {
+        } else lowkey (stage == 2) {
             lifecycle_var = lifecycle_var * 2
-        } else ready (stage == 3) {
+        } else lowkey (stage == 3) {
             lifecycle_var = lifecycle_var + 5
-        } else ready (stage == 4) {
+        } else lowkey (stage == 4) {
             lifecycle_var = lifecycle_var - 3
         } else {
             lifecycle_var = lifecycle_var / 2

@@ -24,9 +24,9 @@ slay main_character() {
     sus compare_result lit = (a > b) && (result1 >= 20)
     
     # Conditional expression validation
-    ready condition {
+    lowkey condition {
         vibez.spill("Condition is true")
-    } otherwise {
+    } highkey {
         vibez.spill("Condition is false")
     }
     

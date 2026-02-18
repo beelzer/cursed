@@ -16,7 +16,7 @@ slay backtrack(current normie[], nums normie[], used normie[]) normie[][] {
     sus result normie[][] = [][]normie{}
 
     // Base case: if current permutation is complete
-    ready (len(current) == len(nums)) {
+    lowkey (len(current) == len(nums)) {
         sus temp normie[] = copy_array(current)
         append(result, temp)
         damn result
@@ -24,7 +24,7 @@ slay backtrack(current normie[], nums normie[], used normie[]) normie[][] {
 
     // Try each unused number
     bestie i := 0; i < len(nums); i++ {
-        ready (used[i] == 1) {
+        lowkey (used[i] == 1) {
             simp  // Skip if already used
         }
 

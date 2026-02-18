@@ -53,7 +53,7 @@ slay main_character() {
     }
 
     sus build_result deploymentz.DeploymentResult = deploymentz.ContainerBuilder.build_image(build_config)
-    ready (!build_result.success) {
+    lowkey (!build_result.success) {
         vibez.spill("❌ Container build failed: {}", build_result.message)
         damn
     }
@@ -86,14 +86,14 @@ slay main_character() {
     }
 
     sus terraform_plan_result deploymentz.DeploymentResult = deploymentz.InfrastructureAsCode.Terraform.plan(terraform_config)
-    ready (!terraform_plan_result.success) {
+    lowkey (!terraform_plan_result.success) {
         vibez.spill("❌ Terraform plan failed: {}", terraform_plan_result.message)
         damn
     }
     vibez.spill("✅ Terraform plan completed")
 
     sus terraform_apply_result deploymentz.DeploymentResult = deploymentz.InfrastructureAsCode.Terraform.apply(terraform_config)
-    ready (!terraform_apply_result.success) {
+    lowkey (!terraform_apply_result.success) {
         vibez.spill("❌ Terraform apply failed: {}", terraform_apply_result.message)
         damn
     }
@@ -111,9 +111,9 @@ slay main_character() {
 
     # 6. Create Kubernetes Namespace
     sus namespace_result kubernetesz.KubeResult<tea> = kubernetesz.create_namespace(kube_config, "myapp-production")
-    ready (!namespace_result.success) {
+    lowkey (!namespace_result.success) {
         vibez.spill("⚠️ Namespace might already exist: {}", namespace_result.error)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Namespace created: {}", namespace_result.data)
     }
 
@@ -181,7 +181,7 @@ slay main_character() {
     }
 
     sus deployment_result deploymentz.DeploymentResult = deploymentz.KubernetesDeployment.deploy_application(kube_config, deployment_config)
-    ready (!deployment_result.success) {
+    lowkey (!deployment_result.success) {
         vibez.spill("❌ Deployment failed: {}", deployment_result.message)
         damn
     }
@@ -204,18 +204,18 @@ slay main_character() {
     }
 
     sus hpa_result kubernetesz.KubeResult<tea> = kubernetesz.AutoscalingManager.create_hpa(kube_config, hpa_spec)
-    ready (!hpa_result.success) {
+    lowkey (!hpa_result.success) {
         vibez.spill("⚠️ HPA creation failed: {}", hpa_result.error)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Horizontal Pod Autoscaler configured")
     }
 
     # 9. Service Mesh Integration (Istio)
     vibez.spill("\n🕸️ Step 8: Configuring Service Mesh")
     sus istio_result deploymentz.DeploymentResult = deploymentz.ServiceMeshIntegration.Istio.enable_istio("myapp-production")
-    ready (!istio_result.success) {
+    lowkey (!istio_result.success) {
         vibez.spill("⚠️ Istio enablement failed: {}", istio_result.message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Istio service mesh enabled")
     }
 
@@ -224,18 +224,18 @@ slay main_character() {
     sus monitoring_result deploymentz.DeploymentResult = deploymentz.ObservabilityIntegration.Prometheus.configure_monitoring(
         "myapp", "myapp-production", 9090
     )
-    ready (!monitoring_result.success) {
+    lowkey (!monitoring_result.success) {
         vibez.spill("⚠️ Monitoring setup failed: {}", monitoring_result.message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Prometheus monitoring configured")
     }
 
     sus tracing_result deploymentz.DeploymentResult = deploymentz.ObservabilityIntegration.Jaeger.configure_tracing(
         "myapp", "myapp-production"
     )
-    ready (!tracing_result.success) {
+    lowkey (!tracing_result.success) {
         vibez.spill("⚠️ Tracing setup failed: {}", tracing_result.message)
-    } otherwise {
+    } highkey {
         vibez.spill("✅ Jaeger tracing configured")
     }
 
@@ -243,7 +243,7 @@ slay main_character() {
     vibez.spill("\n☁️ Step 10: Multi-Cloud Cost Optimization")
     sus resources []cloudz.CloudResource = cloudz.list_resources(cloudz.CloudProvider.AWS, "us-west-2").data
     sus optimization_result cloudz.CloudResult<map<tea, any>> = cloudz.MultiCloud.optimize_costs(resources)
-    ready (optimization_result.success) {
+    lowkey (optimization_result.success) {
         sus savings drip = optimization_result.data["total_savings"]?(drip)
         vibez.spill("✅ Cost optimization complete - Potential savings: ${:.2f}", savings)
     }
@@ -251,7 +251,7 @@ slay main_character() {
     # 12. Cluster Health Check
     vibez.spill("\n🔍 Step 11: Cluster Health Check")
     sus metrics_result kubernetesz.KubeResult<kubernetesz.MonitoringManager.ClusterMetrics> = kubernetesz.MonitoringManager.get_cluster_metrics(kube_config)
-    ready (metrics_result.success) {
+    lowkey (metrics_result.success) {
         sus metrics kubernetesz.MonitoringManager.ClusterMetrics = metrics_result.data
         vibez.spill("✅ Cluster Health:")
         vibez.spill("   - Nodes: {}", metrics.node_count)
@@ -300,9 +300,9 @@ slay demo_ci_cd_pipeline() {
         "mycompany", "myapp", "deploy", pipeline
     )
     
-    ready (github_result.success) {
+    lowkey (github_result.success) {
         vibez.spill("✅ GitHub Actions workflow created")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ GitHub workflow creation failed: {}", github_result.message)
     }
 
@@ -311,9 +311,9 @@ slay demo_ci_cd_pipeline() {
         "123456", pipeline
     )
     
-    ready (gitlab_result.success) {
+    lowkey (gitlab_result.success) {
         vibez.spill("✅ GitLab CI pipeline created")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ GitLab pipeline creation failed: {}", gitlab_result.message)
     }
 
@@ -322,9 +322,9 @@ slay demo_ci_cd_pipeline() {
         "https://jenkins.mycompany.com", "myapp-deploy", pipeline
     )
     
-    ready (jenkins_result.success) {
+    lowkey (jenkins_result.success) {
         vibez.spill("✅ Jenkins pipeline created")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Jenkins pipeline creation failed: {}", jenkins_result.message)
     }
 }
@@ -365,7 +365,7 @@ slay demo_blue_green_deployment() {
     }
 
     sus blue_result deploymentz.DeploymentResult = deploymentz.KubernetesDeployment.deploy_application(kube_config, blue_config)
-    ready (!blue_result.success) {
+    lowkey (!blue_result.success) {
         vibez.spill("❌ Blue deployment failed: {}", blue_result.message)
         damn
     }
@@ -380,7 +380,7 @@ slay demo_blue_green_deployment() {
     green_config.environment_variables["COLOR"] = "green"
 
     sus green_result deploymentz.DeploymentResult = deploymentz.KubernetesDeployment.deploy_application(kube_config, green_config)
-    ready (!green_result.success) {
+    lowkey (!green_result.success) {
         vibez.spill("❌ Green deployment failed: {}", green_result.message)
         damn
     }
@@ -433,7 +433,7 @@ slay demo_canary_deployment() {
     }
 
     sus stable_result deploymentz.DeploymentResult = deploymentz.KubernetesDeployment.deploy_application(kube_config, stable_config)
-    ready (!stable_result.success) {
+    lowkey (!stable_result.success) {
         vibez.spill("❌ Stable deployment failed: {}", stable_result.message)
         damn
     }
@@ -449,7 +449,7 @@ slay demo_canary_deployment() {
     canary_config.environment_variables["VERSION"] = "canary"
 
     sus canary_result deploymentz.DeploymentResult = deploymentz.KubernetesDeployment.deploy_application(kube_config, canary_config)
-    ready (!canary_result.success) {
+    lowkey (!canary_result.success) {
         vibez.spill("❌ Canary deployment failed: {}", canary_result.message)
         damn
     }
@@ -466,9 +466,9 @@ slay demo_canary_deployment() {
             kube_config, "default", "myapp-canary"
         )
         
-        ready (metrics.success) {
+        lowkey (metrics.success) {
             vibez.spill("📈 Canary metrics look good...")
-        } otherwise {
+        } highkey {
             vibez.spill("⚠️ Unable to fetch canary metrics")
         }
         
@@ -481,12 +481,12 @@ slay demo_canary_deployment() {
         kube_config, "default", "myapp-canary", 10
     )
     
-    ready (promote_result.success) {
+    lowkey (promote_result.success) {
         vibez.spill("✅ Canary promoted to stable")
         # Clean up old stable version
         vibez.spill("🧹 Cleaning up old stable version...")
         vibez.spill("✅ Canary deployment complete")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Canary promotion failed, rolling back...")
         # Rollback logic would go here
     }

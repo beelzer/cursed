@@ -37,16 +37,16 @@ slay process_large_dataset(data flex) {
         sum = mathz.add(sum, element)
         
         fr fr Track max/min
-        ready element > max_value {
+        lowkey element > max_value {
             max_value = element
         }
-        ready element < min_value {
+        lowkey element < min_value {
             min_value = element
         }
         
         fr fr Count even/odd
         sus mod_result normie = mathz.mod(element, 2)
-        ready mod_result == 0 {
+        lowkey mod_result == 0 {
             even_count = mathz.add(even_count, 1)
         } else {
             odd_count = mathz.add(odd_count, 1)

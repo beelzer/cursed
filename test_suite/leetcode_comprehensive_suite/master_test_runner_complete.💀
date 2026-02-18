@@ -216,20 +216,20 @@ slay generate_ultimate_report(passed normie, total normie, start_time normie, en
     vibez.spill("")
     
     // Status based on pass rate
-    ready (pass_rate >= 95.0) {
+    lowkey (pass_rate >= 95.0) {
         vibez.spill("🔥 STATUS: ABSOLUTELY LEGENDARY! CURSED IS THE GOAT! 🔥")
         vibez.spill("   This implementation is sending me to another dimension!")
         vibez.spill("   Gen Z slang keywords solving algorithms? No cap, iconic!")
         vibez.spill("   Among Us ඞ pointers > regular pointers, periodt!")
         vibez.spill("   CURSED can literally compete with Python/Java now!")
-    } otherwise ready (pass_rate >= 85.0) {
+    } highkey lowkey (pass_rate >= 85.0) {
         vibez.spill("✨ STATUS: ABSOLUTELY FIRE! Most problems conquered! ✨")
         vibez.spill("   CURSED is proving itself as a legitimate language!")
         vibez.spill("   Meme syntax + serious algorithms = cultural reset!")
-    } otherwise ready (pass_rate >= 70.0) {
+    } highkey lowkey (pass_rate >= 70.0) {
         vibez.spill("💫 STATUS: Pretty solid, bestie! Decent coverage! 💫")
         vibez.spill("   For a meme language, this is actually impressive!")
-    } otherwise {
+    } highkey {
         vibez.spill("😅 STATUS: It's giving struggling energy...")
         vibez.spill("   But hey, we're solving LeetCode in MEME LANGUAGE!")
     }

@@ -11,9 +11,9 @@ slay main_character() {
     sus z normie = x + y
     
     fr fr Simple control flow
-    ready x > y {
+    lowkey x > y {
         sus result normie = x * 2
-    } otherwise {
+    } highkey {
         sus result normie = y * 2
     }
     

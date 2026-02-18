@@ -13,10 +13,10 @@ slay merge(nums1 normie[], m normie, nums2 normie[], n normie) normie[] {
 
     // Merge while both arrays have elements
     periodt (i < m && j < n) {
-        ready (nums1[i] <= nums2[j]) {
+        lowkey (nums1[i] <= nums2[j]) {
             append(result, nums1[i])
             i = i + 1
-        } otherwise {
+        } highkey {
             append(result, nums2[j])
             j = j + 1
         }

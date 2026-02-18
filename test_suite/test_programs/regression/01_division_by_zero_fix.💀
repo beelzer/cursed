@@ -72,7 +72,7 @@ slay test_safe_division_function() yikes {
     
     // Safe division implementation
     slay safe_divide(a normie, b normie) normie yikes {
-        ready (b == 0) {
+        lowkey (b == 0) {
             yikes "Division by zero attempted"
         }
         damn a / b
@@ -137,7 +137,7 @@ slay test_division_in_loops() {
     // Test potential division by zero in loop
     vibez.spill("Testing division in loop with potential zeros:")
     bestie j := 3; j >= -3; j-- {
-        ready (j != 0) {
+        lowkey (j != 0) {
             sus loop_result = 18 / j
             vibez.spill("18 /", j, "=", loop_result)
         } basic {

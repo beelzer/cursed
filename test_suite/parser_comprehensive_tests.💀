@@ -17,12 +17,12 @@ slay test_complex_bestie_loops() {
 }
 
 slay test_nested_conditionals() {
-    fr fr Test 2: Nested ready/otherwise conditionals with complex expressions
-    ready x > 0 && (y * z) > threshold || special_case(data) {
+    fr fr Test 2: Nested lowkey/highkey conditionals with complex expressions
+    lowkey x > 0 && (y * z) > threshold || special_case(data) {
         process_positive(x)
-    } otherwise ready x < 0 {
+    } highkey lowkey x < 0 {
         process_negative(x) 
-    } otherwise {
+    } highkey {
         process_zero()
     }
 }
@@ -102,7 +102,7 @@ slay test_complex_loops() {
     fr fr Test 12: Complex loop conditions with multiple clauses
     bestie condition1() && (array[i] > threshold || special_check(data)) {
         process_with_complex_logic()
-        ready early_exit_condition(i, data) {
+        lowkey early_exit_condition(i, data) {
             ghosted
         }
     }
@@ -127,7 +127,7 @@ slay test_goroutine_spawning() {
 
 slay test_select_statements() {
     fr fr Test 15: Complex select statements with expressions
-    ready {
+    lowkey {
         mood dm_send(output_channels[priority], result):
             log_send_success(priority, result)
         mood response := dm_recv(input_channels[get_input_id()]):
@@ -159,9 +159,9 @@ slay test_range_loops() {
 slay test_match_guards() {
     fr fr Test 19: Complex match guards with expressions
     sick value {
-        mood pattern ready guard_condition(x, y):
+        mood pattern lowkey guard_condition(x, y):
             handle_guarded()
-        mood Complex { field1, field2 } ready field1 > field2:
+        mood Complex { field1, field2 } lowkey field1 > field2:
             process_complex()
         basic:
             default_case()

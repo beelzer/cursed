@@ -27,11 +27,11 @@ slay test_arithmetic_operations() {
 }
 
 slay test_control_flow(value normie) {
-    ready (value > 10) {
+    lowkey (value > 10) {
         vibez.spill("Value is large")
-    } otherwise ready (value > 5) {
+    } highkey lowkey (value > 5) {
         vibez.spill("Value is medium") 
-    } otherwise {
+    } highkey {
         vibez.spill("Value is small")
     }
 }

@@ -5,14 +5,14 @@ yeet "vibez"
 // Time: O(n), Space: O(n) - using set for O(1) lookups
 
 slay longest_consecutive(nums normie[]) normie {
-    ready (len(nums) == 0) {
+    lowkey (len(nums) == 0) {
         damn 0
     }
     
     // Convert to set for O(1) lookup
     sus num_set normie[] = []normie{}
     bestie i := 0; i < len(nums); i++ {
-        ready (!contains(num_set, nums[i])) {
+        lowkey (!contains(num_set, nums[i])) {
             append(num_set, nums[i])
         }
     }
@@ -23,7 +23,7 @@ slay longest_consecutive(nums normie[]) normie {
         sus num normie = num_set[i]
         
         // Only start sequence if num-1 doesn't exist (start of sequence)
-        ready (!contains(num_set, num - 1)) {
+        lowkey (!contains(num_set, num - 1)) {
             sus current_num normie = num
             sus current_streak normie = 1
             
@@ -42,7 +42,7 @@ slay longest_consecutive(nums normie[]) normie {
 
 slay contains(arr normie[], target normie) lit {
     bestie i := 0; i < len(arr); i++ {
-        ready (arr[i] == target) {
+        lowkey (arr[i] == target) {
             damn based
         }
     }
@@ -50,7 +50,7 @@ slay contains(arr normie[], target normie) lit {
 }
 
 slay max(a normie, b normie) normie {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b

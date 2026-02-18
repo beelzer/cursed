@@ -34,13 +34,13 @@ pub const TokenKind = enum {
     Damn, // return statement (canonical)
     Sus, // mutable variable
     Facts, // immutable constant
-    Lowkey, // if statement
-    Highkey, // else statement
-    Otherwise, // else clause for ready statements
+    Lowkey, // if statement (canonical)
+    Highkey, // else statement (canonical)
+    Otherwise, // DEPRECATED - use highkey
     Periodt, // while loop
     Stan, // goroutine
     Bestie, // for loop
-    Flex, // while loop (alternative)
+    Flex, // range (for iteration in bestie loops)
     Ghosted, // break
     Simp, // continue
     Squad, // struct
@@ -86,7 +86,7 @@ pub const TokenKind = enum {
     MainCharacter, // main function
     Dm, // channel type
     Select, // select statement
-    Ready, // ready (for select statements)
+    Ready, // DEPRECATED - use lowkey for if, select for select
     LeftArrow, // <- channel operator
     Arrow, // -> return type arrow
     Later, // later (defer statement)
@@ -999,8 +999,10 @@ pub const Lexer = struct {
 
         // Control flow
         if (std.mem.eql(u8, text, "select")) return .Select;
-        if (std.mem.eql(u8, text, "ready")) return .Ready;
-        if (std.mem.eql(u8, text, "otherwise")) return .Otherwise;
+
+        // Deprecated forms - ready/otherwise replaced by lowkey/highkey
+        if (std.mem.eql(u8, text, "ready")) return .Identifier;
+        if (std.mem.eql(u8, text, "otherwise")) return .Identifier;
 
         // Traditional keywords (for compatibility)
         if (std.mem.eql(u8, text, "let")) return .Let;

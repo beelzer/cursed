@@ -3,7 +3,7 @@ yeet "vibez"
 
 // Test stack overflow scenarios and detection
 slay recursive_function(depth normie) normie {
-    ready (depth <= 0) {
+    lowkey (depth <= 0) {
         damn 1
     }
     
@@ -15,11 +15,11 @@ slay recursive_function(depth normie) normie {
 }
 
 slay safe_recursive_with_limit(depth normie, limit normie) normie yikes {
-    ready (depth > limit) {
+    lowkey (depth > limit) {
         yikes "Recursion limit exceeded"
     }
     
-    ready (depth <= 0) {
+    lowkey (depth <= 0) {
         damn 1
     }
     

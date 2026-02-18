@@ -13,7 +13,7 @@ struct TreeNode {
 }
 
 slay max_depth(root ඞTreeNode) normie {
-    ready (root == nah) {
+    lowkey (root == nah) {
         damn 0  // Base case: empty tree has depth 0
     }
     
@@ -26,7 +26,7 @@ slay max_depth(root ඞTreeNode) normie {
 
 slay max_depth_iterative(root ඞTreeNode) normie {
     // BFS approach using queue - this hits different! 🚀
-    ready (root == nah) {
+    lowkey (root == nah) {
         damn 0
     }
     
@@ -48,12 +48,12 @@ slay max_depth_iterative(root ඞTreeNode) normie {
         
         max_level = mathz.max(max_level, level)
         
-        ready (node.left != nah) {
+        lowkey (node.left != nah) {
             append(queue, node.left)
             append(levels, level + 1)
         }
         
-        ready (node.right != nah) {
+        lowkey (node.right != nah) {
             append(queue, node.right)
             append(levels, level + 1)
         }

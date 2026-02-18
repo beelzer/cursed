@@ -68,51 +68,51 @@ slay main_character() drip {
         vibez.spill_no_newline("calc> ")
         sus input tea = read_input()
         
-        ready (input == "quit" || input == "exit") {
+        lowkey (input == "quit" || input == "exit") {
             vibez.spill("Goodbye!")
             break
         }
         
-        ready (input == "help") {
+        lowkey (input == "help") {
             print_help()
             continue
         }
         
-        ready (input == "history") {
+        lowkey (input == "history") {
             print_history(calc)
             continue
         }
         
-        ready (input == "clear") {
+        lowkey (input == "clear") {
             calc.history = []
             vibez.spill("History cleared")
             continue
         }
         
-        ready (input == "memory") {
+        lowkey (input == "memory") {
             vibez.spill("Memory:", format_number(calc.memory, calc.precision))
             continue
         }
         
-        ready (stringz.starts_with(input, "precision ")) {
+        lowkey (stringz.starts_with(input, "precision ")) {
             sus precision_str tea = stringz.substring(input, 10, stringz.len(input))
             sus new_precision drip = stringz.parse_int(precision_str)
-            ready (new_precision >= 0 && new_precision <= 15) {
+            lowkey (new_precision >= 0 && new_precision <= 15) {
                 calc.precision = new_precision
                 vibez.spill("Precision set to", new_precision, "decimal places")
-            } otherwise {
+            } highkey {
                 vibez.spill("Invalid precision. Use 0-15.")
             }
             continue
         }
         
-        ready (input == "degrees") {
+        lowkey (input == "degrees") {
             calc.angle_mode = "degrees"
             vibez.spill("Angle mode set to degrees")
             continue
         }
         
-        ready (input == "radians") {
+        lowkey (input == "radians") {
             calc.angle_mode = "radians"
             vibez.spill("Angle mode set to radians")
             continue
@@ -120,7 +120,7 @@ slay main_character() drip {
         
         # Process mathematical expression
         sus result drip = evaluate_expression(input, calc)
-        ready (result != -999999) {  # Error indicator
+        lowkey (result != -999999) {  # Error indicator
             vibez.spill("= " + format_number(result, calc.precision))
             calc.history = arrayz.append(calc.history, input + " = " + format_number(result, calc.precision))
         }
@@ -135,109 +135,109 @@ slay evaluate_expression(expression tea, calc Calculator) drip {
     sus trimmed tea = stringz.trim(expression)
     
     # Memory operations
-    ready (trimmed == "mc") {
+    lowkey (trimmed == "mc") {
         calc.memory = 0
         vibez.spill("Memory cleared")
         damn 0
     }
     
-    ready (stringz.starts_with(trimmed, "ms ")) {
+    lowkey (stringz.starts_with(trimmed, "ms ")) {
         sus value_str tea = stringz.substring(trimmed, 3, stringz.len(trimmed))
         sus value drip = parse_number(value_str)
-        ready (value != -999999) {
+        lowkey (value != -999999) {
             calc.memory = value
             vibez.spill("Stored in memory:", format_number(value, calc.precision))
             damn value
         }
     }
     
-    ready (trimmed == "mr") {
+    lowkey (trimmed == "mr") {
         damn calc.memory
     }
     
     # Function calls
-    ready (stringz.starts_with(trimmed, "factorial(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "factorial(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "factorial")
         sus n drip = parse_number(arg)
-        ready (n != -999999 && n >= 0) {
+        lowkey (n != -999999 && n >= 0) {
             damn mathlib.factorial(n)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "sqrt(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "sqrt(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "sqrt")
         sus n drip = parse_number(arg)
-        ready (n != -999999 && n >= 0) {
+        lowkey (n != -999999 && n >= 0) {
             damn mathlib.sqrt_newton(n)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "fibonacci(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "fibonacci(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "fibonacci")
         sus n drip = parse_number(arg)
-        ready (n != -999999 && n >= 0) {
+        lowkey (n != -999999 && n >= 0) {
             damn mathlib.fibonacci(n)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "isprime(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "isprime(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "isprime")
         sus n drip = parse_number(arg)
-        ready (n != -999999) {
-            ready (mathlib.is_prime(n)) {
+        lowkey (n != -999999) {
+            lowkey (mathlib.is_prime(n)) {
                 vibez.spill(n, "is prime")
                 damn 1
-            } otherwise {
+            } highkey {
                 vibez.spill(n, "is not prime")
                 damn 0
             }
         }
     }
     
-    ready (stringz.starts_with(trimmed, "gcd(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "gcd(") && stringz.ends_with(trimmed, ")")) {
         sus args tea = extract_function_arg(trimmed, "gcd")
         sus numbers []drip = parse_number_list(args)
-        ready (arrayz.len(numbers) == 2) {
+        lowkey (arrayz.len(numbers) == 2) {
             damn mathlib.gcd(numbers[0], numbers[1])
         }
     }
     
-    ready (stringz.starts_with(trimmed, "lcm(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "lcm(") && stringz.ends_with(trimmed, ")")) {
         sus args tea = extract_function_arg(trimmed, "lcm")
         sus numbers []drip = parse_number_list(args)
-        ready (arrayz.len(numbers) == 2) {
+        lowkey (arrayz.len(numbers) == 2) {
             damn mathlib.lcm(numbers[0], numbers[1])
         }
     }
     
-    ready (stringz.starts_with(trimmed, "mean(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "mean(") && stringz.ends_with(trimmed, ")")) {
         sus args tea = extract_function_arg(trimmed, "mean")
         sus numbers []drip = parse_number_list(args)
-        ready (arrayz.len(numbers) > 0) {
+        lowkey (arrayz.len(numbers) > 0) {
             damn mathlib.mean(numbers)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "median(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "median(") && stringz.ends_with(trimmed, ")")) {
         sus args tea = extract_function_arg(trimmed, "median")
         sus numbers []drip = parse_number_list(args)
-        ready (arrayz.len(numbers) > 0) {
+        lowkey (arrayz.len(numbers) > 0) {
             damn mathlib.median(numbers)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "stddev(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "stddev(") && stringz.ends_with(trimmed, ")")) {
         sus args tea = extract_function_arg(trimmed, "stddev")
         sus numbers []drip = parse_number_list(args)
-        ready (arrayz.len(numbers) > 1) {
+        lowkey (arrayz.len(numbers) > 1) {
             damn mathlib.standard_deviation(numbers)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "primes(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "primes(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "primes")
         sus limit drip = parse_number(arg)
-        ready (limit != -999999 && limit > 0) {
+        lowkey (limit != -999999 && limit > 0) {
             sus primes []drip = mathlib.primes_up_to(limit)
             vibez.spill("Primes up to", limit, ":", primes)
             damn arrayz.len(primes)
@@ -245,37 +245,37 @@ slay evaluate_expression(expression tea, calc Calculator) drip {
     }
     
     # Trigonometric functions (simplified implementations)
-    ready (stringz.starts_with(trimmed, "sin(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "sin(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "sin")
         sus angle drip = parse_number(arg)
-        ready (angle != -999999) {
-            ready (calc.angle_mode == "degrees") {
+        lowkey (angle != -999999) {
+            lowkey (calc.angle_mode == "degrees") {
                 angle = degrees_to_radians(angle)
             }
             damn sin_approximation(angle)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "cos(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "cos(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "cos")
         sus angle drip = parse_number(arg)
-        ready (angle != -999999) {
-            ready (calc.angle_mode == "degrees") {
+        lowkey (angle != -999999) {
+            lowkey (calc.angle_mode == "degrees") {
                 angle = degrees_to_radians(angle)
             }
             damn cos_approximation(angle)
         }
     }
     
-    ready (stringz.starts_with(trimmed, "tan(") && stringz.ends_with(trimmed, ")")) {
+    lowkey (stringz.starts_with(trimmed, "tan(") && stringz.ends_with(trimmed, ")")) {
         sus arg tea = extract_function_arg(trimmed, "tan")
         sus angle drip = parse_number(arg)
-        ready (angle != -999999) {
-            ready (calc.angle_mode == "degrees") {
+        lowkey (angle != -999999) {
+            lowkey (calc.angle_mode == "degrees") {
                 angle = degrees_to_radians(angle)
             }
             sus cos_val drip = cos_approximation(angle)
-            ready (mathz.abs_normie(cos_val) < 0.000001) {
+            lowkey (mathz.abs_normie(cos_val) < 0.000001) {
                 vibez.spill("Error: tan undefined (division by zero)")
                 damn -999999
             }
@@ -284,12 +284,12 @@ slay evaluate_expression(expression tea, calc Calculator) drip {
     }
     
     # Power operations
-    ready (stringz.contains(trimmed, "^")) {
+    lowkey (stringz.contains(trimmed, "^")) {
         sus parts []tea = stringz.split(trimmed, "^")
-        ready (arrayz.len(parts) == 2) {
+        lowkey (arrayz.len(parts) == 2) {
             sus base drip = parse_number(stringz.trim(parts[0]))
             sus exponent drip = parse_number(stringz.trim(parts[1]))
-            ready (base != -999999 && exponent != -999999) {
+            lowkey (base != -999999 && exponent != -999999) {
                 damn mathlib.power(base, exponent)
             }
         }
@@ -305,19 +305,19 @@ slay evaluate_arithmetic(expression tea) drip {
     sus expr tea = stringz.replace_all(expression, " ", "")
     
     # Handle parentheses (simplified)
-    ready (stringz.contains(expr, "(")) {
+    lowkey (stringz.contains(expr, "(")) {
         # For this demo, we'll handle simple cases
         # In a full implementation, this would use proper parsing
     }
     
     # Basic four operations
     # Multiplication and division first
-    ready (stringz.contains(expr, "*") || stringz.contains(expr, "/")) {
+    lowkey (stringz.contains(expr, "*") || stringz.contains(expr, "/")) {
         damn evaluate_mul_div(expr)
     }
     
     # Addition and subtraction
-    ready (stringz.contains(expr, "+") || stringz.contains(expr, "-")) {
+    lowkey (stringz.contains(expr, "+") || stringz.contains(expr, "-")) {
         damn evaluate_add_sub(expr)
     }
     
@@ -334,13 +334,13 @@ slay evaluate_mul_div(expression tea) drip {
     sus op_pos drip = -1
     sus operator tea = ""
     
-    ready (mul_pos != -1 && (div_pos == -1 || mul_pos < div_pos)) {
+    lowkey (mul_pos != -1 && (div_pos == -1 || mul_pos < div_pos)) {
         op_pos = mul_pos
         operator = "*"
-    } otherwise ready (div_pos != -1) {
+    } highkey lowkey (div_pos != -1) {
         op_pos = div_pos
         operator = "/"
-    } otherwise {
+    } highkey {
         damn parse_number(expression)
     }
     
@@ -350,14 +350,14 @@ slay evaluate_mul_div(expression tea) drip {
     sus left_val drip = parse_number(left_part)
     sus right_val drip = evaluate_mul_div(right_part)  # Recursive for right associativity
     
-    ready (left_val == -999999 || right_val == -999999) {
+    lowkey (left_val == -999999 || right_val == -999999) {
         damn -999999
     }
     
-    ready (operator == "*") {
+    lowkey (operator == "*") {
         damn left_val * right_val
-    } otherwise ready (operator == "/") {
-        ready (right_val == 0) {
+    } highkey lowkey (operator == "/") {
+        lowkey (right_val == 0) {
             vibez.spill("Error: Division by zero")
             damn -999999
         }
@@ -376,13 +376,13 @@ slay evaluate_add_sub(expression tea) drip {
     sus op_pos drip = -1
     sus operator tea = ""
     
-    ready (add_pos != -1 && (sub_pos == -1 || add_pos < sub_pos)) {
+    lowkey (add_pos != -1 && (sub_pos == -1 || add_pos < sub_pos)) {
         op_pos = add_pos
         operator = "+"
-    } otherwise ready (sub_pos != -1) {
+    } highkey lowkey (sub_pos != -1) {
         op_pos = sub_pos
         operator = "-"
-    } otherwise {
+    } highkey {
         damn evaluate_mul_div(expression)
     }
     
@@ -392,13 +392,13 @@ slay evaluate_add_sub(expression tea) drip {
     sus left_val drip = evaluate_mul_div(left_part)
     sus right_val drip = evaluate_add_sub(right_part)
     
-    ready (left_val == -999999 || right_val == -999999) {
+    lowkey (left_val == -999999 || right_val == -999999) {
         damn -999999
     }
     
-    ready (operator == "+") {
+    lowkey (operator == "+") {
         damn left_val + right_val
-    } otherwise {
+    } highkey {
         damn left_val - right_val
     }
 }
@@ -412,15 +412,15 @@ slay extract_function_arg(function_call tea, function_name tea) tea {
 
 slay parse_number(str tea) drip {
     sus trimmed tea = stringz.trim(str)
-    ready (trimmed == "") {
+    lowkey (trimmed == "") {
         damn -999999
     }
     
     # Handle negative numbers
-    ready (stringz.starts_with(trimmed, "-")) {
+    lowkey (stringz.starts_with(trimmed, "-")) {
         sus positive_part tea = stringz.substring(trimmed, 1, stringz.len(trimmed))
         sus positive_val drip = stringz.parse_float(positive_part)
-        ready (positive_val != -999999) {
+        lowkey (positive_val != -999999) {
             damn -positive_val
         }
     }
@@ -434,7 +434,7 @@ slay parse_number_list(str tea) []drip {
     
     bestie (sus i drip = 0; i < arrayz.len(parts); i = i + 1) {
         sus num drip = parse_number(parts[i])
-        ready (num != -999999) {
+        lowkey (num != -999999) {
             numbers = arrayz.append(numbers, num)
         }
     }
@@ -444,7 +444,7 @@ slay parse_number_list(str tea) []drip {
 
 slay format_number(value drip, precision drip) tea {
     # Simple number formatting
-    ready (precision == 0) {
+    lowkey (precision == 0) {
         damn stringz.from_int(value)
     }
     
@@ -455,10 +455,10 @@ slay format_number(value drip, precision drip) tea {
 # Trigonometric approximations using Taylor series
 slay sin_approximation(x drip) drip {
     # Normalize to [-π, π]
-    ready (x > mathlib.PI_EXTENDED) {
+    lowkey (x > mathlib.PI_EXTENDED) {
         x = x - (2 * mathlib.PI_EXTENDED)
     }
-    ready (x < -mathlib.PI_EXTENDED) {
+    lowkey (x < -mathlib.PI_EXTENDED) {
         x = x + (2 * mathlib.PI_EXTENDED)
     }
     
@@ -478,10 +478,10 @@ slay sin_approximation(x drip) drip {
 
 slay cos_approximation(x drip) drip {
     # Normalize to [-π, π]
-    ready (x > mathlib.PI_EXTENDED) {
+    lowkey (x > mathlib.PI_EXTENDED) {
         x = x - (2 * mathlib.PI_EXTENDED)
     }
-    ready (x < -mathlib.PI_EXTENDED) {
+    lowkey (x < -mathlib.PI_EXTENDED) {
         x = x + (2 * mathlib.PI_EXTENDED)
     }
     
@@ -547,7 +547,7 @@ slay print_help() {
 }
 
 slay print_history(calc Calculator) {
-    ready (arrayz.len(calc.history) == 0) {
+    lowkey (arrayz.len(calc.history) == 0) {
         vibez.spill("No calculation history")
         damn
     }

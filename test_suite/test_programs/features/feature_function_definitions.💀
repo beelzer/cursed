@@ -38,9 +38,9 @@ slay add_numbers(a normie, b normie) normie {
 fr fr Function with mixed parameter types
 slay format_message(text tea, number normie, flag lit) tea {
     fr fr Note: This is a simplified implementation
-    ready flag {
+    lowkey flag {
         damn text
-    } otherwise {
+    } highkey {
         damn "default"
     }
 }

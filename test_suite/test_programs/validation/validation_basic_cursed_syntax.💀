@@ -28,7 +28,7 @@ slay main_character() {
     vibez.spill(boolean_var)
     
     fr fr Test basic control flow
-    ready (integer_var > 40) {
+    lowkey (integer_var > 40) {
         vibez.spill("Conditional test passed")
     }
     

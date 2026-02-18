@@ -29,7 +29,7 @@ slay main_character() {
     
     fr fr Null pointer test
     sus null_ptr ඞnormie = nah
-    ready (null_ptr == nah) {
+    lowkey (null_ptr == nah) {
         vibez.spill("Null pointer detected correctly")
     }
     

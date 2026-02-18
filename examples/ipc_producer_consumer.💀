@@ -103,13 +103,13 @@ slay producer_process(process_id: i32) -> Result<(), IpcError> {
         std::thread::sleep(Duration::from_millis(100));
     }
     
-    println("✅ Producer {} finished - that was lowkey fire", process_id)?;
+    println("✅ Producer {} finished - that was ready fire", process_id)?;
     Ok(())
 }
 
 fr fr Consumer process that processes work items
 slay consumer_process(process_id: i32) -> Result<(), IpcError> {
-    println("🛒 Consumer {} starting up - ready to consume fr", process_id)?;
+    println("🛒 Consumer {} starting up - lowkey to consume fr", process_id)?;
     
     // Connect to shared memory
     sus config = SharedMemoryConfig::new("ring_buffer_shm", std::mem::size_of::<RingBuffer>())
@@ -182,7 +182,7 @@ slay coordinator_process() -> Result<(), IpcError> {
     sus filled_slots = Semaphore::create(SemaphoreConfig::new("filled_slots", 0))?;  // 0 filled slots initially
     sus mutex = Semaphore::create(SemaphoreConfig::new("buffer_mutex", 1))?;         // Binary mutex
     
-    println("🚀 Shared resources created - ready for action")?;
+    println("🚀 Shared resources created - lowkey for action")?;
     
     // Spawn producer processes
     sus producer_handles = vec![];

@@ -27,7 +27,7 @@ slay reverse_list(head ඞListNode) ඞListNode {
 
 slay reverse_list_recursive(head ඞListNode) ඞListNode {
     // Recursive approach - this hits different! 🚀
-    ready (head == nah || head.next == nah) {
+    lowkey (head == nah || head.next == nah) {
         damn head
     }
     
@@ -39,7 +39,7 @@ slay reverse_list_recursive(head ඞListNode) ඞListNode {
 }
 
 slay create_list(vals normie[]) ඞListNode {
-    ready (len(vals) == 0) {
+    lowkey (len(vals) == 0) {
         damn nah
     }
     
@@ -59,16 +59,16 @@ slay print_list(head ඞListNode) {
     sus output tea = ""
     
     bestie (current != nah) {
-        ready (output != "") {
+        lowkey (output != "") {
             output = output + " -> "
         }
         output = output + stringz.from_int(current.val)
         current = current.next
     }
     
-    ready (output == "") {
+    lowkey (output == "") {
         vibez.spill("null")
-    } otherwise {
+    } highkey {
         vibez.spill(output + " -> null")
     }
 }

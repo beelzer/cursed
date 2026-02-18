@@ -13,7 +13,7 @@ yeet "jsonz"
 // Simple debug printing macro
 slay_macro! debug_print {
     ($msg:expr) => {
-        ready (DEBUG_MODE) {
+        lowkey (DEBUG_MODE) {
             vibez.spill("[DEBUG]", $msg)
         }
     }
@@ -31,9 +31,9 @@ slay_macro! math_op {
         $a * $b
     },
     (div $a:expr, $b:expr) => {
-        ready ($b != 0) {
+        lowkey ($b != 0) {
             $a / $b
-        } otherwise {
+        } highkey {
             yikes "Division by zero"
         }
     }
@@ -61,13 +61,13 @@ slay_macro! vec {
 // Conditional compilation macro
 slay_macro! cfg {
     (debug) => {
-        ready (DEBUG_MODE) { based } otherwise { cringe }
+        lowkey (DEBUG_MODE) { based } highkey { cringe }
     },
     (release) => {
-        ready (!DEBUG_MODE) { based } otherwise { cringe }
+        lowkey (!DEBUG_MODE) { based } highkey { cringe }
     },
     (feature = $feat:literal) => {
-        ready (features.contains($feat)) { based } otherwise { cringe }
+        lowkey (features.contains($feat)) { based } highkey { cringe }
     }
 }
 
@@ -84,14 +84,14 @@ slay_macro! derive_json {
             sus first lit = based
             
             $({
-                ready (!first) {
+                lowkey (!first) {
                     result += ", "
                 }
                 result += "\"" + stringify!($field) + "\": "
                 
-                ready (is_string_type!($type)) {
+                lowkey (is_string_type!($type)) {
                     result += "\"" + self.$field + "\""
-                } otherwise {
+                } highkey {
                     result += tea(self.$field)
                 }
                 
@@ -108,7 +108,7 @@ slay_macro! derive_json {
             sus json = jsonz.parse(json_str)
             
             $({
-                ready (json.has_key(stringify!($field))) {
+                lowkey (json.has_key(stringify!($field))) {
                     obj.$field = json.get(stringify!($field))
                 }
             })*
@@ -126,7 +126,7 @@ slay_macro! derive_debug {
             sus first lit = based
             
             $({
-                ready (!first) {
+                lowkey (!first) {
                     result += ", "
                 }
                 result += stringify!($field) + ": " + debug_value!(self.$field)
@@ -187,7 +187,7 @@ slay_macro! pattern_match {
 slay_macro! loop_until {
     ($condition:expr, $body:block) => {
         bestie (based) {
-            ready ($condition) {
+            lowkey ($condition) {
                 ghosted
             }
             $body
@@ -203,10 +203,10 @@ slay_macro! retry {
             $body fam {
                 when _ -> {
                     attempt += 1
-                    ready (attempt < $attempts) {
+                    lowkey (attempt < $attempts) {
                         sleep(100 * (2 ** attempt))  // Exponential backoff
                         simp
-                    } otherwise {
+                    } highkey {
                         yikes "Max retry attempts exceeded"
                     }
                 }
@@ -223,12 +223,12 @@ slay_macro! retry {
 // Assert macro with custom messages
 slay_macro! assert {
     ($condition:expr) => {
-        ready (!($condition)) {
+        lowkey (!($condition)) {
             yikes "Assertion failed: " + stringify!($condition)
         }
     },
     ($condition:expr, $msg:expr) => {
-        ready (!($condition)) {
+        lowkey (!($condition)) {
             yikes "Assertion failed: " + $msg + " (" + stringify!($condition) + ")"
         }
     }
@@ -294,9 +294,9 @@ slay_macro! is_numeric_type {
 // Debug value formatting
 slay_macro! debug_value {
     ($value:expr) => {
-        ready (is_string_type!(typeof!($value))) {
+        lowkey (is_string_type!(typeof!($value))) {
             "\"" + $value + "\""
-        } otherwise {
+        } highkey {
             tea($value)
         }
     }
@@ -305,11 +305,11 @@ slay_macro! debug_value {
 // Hash value generation
 slay_macro! hash_value {
     ($value:expr) => {
-        ready (is_string_type!(typeof!($value))) {
+        lowkey (is_string_type!(typeof!($value))) {
             string_hash($value)
-        } otherwise ready (is_numeric_type!(typeof!($value))) {
+        } highkey lowkey (is_numeric_type!(typeof!($value))) {
             number_hash($value)
-        } otherwise {
+        } highkey {
             object_hash($value)
         }
     }
@@ -318,9 +318,9 @@ slay_macro! hash_value {
 // Compile-time configuration
 slay_macro! feature_enabled {
     ($feature:literal) => {
-        ready (compile_env!("FEATURES").contains($feature)) {
+        lowkey (compile_env!("FEATURES").contains($feature)) {
             based
-        } otherwise {
+        } highkey {
             cringe
         }
     }
@@ -378,7 +378,7 @@ slay demonstrate_macros() {
     vibez.spill("Vectors created:", empty_vec.len(), num_vec.len(), repeat_vec.len())
     
     // Conditional compilation
-    ready (cfg!(debug)) {
+    lowkey (cfg!(debug)) {
         vibez.spill("Running in debug mode")
     }
     
@@ -396,7 +396,7 @@ slay demonstrate_macros() {
     // Retry operations
     retry!(3, {
         sus random_fail = random() < 0.5
-        ready (random_fail) {
+        lowkey (random_fail) {
             yikes "Random failure for retry demo"
         }
         vibez.spill("Operation succeeded!")

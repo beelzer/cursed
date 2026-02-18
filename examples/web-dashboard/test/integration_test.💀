@@ -56,15 +56,15 @@ slay test_data_models() {
     vibez.spill("✅ Message serialization: " + message_json)
     
     # Test validation functions
-    ready (validate_email("test@example.com")) {
+    lowkey (validate_email("test@example.com")) {
         vibez.spill("✅ Email validation passed")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Email validation failed")
     }
     
-    ready (validate_username("testuser")) {
+    lowkey (validate_username("testuser")) {
         vibez.spill("✅ Username validation passed")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Username validation failed")
     }
     
@@ -261,16 +261,16 @@ slay test_error_handling() {
     vibez.spill("🧪 Testing Error Handling...")
     
     # Test invalid email validation
-    ready (!validate_email("invalid-email")) {
+    lowkey (!validate_email("invalid-email")) {
         vibez.spill("✅ Invalid email correctly rejected")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Invalid email was accepted")
     }
     
     # Test invalid username validation
-    ready (!validate_username("ab")) {  # Too short
+    lowkey (!validate_username("ab")) {  # Too short
         vibez.spill("✅ Short username correctly rejected")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Short username was accepted")
     }
     
@@ -287,7 +287,7 @@ slay test_error_handling() {
     validate_config(invalid_config) fam {
         vibez.spill("✅ Invalid configuration correctly rejected: " + error_message)
     }
-    otherwise {
+    highkey {
         vibez.spill("❌ Invalid configuration was accepted")
     }
     

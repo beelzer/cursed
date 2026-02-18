@@ -47,12 +47,12 @@ slay main_character() {
     vibez.spill(complex_expr)
     
     fr fr Control flow
-    ready number > 30 {
+    lowkey number > 30 {
         vibez.spill("Number is greater than 30")
         sus doubled normie = number * 2
         vibez.spill("Doubled:")
         vibez.spill(doubled)
-    } otherwise {
+    } highkey {
         vibez.spill("Number is 30 or less")
     }
     

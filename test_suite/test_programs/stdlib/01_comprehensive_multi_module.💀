@@ -48,7 +48,7 @@ slay process_string_data() {
         vibez.spill("Text:", text, "->", lower_text, "->", upper_text, "(len:", length, ")")
         
         combined_text = stringz.concat(combined_text, lower_text)
-        ready (i < len(texts) - 1) {
+        lowkey (i < len(texts) - 1) {
             combined_text = stringz.concat(combined_text, " ")
         }
     }
@@ -70,7 +70,7 @@ slay process_collections_data() {
     sus sorted_data = data
     bestie i := 0; i < len(sorted_data); i++ {
         bestie j := i + 1; j < len(sorted_data); j++ {
-            ready (sorted_data[i] > sorted_data[j]) {
+            lowkey (sorted_data[i] > sorted_data[j]) {
                 sus temp = sorted_data[i]
                 sorted_data[i] = sorted_data[j] 
                 sorted_data[j] = temp

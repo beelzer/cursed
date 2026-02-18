@@ -50,16 +50,16 @@ slay demo() {
 
 ```cursed
 slay calculate(x normie, y normie) normie {
-    ready x > y {
+    lowkey x > y {
         damn x + y
-    } otherwise {
+    } highkey {
         damn x - y
     }
 }
 
 slay loop_example() {
     bestie i := 0; i < 10; i++ {
-        ready i % 2 == 0 {
+        lowkey i % 2 == 0 {
             vibez.spill("Even:", i)
         }
     }
@@ -87,7 +87,7 @@ slay worker_example() {
 
 ```cursed
 slay divide(a normie, b normie) normie yikes {
-    ready b == 0 {
+    lowkey b == 0 {
         yikes "Division by zero"
     }
     damn a / b
@@ -114,15 +114,25 @@ slay safe_division() {
 | func | `slay` | Function definition |
 | var | `sus` | Variable declaration |
 | const | `facts` | Constant declaration |
-| if | `ready` | Conditional |
-| else | `otherwise` | Alternative branch |
+| if | `lowkey` | Conditional |
+| else | `highkey` | Alternative branch |
 | for | `bestie` | Loop |
 | while | `periodt` | While loop |
+| switch | `vibe_check` | Switch statement |
+| case | `mood` | Case clause |
+| default | `basic` | Default case |
 | return | `damn` | Return statement |
+| break | `ghosted` | Break from loop |
+| continue | `simp` | Continue loop |
+| defer | `later` | Deferred execution |
+| go | `stan` | Spawn goroutine |
+| range | `flex` | Range iteration |
+| type | `be_like` | Type alias |
+| struct | `squad` | Struct definition |
+| interface | `collab` | Interface definition |
 | true | `based` | Boolean true |
 | false | `cringe` | Boolean false |
 | nil | `nah` | Null value |
-| go | `stan` | Spawn goroutine |
 
 ### Types
 

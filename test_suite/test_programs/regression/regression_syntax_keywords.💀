@@ -4,20 +4,20 @@ yeet "vibez"
 
 fr fr Regression test validates correct CURSED keyword usage and syntax
 fr fr Tests canonical keywords vs deprecated forms to ensure parser correctness
-fr fr Validates 'otherwise' instead of 'else' and proper 'periodt' usage
+fr fr Validates 'highkey' instead of 'else' and proper 'periodt' usage
 
 slay main_character() {
     vibez.spill("=== Keyword Regression Test ===");
     
     sus test_value normie = 42;
     
-    fr fr Test 'ready' with 'otherwise' (canonical form)
-    ready test_value > 40 {
-        vibez.spill("Using canonical 'otherwise' keyword");
-    } otherwise ready test_value > 20 {
-        vibez.spill("Chained 'otherwise ready'");
-    } otherwise {
-        vibez.spill("Final 'otherwise' clause");
+    fr fr Test 'lowkey' with 'highkey' (canonical form)
+    lowkey test_value > 40 {
+        vibez.spill("Using canonical 'highkey' keyword");
+    } highkey lowkey test_value > 20 {
+        vibez.spill("Chained 'highkey lowkey'");
+    } highkey {
+        vibez.spill("Final 'highkey' clause");
     };
     
     fr fr Test 'periodt' while loop (canonical form)
@@ -36,9 +36,9 @@ slay main_character() {
     
     fr fr Test basic conditional flow
     sus is_friday lit = based;
-    ready is_friday {
+    lowkey is_friday {
         vibez.spill("End of week vibes");
-    } otherwise {
+    } highkey {
         vibez.spill("Other day");
     };
     
@@ -50,11 +50,11 @@ slay main_character() {
 };
 
 slay test_return(x normie) normie {
-    ready x > 0 {
+    lowkey x > 0 {
         damn 1;
-    } otherwise ready x < 0 {
+    } highkey lowkey x < 0 {
         damn -1;
-    } otherwise {
+    } highkey {
         damn 0;
     };
 };

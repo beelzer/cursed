@@ -88,7 +88,7 @@ sus end_time = wasm_get_execution_time(instance)
 
 yikes result == 0 && wasm_get_last_error() != "" {
     vibez.spill("❌ Function execution failed: " + wasm_get_last_error())
-} otherwise {
+} highkey {
     vibez.spill("✅ Function executed successfully!")
     vibez.spill("  Result: " + result.to_string())
     vibez.spill("  Execution time: " + (end_time - start_time).to_string() + "μs")
@@ -100,7 +100,7 @@ sus memory_size = 64 * 1024 fr fr 64KB
 sus memory = wasm_alloc_memory(memory_size)
 yikes memory == 0 {
     vibez.spill("❌ Memory allocation failed")
-} otherwise {
+} highkey {
     vibez.spill("✅ Allocated " + memory_size.to_string() + " bytes of WASM memory")
     
     fr fr Write test data
@@ -121,7 +121,7 @@ yikes memory == 0 {
     
     yikes read_success {
         vibez.spill("✅ Memory read/write operations successful")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Memory read/write verification failed")
     }
     
@@ -145,7 +145,7 @@ yikes browser_wrapper != "" {
     yikes browser_file {
         vibez.spill("  📄 Saved to: wasm_browser_wrapper.js")
     }
-} otherwise {
+} highkey {
     vibez.spill("❌ Failed to generate browser wrapper")
 }
 
@@ -159,7 +159,7 @@ yikes node_wrapper != "" {
     yikes node_file {
         vibez.spill("  📄 Saved to: wasm_node_wrapper.js")
     }
-} otherwise {
+} highkey {
     vibez.spill("❌ Failed to generate Node.js wrapper")
 }
 
@@ -171,7 +171,7 @@ yikes wasi_result {
     vibez.spill("  - Standard I/O functions available")
     vibez.spill("  - File system access enabled")
     vibez.spill("  - Process management available")
-} otherwise {
+} highkey {
     vibez.spill("❌ WASI integration failed")
 }
 
@@ -191,7 +191,7 @@ yikes wasm_is_feature_supported(WASM_FEATURE_SIMD) {
         sus simd_value = wasm_simd_load_v128(simd_memory, 0)
         vibez.spill("  🔢 SIMD v128 load result: 0x" + simd_value.to_hex())
     }
-} otherwise {
+} highkey {
     vibez.spill("⚠️ SIMD operations not supported")
 }
 
@@ -204,7 +204,7 @@ yikes wasm_is_feature_supported(WASM_FEATURE_THREADS) {
         sus atomic_value = wasm_atomic_load32(shared_memory, 0)
         vibez.spill("  🔒 Atomic load result: 0x" + atomic_value.to_hex())
     }
-} otherwise {
+} highkey {
     vibez.spill("⚠️ Threading not supported")
 }
 
@@ -220,7 +220,7 @@ yikes wasm_is_feature_supported(WASM_FEATURE_BULK_MEMORY) {
             vibez.spill("  📦 Bulk memory copy successful")
         }
     }
-} otherwise {
+} highkey {
     vibez.spill("⚠️ Bulk memory operations not supported")
 }
 

@@ -25,7 +25,7 @@ slay single_number_sorting(nums normie[]) normie {
     // Walk through pairs using a while loop to step by 2
     sus i normie = 0
     periodt (i < len(sorted_nums) - 1) {
-        ready (sorted_nums[i] != sorted_nums[i + 1]) {
+        lowkey (sorted_nums[i] != sorted_nums[i + 1]) {
             damn sorted_nums[i]
         }
         i = i + 2

@@ -159,7 +159,7 @@ slay calculate_magic() {
     sus value_str tea = domz.get_value(input_element)
     sus number drip = parse_int(value_str)
     
-    ready (number == 0) {
+    lowkey (number == 0) {
         append_output("❌ Please enter a valid number!")
         damn
     }
@@ -180,7 +180,7 @@ slay cursify_text() {
     sus input_element domz.Element = domz.get_element_by_id("text-input")
     sus text tea = domz.get_value(input_element)
     
-    ready (text == "") {
+    lowkey (text == "") {
         append_output("❌ Please enter some text!")
         damn
     }
@@ -200,19 +200,19 @@ slay cursify_text() {
 slay clear_output() {
     sus output domz.Element = domz.get_element_by_id("output")
     domz.set_text(output, "")
-    append_output("🧹 Output cleared - ready for more CURSED magic!")
+    append_output("🧹 Output cleared - lowkey for more CURSED magic!")
 }
 
 // Handle Enter key for number input
 slay handle_enter_calculate(event domz.Event) {
-    ready (domz.get_key_code(event) == 13) { // Enter key
+    lowkey (domz.get_key_code(event) == 13) { // Enter key
         calculate_magic()
     }
 }
 
 // Handle Enter key for text input
 slay handle_enter_text(event domz.Event) {
-    ready (domz.get_key_code(event) == 13) { // Enter key
+    lowkey (domz.get_key_code(event) == 13) { // Enter key
         cursify_text()
     }
 }
@@ -226,20 +226,20 @@ slay append_output(message tea) {
 
 // Mathematical helper functions
 slay factorial(n drip) drip {
-    ready (n <= 1) damn 1
+    lowkey (n <= 1) damn 1
     damn n * factorial(n - 1)
 }
 
 slay fibonacci(n drip) drip {
-    ready (n <= 1) damn n
+    lowkey (n <= 1) damn n
     damn fibonacci(n - 1) + fibonacci(n - 2)
 }
 
 slay is_prime(n drip) lit {
-    ready (n < 2) damn cringe
+    lowkey (n < 2) damn cringe
     sus i drip = 2
     bestie (i * i <= n) {
-        ready (n % i == 0) damn cringe
+        lowkey (n % i == 0) damn cringe
         i = i + 1
     }
     damn based

@@ -12,7 +12,7 @@ slay _start() {
     // Get command line arguments
     sus args []tea = argz.get_args()
     
-    ready (args.len <= 1) {
+    lowkey (args.len <= 1) {
         show_help()
         damn
     }
@@ -20,17 +20,17 @@ slay _start() {
     sus command tea = args[1]
     
     // Command dispatcher
-    ready (command == "hello") {
+    lowkey (command == "hello") {
         hello_command(args)
-    } otherwise ready (command == "file") {
+    } highkey lowkey (command == "file") {
         file_command(args)
-    } otherwise ready (command == "calc") {
+    } highkey lowkey (command == "calc") {
         calc_command(args)
-    } otherwise ready (command == "info") {
+    } highkey lowkey (command == "info") {
         info_command(args)
-    } otherwise ready (command == "demo") {
+    } highkey lowkey (command == "demo") {
         demo_command(args)
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Unknown command:", command)
         show_help()
     }
@@ -60,7 +60,7 @@ slay show_help() {
 
 // Hello command - greet user
 slay hello_command(args []tea) {
-    sus name tea = ready (args.len > 2) args[2] otherwise "World"
+    sus name tea = lowkey (args.len > 2) args[2] highkey "World"
     
     vibez.spill("🌟 Hello from CURSED WASM,", name, "!")
     vibez.spill("This greeting is brought to you by:")
@@ -69,7 +69,7 @@ slay hello_command(args []tea) {
     vibez.spill("  • WebAssembly System Interface (WASI)")
     
     // Show some CURSED personality
-    ready (name != "World") {
+    lowkey (name != "World") {
         vibez.spill("")
         vibez.spill("Fun facts about your name '" + name + "':")
         vibez.spill("  • Length:", stringz.length(name), "characters")
@@ -82,7 +82,7 @@ slay hello_command(args []tea) {
 
 // File command - read and analyze files
 slay file_command(args []tea) {
-    ready (args.len <= 2) {
+    lowkey (args.len <= 2) {
         vibez.spill("❌ Error: Please specify a file path")
         vibez.spill("Usage: wasmtime cursed-cli.wasm file <path>")
         damn
@@ -127,21 +127,21 @@ slay file_command(args []tea) {
     // Show first few lines
     vibez.spill("")
     vibez.spill("📄 First 3 lines:")
-    sus max_lines drip = ready (lines.len < 3) lines.len otherwise 3
+    sus max_lines drip = lowkey (lines.len < 3) lines.len highkey 3
     sus i drip = 0
     bestie (i < max_lines) {
         vibez.spill("  " + int_to_string(i + 1) + ":", lines[i])
         i = i + 1
     }
     
-    ready (lines.len > 3) {
+    lowkey (lines.len > 3) {
         vibez.spill("  ... (" + int_to_string(lines.len - 3) + " more lines)")
     }
 }
 
 // Calculator command - evaluate expressions
 slay calc_command(args []tea) {
-    ready (args.len <= 2) {
+    lowkey (args.len <= 2) {
         vibez.spill("❌ Error: Please specify an expression")
         vibez.spill("Usage: wasmtime cursed-cli.wasm calc '<expression>'")
         vibez.spill("Examples: calc '42 + 13', calc '10 * 5 - 3'")
@@ -195,16 +195,16 @@ slay info_command(args []tea) {
     vibez.spill("")
     vibez.spill("🔧 Environment:")
     sus env_vars []tea = get_env_vars()
-    ready (env_vars.len > 0) {
+    lowkey (env_vars.len > 0) {
         sus i drip = 0
         bestie (i < env_vars.len && i < 5) { // Show first 5
             vibez.spill("  •", env_vars[i])
             i = i + 1
         }
-        ready (env_vars.len > 5) {
+        lowkey (env_vars.len > 5) {
             vibez.spill("  ... and", env_vars.len - 5, "more")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("  • No environment variables available")
     }
     
@@ -235,9 +235,9 @@ slay demo_command(args []tea) {
     // Control flow demo
     vibez.spill("")
     vibez.spill("🔀 Control Flow:")
-    ready (based_value) {
+    lowkey (based_value) {
         vibez.spill("  • If statement: This code is based!")
-    } otherwise {
+    } highkey {
         vibez.spill("  • If statement: This shouldn't happen")
     }
     
@@ -282,7 +282,7 @@ slay count_vowels(text tea) drip {
     sus i drip = 0
     bestie (i < stringz.length(text)) {
         sus char tea = stringz.char_at(text, i)
-        ready (stringz.contains(vowels, char)) {
+        lowkey (stringz.contains(vowels, char)) {
             count = count + 1
         }
         i = i + 1
@@ -297,21 +297,21 @@ slay get_cursed_rating(text tea) tea {
 }
 
 slay detect_file_type(path tea, content tea) tea {
-    ready (stringz.ends_with(path, ".txt")) damn "Text file"
-    ready (stringz.ends_with(path, ".md")) damn "Markdown file"
-    ready (stringz.ends_with(path, ".json")) damn "JSON file"
-    ready (stringz.ends_with(path, ".💀")) damn "CURSED source file"
-    ready (stringz.starts_with(content, "<!DOCTYPE")) damn "HTML file"
-    ready (stringz.starts_with(content, "{")) damn "JSON-like file"
+    lowkey (stringz.ends_with(path, ".txt")) damn "Text file"
+    lowkey (stringz.ends_with(path, ".md")) damn "Markdown file"
+    lowkey (stringz.ends_with(path, ".json")) damn "JSON file"
+    lowkey (stringz.ends_with(path, ".💀")) damn "CURSED source file"
+    lowkey (stringz.starts_with(content, "<!DOCTYPE")) damn "HTML file"
+    lowkey (stringz.starts_with(content, "{")) damn "JSON-like file"
     damn "Unknown file type"
 }
 
 slay evaluate_expression(expr tea) drip yikes<CalculatorError> {
     // Simplified calculator - would need proper parser
-    ready (expr == "42 + 13") damn 55
-    ready (expr == "10 * 5 - 3") damn 47
-    ready (expr == "100 / 4") damn 25
-    ready (stringz.contains(expr, "+")) {
+    lowkey (expr == "42 + 13") damn 55
+    lowkey (expr == "10 * 5 - 3") damn 47
+    lowkey (expr == "100 / 4") damn 25
+    lowkey (stringz.contains(expr, "+")) {
         // Basic addition parser
         damn 42 // Placeholder
     }
@@ -319,30 +319,30 @@ slay evaluate_expression(expr tea) drip yikes<CalculatorError> {
 }
 
 slay divide_safely(a drip, b drip) drip yikes<DivisionByZero> {
-    ready (b == 0) yikes DivisionByZero
+    lowkey (b == 0) yikes DivisionByZero
     damn a / b
 }
 
 slay fibonacci(n drip) drip {
-    ready (n <= 1) damn n
+    lowkey (n <= 1) damn n
     damn fibonacci(n - 1) + fibonacci(n - 2)
 }
 
 slay is_prime(n drip) lit {
-    ready (n < 2) damn cringe
-    ready (n == 2) damn based
-    ready (n % 2 == 0) damn cringe
+    lowkey (n < 2) damn cringe
+    lowkey (n == 2) damn based
+    lowkey (n % 2 == 0) damn cringe
     
     sus i drip = 3
     bestie (i * i <= n) {
-        ready (n % i == 0) damn cringe
+        lowkey (n % i == 0) damn cringe
         i = i + 2
     }
     damn based
 }
 
 slay factorial(n drip) drip {
-    ready (n <= 1) damn 1
+    lowkey (n <= 1) damn 1
     damn n * factorial(n - 1)
 }
 

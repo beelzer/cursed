@@ -4,7 +4,7 @@ yeet "mathz"
 
 // Test basic error handling scenarios
 slay safe_divide(a normie, b normie) normie {
-    ready (b == 0) {
+    lowkey (b == 0) {
         vibez.spill("Error: Division by zero prevented")
         damn -1  // Return error code
     }
@@ -31,12 +31,12 @@ slay test_error_conditions() {
 }
 
 slay validate_input(value normie) normie {
-    ready (value < 0) {
+    lowkey (value < 0) {
         vibez.spill("Warning: Negative value detected:", value)
         damn mathz.abs_normie(value)
     }
     
-    ready (value > 1000) {
+    lowkey (value > 1000) {
         vibez.spill("Warning: Large value detected:", value)  
         damn 1000
     }
@@ -59,7 +59,7 @@ slay test_input_validation() {
 slay process_array_safe(arr normie[value]) {
     vibez.spill("=== Safe Array Processing ===")
     
-    ready (len(arr) == 0) {
+    lowkey (len(arr) == 0) {
         vibez.spill("Error: Empty array provided")
         damn
     }
@@ -74,11 +74,11 @@ slay process_array_safe(arr normie[value]) {
         sus val = arr[i]
         sum = sum + val
         
-        ready (val > max_val) {
+        lowkey (val > max_val) {
             max_val = val
         }
         
-        ready (val < min_val) {
+        lowkey (val < min_val) {
             min_val = val
         }
     }

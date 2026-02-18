@@ -340,5 +340,5 @@ slay main_character() {
     
     runVibeNetDemo()
     
-    oglogging.spill("\n🎊 Demo completed! VibeNet is ready for your networking needs!")
+    oglogging.spill("\n🎊 Demo completed! VibeNet is lowkey for your networking needs!")
 }

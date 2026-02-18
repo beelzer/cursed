@@ -157,15 +157,15 @@ slay api_response_to_json<T>(response ApiResponse<T>, data_serializer slay(T) te
 }
 
 slay validate_email(email tea) lit {
-    ready (email.length() < 5) { damn nah }
-    ready (!email.contains("@")) { damn nah }
-    ready (!email.contains(".")) { damn nah }
+    lowkey (email.length() < 5) { damn nah }
+    lowkey (!email.contains("@")) { damn nah }
+    lowkey (!email.contains(".")) { damn nah }
     damn based
 }
 
 slay validate_username(username tea) lit {
-    ready (username.length() < 3) { damn nah }
-    ready (username.length() > 20) { damn nah }
+    lowkey (username.length() < 3) { damn nah }
+    lowkey (username.length() > 20) { damn nah }
     # Add more validation as needed
     damn based
 }

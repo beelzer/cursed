@@ -33,9 +33,9 @@ slay set_element_text(element_id tea, text tea) {
 
 slay get_element_value(element_id tea) tea {
     # Mock implementation - would get value from DOM element
-    ready (element_id == "username") { damn "admin" }
-    ready (element_id == "password") { damn "admin123" }
-    ready (element_id == "chat-input") { damn "Hello from CURSED!" }
+    lowkey (element_id == "username") { damn "admin" }
+    lowkey (element_id == "password") { damn "admin123" }
+    lowkey (element_id == "chat-input") { damn "Hello from CURSED!" }
     damn ""
 }
 
@@ -60,7 +60,7 @@ slay handle_login() {
     sus username tea = get_element_value("username")
     sus password tea = get_element_value("password")
     
-    ready (username == "" || password == "") {
+    lowkey (username == "" || password == "") {
         show_error("Please enter username and password")
         damn
     }
@@ -78,7 +78,7 @@ slay handle_login() {
     }
     
     sus success lit = parsed["success"].as_bool() fam { damn nah }
-    ready (!success) {
+    lowkey (!success) {
         sus error_message tea = parsed["message"].as_string() fam { damn "Login failed" }
         show_error(error_message)
         damn
@@ -113,7 +113,7 @@ slay handle_register() {
     sus email tea = get_element_value("reg-email")
     sus password tea = get_element_value("reg-password")
     
-    ready (username == "" || email == "" || password == "") {
+    lowkey (username == "" || email == "" || password == "") {
         show_error("Please fill in all registration fields")
         damn
     }
@@ -131,7 +131,7 @@ slay handle_register() {
     }
     
     sus success lit = parsed["success"].as_bool() fam { damn nah }
-    ready (!success) {
+    lowkey (!success) {
         sus error_message tea = parsed["message"].as_string() fam { damn "Registration failed" }
         show_error(error_message)
         damn
@@ -157,7 +157,7 @@ slay load_initial_data() {
     load_metrics()
     load_chat_messages()
     
-    ready (app_state.current_user.is_admin) {
+    lowkey (app_state.current_user.is_admin) {
         load_users()
         show_element("admin-panel")
     }
@@ -171,7 +171,7 @@ slay load_metrics() {
     }
     
     sus success lit = parsed["success"].as_bool() fam { damn nah }
-    ready (!success) {
+    lowkey (!success) {
         show_error("Failed to load metrics")
         damn
     }
@@ -189,7 +189,7 @@ slay load_chat_messages() {
     }
     
     sus success lit = parsed["success"].as_bool() fam { damn nah }
-    ready (!success) {
+    lowkey (!success) {
         show_error("Failed to load chat messages")
         damn
     }
@@ -206,7 +206,7 @@ slay load_users() {
     }
     
     sus success lit = parsed["success"].as_bool() fam { damn nah }
-    ready (!success) {
+    lowkey (!success) {
         show_error("Failed to load users")
         damn
     }
@@ -245,7 +245,7 @@ slay start_websocket_handler() {
             sleep(10000) # 10 seconds
             
             # Simulate receiving a chat message
-            ready (app_state.websocket_connected) {
+            lowkey (app_state.websocket_connected) {
                 handle_websocket_message("chat", generate_mock_chat_message())
             }
         }
@@ -253,7 +253,7 @@ slay start_websocket_handler() {
 }
 
 slay handle_websocket_message(message_type tea, payload tea) {
-    ready (message_type == "metrics") {
+    lowkey (message_type == "metrics") {
         sus metrics SystemMetrics = metrics_from_json(payload) fam {
             vibez.spill("Failed to parse metrics message")
             damn
@@ -262,7 +262,7 @@ slay handle_websocket_message(message_type tea, payload tea) {
         app_state.metrics_data.push(metrics)
         update_real_time_metrics(metrics)
         
-    } otherwise ready (message_type == "chat") {
+    } highkey lowkey (message_type == "chat") {
         sus message ChatMessage = message_from_json(payload) fam {
             vibez.spill("Failed to parse chat message")
             damn
@@ -271,7 +271,7 @@ slay handle_websocket_message(message_type tea, payload tea) {
         app_state.chat_messages.push(message)
         add_chat_message_to_ui(message)
         
-    } otherwise ready (message_type == "notification") {
+    } highkey lowkey (message_type == "notification") {
         show_notification(payload)
     }
 }
@@ -326,7 +326,7 @@ slay update_users_display(users_data JsonValue) {
 # Chat functions
 slay send_chat_message() {
     sus message_content tea = get_element_value("chat-input")
-    ready (message_content == "") { damn }
+    lowkey (message_content == "") { damn }
     
     sus message_data tea = "{"
     message_data = message_data + "\"content\":\"" + message_content + "\""
@@ -339,7 +339,7 @@ slay send_chat_message() {
     }
     
     sus success lit = parsed["success"].as_bool() fam { damn nah }
-    ready (!success) {
+    lowkey (!success) {
         show_error("Failed to send message")
         damn
     }
@@ -360,7 +360,7 @@ slay handle_file_upload() {
     }
     
     sus success lit = parsed["success"].as_bool() fam { damn nah }
-    ready (!success) {
+    lowkey (!success) {
         sus error_message tea = parsed["message"].as_string() fam { damn "Upload failed" }
         show_error(error_message)
         damn
@@ -374,15 +374,15 @@ slay make_api_request(method tea, endpoint tea, body tea, token tea) tea {
     # In a real implementation, this would make actual HTTP requests
     # For demonstration, we'll return mock responses
     
-    ready (method == "POST" && endpoint == "/api/auth/login") {
+    lowkey (method == "POST" && endpoint == "/api/auth/login") {
         damn "{\"success\":true,\"message\":\"Login successful\",\"data\":{\"token\":\"mock-token-123\",\"user\":{\"id\":1,\"username\":\"admin\",\"email\":\"admin@dashboard.local\",\"created_at\":1234567890,\"is_admin\":true,\"is_active\":true}}}"
     }
     
-    ready (method == "GET" && endpoint == "/api/metrics") {
+    lowkey (method == "GET" && endpoint == "/api/metrics") {
         damn "{\"success\":true,\"message\":\"Metrics retrieved\",\"data\":[{\"timestamp\":1234567890,\"cpu_usage\":45,\"memory_usage\":512,\"disk_usage\":75,\"active_connections\":10,\"requests_per_second\":25}]}"
     }
     
-    ready (method == "GET" && endpoint == "/api/chat/messages") {
+    lowkey (method == "GET" && endpoint == "/api/chat/messages") {
         damn "{\"success\":true,\"message\":\"Messages retrieved\",\"data\":[{\"id\":1,\"user_id\":1,\"username\":\"admin\",\"content\":\"Welcome to the dashboard!\",\"timestamp\":1234567890,\"message_type\":\"text\"}]}"
     }
     

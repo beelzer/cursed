@@ -50,7 +50,7 @@ slay main_character() {
     alice.friend = bob
     
     print_person(alice)
-    ready (alice.friend != nah) {
+    lowkey (alice.friend != nah) {
         vibez.spill("Alice's friend:")
         print_person(alice.friend)
     }

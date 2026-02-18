@@ -4,14 +4,14 @@ yeet "mathz"
 
 // Test comprehensive error handling with yikes/fam/shook patterns
 slay divide_with_error(a normie, b normie) normie yikes {
-    ready (b == 0) {
+    lowkey (b == 0) {
         yikes "Division by zero error"
     }
     damn a / b
 }
 
 slay multiply_with_overflow(a normie, b normie) normie yikes {
-    ready (a > 1000 && b > 1000) {
+    lowkey (a > 1000 && b > 1000) {
         yikes "Overflow risk detected"  
     }
     damn a * b

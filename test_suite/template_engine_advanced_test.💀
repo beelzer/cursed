@@ -256,7 +256,7 @@ slay test_template_compilation() {
     assert_eq_bool(compiled.last_modified > 0, based)
     
 fr fr Test instruction types
-    ready len(compiled.instructions) > 0 {
+    lowkey len(compiled.instructions) > 0 {
         sus first_instruction drip = compiled.instructions[0]
         assert_contains_string(first_instruction.op_code, "text")
     }
@@ -630,13 +630,13 @@ slay create_large_template(var_count normie) tea {
 }
 
 slay assert_contains_string(text tea, substring tea) {
-    ready !string_contains(text, substring) {
+    lowkey !string_contains(text, substring) {
         print("ASSERTION FAILED: '" + text + "' does not contain '" + substring + "'")
     }
 }
 
 slay assert_not_contains_string(text tea, substring tea) {
-    ready string_contains(text, substring) {
+    lowkey string_contains(text, substring) {
         print("ASSERTION FAILED: '" + text + "' should not contain '" + substring + "'")
     }
 }

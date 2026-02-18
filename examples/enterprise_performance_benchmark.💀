@@ -214,7 +214,7 @@ squad DatabaseBenchmark {
                 }
             }
             
-            ready (success) {
+            lowkey (success) {
                 response_size = len(result) * 100  // Estimate response size
             }
             
@@ -384,9 +384,9 @@ squad DatabaseBenchmark {
         sus total_response_size drip = 0
         
         bestie (metric := range self.metrics) {
-            ready (metric.success) {
+            lowkey (metric.success) {
                 successful_requests += 1
-            } otherwise {
+            } highkey {
                 failed_requests += 1
             }
             
@@ -398,53 +398,53 @@ squad DatabaseBenchmark {
         // Sort response times for percentile calculations
         response_times = sort_array(response_times)
         
-        sus avg_response_time drip = ready (total_requests > 0) 
+        sus avg_response_time drip = lowkey (total_requests > 0) 
             total_response_time / total_requests 
-        otherwise 
+        highkey 
             0
         
         sus p50_index drip = (total_requests * 50) / 100
         sus p95_index drip = (total_requests * 95) / 100
         sus p99_index drip = (total_requests * 99) / 100
         
-        sus p50_response_time drip = ready (p50_index < total_requests && total_requests > 0) 
+        sus p50_response_time drip = lowkey (p50_index < total_requests && total_requests > 0) 
             response_times[p50_index] 
-        otherwise 
+        highkey 
             0
         
-        sus p95_response_time drip = ready (p95_index < total_requests && total_requests > 0) 
+        sus p95_response_time drip = lowkey (p95_index < total_requests && total_requests > 0) 
             response_times[p95_index] 
-        otherwise 
+        highkey 
             0
             
-        sus p99_response_time drip = ready (p99_index < total_requests && total_requests > 0) 
+        sus p99_response_time drip = lowkey (p99_index < total_requests && total_requests > 0) 
             response_times[p99_index] 
-        otherwise 
+        highkey 
             0
         
-        sus max_response_time drip = ready (total_requests > 0) 
+        sus max_response_time drip = lowkey (total_requests > 0) 
             response_times[total_requests - 1] 
-        otherwise 
+        highkey 
             0
             
-        sus min_response_time drip = ready (total_requests > 0) 
+        sus min_response_time drip = lowkey (total_requests > 0) 
             response_times[0] 
-        otherwise 
+        highkey 
             0
         
-        sus rps drip = ready (total_duration_ms > 0) 
+        sus rps drip = lowkey (total_duration_ms > 0) 
             (total_requests * 1000) / total_duration_ms 
-        otherwise 
+        highkey 
             0
         
-        sus throughput_mbps drip = ready (total_duration_ms > 0) 
+        sus throughput_mbps drip = lowkey (total_duration_ms > 0) 
             (total_response_size * 8 * 1000) / (total_duration_ms * 1024 * 1024) 
-        otherwise 
+        highkey 
             0
         
-        sus error_rate drip = ready (total_requests > 0) 
+        sus error_rate drip = lowkey (total_requests > 0) 
             (failed_requests * 100) / total_requests 
-        otherwise 
+        highkey 
             0
         
         damn BenchmarkResults{
@@ -629,7 +629,7 @@ squad MessagingBenchmark {
                 }
             }
             
-            ready (success) {
+            lowkey (success) {
                 bestie (message := range messages) {
                     response_size += len(message.value)
                     
@@ -683,7 +683,7 @@ squad MessagingBenchmark {
                 when err -> yikes "Failed to send test message: " + err
             }
             
-            ready (i % 1000 == 0) {
+            lowkey (i % 1000 == 0) {
                 vibez.spill("Produced", i, "messages...")
             }
         }
@@ -773,7 +773,7 @@ squad HTTPBenchmark {
                 }
             }
             
-            ready (success) {
+            lowkey (success) {
                 response_size = len(response_data)
             }
             
@@ -1036,7 +1036,7 @@ slay make_http_request(url tea) yikes<tea> {
     // Simplified HTTP request simulation
     concurrenz.sleep(cryptz.random_int(100) + 10)  // 10-110ms response time
     
-    ready (cryptz.random_int(100) < 2) {  // 2% error rate
+    lowkey (cryptz.random_int(100) < 2) {  // 2% error rate
         yikes "HTTP request failed"
     }
     

@@ -24,9 +24,9 @@ slay main_character() {
     vibez.spill(x)
     
     fr fr Pointer comparison
-    ready (a == b) {
+    lowkey (a == b) {
         vibez.spill("Pointers are equal")
-    } otherwise {
+    } highkey {
         vibez.spill("Pointers are not equal")
     }
     

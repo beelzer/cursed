@@ -31,11 +31,11 @@ slay main_character() {
     }
     
     vibez.spill("Testing nested scope memory...")
-    ready (num1 > 50) {
+    lowkey (num1 > 50) {
         sus inner_var = num1 + num2
         vibez.spill("Inner computation:", inner_var)
         
-        ready (inner_var > 250) {
+        lowkey (inner_var > 250) {
             sus deep_var = inner_var + num3
             vibez.spill("Deep computation:", deep_var)
         }

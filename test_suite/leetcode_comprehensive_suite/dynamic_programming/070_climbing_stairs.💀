@@ -6,7 +6,7 @@ yeet "vibez"
 // Time: O(n), Space: O(1) - optimized approach
 
 slay climb_stairs(n normie) normie {
-    ready (n <= 1) {
+    lowkey (n <= 1) {
         damn 1
     }
 
@@ -25,7 +25,7 @@ slay climb_stairs(n normie) normie {
 
 slay climb_stairs_fibonacci(n normie) normie {
     // This is literally Fibonacci sequence! Mind = blown 🤯
-    ready (n <= 1) {
+    lowkey (n <= 1) {
         damn 1
     }
 

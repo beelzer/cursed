@@ -20,9 +20,9 @@ slay max_area(height normie[]) normie {
         max_water = mathz.max(max_water, current_area)
         
         // Move pointer with smaller height - this is the key insight! 🚀
-        ready (height[left] < height[right]) {
+        lowkey (height[left] < height[right]) {
             left = left + 1
-        } otherwise {
+        } highkey {
             right = right - 1
         }
     }

@@ -28,10 +28,10 @@ fr fr Test division by zero prevention (if handled)
     sus dividend normie = 10
     sus divisor normie = 0
     
-    ready divisor != 0 {
+    lowkey divisor != 0 {
         sus safe_division normie = dividend / divisor
         vibez.spill("Safe division:", safe_division)
-    } otherwise {
+    } highkey {
         vibez.spill("Division by zero avoided")
     }
     

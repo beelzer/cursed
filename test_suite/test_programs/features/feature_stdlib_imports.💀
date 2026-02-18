@@ -36,7 +36,7 @@ fr fr Test combining multiple modules in expressions
     vibez.spill("Combined modules result: {}", combined_result)
     
 fr fr Test module functions in conditionals
-    ready mathz.abs_normie(-10) > stringz.length("short") {
+    lowkey mathz.abs_normie(-10) > stringz.length("short") {
         vibez.spill("Module functions work in conditions")
     }
     

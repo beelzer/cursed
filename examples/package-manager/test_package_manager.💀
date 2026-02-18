@@ -89,7 +89,7 @@ slay test_registry_connection(manager PackageManager) {
     )
     
     # Test registry configuration loading
-    ready (!test_registry_config(registry)) {
+    lowkey (!test_registry_config(registry)) {
         vibez.spill("❌ Registry configuration test failed")
         damn
     }
@@ -104,7 +104,7 @@ slay test_package_search(manager PackageManager) {
     # Mock search results for testing
     sus search_results []PackageMetadata = create_mock_search_results()
     
-    ready (arrayz.len(search_results) == 0) {
+    lowkey (arrayz.len(search_results) == 0) {
         vibez.spill("❌ Search returned no results")
         damn
     }
@@ -112,7 +112,7 @@ slay test_package_search(manager PackageManager) {
     # Verify search result structure
     bestie (sus i drip = 0; i < arrayz.len(search_results); i = i + 1) {
         sus pkg PackageMetadata = search_results[i]
-        ready (pkg.name == "" || pkg.version == "") {
+        lowkey (pkg.name == "" || pkg.version == "") {
             vibez.spill("❌ Invalid package metadata in search results")
             damn
         }
@@ -170,17 +170,17 @@ slay test_package_installation(manager PackageManager) {
     # Test installing mathlib package
     sus install_success lit = packagz.install_package(manager, "mathlib", "1.2.0")
     
-    ready (install_success) {
+    lowkey (install_success) {
         vibez.spill("✅ Package installation successful")
         
         # Verify installation
         sus installed InstalledPackage = packagz.get_installed_package(manager, "mathlib")
-        ready (installed.name == "mathlib" && installed.version == "1.2.0") {
+        lowkey (installed.name == "mathlib" && installed.version == "1.2.0") {
             vibez.spill("✅ Package verification successful")
-        } otherwise {
+        } highkey {
             vibez.spill("❌ Package verification failed")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Package installation failed")
     }
     
@@ -202,25 +202,25 @@ slay test_lock_file_management(manager PackageManager) {
     # Generate lock file
     sus lock_success lit = lockfile.generate_lock_file(lock_manager, installed_packages, manager.registry)
     
-    ready (lock_success) {
+    lowkey (lock_success) {
         vibez.spill("✅ Lock file generation successful")
         
         # Verify lock file exists
-        ready (filez.file_exists("cursed.lock")) {
+        lowkey (filez.file_exists("cursed.lock")) {
             vibez.spill("✅ Lock file created successfully")
             
             # Test loading lock file
             sus loaded_lock LockFile = lockfile.load_lock_file(lock_manager)
-            ready (loaded_lock.version != "") {
+            lowkey (loaded_lock.version != "") {
                 vibez.spill("✅ Lock file loading successful")
                 vibez.spill("Lock file contains", arrayz.len(loaded_lock.packages), "packages")
-            } otherwise {
+            } highkey {
                 vibez.spill("❌ Lock file loading failed")
             }
-        } otherwise {
+        } highkey {
             vibez.spill("❌ Lock file not created")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Lock file generation failed")
     }
 }
@@ -297,33 +297,33 @@ slay test_version_resolution(manager PackageManager) {
     sus version1 PackageVersion = packagz.parse_version("1.2.3")
     sus version2 PackageVersion = packagz.parse_version("1.2.4")
     
-    ready (version1.major == 1 && version1.minor == 2 && version1.patch == 3) {
+    lowkey (version1.major == 1 && version1.minor == 2 && version1.patch == 3) {
         vibez.spill("✅ Version parsing test passed")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Version parsing test failed")
     }
     
     # Test version comparison
     sus comparison drip = packagz.compare_versions(version1, version2)
-    ready (comparison < 0) {
+    lowkey (comparison < 0) {
         vibez.spill("✅ Version comparison test passed")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Version comparison test failed")
     }
     
     # Test constraint parsing
     sus constraint ParsedConstraint = resolver.parse_version_constraint("^1.2.0")
-    ready (constraint.constraint_type == resolver.VersionConstraint.Caret) {
+    lowkey (constraint.constraint_type == resolver.VersionConstraint.Caret) {
         vibez.spill("✅ Constraint parsing test passed")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Constraint parsing test failed")
     }
     
     # Test constraint satisfaction
     sus satisfies lit = resolver.version_satisfies_constraint(version1, constraint)
-    ready (satisfies) {
+    lowkey (satisfies) {
         vibez.spill("✅ Constraint satisfaction test passed")
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Constraint satisfaction test failed")
     }
 }
@@ -375,13 +375,13 @@ slay test_package_updates(manager PackageManager) {
     vibez.spill("Packages before update:", arrayz.len(before_update))
     
     # Test updating specific package
-    ready (arrayz.len(before_update) > 0) {
+    lowkey (arrayz.len(before_update) > 0) {
         sus first_package tea = before_update[0].name
         sus update_success lit = packagz.update_package(manager, first_package)
         
-        ready (update_success) {
+        lowkey (update_success) {
             vibez.spill("✅ Package update successful for", first_package)
-        } otherwise {
+        } highkey {
             vibez.spill("⚠️  Package update completed for", first_package, "(may already be latest)")
         }
     }
@@ -406,18 +406,18 @@ slay test_project_initialization() {
     # Initialize project (simulate cursed-pkg init)
     sus init_success lit = initialize_cursed_project("test-project")
     
-    ready (init_success) {
+    lowkey (init_success) {
         vibez.spill("✅ Project initialization successful")
         
         # Verify project structure
-        ready (filez.file_exists("package.toml") && 
+        lowkey (filez.file_exists("package.toml") && 
               filez.file_exists("src/mod.💀") && 
               filez.file_exists("README.md")) {
             vibez.spill("✅ Project structure verification passed")
-        } otherwise {
+        } highkey {
             vibez.spill("❌ Project structure verification failed")
         }
-    } otherwise {
+    } highkey {
         vibez.spill("❌ Project initialization failed")
     }
     
@@ -428,10 +428,10 @@ slay test_project_initialization() {
 
 # Helper functions for testing
 slay test_registry_config(registry PackageRegistry) lit {
-    ready (registry.config.url == "") {
+    lowkey (registry.config.url == "") {
         damn cap
     }
-    ready (registry.config.timeout_seconds <= 0) {
+    lowkey (registry.config.timeout_seconds <= 0) {
         damn cap
     }
     damn based
@@ -488,7 +488,7 @@ slay initialize_cursed_project(name tea) lit {
         "license = \"MIT\"\n\n" +
         "[dependencies]\n"
     
-    ready (!filez.write_file("package.toml", package_toml)) {
+    lowkey (!filez.write_file("package.toml", package_toml)) {
         damn cap
     }
     
@@ -500,7 +500,7 @@ slay initialize_cursed_project(name tea) lit {
         "    damn 0\n" +
         "}\n"
     
-    ready (!filez.write_file("src/mod.💀", main_mod)) {
+    lowkey (!filez.write_file("src/mod.💀", main_mod)) {
         damn cap
     }
     
@@ -512,7 +512,7 @@ slay initialize_cursed_project(name tea) lit {
         "cursed src/mod.💀\n" +
         "```\n"
     
-    ready (!filez.write_file("README.md", readme)) {
+    lowkey (!filez.write_file("README.md", readme)) {
         damn cap
     }
     
@@ -520,6 +520,6 @@ slay initialize_cursed_project(name tea) lit {
 }
 
 # Run comprehensive tests
-ready (filez.get_current_dir_name() == "package-manager") {
+lowkey (filez.get_current_dir_name() == "package-manager") {
     main()
 }

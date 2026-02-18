@@ -12,13 +12,13 @@ slay fizzbuzz(n normie) tea[] {
     bestie i := 1; i <= n; i++ {
         sus output tea = ""
         
-        ready (i % 3 == 0) {
+        lowkey (i % 3 == 0) {
             output = stringz.concat(output, "Fizz")
         }
-        ready (i % 5 == 0) {
+        lowkey (i % 5 == 0) {
             output = stringz.concat(output, "Buzz")  
         }
-        ready (output == "") {
+        lowkey (output == "") {
             output = stringz.from_int(i)
         }
         
@@ -35,13 +35,13 @@ slay fizzbuzz_among_us(n normie) tea[] {
     bestie i := 1; i <= n; i++ {
         sus output tea = ""
         
-        ready (i % 3 == 0) {
+        lowkey (i % 3 == 0) {
             output = stringz.concat(output, "Sus")    // Fizz -> Sus
         }
-        ready (i % 5 == 0) {
+        lowkey (i % 5 == 0) {
             output = stringz.concat(output, "Impostor") // Buzz -> Impostor  
         }
-        ready (output == "") {
+        lowkey (output == "") {
             output = stringz.from_int(i)
         }
         

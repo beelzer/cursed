@@ -153,15 +153,15 @@ slay generate_final_report(passed normie, total normie) {
     vibez.spill("   Pass Rate:", pass_rate, "%")
     vibez.spill("")
     
-    ready (pass_rate >= 90.0) {
+    lowkey (pass_rate >= 90.0) {
         vibez.spill("🔥 STATUS: ABSOLUTELY FIRE! This implementation is SENDING! 🔥")
         vibez.spill("   CURSED language can solve LeetCode problems better than Python!")
         vibez.spill("   Gen Z slang keywords are working perfectly, no cap!")
         vibez.spill("   Among Us ඞ pointers are sus but incredibly powerful!")
-    } otherwise ready (pass_rate >= 70.0) {
+    } highkey lowkey (pass_rate >= 70.0) {
         vibez.spill("✨ STATUS: Pretty good, bestie! Most problems solved!")
         vibez.spill("   CURSED is proving itself as a real programming language!")
-    } otherwise {
+    } highkey {
         vibez.spill("😅 STATUS: It's giving struggling energy...")
         vibez.spill("   But hey, we're implementing LeetCode in a MEME language!")
     }
@@ -180,7 +180,7 @@ slay generate_final_report(passed normie, total normie) {
     vibez.spill("   • 'slay' functions that actually slay")
     vibez.spill("   • 'sus' variables that are appropriately suspicious")
     vibez.spill("   • 'bestie' loops that iterate like best friends")
-    vibez.spill("   • 'ready' conditions that are always prepared")
+    vibez.spill("   • 'lowkey' conditions that are always prepared")
     vibez.spill("   • 'damn' returns that emphasize the results")
     vibez.spill("   • 'periodt' statements that end things definitively")
     vibez.spill("")

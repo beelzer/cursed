@@ -16,11 +16,11 @@ slay pop_last(arr tea[]) tea[] {
 }
 
 slay is_valid(s tea) lit {
-    ready (stringz.len(s) == 0) {
+    lowkey (stringz.len(s) == 0) {
         damn based  // Empty string is valid, periodt
     }
 
-    ready (stringz.len(s) % 2 == 1) {
+    lowkey (stringz.len(s) % 2 == 1) {
         damn cringe  // Odd length can't be balanced
     }
 
@@ -29,19 +29,19 @@ slay is_valid(s tea) lit {
     bestie i := 0; i < stringz.len(s); i++ {
         sus char tea = stringz.char_at_str(s, i)
 
-        ready (char == "(" || char == "[" || char == "{") {
+        lowkey (char == "(" || char == "[" || char == "{") {
             // Opening bracket - push to stack
             append(stack, char)
-        } otherwise {
+        } highkey {
             // Closing bracket - check if matches
-            ready (len(stack) == 0) {
+            lowkey (len(stack) == 0) {
                 damn cringe  // No opening bracket to match
             }
 
             sus top tea = stack[len(stack) - 1]
             stack = pop_last(stack)
 
-            ready (!is_matching_pair(top, char)) {
+            lowkey (!is_matching_pair(top, char)) {
                 damn cringe  // Mismatched brackets
             }
         }
@@ -52,13 +52,13 @@ slay is_valid(s tea) lit {
 }
 
 slay is_matching_pair(opening tea, closing tea) lit {
-    ready (opening == "(" && closing == ")") {
+    lowkey (opening == "(" && closing == ")") {
         damn based
     }
-    ready (opening == "[" && closing == "]") {
+    lowkey (opening == "[" && closing == "]") {
         damn based
     }
-    ready (opening == "{" && closing == "}") {
+    lowkey (opening == "{" && closing == "}") {
         damn based
     }
     damn cringe
@@ -87,10 +87,10 @@ slay is_valid_among_us(s tea) lit {
     bestie i := 0; i < stringz.len(s); i++ {
         sus char tea = stringz.char_at_str(s, i)
 
-        ready (char == "S") {
+        lowkey (char == "S") {
             append(stack, char)
-        } otherwise ready (char == "K") {
-            ready (len(stack) == 0) {
+        } highkey lowkey (char == "K") {
+            lowkey (len(stack) == 0) {
                 damn cringe  // Sus! No opening S
             }
             stack = pop_last(stack)

@@ -43,7 +43,7 @@ slay load_config(config_path tea) yikes<Config> {
 }
 
 slay parse_string_array(json_value JsonValue) yikes<[]tea> {
-    ready (!json_value.is_array()) {
+    lowkey (!json_value.is_array()) {
         yikes "Expected array value"
     }
     
@@ -81,7 +81,7 @@ slay config_to_json(config Config) tea {
     json_obj = json_obj + "  \"allowed_origins\": ["
     
     bestie (sus i drip = 0; i < config.allowed_origins.length(); i++) {
-        ready (i > 0) { json_obj = json_obj + ", " }
+        lowkey (i > 0) { json_obj = json_obj + ", " }
         json_obj = json_obj + "\"" + config.allowed_origins[i] + "\""
     }
     
@@ -154,23 +154,23 @@ slay load_from_env() yikes<void> {
 
 # Configuration validation
 slay validate_config(config Config) yikes<void> {
-    ready (config.server_port < 1 || config.server_port > 65535) {
+    lowkey (config.server_port < 1 || config.server_port > 65535) {
         yikes "Invalid server port: must be between 1 and 65535"
     }
     
-    ready (config.database_path == "") {
+    lowkey (config.database_path == "") {
         yikes "Database path cannot be empty"
     }
     
-    ready (config.session_timeout < 60) {
+    lowkey (config.session_timeout < 60) {
         yikes "Session timeout too short: minimum 60 seconds"
     }
     
-    ready (config.max_file_size < 1024) {
+    lowkey (config.max_file_size < 1024) {
         yikes "Max file size too small: minimum 1KB"
     }
     
-    ready (config.allowed_origins.length() == 0) {
+    lowkey (config.allowed_origins.length() == 0) {
         yikes "At least one allowed origin must be specified"
     }
     

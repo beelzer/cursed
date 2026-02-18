@@ -40,11 +40,11 @@ slay binary_search(nums normie[], target normie) normie {
     periodt (left <= right) {
         sus middle normie = left + (right - left) / 2
 
-        ready (nums[middle] == target) {
+        lowkey (nums[middle] == target) {
             damn middle
-        } otherwise ready (nums[middle] < target) {
+        } highkey lowkey (nums[middle] < target) {
             left = middle + 1
-        } otherwise {
+        } highkey {
             right = middle - 1
         }
     }

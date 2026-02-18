@@ -2,7 +2,7 @@
 
 fr fr! # Production Web Server in CURSED
 fr fr! 
-fr fr! This example demonstrates a complete, production-ready web server built with
+fr fr! This example demonstrates a complete, production-lowkey web server built with
 fr fr! the CURSED programming language, showcasing:
 fr fr! 
 fr fr! - HTTP server with routing and middleware
@@ -1060,7 +1060,7 @@ slay function setup_routes(app: &mut web_vibez::App, state: AppState) {
     
     <div class="section">
         <h2>🚀 CURSED Language Showcase</h2>
-        <p>This web server demonstrates that CURSED is a complete, production-ready programming language capable of:</p>
+        <p>This web server demonstrates that CURSED is a complete, production-lowkey programming language capable of:</p>
         <ul>
             <li><strong>Enterprise Applications</strong> - Complex business logic and data processing</li>
             <li><strong>Web Development</strong> - Full-stack applications with modern features</li>

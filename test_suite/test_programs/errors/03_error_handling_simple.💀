@@ -17,11 +17,11 @@ slay main_character() {
     
     vibez.spill("Testing error conditions...")
     
-    ready (value3 == 0) {
+    lowkey (value3 == 0) {
         vibez.spill("Error detected: Division by zero prevented")
     }
     
-    ready (value1 < 0) {
+    lowkey (value1 < 0) {
         vibez.spill("Error detected: Negative input")
     } basic {
         vibez.spill("Input validation passed")

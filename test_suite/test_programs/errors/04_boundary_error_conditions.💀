@@ -4,17 +4,17 @@ yeet "stringz"
 
 // Test boundary and error conditions
 slay safe_array_access(arr normie[value], index normie) normie {
-    ready (len(arr) == 0) {
+    lowkey (len(arr) == 0) {
         vibez.spill("Error: Cannot access empty array")
         damn -1
     }
     
-    ready (index < 0) {
+    lowkey (index < 0) {
         vibez.spill("Error: Negative index:", index)
         damn -1
     }
     
-    ready (index >= len(arr)) {
+    lowkey (index >= len(arr)) {
         vibez.spill("Error: Index out of bounds:", index, ">=", len(arr))
         damn -1
     }
@@ -25,17 +25,17 @@ slay safe_array_access(arr normie[value], index normie) normie {
 slay safe_string_access(str tea, pos normie) tea {
     sus str_len = stringz.length(str)
     
-    ready (str_len == 0) {
+    lowkey (str_len == 0) {
         vibez.spill("Error: Cannot access empty string")
         damn ""
     }
     
-    ready (pos < 0) {
+    lowkey (pos < 0) {
         vibez.spill("Error: Negative string position:", pos)
         damn ""
     }
     
-    ready (pos >= str_len) {
+    lowkey (pos >= str_len) {
         vibez.spill("Error: String position out of bounds:", pos, ">=", str_len)
         damn ""
     }
@@ -111,7 +111,7 @@ slay test_string_boundary_errors() {
 slay safe_division_with_logging(a normie, b normie) normie {
     vibez.spill("Attempting division:", a, "/", b)
     
-    ready (b == 0) {
+    lowkey (b == 0) {
         vibez.spill("Division by zero error prevented")
         vibez.spill("Returning error code -999")
         damn -999
@@ -151,7 +151,7 @@ slay test_nested_error_conditions() {
     bestie i := 0; i < len(test_array); i++ {
         sus current_val = safe_array_access(test_array, i)
         
-        ready (current_val == -1) {
+        lowkey (current_val == -1) {
             vibez.spill("Array access failed for index:", i)
             simp
         }
@@ -161,7 +161,7 @@ slay test_nested_error_conditions() {
         // Try to use as divisor
         sus division_result = safe_division_with_logging(100, current_val)
         
-        ready (division_result == -999) {
+        lowkey (division_result == -999) {
             vibez.spill("Division failed with element:", current_val)
         } basic {
             vibez.spill("Division result:", division_result)

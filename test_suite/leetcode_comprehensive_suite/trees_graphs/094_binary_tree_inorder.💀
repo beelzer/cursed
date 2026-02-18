@@ -19,7 +19,7 @@ slay inorder_traversal(root ඞTreeNode) normie[] {
 }
 
 slay inorder_helper(node ඞTreeNode, result ඞ[]normie) {
-    ready (node == nah) {
+    lowkey (node == nah) {
         damn
     }
     

@@ -16,9 +16,9 @@ slay main_character() {
     sus result normie = calculate_something(x)
     
     fr fr Control flow with CURSED keywords
-    ready x > 0 {
+    lowkey x > 0 {
         vibez.spill("positive vibes")
-    } otherwise {
+    } highkey {
         vibez.spill("negative energy")
     }
     

@@ -2,11 +2,11 @@ vibe main
 yeet "vibez"
 
 slay test_return(x normie) normie {
-    ready x > 0 {
+    lowkey x > 0 {
         damn 1
-    } otherwise ready x < 0 {
+    } highkey lowkey x < 0 {
         damn -1
-    } otherwise {
+    } highkey {
         damn 0
     }
 }

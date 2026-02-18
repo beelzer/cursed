@@ -13,11 +13,11 @@ sus SQRT_2 drip = 1.414213562373095048801688724209
 sus factorial_cache map<drip, drip> = {}
 
 slay factorial(n drip) drip {
-    ready (n <= 0) { damn 1 }
-    ready (n == 1) { damn 1 }
+    lowkey (n <= 0) { damn 1 }
+    lowkey (n == 1) { damn 1 }
     
     # Check cache
-    ready (map_has_key(factorial_cache, n)) {
+    lowkey (map_has_key(factorial_cache, n)) {
         damn factorial_cache[n]
     }
     
@@ -29,8 +29,8 @@ slay factorial(n drip) drip {
 
 # Fibonacci sequence with iterative approach
 slay fibonacci(n drip) drip {
-    ready (n <= 0) { damn 0 }
-    ready (n == 1) { damn 1 }
+    lowkey (n <= 0) { damn 0 }
+    lowkey (n == 1) { damn 1 }
     
     sus a drip = 0
     sus b drip = 1
@@ -48,7 +48,7 @@ slay fibonacci(n drip) drip {
 
 # Greatest Common Divisor using Euclidean algorithm
 slay gcd(a drip, b drip) drip {
-    ready (b == 0) { damn a }
+    lowkey (b == 0) { damn a }
     damn gcd(b, a % b)
 }
 
@@ -59,13 +59,13 @@ slay lcm(a drip, b drip) drip {
 
 # Check if number is prime
 slay is_prime(n drip) lit {
-    ready (n <= 1) { damn cap }
-    ready (n <= 3) { damn based }
-    ready (n % 2 == 0 || n % 3 == 0) { damn cap }
+    lowkey (n <= 1) { damn cap }
+    lowkey (n <= 3) { damn based }
+    lowkey (n % 2 == 0 || n % 3 == 0) { damn cap }
     
     sus i drip = 5
     bestie (i * i <= n) {
-        ready (n % i == 0 || n % (i + 2) == 0) {
+        lowkey (n % i == 0 || n % (i + 2) == 0) {
             damn cap
         }
         i = i + 6
@@ -80,7 +80,7 @@ slay primes_up_to(limit drip) []drip {
     sus i drip = 2
     
     bestie (i <= limit) {
-        ready (is_prime(i)) {
+        lowkey (is_prime(i)) {
             primes = arrayz.append(primes, i)
         }
         i = i + 1
@@ -91,8 +91,8 @@ slay primes_up_to(limit drip) []drip {
 
 # Power function with integer exponent
 slay power(base drip, exponent drip) drip {
-    ready (exponent == 0) { damn 1 }
-    ready (exponent < 0) { damn 1.0 / power(base, -exponent) }
+    lowkey (exponent == 0) { damn 1 }
+    lowkey (exponent < 0) { damn 1.0 / power(base, -exponent) }
     
     sus result drip = 1
     sus i drip = 0
@@ -107,15 +107,15 @@ slay power(base drip, exponent drip) drip {
 
 # Square root using Newton's method
 slay sqrt_newton(x drip) drip {
-    ready (x < 0) { damn 0 }  # Invalid input
-    ready (x == 0) { damn 0 }
+    lowkey (x < 0) { damn 0 }  # Invalid input
+    lowkey (x == 0) { damn 0 }
     
     sus guess drip = x / 2
     sus epsilon drip = 0.000001
     
     bestie (based) {
         sus new_guess drip = (guess + x / guess) / 2
-        ready (mathz.abs_normie(new_guess - guess) < epsilon) {
+        lowkey (mathz.abs_normie(new_guess - guess) < epsilon) {
             damn new_guess
         }
         guess = new_guess
@@ -124,7 +124,7 @@ slay sqrt_newton(x drip) drip {
 
 # Logarithm base 2 using bit manipulation
 slay log2_int(n drip) drip {
-    ready (n <= 0) { damn -1 }  # Invalid input
+    lowkey (n <= 0) { damn -1 }  # Invalid input
     
     sus result drip = 0
     bestie (n > 1) {
@@ -137,11 +137,11 @@ slay log2_int(n drip) drip {
 
 # Combination (n choose k)
 slay combination(n drip, k drip) drip {
-    ready (k > n) { damn 0 }
-    ready (k == 0 || k == n) { damn 1 }
+    lowkey (k > n) { damn 0 }
+    lowkey (k == 0 || k == n) { damn 1 }
     
     # Use symmetry property: C(n,k) = C(n,n-k)
-    ready (k > n - k) {
+    lowkey (k > n - k) {
         k = n - k
     }
     
@@ -158,7 +158,7 @@ slay combination(n drip, k drip) drip {
 
 # Permutation (n permute k)
 slay permutation(n drip, k drip) drip {
-    ready (k > n) { damn 0 }
+    lowkey (k > n) { damn 0 }
     
     sus result drip = 1
     sus i drip = 0
@@ -173,7 +173,7 @@ slay permutation(n drip, k drip) drip {
 
 # Statistical functions
 slay mean(values []drip) drip {
-    ready (arrayz.len(values) == 0) { damn 0 }
+    lowkey (arrayz.len(values) == 0) { damn 0 }
     
     sus sum drip = 0
     bestie (sus i drip = 0; i < arrayz.len(values); i = i + 1) {
@@ -184,21 +184,21 @@ slay mean(values []drip) drip {
 }
 
 slay median(values []drip) drip {
-    ready (arrayz.len(values) == 0) { damn 0 }
+    lowkey (arrayz.len(values) == 0) { damn 0 }
     
     sus sorted []drip = sort_array(values)
     sus length drip = arrayz.len(sorted)
     sus middle drip = length / 2
     
-    ready (length % 2 == 0) {
+    lowkey (length % 2 == 0) {
         damn (sorted[middle - 1] + sorted[middle]) / 2
-    } otherwise {
+    } highkey {
         damn sorted[middle]
     }
 }
 
 slay variance(values []drip) drip {
-    ready (arrayz.len(values) <= 1) { damn 0 }
+    lowkey (arrayz.len(values) <= 1) { damn 0 }
     
     sus avg drip = mean(values)
     sus sum_sq_diff drip = 0
@@ -222,7 +222,7 @@ slay sort_array(arr []drip) []drip {
     
     bestie (sus i drip = 0; i < n - 1; i = i + 1) {
         bestie (sus j drip = 0; j < n - i - 1; j = j + 1) {
-            ready (sorted[j] > sorted[j + 1]) {
+            lowkey (sorted[j] > sorted[j + 1]) {
                 sus temp drip = sorted[j]
                 sorted[j] = sorted[j + 1]
                 sorted[j + 1] = temp
@@ -235,13 +235,13 @@ slay sort_array(arr []drip) []drip {
 
 # Number theory: Euler's totient function
 slay euler_totient(n drip) drip {
-    ready (n <= 0) { damn 0 }
+    lowkey (n <= 0) { damn 0 }
     
     sus result drip = n
     sus p drip = 2
     
     bestie (p * p <= n) {
-        ready (n % p == 0) {
+        lowkey (n % p == 0) {
             bestie (n % p == 0) {
                 n = n / p
             }
@@ -250,7 +250,7 @@ slay euler_totient(n drip) drip {
         p = p + 1
     }
     
-    ready (n > 1) {
+    lowkey (n > 1) {
         result = result - (result / n)
     }
     
@@ -260,11 +260,11 @@ slay euler_totient(n drip) drip {
 # Matrix operations (2D arrays)
 slay matrix_multiply(a [][]drip, b [][]drip) [][]drip {
     sus a_rows drip = arrayz.len(a)
-    ready (a_rows == 0) { damn [] }
+    lowkey (a_rows == 0) { damn [] }
     
     sus a_cols drip = arrayz.len(a[0])
     sus b_rows drip = arrayz.len(b)
-    ready (b_rows == 0 || a_cols != b_rows) { damn [] }
+    lowkey (b_rows == 0 || a_cols != b_rows) { damn [] }
     
     sus b_cols drip = arrayz.len(b[0])
     sus result [][]drip = []

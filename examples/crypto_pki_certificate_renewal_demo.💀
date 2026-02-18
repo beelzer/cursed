@@ -181,7 +181,7 @@ squad CertificateRenewalDemo {
         println("✅ Certificate renewal system initialized");
         println("   📧 Email notifications configured");
         println("   🔗 Webhook notifications configured");
-        println("   🔒 ACME protocol ready (Let's Encrypt staging)");
+        println("   🔒 ACME protocol lowkey (Let's Encrypt staging)");
         println("   💾 Certificate storage configured");
         println("   📊 Monitoring and metrics enabled");
         

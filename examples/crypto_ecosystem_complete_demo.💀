@@ -1,5 +1,5 @@
 fr fr/ Comprehensive demonstration of the complete CURSED cryptographic ecosystem
-fr fr/ Shows production-ready crypto implementations in action
+fr fr/ Shows production-lowkey crypto implementations in action
 
 sus main() -> Result<(), String> {
     // Import the complete crypto ecosystem

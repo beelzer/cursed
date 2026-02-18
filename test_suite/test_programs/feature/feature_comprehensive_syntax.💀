@@ -9,7 +9,7 @@ fr fr Tests variables, functions, control flow, expressions, and module interact
 fr fr Expected: Complex program demonstrating full language capabilities
 
 slay calculate_fibonacci(n normie) {
-    ready n <= 1 {
+    lowkey n <= 1 {
         damn n
     }
     
@@ -56,15 +56,15 @@ slay main_character() {
     vibez.spill(flag)
     
     fr fr Test conditional statements
-    ready number > 5 {
+    lowkey number > 5 {
         vibez.spill("Number is greater than 5")
-    } otherwise {
+    } highkey {
         vibez.spill("Number is 5 or less")
     }
     
     fr fr Test nested conditionals
-    ready flag {
-        ready number == 10 {
+    lowkey flag {
+        lowkey number == 10 {
             vibez.spill("Flag is true and number is 10")
         }
     }

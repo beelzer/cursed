@@ -9,7 +9,7 @@ fr fr Tests parser limits, expression evaluation, and memory management
 fr fr Expected: Successful evaluation of complex nested operations
 
 slay deeply_nested_calculation(depth normie) {
-    ready depth <= 0 {
+    lowkey depth <= 0 {
         damn 1
     }
     
@@ -18,7 +18,7 @@ slay deeply_nested_calculation(depth normie) {
 }
 
 slay nested_string_operations(base_string tea, count normie) {
-    ready count <= 0 {
+    lowkey count <= 0 {
         damn base_string
     }
     

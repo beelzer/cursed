@@ -7,7 +7,7 @@ yeet "stringz"
 // Time: O(n), Space: O(1) - using character frequency count
 
 slay is_anagram(s tea, t tea) lit {
-    ready (stringz.len(s) != stringz.len(t)) {
+    lowkey (stringz.len(s) != stringz.len(t)) {
         damn cringe
     }
 
@@ -32,7 +32,7 @@ slay is_anagram(s tea, t tea) lit {
 
     // Check if all frequencies are zero
     bestie i := 0; i < 26; i++ {
-        ready (freq[i] != 0) {
+        lowkey (freq[i] != 0) {
             damn cringe
         }
     }

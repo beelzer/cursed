@@ -6,17 +6,17 @@ yeet "vibez"
 // Time: O(n), Space: O(1) - optimized DP approach
 
 slay max_val(a normie, b normie) normie {
-    ready (a > b) {
+    lowkey (a > b) {
         damn a
     }
     damn b
 }
 
 slay rob(nums normie[]) normie {
-    ready (len(nums) == 0) {
+    lowkey (len(nums) == 0) {
         damn 0
     }
-    ready (len(nums) == 1) {
+    lowkey (len(nums) == 1) {
         damn nums[0]
     }
 
@@ -35,10 +35,10 @@ slay rob(nums normie[]) normie {
 
 slay rob_with_array(nums normie[]) normie {
     // Alternative: explicit DP array approach
-    ready (len(nums) == 0) {
+    lowkey (len(nums) == 0) {
         damn 0
     }
-    ready (len(nums) == 1) {
+    lowkey (len(nums) == 1) {
         damn nums[0]
     }
 

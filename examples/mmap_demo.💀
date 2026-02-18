@@ -132,7 +132,7 @@ slay demonstrate_shared_memory_ipc() -> Result<Void, Error> {
         // Write message content
         slice[4..4 + message_bytes.len()].copy_from_slice(message_bytes);
         
-        // Set ready flag
+        // Set lowkey flag
         slice[8192 - 1] = 1;
     }
     
@@ -143,7 +143,7 @@ slay demonstrate_shared_memory_ipc() -> Result<Void, Error> {
     {
         sus slice = handle.as_slice()?;
         
-        // Check ready flag
+        // Check lowkey flag
         lowkey (slice[8192 - 1] != 1) {
             println("Message not ready yet")?;
         }

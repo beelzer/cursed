@@ -23,7 +23,7 @@ slay parse_args(args []tea) CLIArgs {
         flags: []
     }
     
-    ready (args.length() == 0) {
+    lowkey (args.length() == 0) {
         damn cli_args
     }
     
@@ -31,9 +31,9 @@ slay parse_args(args []tea) CLIArgs {
     
     bestie (sus i drip = 1; i < args.length(); i++) {
         sus arg tea = args[i]
-        ready (arg.starts_with("--")) {
+        lowkey (arg.starts_with("--")) {
             cli_args.flags.push(arg)
-        } otherwise {
+        } highkey {
             cli_args.args.push(arg)
         }
     }
@@ -43,7 +43,7 @@ slay parse_args(args []tea) CLIArgs {
 
 # User management commands
 slay cmd_create_user(args []tea) yikes<void> {
-    ready (args.length() < 3) {
+    lowkey (args.length() < 3) {
         yikes "Usage: create-user <username> <email> <password> [--admin]"
     }
     
@@ -54,17 +54,17 @@ slay cmd_create_user(args []tea) yikes<void> {
     
     # Check if --admin flag is present
     bestie (sus i drip = 3; i < args.length(); i++) {
-        ready (args[i] == "--admin") {
+        lowkey (args[i] == "--admin") {
             is_admin = based
         }
     }
     
     # Validate input
-    ready (!validate_username(username)) {
+    lowkey (!validate_username(username)) {
         yikes "Invalid username: must be 3-20 characters"
     }
     
-    ready (!validate_email(email)) {
+    lowkey (!validate_email(email)) {
         yikes "Invalid email format"
     }
     
@@ -72,7 +72,7 @@ slay cmd_create_user(args []tea) yikes<void> {
     sus existing_user User = find_user_by_username(username) fam {
         # User doesn't exist, which is good
     }
-    otherwise {
+    highkey {
         yikes "User already exists: " + username
     }
     
@@ -107,7 +107,7 @@ slay cmd_list_users() yikes<void> {
     vibez.spill("Registered Users:")
     vibez.spill("================")
     
-    ready (users.length() == 0) {
+    lowkey (users.length() == 0) {
         vibez.spill("No users found.")
         damn
     }
@@ -124,7 +124,7 @@ slay cmd_list_users() yikes<void> {
 }
 
 slay cmd_delete_user(args []tea) yikes<void> {
-    ready (args.length() < 1) {
+    lowkey (args.length() < 1) {
         yikes "Usage: delete-user <username>"
     }
     
@@ -147,14 +147,14 @@ slay cmd_delete_user(args []tea) yikes<void> {
 }
 
 slay cmd_set_admin(args []tea) yikes<void> {
-    ready (args.length() < 2) {
+    lowkey (args.length() < 2) {
         yikes "Usage: set-admin <username> <true|false>"
     }
     
     sus username tea = args[0]
     sus admin_status tea = args[1]
     
-    ready (admin_status != "true" && admin_status != "false") {
+    lowkey (admin_status != "true" && admin_status != "false") {
         yikes "Admin status must be 'true' or 'false'"
     }
     
@@ -174,7 +174,7 @@ slay cmd_set_admin(args []tea) yikes<void> {
 # Database management commands
 slay cmd_backup_database(args []tea) yikes<void> {
     sus backup_path tea = "backup_" + timez.now().to_string() + ".tar.gz"
-    ready (args.length() > 0) {
+    lowkey (args.length() > 0) {
         backup_path = args[0]
     }
     
@@ -196,7 +196,7 @@ slay cmd_backup_database(args []tea) yikes<void> {
 }
 
 slay cmd_restore_database(args []tea) yikes<void> {
-    ready (args.length() < 1) {
+    lowkey (args.length() < 1) {
         yikes "Usage: restore-database <backup-path>"
     }
     
@@ -205,7 +205,7 @@ slay cmd_restore_database(args []tea) yikes<void> {
     
     # Check if backup exists
     sus backup_exists lit = filez.file_exists(backup_path) fam { damn nah }
-    ready (!backup_exists) {
+    lowkey (!backup_exists) {
         yikes "Backup file not found: " + backup_path
     }
     
@@ -238,7 +238,7 @@ slay cmd_cleanup_database() yikes<void> {
         damn []
     }
     
-    ready (metrics_files.length() > 1000) {
+    lowkey (metrics_files.length() > 1000) {
         sus files_to_delete drip = metrics_files.length() - 1000
         vibez.spill("Cleaning up old metrics files: " + files_to_delete.to_string())
         
@@ -272,7 +272,7 @@ slay cmd_status() yikes<void> {
     # Admin count
     sus admin_count drip = 0
     bestie (sus i drip = 0; i < users.length(); i++) {
-        ready (users[i].is_admin) {
+        lowkey (users[i].is_admin) {
             admin_count = admin_count + 1
         }
     }
@@ -285,7 +285,7 @@ slay cmd_status() yikes<void> {
     
     # Recent metrics
     sus recent_metrics []SystemMetrics = get_recent_metrics(1) fam { damn [] }
-    ready (recent_metrics.length() > 0) {
+    lowkey (recent_metrics.length() > 0) {
         sus latest SystemMetrics = recent_metrics[0]
         vibez.spill("Latest metrics:")
         vibez.spill("  CPU: " + latest.cpu_usage.to_string() + "%")
@@ -302,7 +302,7 @@ slay cmd_status() yikes<void> {
 
 slay cmd_logs(args []tea) yikes<void> {
     sus log_count drip = 50
-    ready (args.length() > 0) {
+    lowkey (args.length() > 0) {
         log_count = args[0].to_int() fam { damn 50 }
     }
     
@@ -324,30 +324,30 @@ slay cmd_logs(args []tea) yikes<void> {
 
 # Configuration commands
 slay cmd_config_get(args []tea) yikes<void> {
-    ready (args.length() < 1) {
+    lowkey (args.length() < 1) {
         yikes "Usage: config-get <key>"
     }
     
     sus key tea = args[0]
     sus config Config = get_config()
     
-    ready (key == "server_port") {
+    lowkey (key == "server_port") {
         vibez.spill(config.server_port.to_string())
-    } otherwise ready (key == "database_path") {
+    } highkey lowkey (key == "database_path") {
         vibez.spill(config.database_path)
-    } otherwise ready (key == "session_timeout") {
+    } highkey lowkey (key == "session_timeout") {
         vibez.spill(config.session_timeout.to_string())
-    } otherwise ready (key == "max_file_size") {
+    } highkey lowkey (key == "max_file_size") {
         vibez.spill(config.max_file_size.to_string())
-    } otherwise ready (key == "log_level") {
+    } highkey lowkey (key == "log_level") {
         vibez.spill(config.log_level)
-    } otherwise {
+    } highkey {
         yikes "Unknown configuration key: " + key
     }
 }
 
 slay cmd_config_set(args []tea) yikes<void> {
-    ready (args.length() < 2) {
+    lowkey (args.length() < 2) {
         yikes "Usage: config-set <key> <value>"
     }
     
@@ -433,7 +433,7 @@ slay main_character() yikes<void> {
     # sus args []tea = get_command_line_args()
     sus args []tea = mock_args
     
-    ready (args.length() == 0) {
+    lowkey (args.length() == 0) {
         show_help()
         damn
     }
@@ -451,53 +451,53 @@ slay main_character() yikes<void> {
     }
     
     # Execute command
-    ready (cli_args.command == "help" || cli_args.command == "--help") {
+    lowkey (cli_args.command == "help" || cli_args.command == "--help") {
         show_help()
-    } otherwise ready (cli_args.command == "create-user") {
+    } highkey lowkey (cli_args.command == "create-user") {
         cmd_create_user(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "list-users") {
+    } highkey lowkey (cli_args.command == "list-users") {
         cmd_list_users() fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "delete-user") {
+    } highkey lowkey (cli_args.command == "delete-user") {
         cmd_delete_user(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "set-admin") {
+    } highkey lowkey (cli_args.command == "set-admin") {
         cmd_set_admin(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "backup-database") {
+    } highkey lowkey (cli_args.command == "backup-database") {
         cmd_backup_database(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "restore-database") {
+    } highkey lowkey (cli_args.command == "restore-database") {
         cmd_restore_database(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "cleanup-database") {
+    } highkey lowkey (cli_args.command == "cleanup-database") {
         cmd_cleanup_database() fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "status") {
+    } highkey lowkey (cli_args.command == "status") {
         cmd_status() fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "logs") {
+    } highkey lowkey (cli_args.command == "logs") {
         cmd_logs(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "config-get") {
+    } highkey lowkey (cli_args.command == "config-get") {
         cmd_config_get(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise ready (cli_args.command == "config-set") {
+    } highkey lowkey (cli_args.command == "config-set") {
         cmd_config_set(cli_args.args) fam {
             vibez.spill("Error: " + error_message)
         }
-    } otherwise {
+    } highkey {
         vibez.spill("Unknown command: " + cli_args.command)
         vibez.spill("Use 'help' to see available commands.")
     }

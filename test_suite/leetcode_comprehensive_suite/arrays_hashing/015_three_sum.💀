@@ -5,7 +5,7 @@ yeet "vibez"
 // Time: O(n²), Space: O(1) - excluding output space
 
 slay three_sum(nums normie[]) normie[][] {
-    ready (len(nums) < 3) {
+    lowkey (len(nums) < 3) {
         damn [][]normie{}
     }
     
@@ -15,7 +15,7 @@ slay three_sum(nums normie[]) normie[][] {
     
     bestie i := 0; i < len(sorted_nums) - 2; i++ {
         // Skip duplicates for first element, no cap
-        ready (i > 0 && sorted_nums[i] == sorted_nums[i-1]) {
+        lowkey (i > 0 && sorted_nums[i] == sorted_nums[i-1]) {
             simp
         }
         
@@ -25,7 +25,7 @@ slay three_sum(nums normie[]) normie[][] {
         bestie (left < right) {
             sus sum normie = sorted_nums[i] + sorted_nums[left] + sorted_nums[right]
             
-            ready (sum == 0) {
+            lowkey (sum == 0) {
                 // Found a valid triplet, bestie!
                 append(result, [sorted_nums[i], sorted_nums[left], sorted_nums[right]])
                 
@@ -39,9 +39,9 @@ slay three_sum(nums normie[]) normie[][] {
                 
                 left = left + 1
                 right = right - 1
-            } otherwise ready (sum < 0) {
+            } highkey lowkey (sum < 0) {
                 left = left + 1
-            } otherwise {
+            } highkey {
                 right = right - 1
             }
         }

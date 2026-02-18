@@ -40,13 +40,13 @@ slay main_character() {
     vibez.spill("Testing loop with conditions...")
     sus value = 10
     periodt (value > 0) {
-        ready (value == 5) {
+        lowkey (value == 5) {
             vibez.spill("Halfway point reached")
         }
         
-        ready (value % 2 == 0) {
+        lowkey (value % 2 == 0) {
             vibez.spill("Even number:", value)
-        } otherwise {
+        } highkey {
             vibez.spill("Odd number:", value)
         }
         

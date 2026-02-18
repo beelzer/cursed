@@ -25,13 +25,13 @@ slay double_absolute(value normie) normie {
 
 fr fr Function with complex logic
 slay grade_calculator(score normie) normie {
-    ready score >= 90 {
+    lowkey score >= 90 {
         damn 1  fr fr A grade
-    } otherwise ready score >= 80 {
+    } highkey lowkey score >= 80 {
         damn 2  fr fr B grade
-    } otherwise ready score >= 70 {
+    } highkey lowkey score >= 70 {
         damn 3  fr fr C grade
-    } otherwise {
+    } highkey {
         damn 4  fr fr Below C
     }
 }

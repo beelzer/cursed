@@ -11,7 +11,7 @@ struct ListNode {
 }
 
 slay has_cycle(head ඞListNode) lit {
-    ready (head == nah || head.next == nah) {
+    lowkey (head == nah || head.next == nah) {
         damn cringe  // Can't have cycle with 0 or 1 nodes
     }
     
@@ -23,7 +23,7 @@ slay has_cycle(head ඞListNode) lit {
         slow = slow.next
         fast = fast.next.next
         
-        ready (slow == fast) {
+        lowkey (slow == fast) {
             damn based  // Cycle detected! Sus ඞ
         }
     }
@@ -39,7 +39,7 @@ slay has_cycle_hashset(head ඞListNode) lit {
     bestie (current != nah) {
         // Check if we've seen this node before
         bestie i := 0; i < len(visited); i++ {
-            ready (visited[i] == current) {
+            lowkey (visited[i] == current) {
                 damn based  // Cycle detected!
             }
         }

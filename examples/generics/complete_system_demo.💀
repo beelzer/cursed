@@ -365,7 +365,7 @@ collab AsyncResult<T, E> {
         sus bound_future = self.future.bind(|result| {
             vibe_check (result) {
                 mood Ok(value) => f(value).future,
-                mood Err(error) => Future::ready(Err(error))
+                mood Err(error) => Future::lowkey(Err(error))
             }
         })
         periodt AsyncResult<U, E>::new(bound_future)
@@ -385,7 +385,7 @@ collab AsyncResult<T, E> {
     slay or_else<F>(sus self, f: fn(E) -> AsyncResult<T, F>) -> AsyncResult<T, F> {
         sus recovered_future = self.future.bind(|result| {
             vibe_check (result) {
-                mood Ok(value) => Future::ready(Ok(value)),
+                mood Ok(value) => Future::lowkey(Ok(value)),
                 mood Err(error) => f(error).future
             }
         })

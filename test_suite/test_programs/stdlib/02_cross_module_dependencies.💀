@@ -112,7 +112,7 @@ slay performance_intensive_cross_module() {
             sus result_str = stringz.concat(processed_str, "_")
             result_str = stringz.concat(result_str, stringz.from_int(math_result))
             
-            ready (i % 20 == 0) {
+            lowkey (i % 20 == 0) {
                 vibez.spill("Iteration", i, "->", result_str)
             }
         }

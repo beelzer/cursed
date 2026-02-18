@@ -1042,8 +1042,8 @@ pub const Parser = struct {
             
             // Stop at statement-starting keywords
             switch (current_token.kind) {
-                .Slay, .Sus, .Facts, .Squad, .Collab, .Vibe, .Yeet, .Ready, .Lowkey, 
-                .Periodt, .Flex, .Bestie, .Ghosted, .Simp, .Later, .Impl, .BeLike, 
+                .Slay, .Sus, .Facts, .Squad, .Collab, .Vibe, .Yeet, .Lowkey,
+                .Periodt, .Bestie, .Ghosted, .Simp, .Later, .Impl, .BeLike,
                 .Stan, .Match, .VibeCheck => {
                     // Don't consume these - let the next parsing cycle handle them
                     self.error_recovery_stats.tokens_skipped += tokens_skipped;
@@ -1165,8 +1165,8 @@ pub const Parser = struct {
         if (self.isAtEnd()) return;
         
         const stmt_start_tokens = [_]TokenKind{
-            .Slay, .Sus, .Facts, .Squad, .Collab, .Ready, .Lowkey,
-            .Periodt, .Flex, .Bestie, .Later, .Impl, .Stan, .Match
+            .Slay, .Sus, .Facts, .Squad, .Collab, .Lowkey,
+            .Periodt, .Bestie, .Later, .Impl, .Stan, .Match
         };
         
         // Attempting additional statement recovery
@@ -1393,13 +1393,13 @@ pub const Parser = struct {
             return try self.parseReturnStatement();
         }
         
-        // If statement (lowkey/ready)
-        if (self.check(.Lowkey) or self.check(.Ready)) {
+        // If statement (lowkey)
+        if (self.check(.Lowkey)) {
             return Statement{ .If = try self.parseIfStatement() };
         }
-        
-        // While statement (periodt/flex) or For statement (bestie)
-        if (self.check(.Periodt) or self.check(.Flex)) {
+
+        // While statement (periodt)
+        if (self.check(.Periodt)) {
             return Statement{ .While = try self.parseWhileStatement() };
         }
         
@@ -3330,14 +3330,9 @@ pub const Parser = struct {
     }
 
     fn parseIfStatement(self: *Parser) ParserError!ast.IfStatement {
-        // Handle both 'ready' and 'lowkey' keywords
-        if (self.check(.Ready)) {
-            _ = self.advance(); // consume 'ready'
-        } else {
-            _ = try self.consume(.Lowkey, "Expected 'lowkey' or 'ready'");
-        }
-        
-        // CURSED syntax allows condition without parentheses: ready condition { or lowkey condition {
+        _ = try self.consume(.Lowkey, "Expected 'lowkey'");
+
+        // CURSED syntax allows condition without parentheses: lowkey condition {
         var has_parens = false;
         if (self.match(.LeftParen)) {
             has_parens = true;
@@ -3376,13 +3371,13 @@ pub const Parser = struct {
         
         var else_branch: ?ArrayList(*Statement) = null;
         
-        // Parse else clause (highkey/otherwise)
-        if (self.match(.Highkey) or self.match(.Otherwise)) {
+        // Parse else clause (highkey)
+        if (self.match(.Highkey)) {
             var else_stmts = std.ArrayList(*Statement){ .items = &.{}, .capacity = 0 };
             // Use arena allocator consistently and add error cleanup
             errdefer else_stmts.deinit(self.arena_allocator);
             
-            if (self.check(.Lowkey) or self.check(.Ready)) {
+            if (self.check(.Lowkey)) {
                 // else if
                 const elif_stmt = try self.parseIfStatement();
                 const if_stmt = Statement{ .If = elif_stmt };
@@ -3422,7 +3417,7 @@ pub const Parser = struct {
     }
 
     fn parseWhileStatement(self: *Parser) ParserError!ast.WhileStatement {
-        _ = self.advance(); // consume periodt/flex/bestie
+        _ = self.advance(); // consume periodt
 
         // CURSED syntax allows condition without parentheses: periodt condition {
         var has_parens = false;
@@ -4200,13 +4195,7 @@ pub const Parser = struct {
     }
 
     fn parseSelectStatement(self: *Parser) ParserError!Statement {
-        if (self.check(.Select)) {
-            _ = self.advance();
-        } else if (self.check(.Ready)) {
-            _ = self.advance();
-        } else {
-            return ParserError.UnexpectedToken;
-        }
+        _ = try self.consume(.Select, "Expected 'select'");
         
         _ = try self.consume(.LeftBrace, "Expected '{'");
         

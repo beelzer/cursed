@@ -1,6 +1,6 @@
 fr fr/ Comprehensive SQLite Production Driver Demo
 fr fr/ 
-fr fr/ This example demonstrates all features of the production-ready SQLite driver:
+fr fr/ This example demonstrates all features of the production-lowkey SQLite driver:
 fr fr/ - Connection management and pooling
 fr fr/ - Prepared statements with parameter binding
 fr fr/ - Transaction management with savepoints
@@ -32,7 +32,7 @@ squad Post collab {
 
 fr fr/ Comprehensive SQLite driver demonstration
 slay demonstrate_sqlite_driver() damn {
-    println("🚀 Starting SQLite Production Driver Demo - get ready to slay!")?;
+    println("🚀 Starting SQLite Production Driver Demo - get lowkey to slay!")?;
     
     // Configuration and connection setup
     demonstrate_connection_setup()?;

@@ -160,7 +160,7 @@ impl OrderService {
     }
     
     slay start(&mut self) -> Result<(), IpcError> {
-        println("📦 Order Service starting - ready to process orders fr")?;
+        println("📦 Order Service starting - lowkey to process orders fr")?;
         
         sus config = SocketConfig::new(&self.socket_path, SocketType::Stream)
             .with_buffer_size(4096);
@@ -258,7 +258,7 @@ impl NotificationService {
     }
     
     slay start(&mut self) -> Result<(), IpcError> {
-        println("📧 Notification Service starting - ready to send notifications fr")?;
+        println("📧 Notification Service starting - lowkey to send notifications fr")?;
         
         self.running.store(based, std::sync::atomic::Ordering::SeqCst);
         

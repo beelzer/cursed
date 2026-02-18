@@ -146,7 +146,7 @@ slay engine_initialize(config EngineConfig) Engine {
     engine.resource_manager = resource_manager_create()
     engine.input_manager = input_manager_create()
     
-    ready (config.audio_enabled) {
+    lowkey (config.audio_enabled) {
         engine.audio_manager = audio_manager_create()
         vibez.spill("✅ Audio system initialized")
     }
@@ -198,12 +198,12 @@ slay engine_run(engine Engine) lit {
         engine_limit_frame_rate(engine.time)
         
         fr fr Update debug info
-        ready (engine.config.debug_mode) {
+        lowkey (engine.config.debug_mode) {
             engine.debug_info = debug_info_update(engine.debug_info, engine)
         }
         
         fr fr Check for exit condition
-        ready (input_manager_is_key_pressed(engine.input_manager, "ESCAPE")) {
+        lowkey (input_manager_is_key_pressed(engine.input_manager, "ESCAPE")) {
             engine.should_exit = true
         }
     }
@@ -216,7 +216,7 @@ slay engine_update(engine Engine, time GameTime) lit {
     input_manager_update(engine.input_manager)
     
     fr fr Update audio
-    ready (engine.config.audio_enabled) {
+    lowkey (engine.config.audio_enabled) {
         audio_manager_update(engine.audio_manager, time)
     }
     
@@ -240,7 +240,7 @@ slay engine_render(engine Engine) lit {
     system_manager_render(engine.system_manager, engine.entity_manager, engine.render_context)
     
     fr fr Render debug info
-    ready (engine.config.debug_mode) {
+    lowkey (engine.config.debug_mode) {
         debug_info_render(engine.debug_info, engine.render_context)
     }
     
@@ -270,7 +270,7 @@ slay engine_update_game_time(time GameTime, delta_time drip) GameTime {
     updated.frame_count = updated.frame_count + 1
     
     fr fr Calculate FPS (smoothed over multiple frames)
-    ready (delta_time > 0.0) {
+    lowkey (delta_time > 0.0) {
         sus current_fps drip = 1.0 / delta_time
         updated.fps = (updated.fps * 0.9) + (current_fps * 0.1)
     }
@@ -283,7 +283,7 @@ slay engine_limit_frame_rate(time GameTime) lit {
     sus current_frame_time drip = timez.timez_current_time_seconds()
     sus sleep_time drip = target_frame_time - current_frame_time
     
-    ready (sleep_time > 0.0) {
+    lowkey (sleep_time > 0.0) {
         timez.timez_sleep_milliseconds(mathz.mathz_float_to_int(sleep_time * 1000.0))
     }
     
@@ -317,7 +317,7 @@ slay vector2_length(v Vector2) drip {
 
 slay vector2_normalize(v Vector2) Vector2 {
     sus length drip = vector2_length(v)
-    ready (length == 0.0) {
+    lowkey (length == 0.0) {
         damn vector2_create(0.0, 0.0)
     }
     damn vector2_create(v.x / length, v.y / length)

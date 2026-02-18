@@ -802,12 +802,12 @@ const Template = struct {
 /// Built-in macro expansions
 fn debugPrintExpansion(system: *HygienicMacroSystem, call: MacroCall) ![]Token {
     _ = system;
-    // Generate: ready (DEBUG_MODE) { vibez.spill("[DEBUG]", $msg) }
+    // Generate: lowkey (DEBUG_MODE) { vibez.spill("[DEBUG]", $msg) }
     var result = ArrayList(Token){};
     defer result.deinit();
-    
-    // ready (DEBUG_MODE) {
-    try result.append(Token{ .kind = .Identifier, .lexeme = "ready", .line = call.location.line, .column = call.location.column, .offset = 0 });
+
+    // lowkey (DEBUG_MODE) {
+    try result.append(Token{ .kind = .Lowkey, .lexeme = "lowkey", .line = call.location.line, .column = call.location.column, .offset = 0 });
     try result.append(Token{ .kind = .LeftParen, .lexeme = "(", .line = call.location.line, .column = call.location.column, .offset = 0 });
     try result.append(Token{ .kind = .Identifier, .lexeme = "DEBUG_MODE", .line = call.location.line, .column = call.location.column, .offset = 0 });
     try result.append(Token{ .kind = .RightParen, .lexeme = ")", .line = call.location.line, .column = call.location.column, .offset = 0 });

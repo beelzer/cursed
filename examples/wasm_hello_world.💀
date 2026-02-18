@@ -38,9 +38,9 @@ slay cursed_demo() {
     sus vibe_level drip = 9001  // integer
     sus chaos_factor tea = "maximum"  // string
     
-    ready (is_based) {
+    lowkey (is_based) {
         vibez.spill("This code is absolutely", chaos_factor, "chaos level:", vibe_level)
-    } otherwise {
+    } highkey {
         vibez.spill("Something went wrong in the matrix")
     }
     
@@ -59,7 +59,7 @@ export slay get_version() tea {
 }
 
 export slay fibonacci(n drip) drip {
-    ready (n <= 1) {
+    lowkey (n <= 1) {
         damn n
     }
     damn fibonacci(n - 1) + fibonacci(n - 2)

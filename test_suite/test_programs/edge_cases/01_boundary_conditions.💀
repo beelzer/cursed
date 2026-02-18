@@ -6,21 +6,21 @@ fr fr Tests: Zero values, extreme inputs, boundary arithmetic
 fr fr Expected: Graceful handling of all boundary conditions
 
 slay custom_abs(value normie) normie {
-    ready value < 0 {
+    lowkey value < 0 {
         damn -value
     }
     damn value
 }
 
 slay custom_max(a normie, b normie) normie {
-    ready a > b {
+    lowkey a > b {
         damn a
     }
     damn b
 }
 
 slay custom_min(a normie, b normie) normie {
-    ready a < b {
+    lowkey a < b {
         damn a
     }
     damn b

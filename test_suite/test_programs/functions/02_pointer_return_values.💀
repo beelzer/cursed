@@ -7,7 +7,7 @@ fr fr Tests: Functions returning pointers
 fr fr Expected: Identical results in both modes
 
 slay get_larger(a ඞnormie, b ඞnormie) ඞnormie {
-    ready (*a > *b) {
+    lowkey (*a > *b) {
         damn a
     }
     damn b

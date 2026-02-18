@@ -171,7 +171,7 @@ slay demo_stream_management() {
     }
     
     vibez.spill("Created HTTP/2 connection:")
-    vibez.spill("  Is Server:", ready (conn.is_server) "Yes" otherwise "No")
+    vibez.spill("  Is Server:", lowkey (conn.is_server) "Yes" highkey "No")
     vibez.spill("  Next Stream ID:", conn.next_stream_id, "(client uses odd numbers)")
     vibez.spill("  Initial Window Size:", conn.local_settings.initial_window_size)
     vibez.spill("  Max Concurrent Streams:", conn.local_settings.max_concurrent_streams)
@@ -256,7 +256,7 @@ slay demo_flow_control() {
         vibez.spill("    Connection window:", controller.connection_window)
         vibez.spill("    Stream window:", controller.stream_windows[0])
         vibez.spill("    Pending updates:", controller.pending_updates[0])
-        vibez.spill("    Should update:", ready (flow_control_should_update(controller, 1)) "Yes" otherwise "No")
+        vibez.spill("    Should update:", lowkey (flow_control_should_update(controller, 1)) "Yes" highkey "No")
         
         m = m + 1
     }
@@ -350,7 +350,7 @@ slay demo_multiplexed_connections() {
         }
         
         vibez.spill("  Created stream", stream_id)
-        vibez.spill("    Stream active:", ready (mux_conn.active_streams[stream_id - 1]) "Yes" otherwise "No")
+        vibez.spill("    Stream active:", lowkey (mux_conn.active_streams[stream_id - 1]) "Yes" highkey "No")
         n = n + 1
     }
     

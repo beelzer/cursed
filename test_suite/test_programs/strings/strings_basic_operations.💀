@@ -12,16 +12,16 @@ slay main_character() {
     sus empty tea = ""
     
     fr fr String comparisons (if supported)
-    ready greeting == "Hello" {
+    lowkey greeting == "Hello" {
         sus match lit = based
     }
     
-    ready name != "Java" {
+    lowkey name != "Java" {
         sus different lit = based  
     }
     
     fr fr Empty tea check
-    ready empty == "" {
+    lowkey empty == "" {
         sus is_empty lit = based
     }
     
