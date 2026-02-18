@@ -1003,15 +1003,21 @@ pub const Interpreter = struct {
         // Fall back to "main_character" for backward compatibility
         const canonical_main_name: []const u8 = "main";
         const legacy_main_name: []const u8 = "main_character";
-        
+
         // Execute the main function if it exists (prefer canonical "main")
-        if (self.functions.get(canonical_main_name)) |main_func| {
-            _ = try self.callFunction(main_func, &[_]Value{});
-        } else if (self.functions.get(legacy_main_name)) |main_func| {
-            // Fallback to legacy main_character for backward compatibility
+        if (self.functions.get(canonical_main_name) orelse self.functions.get(legacy_main_name)) |main_func| {
+            // Execute global statements (variable declarations etc.) before main
+            // so that globals are available inside the main function
+            for (program.statements.items) |stmt_ptr| {
+                const stmt: *Statement = @ptrCast(@alignCast(stmt_ptr));
+                switch (stmt.*) {
+                    .Function, .Struct, .Interface, .Implementation, .Import => {},
+                    else => { _ = try self.executeStatement(stmt.*); },
+                }
+            }
             _ = try self.callFunction(main_func, &[_]Value{});
         } else {
-            // Execute statements in order
+            // No main function - execute all statements in order
             for (program.statements.items) |stmt_ptr| {
                 const stmt: *Statement = @ptrCast(@alignCast(stmt_ptr));
                 _ = try self.executeStatement(stmt.*);
@@ -4512,6 +4518,7 @@ fn builtinPrint(interpreter: *Interpreter, args: []Value) InterpreterError!Value
     for (args) |arg| {
         switch (arg) {
             .String => |str| std.debug.print("{s}", .{str}),
+            .OwnedString => |str| std.debug.print("{s}", .{str}),
             .Integer => |int| std.debug.print("{}", .{int}),
             .Float => |float| std.debug.print("{d}", .{float}),
             .Boolean => |bool_val| std.debug.print("{s}", .{if (bool_val) "based" else "cringe"}),
@@ -4525,13 +4532,14 @@ fn builtinPrint(interpreter: *Interpreter, args: []Value) InterpreterError!Value
 
 fn builtinPrintln(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
     _ = interpreter;
-    
+
     // Print all arguments separated by spaces with newline (like Go's println)
     for (args, 0..) |arg, i| {
         if (i > 0) std.debug.print(" ", .{});
-        
+
         switch (arg) {
             .String => |str| std.debug.print("{s}", .{str}),
+            .OwnedString => |str| std.debug.print("{s}", .{str}),
             .Integer => |int| std.debug.print("{}", .{int}),
             .Float => |float| std.debug.print("{d}", .{float}),
             .Boolean => |bool_val| std.debug.print("{s}", .{if (bool_val) "based" else "cringe"}),

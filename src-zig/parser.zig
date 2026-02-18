@@ -103,13 +103,12 @@ pub const Parser = struct {
     const PARSE_TIMEOUT_MS: i64 = 30000; // 30 seconds
 
     pub fn init(allocator: Allocator, tokens: []const Token) Parser {
-        var arena = std.heap.ArenaAllocator.init(allocator);
         return Parser{
             .tokens = tokens,
             .current = 0,
             .allocator = allocator,
-            .arena = arena,
-            .arena_allocator = arena.allocator(),
+            .arena = std.heap.ArenaAllocator.init(allocator),
+            .arena_allocator = undefined, // Set properly via fixupArenaAllocator()
             .had_error = false,
             .in_function = false,
             .in_loop = false,
@@ -122,6 +121,14 @@ pub const Parser = struct {
             .loop_position_counter = std.AutoHashMap(usize, usize).init(allocator),
             .parse_start_time = std.time.milliTimestamp(),
         };
+    }
+
+    /// Must be called after init to fix the arena_allocator pointer.
+    /// The init functions return by value, so arena_allocator captured during
+    /// init would point to a dead stack frame. Call this once the Parser is
+    /// at its final memory location.
+    pub fn fixupArenaAllocator(self: *Parser) void {
+        self.arena_allocator = self.arena.allocator();
     }
 
     pub fn deinit(self: *Parser) void {
@@ -191,13 +198,12 @@ pub const Parser = struct {
     }
 
     pub fn initWithFile(allocator: Allocator, tokens: []const Token, file_path: []const u8) Parser {
-        var arena = std.heap.ArenaAllocator.init(allocator);
         return Parser{
             .tokens = tokens,
             .current = 0,
             .allocator = allocator,
-            .arena = arena,
-            .arena_allocator = arena.allocator(),
+            .arena = std.heap.ArenaAllocator.init(allocator),
+            .arena_allocator = undefined, // Set properly via fixupArenaAllocator()
             .had_error = false,
             .in_function = false,
             .in_loop = false,
@@ -213,13 +219,12 @@ pub const Parser = struct {
     }
     
     pub fn initWithTelemetry(allocator: Allocator, tokens: []const Token, file_path: []const u8, telemetry: *crash_handler.CrashTelemetry) Parser {
-        var arena = std.heap.ArenaAllocator.init(allocator);
         return Parser{
             .tokens = tokens,
             .current = 0,
             .allocator = allocator,
-            .arena = arena,
-            .arena_allocator = arena.allocator(),
+            .arena = std.heap.ArenaAllocator.init(allocator),
+            .arena_allocator = undefined, // Set properly via fixupArenaAllocator()
             .had_error = false,
             .in_function = false,
             .in_loop = false,
@@ -799,6 +804,8 @@ pub const Parser = struct {
     }
 
     pub fn parseProgram(self: *Parser) ParserError!Program {
+        // Fix arena_allocator now that self is at its final memory location
+        self.fixupArenaAllocator();
         var program = Program.init(self.arena_allocator);
         errdefer {
             // Skip program.deinit() - arena cleanup will handle all allocations

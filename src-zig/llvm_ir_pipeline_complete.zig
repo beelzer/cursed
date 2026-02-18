@@ -4264,15 +4264,15 @@ pub const LLVMIRPipeline = struct {
         defer self.allocator.free(exe_name);
         
         // Step 3: Automatically invoke clang to compile to native binary
-        // Use absolute path to runtime to work from any directory
-        const runtime_path = "/home/ghuntley/cursed/src-zig/cursed_runtime.c";
-        
-        const compile_cmd = try std.fmt.allocPrint(self.allocator, 
+        // Use relative path to runtime (works when running from project root)
+        const runtime_path = "src-zig/cursed_runtime.c";
+
+        const compile_cmd = try std.fmt.allocPrint(self.allocator,
             "clang -O2 -o {s} {s} {s}", .{ exe_name, ir_file, runtime_path });
         defer self.allocator.free(compile_cmd);
-        
+
         print("🔧 Compiling to native binary: {s}\n", .{compile_cmd});
-        
+
         // Execute clang compilation
         const result = std.process.Child.run(.{
             .allocator = self.allocator,
