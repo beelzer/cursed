@@ -4,6 +4,31 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+# Build find exclusions from .vscodeignore (single source of truth)
+hash_source_files() {
+    local excludes=()
+    while IFS= read -r pattern; do
+        pattern="${pattern%%#*}"
+        pattern="$(echo "$pattern" | xargs)"
+        [[ -z "$pattern" ]] && continue
+
+        if [[ "$pattern" == *"/**" ]]; then
+            local dir="${pattern%%/**}"
+            excludes+=(-not -path "./${dir}/*")
+        elif [[ "$pattern" == "**/"* ]]; then
+            local suffix="${pattern#**/}"
+            excludes+=(-not -name "$suffix")
+        elif [[ "$pattern" == *"*"* ]]; then
+            excludes+=(-not -name "$pattern")
+        else
+            excludes+=(-not -name "$pattern" -not -path "./${pattern}")
+        fi
+    done < .vscodeignore
+    excludes+=(-not -name ".last-build-hash")
+
+    find . "${excludes[@]}" -type f -print0 | sort -z | xargs -0 cat 2>/dev/null | md5sum | cut -d' ' -f1
+}
+
 CURRENT_VERSION=$(node -p "require('./package.json').version")
 
 # Check for changes since last build
@@ -12,13 +37,7 @@ if [ -f ".last-build-hash" ]; then
     LAST_BUILD_HASH=$(cat .last-build-hash)
 fi
 
-# Hash all source files (exclude node_modules, out, .vsix, and the hash file itself)
-CURRENT_HASH=$(find . \
-    -not -path './node_modules/*' \
-    -not -path './out/*' \
-    -not -name '*.vsix' \
-    -not -name '.last-build-hash' \
-    -type f -print0 | sort -z | xargs -0 cat 2>/dev/null | md5sum | cut -d' ' -f1)
+CURRENT_HASH=$(hash_source_files)
 
 if [ "$CURRENT_HASH" = "$LAST_BUILD_HASH" ]; then
     echo "==> No changes detected since last build (v$CURRENT_VERSION). Skipping."
@@ -64,12 +83,7 @@ echo "==> Installing cursed-lang.vsix..."
 code --install-extension cursed-lang.vsix --force
 
 # Save build hash (re-hash after version bump so next run sees the bumped package.json as baseline)
-find . \
-    -not -path './node_modules/*' \
-    -not -path './out/*' \
-    -not -name '*.vsix' \
-    -not -name '.last-build-hash' \
-    -type f -print0 | sort -z | xargs -0 cat 2>/dev/null | md5sum | cut -d' ' -f1 > .last-build-hash
+hash_source_files > .last-build-hash
 
 echo "==> Done! CURSED Language v$NEW_VERSION installed."
 echo "    Reload VS Code window to activate (Ctrl+Shift+P > Developer: Reload Window)"
