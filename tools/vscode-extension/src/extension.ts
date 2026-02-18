@@ -9,6 +9,7 @@ interface CodeSpellCheckerExtension {
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 let diagnosticDebounce: ReturnType<typeof setTimeout> | undefined;
+let outputChannel: vscode.LogOutputChannel;
 
 function runDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== 'cursed') return;
@@ -17,12 +18,23 @@ function runDiagnostics(document: vscode.TextDocument) {
     const compilerPath = config.get('compiler.path', 'cursed-compiler');
     const filePath = document.fileName;
 
+    const delay = config.get('diagnostics.delay', 500);
+    const trace = config.get('trace.compiler', false);
+
     if (diagnosticDebounce) clearTimeout(diagnosticDebounce);
     diagnosticDebounce = setTimeout(() => {
-        cp.execFile(compilerPath, ['check', '--json-errors', '--color', 'never', filePath], {
+        const args = ['check', '--json-errors', '--color', 'never', filePath];
+        if (trace) {
+            outputChannel.info(`Running: ${compilerPath} ${args.join(' ')}`);
+        }
+        cp.execFile(compilerPath, args, {
             maxBuffer: 1024 * 1024,
             timeout: 10000,
         }, (_error: Error | null, stdout: string, stderr: string) => {
+            if (trace) {
+                if (stdout.trim()) outputChannel.debug(`stdout: ${stdout.trim()}`);
+                if (stderr.trim()) outputChannel.debug(`stderr: ${stderr.trim()}`);
+            }
             const diagnostics: vscode.Diagnostic[] = [];
             const output = (stdout + '\n' + stderr).trim();
 
@@ -76,8 +88,11 @@ function runDiagnostics(document: vscode.TextDocument) {
             }
 
             diagnosticCollection.set(document.uri, diagnostics);
+            if (trace) {
+                outputChannel.info(`Diagnostics: ${diagnostics.length} issue(s) for ${filePath}`);
+            }
         });
-    }, 500);
+    }, delay);
 }
 
 // ── Document Symbols (Outline) ───────────────────────────────────────
@@ -176,6 +191,9 @@ class CursedDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
 class CursedCodeLensProvider implements vscode.CodeLensProvider {
     provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] {
+        if (!vscode.workspace.getConfiguration('cursed').get('codeLens.enabled', true)) {
+            return [];
+        }
         const lenses: vscode.CodeLens[] = [];
         const text = document.getText();
         const lines = text.split('\n');
@@ -409,6 +427,10 @@ class CursedTaskProvider implements vscode.TaskProvider {
 // ── Activate ─────────────────────────────────────────────────────────
 
 export async function activate(context: vscode.ExtensionContext) {
+    // ── Output Channel ──────────────────────────────────────────
+    outputChannel = vscode.window.createOutputChannel('CURSED', { log: true });
+    context.subscriptions.push(outputChannel);
+
     // Register cSpell dictionary for CURSED keywords
     const cspellExt = vscode.extensions.getExtension<CodeSpellCheckerExtension>(
         'streetsidesoftware.code-spell-checker'
@@ -446,6 +468,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // ── Commands ─────────────────────────────────────────────────
 
+    // Show Output
+    context.subscriptions.push(
+        vscode.commands.registerCommand('cursed.showOutput', () => {
+            outputChannel.show();
+        })
+    );
+
     // Run CURSED Program
     context.subscriptions.push(
         vscode.commands.registerCommand('cursed.run', async () => {
@@ -456,8 +485,10 @@ export async function activate(context: vscode.ExtensionContext) {
             }
             const config = vscode.workspace.getConfiguration('cursed');
             const compilerPath = config.get('compiler.path', 'cursed-compiler');
+            const clearTerminal = config.get('run.clearTerminal', false);
             const filePath = editor.document.fileName;
             const terminal = vscode.window.createTerminal('CURSED');
+            if (clearTerminal) terminal.sendText('clear');
             terminal.sendText(`${compilerPath} "${filePath}"`);
             terminal.show();
         })

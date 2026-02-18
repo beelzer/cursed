@@ -2,7 +2,7 @@
   "name": "cursed-lang",
   "displayName": "CURSED Language",
   "description": "Language support for the CURSED programming language - programming, but make it gen z",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "cursed-lang",
   "license": "MIT",
   "repository": {
@@ -30,6 +30,19 @@
     "onLanguage:cursed"
   ],
   "main": "./out/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Syntax highlighting and snippets work without trust. Diagnostics and run commands require a trusted workspace.",
+      "restrictedConfigurations": [
+        "cursed.compiler.path"
+      ]
+    },
+    "virtualWorkspaces": {
+      "supported": "limited",
+      "description": "Syntax highlighting and snippets work. Diagnostics and compilation require a local file system."
+    }
+  },
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -94,16 +107,27 @@
       {
         "command": "cursed.run",
         "title": "Run CURSED Program",
-        "category": "CURSED"
+        "category": "CURSED",
+        "icon": "$(play)",
+        "enablement": "editorLangId == cursed"
       },
       {
         "command": "cursed.build",
         "title": "Build CURSED Program",
-        "category": "CURSED"
+        "category": "CURSED",
+        "icon": "$(gear)",
+        "enablement": "editorLangId == cursed"
       },
       {
         "command": "cursed.runTest",
         "title": "Run CURSED Test",
+        "category": "CURSED",
+        "icon": "$(beaker)",
+        "enablement": "editorLangId == cursed"
+      },
+      {
+        "command": "cursed.showOutput",
+        "title": "Show Compiler Output",
         "category": "CURSED"
       }
     ],
@@ -115,6 +139,39 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "cursed.run",
+          "when": "editorLangId == cursed"
+        },
+        {
+          "command": "cursed.build",
+          "when": "editorLangId == cursed"
+        },
+        {
+          "command": "cursed.runTest",
+          "when": "editorLangId == cursed"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "editorLangId == cursed",
+          "command": "cursed.run",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/run": [
+        {
+          "when": "editorLangId == cursed",
+          "command": "cursed.run",
+          "group": "navigation@1"
+        },
+        {
+          "when": "editorLangId == cursed",
+          "command": "cursed.build",
+          "group": "navigation@2"
+        }
+      ],
       "editor/context": [
         {
           "when": "editorLangId == cursed",
@@ -124,7 +181,7 @@
       ],
       "explorer/context": [
         {
-          "when": "resourceExtname == .💀",
+          "when": "resourceExtname == .💀 || resourceExtname == .cursed",
           "command": "cursed.run",
           "group": "navigation@1"
         }
@@ -174,12 +231,41 @@
         "cursed.compiler.path": {
           "type": "string",
           "default": "cursed-compiler",
-          "description": "Path to the CURSED compiler executable"
+          "description": "Path to the CURSED compiler executable",
+          "scope": "machine-overridable",
+          "order": 0
         },
         "cursed.diagnostics.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Run the compiler on save and show errors in the Problems panel"
+          "description": "Run the compiler on save and show errors in the Problems panel",
+          "order": 1
+        },
+        "cursed.diagnostics.delay": {
+          "type": "number",
+          "default": 500,
+          "minimum": 100,
+          "maximum": 5000,
+          "description": "Delay in milliseconds before running diagnostics after a save",
+          "order": 2
+        },
+        "cursed.run.clearTerminal": {
+          "type": "boolean",
+          "default": false,
+          "description": "Clear the terminal before running a CURSED program",
+          "order": 3
+        },
+        "cursed.codeLens.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Run and Test code lenses above functions",
+          "order": 4
+        },
+        "cursed.trace.compiler": {
+          "type": "boolean",
+          "default": false,
+          "description": "Log compiler invocations and output to the CURSED output channel",
+          "order": 5
         }
       }
     },

@@ -2,16 +2,16 @@
 
 > An esoteric programming language that combines Go-like semantics with Gen Z slang keywords, featuring the world's first use of Among Us `ඞ` characters in pointer syntax.
 
-CURSED is a statically typed, garbage-collected programming language designed to make coding more expressive and culturally relevant while maintaining practical functionality. It's self-hosting through a multi-stage bootstrap compiler written in Zig.
+CURSED is a statically typed programming language with a tree-walking interpreter written in Zig. It replaces traditional keywords with Gen Z slang while keeping Go-inspired semantics.
 
 ## Features
 
-- **Gen Z Slang Keywords**: Core programming constructs use contemporary slang (`slay` for function, `sus` for variable, `vibe` for package, `stan` for goroutine)
-- **Among Us Pointer Syntax**: First programming language to use `ඞ` (U+0D9E) for pointer operations
-- **Go-like Semantics**: Familiar control flow and typing for experienced developers
-- **Built-in Concurrency**: Goroutines (`stan`) and channels (`dm`) for concurrent programming
-- **Advanced Memory Management**: Generational garbage collector with performance monitoring
-- **Comprehensive Error Handling**: `yikes`/`fam`/`shook` error system with panic recovery
+- **Gen Z Slang Keywords**: `slay` for functions, `sus` for variables, `vibe` for packages, `lowkey`/`highkey` for if/else
+- **Among Us Pointer Syntax**: Uses `ඞ` (U+0D9E) for pointer operations
+- **Go-like Semantics**: Familiar control flow, structs, interfaces, and imports
+- **Error Handling**: `yikes`/`fam`/`shook` try-catch system with error propagation
+- **Tree-sitter Grammar**: Editor syntax highlighting support
+- **VS Code Extension**: Syntax highlighting, snippets, diagnostics, and go-to-definition
 
 ## Quick Start
 
@@ -29,19 +29,12 @@ slay main() {
 ### Variables and Types
 
 ```cursed
-vibe example
-yeet "vibez", "stringz"
-
 slay demo() {
     sus age normie = 25          // 32-bit integer
     sus name tea = "Alice"       // string
     sus is_cool lit = based      // boolean (true)
     sus height snack = 5.8       // 32-bit float
-    
-    // Pointer operations with Among Us syntax
-    sus ptr ඞnormie = ඞage       // pointer to age
-    sus value normie = *ptr      // dereference
-    
+
     vibez.spill("Name:", name)
 }
 ```
@@ -63,23 +56,6 @@ slay loop_example() {
             vibez.spill("Even:", i)
         }
     }
-}
-```
-
-### Concurrency
-
-```cursed
-slay worker_example() {
-    sus ch dm<normie>           // channel
-    
-    // Spawn goroutine
-    stan {
-        dm_send(ch, 42)
-    }
-    
-    // Receive from channel
-    result := dm_recv(ch)
-    vibez.spill("Received:", result)
 }
 ```
 
@@ -105,31 +81,43 @@ slay safe_division() {
 
 ## Language Overview
 
-### Keywords Mapping
+### Keywords
 
 | Traditional | CURSED | Usage |
-|-------------|--------|-------|
+| ----------- | ------ | ----- |
 | package | `vibe` | Package declaration |
 | import | `yeet` | Import packages |
 | func | `slay` | Function definition |
-| var | `sus` | Variable declaration |
+| var | `sus` | Mutable variable |
 | const | `facts` | Constant declaration |
 | if | `lowkey` | Conditional |
 | else | `highkey` | Alternative branch |
 | for | `bestie` | Loop |
 | while | `periodt` | While loop |
+| range | `flex` | Range iteration |
+| in | `in` | For-in loops |
 | switch | `vibe_check` | Switch statement |
 | case | `mood` | Case clause |
 | default | `basic` | Default case |
+| match | `match` | Match expression |
 | return | `damn` | Return statement |
 | break | `ghosted` | Break from loop |
 | continue | `simp` | Continue loop |
 | defer | `later` | Deferred execution |
 | go | `stan` | Spawn goroutine |
-| range | `flex` | Range iteration |
-| type | `be_like` | Type alias |
+| select | `select` | Select statement |
 | struct | `squad` | Struct definition |
 | interface | `collab` | Interface definition |
+| impl | `impl` | Implementation block |
+| extends | `extends` | Interface inheritance |
+| throw | `yeet_error` | Throw error |
+| catch | `catch` | Catch error |
+| try | `fam` | Error recovery block |
+| panic | `shook` | Error propagation |
+| where | `where` | Generic constraints |
+| pub | `crew` | Package visibility |
+| priv | `priv` | Private visibility |
+| assign | `be_like` | Assignment operator |
 | true | `based` | Boolean true |
 | false | `cringe` | Boolean false |
 | nil | `nah` | Null value |
@@ -137,16 +125,21 @@ slay safe_division() {
 ### Types
 
 | Type | Description |
-|------|-------------|
+| ------ | ------------- |
 | `lit` | Boolean |
 | `normie` | 32-bit signed integer |
 | `smol` | 8-bit signed integer |
 | `mid` | 16-bit signed integer |
 | `thicc` | 64-bit signed integer |
+| `byte` | Unsigned 8-bit integer |
+| `rune` | 32-bit integer alias (character code point) |
 | `snack` | 32-bit float |
 | `meal` | 64-bit float |
+| `drip` | Float (legacy alias) |
 | `tea` | String |
+| `txt` | String alias |
 | `sip` | Character |
+| `extra` | Complex number |
 | `ඞT` | Pointer to type T |
 | `dm<T>` | Channel of type T |
 
@@ -154,10 +147,8 @@ slay safe_division() {
 
 ### Prerequisites
 
-- Zig 0.13+ (compiler implementation)
+- Zig 0.13+
 - Git
-
-The CURSED compiler is now implemented in Zig with built-in LLVM support, eliminating external LLVM dependencies and enabling cross-platform compilation including Windows.
 
 ### Building from Source
 
@@ -170,105 +161,95 @@ zig build
 ### Running Programs
 
 ```bash
-# Interpret and run a CURSED program
-./zig-out/bin/cursed-compiler example.💀
+# Run a CURSED program (interpreter)
+./zig-out/bin/cursed-compiler program.💀
 
-# Compile to native executable
-./zig-out/bin/cursed-compiler --compile example.💀
+# Generate LLVM IR (experimental)
+./zig-out/bin/cursed-compiler --emit-ir program.💀
 
-# Generate LLVM IR
-./zig-out/bin/cursed-compiler --emit-ir example.💀
-
-# Debug mode
-./zig-out/bin/cursed-compiler --debug --verbose example.💀
+# Debug mode with verbose output
+./zig-out/bin/cursed-compiler --debug --verbose program.💀
 ```
 
 ## Project Structure
 
-```
-├── src-zig/            # Zig compiler implementation source
-├── runtime/            # Runtime library and garbage collector  
+```text
+├── src-zig/            # Zig compiler and interpreter source
 ├── stdlib/             # Standard library modules
-├── specs/              # Language specifications
-├── test_suite/         # Comprehensive tests (including LeetCode suite)
-├── tools/              # Development tools
+├── examples/           # Example programs
+├── test_suite/         # Tests including LeetCode suite
+├── tools/              # VS Code extension
+├── tree-sitter/        # Tree-sitter grammar
+├── build/wasm/         # WASM build target
 └── build.zig           # Zig build configuration
 ```
 
-## Development Status
+## Status
 
-CURSED has evolved through multiple implementation phases:
+The compiler is implemented in Zig and currently operates as a **tree-walking interpreter**. It handles variables, functions, control flow, structs, interfaces, imports, error handling, and stdlib modules.
 
-1. ✅ **Stage 0**: Environment setup and language design
-2. ✅ **Stage 1**: Zig-native compiler with LLVM backend  
-3. 🚧 **Stage 2**: Advanced features and optimization
-4. 🔮 **Stage 3**: Self-hosting compiler in CURSED
+**Working:**
 
-**Current Status**: Full compiler implemented in Zig with comprehensive language support, built-in LLVM backend, and extensive test suite including 17+ LeetCode problems.
+- Lexer and parser for the full keyword set
+- Tree-walking interpreter with stdlib module imports
+- Variables, arithmetic, strings, booleans, arrays
+- Functions, closures, structs, interfaces, methods
+- Control flow (`lowkey`/`highkey`, `bestie`, `periodt`, `vibe_check`)
+- Error handling (`fam`/`yikes`/`shook`)
+- `later` (defer) statements
+- LLVM IR generation for simple programs (`--emit-ir`)
+
+**In progress:**
+
+- Native compilation (`--compile` — runtime library not yet wired up)
+- Concurrency (`stan`/`dm` — parsed and partially implemented)
+- Garbage collector (implemented but not yet integrated with interpreter)
+- Self-hosting compiler in CURSED
 
 ## Contributing
 
-We welcome contributions! Please see:
-
-- Language specifications in [`specs/`](specs/)
-- Open issues for good first contributions
-- Development roadmap in project milestones
+Contributions welcome! See the open issues for good starting points.
 
 ### Development Guidelines
 
-1. Follow the language specifications in `specs/`
-2. Add tests for new features
-3. Update documentation
-4. Use conventional commit messages
-
-## Documentation
-
-- [Language Specifications](specs/) - Complete language documentation
-- [Grammar Reference](specs/grammar.md) - Syntax and grammar rules
-- [Type System](specs/types.md) - Type system details
-- [Concurrency Model](specs/concurrency.md) - Goroutines and channels
-- [Memory Management](specs/memory_management.md) - GC and memory model
-- [Error Handling](specs/error_handling.md) - Error patterns and recovery
+1. Add tests for new features
+2. Update documentation
+3. Use conventional commit messages
 
 ## Examples
 
 ### LeetCode Test Suite
 
-The [`test_suite/leetcode_comprehensive_suite/`](test_suite/leetcode_comprehensive_suite/) contains **17+ LeetCode problems** implemented in CURSED, demonstrating:
+The [`test_suite/leetcode_comprehensive_suite/`](test_suite/leetcode_comprehensive_suite/) contains LeetCode problems across 10 categories implemented in CURSED:
 
-- **Complex algorithms**: Binary search, dynamic programming, backtracking
-- **Data structures**: Linked lists and trees with `ඞ` pointers  
-- **String manipulation**: Anagram detection, palindrome validation
-- **Array operations**: Two Sum, 3Sum, Product Except Self
-- **Meme implementations**: FizzBuzz with "Sus" and "Impostor"
+- Arrays and hashing, binary search, dynamic programming
+- Linked lists and trees with `ඞ` pointers
+- String manipulation, sorting, backtracking
 
 ```cursed
 // LeetCode #206: Reverse Linked List with Among Us pointers
 slay reverse_list(head ඞListNode) ඞListNode {
     sus prev ඞListNode = nah
     sus current ඞListNode = head
-    
+
     periodt current != nah {
         sus next_temp ඞListNode = current.next
         current.next = prev
         prev = current
         current = next_temp
     }
-    
+
     damn prev
 }
 ```
 
-### Additional Examples
+### More Examples
 
-- Basic syntax and language features
-- Concurrency patterns with goroutines and channels
-- Memory management demonstrations
-- Error handling patterns
+The [`examples/`](examples/) directory has programs covering syntax basics, error handling, HTTP servers, crypto, database integration, templates, and more.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE) for details.
 
 ## Acknowledgments
 
