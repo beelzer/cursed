@@ -114,22 +114,7 @@
         }
       }
     },
-    "configurationDefaults": {
-      "[cursed]": {
-        "cSpell.words": [
-          "slay", "sus", "facts", "vibe", "yeet", "collab", "impl", "priv", "crew",
-          "lowkey", "highkey", "periodt", "bestie", "aight", "ghosted", "simp", "yolo",
-          "yikes", "fam", "shook",
-          "stan",
-          "based", "cringe", "nah",
-          "normie", "smol", "thicc", "snack", "drip", "sip", "rune", "txt",
-          "vibez", "mathz", "stringz", "arrayz", "testz", "cryptz", "filez", "httpz", "timez", "jsonz", "concurrenz",
-          "spill", "spillln", "spillf", "println", "bytefit", "htmlrizzler",
-          "memset", "memcpy", "realloc", "stringify",
-          "cloudz", "kubernetesz", "deploymentz", "errorz", "serdeez",
-          "fr"
-        ]
-      }
-    }
+    "configurationDefaults": {}
+
   }
 }

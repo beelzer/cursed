@@ -15,24 +15,37 @@ struct
 extends
 priv
 crew
+from
+except
+rename
 
 # Control flow keywords
+ready
+otherwise
 lowkey
 highkey
 periodt
 bestie
 vibe_check
+mood
+basic
+sick
+when
 aight
 ghosted
 simp
 damn
 yolo
 later
+flex
+select
 
 # Error handling
 yikes
 fam
 shook
+panic
+recover
 
 # Concurrency
 stan
@@ -49,17 +62,24 @@ nah
 # Types
 normie
 smol
+mid
 thicc
 snack
+meal
 drip
 sip
 rune
 txt
+tea
+lit
+byte
+extra
 
-# Stdlib path prefix
-stdlib
+# Comments
+fr
 
 # Stdlib modules
+stdlib
 vibez
 mathz
 stringz
@@ -71,6 +91,8 @@ httpz
 timez
 jsonz
 concurrenz
+errorz
+ioz
 
 # Built-in / stdlib functions
 spill
@@ -127,14 +149,6 @@ Set_insert
 Set_contains
 Set_remove
 
-# Common identifiers
-main_character
-no_cap
-yeet_error
-type_check
-for_impl
-print_separator
-
 # Error types
 memory_yikes
 io_yikes
@@ -144,15 +158,3 @@ type_yikes
 runtime_yikes
 security_yikes
 performance_yikes
-
-# Comment keywords (for spell checker context)
-fr
-
-# Fun module names from examples
-cloudz
-kubernetesz
-deploymentz
-errorz
-serdeez
-json_tea
-chaos_mode

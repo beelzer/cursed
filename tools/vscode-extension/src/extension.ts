@@ -1,6 +1,18 @@
 import * as vscode from 'vscode';
 
-export function activate(context: vscode.ExtensionContext) {
+interface CodeSpellCheckerExtension {
+    registerConfig(path: string): Promise<void>;
+}
+
+export async function activate(context: vscode.ExtensionContext) {
+    // Register cSpell dictionary for CURSED keywords
+    const cspellExt = vscode.extensions.getExtension<CodeSpellCheckerExtension>(
+        'streetsidesoftware.code-spell-checker'
+    );
+    if (cspellExt) {
+        const ext = await cspellExt.activate();
+        ext?.registerConfig?.(context.asAbsolutePath('./cspell-ext.json'));
+    }
     // Run CURSED Program
     context.subscriptions.push(
         vscode.commands.registerCommand('cursed.run', async () => {

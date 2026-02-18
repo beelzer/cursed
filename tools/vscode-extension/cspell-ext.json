@@ -1,7 +1,5 @@
 {
-  "id": "cursed-lang-dictionary",
-  "name": "CURSED Language Dictionary",
-  "description": "Spell checker dictionary for the CURSED programming language",
+  "version": "0.2",
   "dictionaryDefinitions": [
     {
       "name": "cursed-lang",
