@@ -1,5 +1,6 @@
 vibe main
 yeet "vibez"
+yeet "stringz"
 
 // LeetCode #206: Reverse Linked List 🔄
 // Classic linked list problem using Among Us ඞ pointers!
@@ -11,10 +12,10 @@ struct ListNode {
 }
 
 slay reverse_list(head ඞListNode) ඞListNode {
-    sus prev ඞListNode = null
+    sus prev ඞListNode = nah
     sus current ඞListNode = head
-    
-    bestie (current != null) {
+
+    bestie (current != nah) {
         sus next_temp ඞListNode = current.next
         current.next = prev
         prev = current  
@@ -26,27 +27,27 @@ slay reverse_list(head ඞListNode) ඞListNode {
 
 slay reverse_list_recursive(head ඞListNode) ඞListNode {
     // Recursive approach - this hits different! 🚀
-    ready (head == null || head.next == null) {
+    ready (head == nah || head.next == nah) {
         damn head
     }
     
     sus new_head ඞListNode = reverse_list_recursive(head.next)
     head.next.next = head
-    head.next = null
+    head.next = nah
     
     damn new_head
 }
 
 slay create_list(vals normie[]) ඞListNode {
     ready (len(vals) == 0) {
-        damn null
+        damn nah
     }
     
-    sus head ඞListNode = &ListNode{val: vals[0], next: null}
+    sus head ඞListNode = &ListNode{val: vals[0], next: nah}
     sus current ඞListNode = head
     
     bestie i := 1; i < len(vals); i++ {
-        current.next = &ListNode{val: vals[i], next: null}
+        current.next = &ListNode{val: vals[i], next: nah}
         current = current.next
     }
     
@@ -57,11 +58,11 @@ slay print_list(head ඞListNode) {
     sus current ඞListNode = head
     sus output tea = ""
     
-    bestie (current != null) {
+    bestie (current != nah) {
         ready (output != "") {
             output = output + " -> "
         }
-        output = output + str(current.val)
+        output = output + stringz.from_int(current.val)
         current = current.next
     }
     
@@ -96,7 +97,7 @@ slay test_reverse_linked_list() {
     print_list(reversed2)
     
     // Test case 3: []
-    sus head3 ඞListNode = null
+    sus head3 ඞListNode = nah
     vibez.spill("Test 3 - Empty list:")
     print_list(head3)
     sus reversed3 ඞListNode = reverse_list(head3)

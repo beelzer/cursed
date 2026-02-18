@@ -19,7 +19,7 @@ slay inorder_traversal(root ඞTreeNode) normie[] {
 }
 
 slay inorder_helper(node ඞTreeNode, result ඞ[]normie) {
-    ready (node == null) {
+    ready (node == nah) {
         damn
     }
     
@@ -35,9 +35,9 @@ slay inorder_iterative(root ඞTreeNode) normie[] {
     sus stack ඞTreeNode[] = []ඞTreeNode{}  // Stack of node pointers
     sus current ඞTreeNode = root
     
-    bestie (current != null || len(stack) > 0) {
+    bestie (current != nah || len(stack) > 0) {
         // Go to leftmost node
-        bestie (current != null) {
+        bestie (current != nah) {
             append(stack, current)
             current = current.left
         }
@@ -62,9 +62,9 @@ slay create_tree() ඞTreeNode {
     //        /
     //       3
     
-    sus root ඞTreeNode = &TreeNode{val: 1, left: null, right: null}
-    root.right = &TreeNode{val: 2, left: null, right: null}
-    root.right.left = &TreeNode{val: 3, left: null, right: null}
+    sus root ඞTreeNode = &TreeNode{val: 1, left: nah, right: nah}
+    root.right = &TreeNode{val: 2, left: nah, right: nah}
+    root.right.left = &TreeNode{val: 3, left: nah, right: nah}
     
     damn root
 }
@@ -82,13 +82,13 @@ slay test_inorder_traversal() {
     vibez.spill("Inorder (iterative):", result1_iter)
     
     // Test case 2: []
-    sus root2 ඞTreeNode = null
+    sus root2 ඞTreeNode = nah
     sus result2 normie[] = inorder_traversal(root2)
     vibez.spill("Test 2 - Empty tree:")
     vibez.spill("Inorder:", result2)
     
     // Test case 3: [1]
-    sus root3 ඞTreeNode = &TreeNode{val: 1, left: null, right: null}
+    sus root3 ඞTreeNode = &TreeNode{val: 1, left: nah, right: nah}
     sus result3 normie[] = inorder_traversal(root3)
     vibez.spill("Test 3 - Single node [1]:")
     vibez.spill("Inorder:", result3)

@@ -13,7 +13,7 @@ struct TreeNode {
 }
 
 slay max_depth(root ඞTreeNode) normie {
-    ready (root == null) {
+    ready (root == nah) {
         damn 0  // Base case: empty tree has depth 0
     }
     
@@ -26,7 +26,7 @@ slay max_depth(root ඞTreeNode) normie {
 
 slay max_depth_iterative(root ඞTreeNode) normie {
     // BFS approach using queue - this hits different! 🚀
-    ready (root == null) {
+    ready (root == nah) {
         damn 0
     }
     
@@ -48,12 +48,12 @@ slay max_depth_iterative(root ඞTreeNode) normie {
         
         max_level = mathz.max(max_level, level)
         
-        ready (node.left != null) {
+        ready (node.left != nah) {
             append(queue, node.left)
             append(levels, level + 1)
         }
         
-        ready (node.right != null) {
+        ready (node.right != nah) {
             append(queue, node.right)
             append(levels, level + 1)
         }
@@ -70,11 +70,11 @@ slay create_test_tree() ඞTreeNode {
     //        /  \
     //       15   7
     
-    sus root ඞTreeNode = &TreeNode{val: 3, left: null, right: null}
-    root.left = &TreeNode{val: 9, left: null, right: null}
-    root.right = &TreeNode{val: 20, left: null, right: null}
-    root.right.left = &TreeNode{val: 15, left: null, right: null}
-    root.right.right = &TreeNode{val: 7, left: null, right: null}
+    sus root ඞTreeNode = &TreeNode{val: 3, left: nah, right: nah}
+    root.left = &TreeNode{val: 9, left: nah, right: nah}
+    root.right = &TreeNode{val: 20, left: nah, right: nah}
+    root.right.left = &TreeNode{val: 15, left: nah, right: nah}
+    root.right.right = &TreeNode{val: 7, left: nah, right: nah}
     
     damn root
 }
@@ -87,9 +87,9 @@ slay create_skewed_tree() ඞTreeNode {
     //      \
     //       3
     
-    sus root ඞTreeNode = &TreeNode{val: 1, left: null, right: null}
-    root.right = &TreeNode{val: 2, left: null, right: null}
-    root.right.right = &TreeNode{val: 3, left: null, right: null}
+    sus root ඞTreeNode = &TreeNode{val: 1, left: nah, right: nah}
+    root.right = &TreeNode{val: 2, left: nah, right: nah}
+    root.right.right = &TreeNode{val: 3, left: nah, right: nah}
     
     damn root
 }
@@ -107,13 +107,13 @@ slay test_maximum_depth() {
     vibez.spill("Iterative result:", depth1_iter)
     
     // Test case 2: Empty tree
-    sus root2 ඞTreeNode = null
+    sus root2 ඞTreeNode = nah
     sus depth2 normie = max_depth(root2)
     vibez.spill("Test 2 - Empty tree:")
     vibez.spill("Expected depth: 0, Got:", depth2)
     
     // Test case 3: Single node [1]
-    sus root3 ඞTreeNode = &TreeNode{val: 1, left: null, right: null}
+    sus root3 ඞTreeNode = &TreeNode{val: 1, left: nah, right: nah}
     sus depth3 normie = max_depth(root3)
     vibez.spill("Test 3 - Single node:")
     vibez.spill("Expected depth: 1, Got:", depth3)

@@ -75,6 +75,10 @@ pub const CursedError = error{
     PlatformNotSupported,
     InvalidConfiguration,
     
+    // Control flow signals (not real errors)
+    BreakSignal,
+    ContinueSignal,
+
     // Generic catch-all
     UnknownError,
 };

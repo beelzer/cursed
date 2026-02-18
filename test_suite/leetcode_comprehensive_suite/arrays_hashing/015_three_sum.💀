@@ -16,7 +16,7 @@ slay three_sum(nums normie[]) normie[][] {
     bestie i := 0; i < len(sorted_nums) - 2; i++ {
         // Skip duplicates for first element, no cap
         ready (i > 0 && sorted_nums[i] == sorted_nums[i-1]) {
-            periodt
+            simp
         }
         
         sus left normie = i + 1

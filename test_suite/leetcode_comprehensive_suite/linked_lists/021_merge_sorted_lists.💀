@@ -11,10 +11,10 @@ struct ListNode {
 }
 
 slay merge_two_lists(list1 ඞListNode, list2 ඞListNode) ඞListNode {
-    sus dummy ListNode = ListNode{val: 0, next: null}
+    sus dummy ListNode = ListNode{val: 0, next: nah}
     sus current ඞListNode = &dummy
     
-    bestie (list1 != null && list2 != null) {
+    bestie (list1 != nah && list2 != nah) {
         ready (list1.val <= list2.val) {
             current.next = list1
             list1 = list1.next
@@ -26,7 +26,7 @@ slay merge_two_lists(list1 ඞListNode, list2 ඞListNode) ඞListNode {
     }
     
     // Attach remaining nodes
-    ready (list1 != null) {
+    ready (list1 != nah) {
         current.next = list1
     } otherwise {
         current.next = list2
@@ -39,8 +39,8 @@ slay test_merge_sorted_lists() {
     vibez.spill("=== 🔗 LeetCode #21: Merge Two Sorted Lists ===")
     
     // Create test lists: [1,2,4] and [1,3,4]
-    sus list1 ඞListNode = &ListNode{val: 1, next: &ListNode{val: 2, next: &ListNode{val: 4, next: null}}}
-    sus list2 ඞListNode = &ListNode{val: 1, next: &ListNode{val: 3, next: &ListNode{val: 4, next: null}}}
+    sus list1 ඞListNode = &ListNode{val: 1, next: &ListNode{val: 2, next: &ListNode{val: 4, next: nah}}}
+    sus list2 ඞListNode = &ListNode{val: 1, next: &ListNode{val: 3, next: &ListNode{val: 4, next: nah}}}
     
     sus merged ඞListNode = merge_two_lists(list1, list2)
     vibez.spill("Merged list: [1,1,2,3,4,4]")

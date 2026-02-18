@@ -968,6 +968,53 @@ pub const Interpreter = struct {
             } 
         });
         
+        // Register concat as a global builtin (array concatenation)
+        try self.globals.define("concat", Value{
+            .BuiltinFunction = .{
+                .name = "concat",
+                .func = builtinArrayConcat
+            }
+        });
+
+        // Register quick_sort as a global builtin
+        try self.globals.define("quick_sort", Value{
+            .BuiltinFunction = .{
+                .name = "quick_sort",
+                .func = builtinCollectionsQuickSort
+            }
+        });
+
+        // Register make_array as a global builtin
+        try self.globals.define("make_array", Value{
+            .BuiltinFunction = .{
+                .name = "make_array",
+                .func = builtinMakeArray
+            }
+        });
+
+        // Register contains as a global builtin (array contains)
+        try self.globals.define("contains", Value{
+            .BuiltinFunction = .{
+                .name = "contains",
+                .func = builtinArrayContains
+            }
+        });
+
+        // Register max/min as global builtins
+        try self.globals.define("max", Value{
+            .BuiltinFunction = .{
+                .name = "max",
+                .func = builtinMathzMax
+            }
+        });
+
+        try self.globals.define("min", Value{
+            .BuiltinFunction = .{
+                .name = "min",
+                .func = builtinMathzMin
+            }
+        });
+
         // Removed DEBUG output
     }
 
@@ -1040,7 +1087,33 @@ pub const Interpreter = struct {
         // Removed DEBUG output
         switch (stmt) {
             .Expression => |expr| {
-                _ = try self.evaluateExpression(expr);
+                // Special handling for append() as statement: auto-assign result back
+                const auto_assign = blk: {
+                    switch (expr) {
+                        .Call => |call| {
+                            switch (call.function.*) {
+                                .Identifier => |fname| {
+                                    if (std.mem.eql(u8, fname, "append") and call.arguments.items.len == 2) {
+                                        switch (call.arguments.items[0].*) {
+                                            .Identifier => |var_name| {
+                                                const result = try self.evaluateExpression(expr);
+                                                try self.environment.set(var_name, result);
+                                                break :blk true;
+                                            },
+                                            else => {},
+                                        }
+                                    }
+                                },
+                                else => {},
+                            }
+                        },
+                        else => {},
+                    }
+                    break :blk false;
+                };
+                if (!auto_assign) {
+                    _ = try self.evaluateExpression(expr);
+                }
                 return false; // Continue execution
             },
             .Let => |let| {
@@ -1142,6 +1215,12 @@ pub const Interpreter = struct {
                     return true; // Propagate early return
                 }
                 return false; // Continue execution
+            },
+            .Break => {
+                return InterpreterError.BreakSignal;
+            },
+            .Continue => {
+                return InterpreterError.ContinueSignal;
             },
             else => {
                 std.debug.print("Unsupported statement type in interpreter: {s}\n", .{ @tagName(stmt) });
@@ -1563,7 +1642,13 @@ pub const Interpreter = struct {
         } else if (std.mem.eql(u8, module_name, "stringz")) {
             // Add stringz functions
             try module_functions.put("length", Value{ .BuiltinFunction = .{ .name = "stringz.length", .func = builtinStringzLength } });
+            try module_functions.put("len", Value{ .BuiltinFunction = .{ .name = "stringz.len", .func = builtinStringzLength } });
             try module_functions.put("concat", Value{ .BuiltinFunction = .{ .name = "stringz.concat", .func = builtinStringzConcat } });
+            try module_functions.put("from_int", Value{ .BuiltinFunction = .{ .name = "stringz.from_int", .func = builtinStringzFromInt } });
+            try module_functions.put("char_at", Value{ .BuiltinFunction = .{ .name = "stringz.char_at", .func = builtinStringzCharAt } });
+            try module_functions.put("char_at_str", Value{ .BuiltinFunction = .{ .name = "stringz.char_at_str", .func = builtinStringzCharAt } });
+            try module_functions.put("from_char", Value{ .BuiltinFunction = .{ .name = "stringz.from_char", .func = builtinStringzFromChar } });
+            try module_functions.put("replace_all", Value{ .BuiltinFunction = .{ .name = "stringz.replace_all", .func = builtinStringzReplaceAll } });
         } else if (std.mem.eql(u8, module_name, "fmt")) {
             // Add fmt (formatting) functions
             try module_functions.put("format_int", Value{ .BuiltinFunction = .{ .name = "fmt.format_int", .func = builtinFmtFormatInt } });
@@ -1625,6 +1710,8 @@ pub const Interpreter = struct {
             try module_functions.put("new_array", Value{ .BuiltinFunction = .{ .name = "collections.new_array", .func = builtinCollectionsNewArray } });
             try module_functions.put("push", Value{ .BuiltinFunction = .{ .name = "collections.push", .func = builtinCollectionsPush } });
             try module_functions.put("get", Value{ .BuiltinFunction = .{ .name = "collections.get", .func = builtinCollectionsGet } });
+            try module_functions.put("remove_last", Value{ .BuiltinFunction = .{ .name = "collections.remove_last", .func = builtinCollectionsRemoveLast } });
+            try module_functions.put("remove_first", Value{ .BuiltinFunction = .{ .name = "collections.remove_first", .func = builtinCollectionsRemoveFirst } });
         } else if (std.mem.eql(u8, module_name, "json")) {
             // Add json functions
             try module_functions.put("parse", Value{ .BuiltinFunction = .{ .name = "json.parse", .func = builtinJsonParse } });
@@ -1686,14 +1773,91 @@ pub const Interpreter = struct {
     }
 
     fn loadBuiltinModuleAs(self: *Interpreter, module_name: []const u8, bind_as: []const u8) InterpreterError!void {
-        // Pure CURSED self-hosting: Only load CURSED stdlib implementations
+        // Try CURSED stdlib first, then merge in Zig builtins for missing functions
         if (self.loadCursedStdlibModuleAs(module_name, bind_as)) {
-            // Successfully loaded CURSED stdlib module
+            // CURSED stdlib loaded - now merge Zig builtin functions that are missing
+            const mod_val = self.environment.get(bind_as) catch return;
+            switch (mod_val) {
+                .Module => |mod_ptr| {
+                    self.addMissingZigBuiltins(module_name, &mod_ptr.functions) catch {};
+                },
+                else => {},
+            }
             return;
         } else |_| {
             // Silently fall back to Zig builtins when CURSED stdlib has issues
-            // Fallback to Zig builtins
             return self.loadZigBuiltinModuleAs(module_name, bind_as);
+        }
+    }
+
+    fn addMissingZigBuiltins(self: *Interpreter, module_name: []const u8, functions: *std.StringHashMap(Value)) InterpreterError!void {
+        // Build a temporary hashmap of Zig builtins, then merge missing ones
+        var zig_funcs = std.StringHashMap(Value).init(self.allocator);
+        defer zig_funcs.deinit();
+
+        if (std.mem.eql(u8, module_name, "vibez")) {
+            try zig_funcs.put("spill", Value{ .BuiltinFunction = .{ .name = "vibez.spill", .func = builtinVibezSpill } });
+            try zig_funcs.put("spillln", Value{ .BuiltinFunction = .{ .name = "vibez.spillln", .func = builtinVibezSpillln } });
+            try zig_funcs.put("print_separator", Value{ .BuiltinFunction = .{ .name = "vibez.print_separator", .func = builtinVibezPrintSeparator } });
+        } else if (std.mem.eql(u8, module_name, "mathz")) {
+            try zig_funcs.put("abs_normie", Value{ .BuiltinFunction = .{ .name = "mathz.abs_normie", .func = builtinMathzAbs } });
+            try zig_funcs.put("max", Value{ .BuiltinFunction = .{ .name = "mathz.max", .func = builtinMathzMax } });
+            try zig_funcs.put("min", Value{ .BuiltinFunction = .{ .name = "mathz.min", .func = builtinMathzMin } });
+            try zig_funcs.put("add", Value{ .BuiltinFunction = .{ .name = "mathz.add", .func = builtinMathzAdd } });
+            try zig_funcs.put("sub", Value{ .BuiltinFunction = .{ .name = "mathz.sub", .func = builtinMathzSub } });
+            try zig_funcs.put("mul", Value{ .BuiltinFunction = .{ .name = "mathz.mul", .func = builtinMathzMul } });
+            try zig_funcs.put("div", Value{ .BuiltinFunction = .{ .name = "mathz.div", .func = builtinMathzDiv } });
+            try zig_funcs.put("pow", Value{ .BuiltinFunction = .{ .name = "mathz.pow", .func = builtinMathzPow } });
+            try zig_funcs.put("sqrt", Value{ .BuiltinFunction = .{ .name = "mathz.sqrt", .func = builtinMathzSqrt } });
+            try zig_funcs.put("floor", Value{ .BuiltinFunction = .{ .name = "mathz.floor", .func = builtinMathzFloor } });
+            try zig_funcs.put("ceil", Value{ .BuiltinFunction = .{ .name = "mathz.ceil", .func = builtinMathzCeil } });
+            try zig_funcs.put("round", Value{ .BuiltinFunction = .{ .name = "mathz.round", .func = builtinMathzRound } });
+        } else if (std.mem.eql(u8, module_name, "stringz")) {
+            try zig_funcs.put("length", Value{ .BuiltinFunction = .{ .name = "stringz.length", .func = builtinStringzLength } });
+            try zig_funcs.put("len", Value{ .BuiltinFunction = .{ .name = "stringz.len", .func = builtinStringzLength } });
+            try zig_funcs.put("concat", Value{ .BuiltinFunction = .{ .name = "stringz.concat", .func = builtinStringzConcat } });
+            try zig_funcs.put("from_int", Value{ .BuiltinFunction = .{ .name = "stringz.from_int", .func = builtinStringzFromInt } });
+            try zig_funcs.put("char_at", Value{ .BuiltinFunction = .{ .name = "stringz.char_at", .func = builtinStringzCharAt } });
+            try zig_funcs.put("char_at_str", Value{ .BuiltinFunction = .{ .name = "stringz.char_at_str", .func = builtinStringzCharAt } });
+            try zig_funcs.put("from_char", Value{ .BuiltinFunction = .{ .name = "stringz.from_char", .func = builtinStringzFromChar } });
+            try zig_funcs.put("replace_all", Value{ .BuiltinFunction = .{ .name = "stringz.replace_all", .func = builtinStringzReplaceAll } });
+        } else if (std.mem.eql(u8, module_name, "collections")) {
+            try zig_funcs.put("Vec_new", Value{ .BuiltinFunction = .{ .name = "collections.Vec_new", .func = builtinCollectionsVecNew } });
+            try zig_funcs.put("Vec_len", Value{ .BuiltinFunction = .{ .name = "collections.Vec_len", .func = builtinCollectionsVecLen } });
+            try zig_funcs.put("Vec_push", Value{ .BuiltinFunction = .{ .name = "collections.Vec_push", .func = builtinCollectionsVecPush } });
+            try zig_funcs.put("Vec_pop", Value{ .BuiltinFunction = .{ .name = "collections.Vec_pop", .func = builtinCollectionsVecPop } });
+            try zig_funcs.put("Vec_get", Value{ .BuiltinFunction = .{ .name = "collections.Vec_get", .func = builtinCollectionsVecGet } });
+            try zig_funcs.put("Vec_set", Value{ .BuiltinFunction = .{ .name = "collections.Vec_set", .func = builtinCollectionsVecSet } });
+            try zig_funcs.put("Map_new", Value{ .BuiltinFunction = .{ .name = "collections.Map_new", .func = builtinCollectionsMapNew } });
+            try zig_funcs.put("Map_len", Value{ .BuiltinFunction = .{ .name = "collections.Map_len", .func = builtinCollectionsMapLen } });
+            try zig_funcs.put("Map_insert", Value{ .BuiltinFunction = .{ .name = "collections.Map_insert", .func = builtinCollectionsMapInsert } });
+            try zig_funcs.put("Map_get", Value{ .BuiltinFunction = .{ .name = "collections.Map_get", .func = builtinCollectionsMapGet } });
+            try zig_funcs.put("Map_remove", Value{ .BuiltinFunction = .{ .name = "collections.Map_remove", .func = builtinCollectionsMapRemove } });
+            try zig_funcs.put("Map_contains_key", Value{ .BuiltinFunction = .{ .name = "collections.Map_contains_key", .func = builtinCollectionsMapContainsKey } });
+            try zig_funcs.put("Map_keys", Value{ .BuiltinFunction = .{ .name = "collections.Map_keys", .func = builtinCollectionsMapKeys } });
+            try zig_funcs.put("Set_new", Value{ .BuiltinFunction = .{ .name = "collections.Set_new", .func = builtinCollectionsSetNew } });
+            try zig_funcs.put("Set_len", Value{ .BuiltinFunction = .{ .name = "collections.Set_len", .func = builtinCollectionsSetLen } });
+            try zig_funcs.put("Set_insert", Value{ .BuiltinFunction = .{ .name = "collections.Set_insert", .func = builtinCollectionsSetInsert } });
+            try zig_funcs.put("Set_contains", Value{ .BuiltinFunction = .{ .name = "collections.Set_contains", .func = builtinCollectionsSetContains } });
+            try zig_funcs.put("Set_remove", Value{ .BuiltinFunction = .{ .name = "collections.Set_remove", .func = builtinCollectionsSetRemove } });
+            try zig_funcs.put("quick_sort", Value{ .BuiltinFunction = .{ .name = "collections.quick_sort", .func = builtinCollectionsQuickSort } });
+            try zig_funcs.put("bubble_sort", Value{ .BuiltinFunction = .{ .name = "collections.bubble_sort", .func = builtinCollectionsBubbleSort } });
+            try zig_funcs.put("length", Value{ .BuiltinFunction = .{ .name = "collections.length", .func = builtinCollectionsLength } });
+            try zig_funcs.put("new_array", Value{ .BuiltinFunction = .{ .name = "collections.new_array", .func = builtinCollectionsNewArray } });
+            try zig_funcs.put("push", Value{ .BuiltinFunction = .{ .name = "collections.push", .func = builtinCollectionsPush } });
+            try zig_funcs.put("get", Value{ .BuiltinFunction = .{ .name = "collections.get", .func = builtinCollectionsGet } });
+            try zig_funcs.put("remove_last", Value{ .BuiltinFunction = .{ .name = "collections.remove_last", .func = builtinCollectionsRemoveLast } });
+            try zig_funcs.put("remove_first", Value{ .BuiltinFunction = .{ .name = "collections.remove_first", .func = builtinCollectionsRemoveFirst } });
+        } else {
+            return; // No Zig builtins for this module
+        }
+
+        // Merge: add only functions not already defined in the CURSED module
+        var iter = zig_funcs.iterator();
+        while (iter.next()) |entry| {
+            if (!functions.contains(entry.key_ptr.*)) {
+                functions.put(entry.key_ptr.*, entry.value_ptr.*) catch {};
+            }
         }
     }
 
@@ -1779,6 +1943,34 @@ pub const Interpreter = struct {
             .MemberAccess => |member| {
                 // Struct field assignment
                 try self.assignToMemberAccess(member, value);
+            },
+            .ArrayAccess => |access| {
+                // Array element assignment: arr[i] = value
+                const index_val = try self.evaluateExpression(access.index.*);
+                const idx = switch (index_val) {
+                    .Integer => |i| i,
+                    else => return InterpreterError.TypeMismatch,
+                };
+                if (idx < 0) return InterpreterError.IndexOutOfBounds;
+                const uidx: usize = @intCast(idx);
+
+                // Get the variable name from the array expression
+                switch (access.array.*) {
+                    .Identifier => |arr_name| {
+                        const arr_val = try self.environment.get(arr_name);
+                        switch (arr_val) {
+                            .Array => |array| {
+                                if (uidx >= array.len) return InterpreterError.IndexOutOfBounds;
+                                array[uidx] = value;
+                                try self.environment.set(arr_name, arr_val);
+                            },
+                            else => return InterpreterError.TypeMismatch,
+                        }
+                    },
+                    else => {
+                        return InterpreterError.TypeMismatch;
+                    },
+                }
             },
             else => {
                 std.debug.print("Unsupported assignment target: {s}\n", .{@tagName(target_expr.*) });
@@ -1938,12 +2130,25 @@ pub const Interpreter = struct {
         while (true) {
             const condition = try self.evaluateExpression(while_stmt.condition.*);
             if (!condition.toBool()) break;
-            
+
+            var should_break = false;
             for (while_stmt.body.items) |stmt| {
-                if (try self.executeStatement(stmt.*)) {
-                    return true; // Propagate early return
+                if (self.executeStatement(stmt.*)) |returned| {
+                    if (returned) {
+                        return true; // Propagate early return
+                    }
+                } else |err| {
+                    if (err == InterpreterError.BreakSignal) {
+                        should_break = true;
+                        break;
+                    } else if (err == InterpreterError.ContinueSignal) {
+                        break; // Skip rest of body, continue loop
+                    } else {
+                        return err;
+                    }
                 }
             }
+            if (should_break) break;
         }
         return false; // Continue execution
     }
@@ -1963,18 +2168,42 @@ pub const Interpreter = struct {
                 const condition = try self.evaluateExpression(condition_expr.*);
                 if (!condition.toBool()) break;
             }
-            
-            // Execute body
+
+            // Execute body with break/continue support
+            var should_break = false;
+            var should_continue = false;
             for (for_stmt.body.items) |stmt| {
-                if (try self.executeStatement(stmt.*)) {
-                    return true; // Propagate early return
+                if (self.executeStatement(stmt.*)) |returned| {
+                    if (returned) {
+                        return true; // Propagate early return
+                    }
+                } else |err| {
+                    if (err == InterpreterError.BreakSignal) {
+                        should_break = true;
+                        break;
+                    } else if (err == InterpreterError.ContinueSignal) {
+                        should_continue = true;
+                        break;
+                    } else {
+                        return err;
+                    }
                 }
             }
-            
-            // Execute update statement if present
+            if (should_break) break;
+
+            // Execute update statement if present (even on continue)
             if (for_stmt.update) |update_stmt| {
-                if (try self.executeStatement(update_stmt.*)) {
-                    return true; // Propagate early return from update
+                if (should_continue) {
+                    // Still run the update on continue
+                    if (self.executeStatement(update_stmt.*)) |returned| {
+                        if (returned) return true;
+                    } else |err| {
+                        if (err != InterpreterError.BreakSignal and err != InterpreterError.ContinueSignal) return err;
+                    }
+                } else {
+                    if (try self.executeStatement(update_stmt.*)) {
+                        return true; // Propagate early return from update
+                    }
                 }
             }
         }
@@ -2087,6 +2316,19 @@ pub const Interpreter = struct {
     }
 
     fn evaluateBinary(self: *Interpreter, bin: ast.BinaryExpression) InterpreterError!Value {
+        // Short-circuit evaluation for logical operators
+        if (std.mem.eql(u8, bin.operator, "&&")) {
+            const left = try self.evaluateExpression(bin.left.*);
+            if (!left.toBool()) return Value{ .Boolean = false };
+            const right = try self.evaluateExpression(bin.right.*);
+            return Value{ .Boolean = right.toBool() };
+        } else if (std.mem.eql(u8, bin.operator, "||")) {
+            const left = try self.evaluateExpression(bin.left.*);
+            if (left.toBool()) return Value{ .Boolean = true };
+            const right = try self.evaluateExpression(bin.right.*);
+            return Value{ .Boolean = right.toBool() };
+        }
+
         const left = try self.evaluateExpression(bin.left.*);
         const right = try self.evaluateExpression(bin.right.*);
 
@@ -2229,10 +2471,35 @@ pub const Interpreter = struct {
                 return Value{ .Boolean = left_num >= right_num };
             }
             return InterpreterError.TypeMismatch;
-        } else if (std.mem.eql(u8, bin.operator, "&&")) {
-            return Value{ .Boolean = left.toBool() and right.toBool() };
-        } else if (std.mem.eql(u8, bin.operator, "||")) {
-            return Value{ .Boolean = left.toBool() or right.toBool() };
+        } else if (std.mem.eql(u8, bin.operator, "^")) {
+            if (left == .Integer and right == .Integer) {
+                return Value{ .Integer = left.Integer ^ right.Integer };
+            }
+            return InterpreterError.TypeMismatch;
+        } else if (std.mem.eql(u8, bin.operator, "&")) {
+            if (left == .Integer and right == .Integer) {
+                return Value{ .Integer = left.Integer & right.Integer };
+            }
+            return InterpreterError.TypeMismatch;
+        } else if (std.mem.eql(u8, bin.operator, "|")) {
+            if (left == .Integer and right == .Integer) {
+                return Value{ .Integer = left.Integer | right.Integer };
+            }
+            return InterpreterError.TypeMismatch;
+        } else if (std.mem.eql(u8, bin.operator, "<<")) {
+            if (left == .Integer and right == .Integer) {
+                if (right.Integer < 0 or right.Integer > 63) return InterpreterError.TypeMismatch;
+                const shift: u6 = @intCast(right.Integer);
+                return Value{ .Integer = left.Integer << shift };
+            }
+            return InterpreterError.TypeMismatch;
+        } else if (std.mem.eql(u8, bin.operator, ">>")) {
+            if (left == .Integer and right == .Integer) {
+                if (right.Integer < 0 or right.Integer > 63) return InterpreterError.TypeMismatch;
+                const shift: u6 = @intCast(right.Integer);
+                return Value{ .Integer = left.Integer >> shift };
+            }
+            return InterpreterError.TypeMismatch;
         } else if (std.mem.eql(u8, bin.operator, "=")) {
             // Assignment operator - this should not normally be encountered in expression context
             // but handle it gracefully
@@ -2270,6 +2537,12 @@ pub const Interpreter = struct {
         } else if (std.mem.eql(u8, unary.operator, "!")) {
             // Logical not
             return Value{ .Boolean = !operand.toBool() };
+        } else if (std.mem.eql(u8, unary.operator, "~")) {
+            // Bitwise NOT
+            if (operand == .Integer) {
+                return Value{ .Integer = ~operand.Integer };
+            }
+            return InterpreterError.TypeMismatch;
         } else if (std.mem.eql(u8, unary.operator, "*")) {
             // Dereference pointer
             switch (operand) {
@@ -2784,7 +3057,6 @@ pub const Interpreter = struct {
                         // Evaluate arguments
                         var args = std.ArrayList(Value){};
                         defer args.deinit(self.allocator);
-                        errdefer args.deinit(self.allocator); // Clean up on error
                         
                         for (call.arguments.items) |arg_expr| {
                             const arg = try self.evaluateExpression(arg_expr.*);
@@ -2894,8 +3166,7 @@ pub const Interpreter = struct {
                             // Call the struct method
                             var method_args = std.ArrayList(Value){};
                             defer method_args.deinit(self.allocator);
-                            errdefer method_args.deinit(self.allocator); // Clean up on error
-                            
+
                             // First argument is self (the struct instance)
                             try method_args.append(self.allocator, Value{ .Struct = struct_inst });
                             
@@ -2916,8 +3187,7 @@ pub const Interpreter = struct {
                 // Use interface dispatch through vtable
                 var method_args = std.ArrayList(Value){};
                 defer method_args.deinit(self.allocator);
-                errdefer method_args.deinit(self.allocator); // Clean up on error
-                
+
                 // First argument is self (the underlying struct)
                 try method_args.append(self.allocator, Value{ .Struct = interface_inst.underlying_struct.* });
                 
@@ -3220,8 +3490,7 @@ pub const Interpreter = struct {
         // Evaluate function arguments
         var args = std.ArrayList(Value){};
         defer args.deinit(self.allocator);
-        errdefer args.deinit(self.allocator); // Clean up on error
-        
+
         for (arguments) |arg_expr| {
             const arg_value = try self.evaluateExpression(arg_expr.*);
             try args.append(self.allocator, arg_value);
@@ -4930,38 +5199,160 @@ fn builtinMathzDiv(interpreter: *Interpreter, args: []Value) InterpreterError!Va
 fn builtinStringzLength(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
     _ = interpreter;
     if (args.len != 1) return InterpreterError.InvalidArgumentCount;
-    
+
     const str_value = args[0];
     switch (str_value) {
         .String => |str| return Value{ .Integer = @as(i64, @intCast(str.len)) },
+        .OwnedString => |str| return Value{ .Integer = @as(i64, @intCast(str.len)) },
         else => return InterpreterError.TypeMismatch,
     }
 }
 
 fn builtinStringzConcat(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
     if (args.len != 2) return InterpreterError.InvalidArgumentCount;
-    
-    const a = args[0];
-    const b = args[1];
-    
-    switch (a) {
-        .String => |str_a| switch (b) {
-            .String => |str_b| {
-                // Properly concatenate both strings by allocating new buffer
-                // OVERFLOW FIX: Use safe arithmetic for length calculation
-                const total_len = std.math.add(usize, str_a.len, str_b.len) catch {
-                    return InterpreterError.OutOfMemory;
-                };
-                const result = interpreter.allocator.alloc(u8, total_len) catch {
-                    return InterpreterError.OutOfMemory;
-                };
-                // Copy first string
-                @memcpy(result[0..str_a.len], str_a);
-                // Copy second string
-                @memcpy(result[str_a.len..total_len], str_b);
-                return Value{ .String = result };
-            },
-            else => return InterpreterError.TypeMismatch,
+
+    const str_a = switch (args[0]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const str_b = switch (args[1]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const total_len = std.math.add(usize, str_a.len, str_b.len) catch {
+        return InterpreterError.OutOfMemory;
+    };
+    const result = interpreter.allocator.alloc(u8, total_len) catch {
+        return InterpreterError.OutOfMemory;
+    };
+    @memcpy(result[0..str_a.len], str_a);
+    @memcpy(result[str_a.len..total_len], str_b);
+    return Value{ .String = result };
+}
+
+fn builtinStringzFromInt(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 1) return InterpreterError.InvalidArgumentCount;
+    switch (args[0]) {
+        .Integer => |val| {
+            const result = std.fmt.allocPrint(interpreter.allocator, "{d}", .{val}) catch {
+                return InterpreterError.OutOfMemory;
+            };
+            return Value{ .String = result };
+        },
+        .Float => |val| {
+            const result = std.fmt.allocPrint(interpreter.allocator, "{d}", .{val}) catch {
+                return InterpreterError.OutOfMemory;
+            };
+            return Value{ .String = result };
+        },
+        else => return InterpreterError.TypeMismatch,
+    }
+}
+
+fn builtinStringzCharAt(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    _ = interpreter;
+    if (args.len != 2) return InterpreterError.InvalidArgumentCount;
+    const str = switch (args[0]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const index = switch (args[1]) {
+        .Integer => |i| i,
+        else => return InterpreterError.TypeMismatch,
+    };
+    if (index < 0 or index >= @as(i64, @intCast(str.len))) {
+        return InterpreterError.IndexOutOfBounds;
+    }
+    return Value{ .Integer = @as(i64, str[@intCast(index)]) };
+}
+
+fn builtinStringzFromChar(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 1) return InterpreterError.InvalidArgumentCount;
+    const code = switch (args[0]) {
+        .Integer => |i| i,
+        else => return InterpreterError.TypeMismatch,
+    };
+    if (code < 0 or code > 127) return InterpreterError.TypeMismatch;
+    const buf = interpreter.allocator.alloc(u8, 1) catch return InterpreterError.OutOfMemory;
+    buf[0] = @intCast(code);
+    return Value{ .String = buf };
+}
+
+fn builtinStringzReplaceAll(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 3) return InterpreterError.InvalidArgumentCount;
+    const str = switch (args[0]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const old = switch (args[1]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const new = switch (args[2]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    if (old.len == 0) return Value{ .String = str };
+    var count: usize = 0;
+    var i: usize = 0;
+    while (i + old.len <= str.len) {
+        if (std.mem.eql(u8, str[i..i + old.len], old)) {
+            count += 1;
+            i += old.len;
+        } else {
+            i += 1;
+        }
+    }
+    if (count == 0) return Value{ .String = str };
+    const new_len = str.len - (count * old.len) + (count * new.len);
+    const result = interpreter.allocator.alloc(u8, new_len) catch return InterpreterError.OutOfMemory;
+    var src_i: usize = 0;
+    var dst_i: usize = 0;
+    while (src_i < str.len) {
+        if (src_i + old.len <= str.len and std.mem.eql(u8, str[src_i..src_i + old.len], old)) {
+            @memcpy(result[dst_i..dst_i + new.len], new);
+            dst_i += new.len;
+            src_i += old.len;
+        } else {
+            result[dst_i] = str[src_i];
+            dst_i += 1;
+            src_i += 1;
+        }
+    }
+    return Value{ .String = result };
+}
+
+fn builtinCollectionsRemoveLast(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 1) return InterpreterError.InvalidArgumentCount;
+    switch (args[0]) {
+        .Array => |arr| {
+            if (arr.len == 0) return InterpreterError.IndexOutOfBounds;
+            const new_arr = interpreter.allocator.alloc(Value, arr.len - 1) catch return InterpreterError.OutOfMemory;
+            for (arr[0..arr.len - 1], 0..) |elem, i| {
+                new_arr[i] = elem;
+            }
+            return Value{ .Array = new_arr };
+        },
+        else => return InterpreterError.TypeMismatch,
+    }
+}
+
+fn builtinCollectionsRemoveFirst(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 1) return InterpreterError.InvalidArgumentCount;
+    switch (args[0]) {
+        .Array => |arr| {
+            if (arr.len == 0) return InterpreterError.IndexOutOfBounds;
+            const new_arr = interpreter.allocator.alloc(Value, arr.len - 1) catch return InterpreterError.OutOfMemory;
+            for (arr[1..], 0..) |elem, i| {
+                new_arr[i] = elem;
+            }
+            return Value{ .Array = new_arr };
         },
         else => return InterpreterError.TypeMismatch,
     }
@@ -5783,6 +6174,60 @@ fn builtinCollectionsBubbleSort(interpreter: *Interpreter, args: []Value) Interp
             }
             
             return Value{ .Array = sorted };
+        },
+        else => return InterpreterError.TypeMismatch,
+    }
+}
+
+fn builtinArrayConcat(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 2) return InterpreterError.InvalidArgumentCount;
+
+    switch (args[0]) {
+        .Array => |arr1| switch (args[1]) {
+            .Array => |arr2| {
+                const result = try interpreter.allocator.alloc(Value, arr1.len + arr2.len);
+                for (arr1, 0..) |val, i| {
+                    result[i] = val;
+                }
+                for (arr2, 0..) |val, i| {
+                    result[arr1.len + i] = val;
+                }
+                return Value{ .Array = result };
+            },
+            else => return InterpreterError.TypeMismatch,
+        },
+        else => return InterpreterError.TypeMismatch,
+    }
+}
+
+fn builtinMakeArray(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 2) return InterpreterError.InvalidArgumentCount;
+
+    switch (args[0]) {
+        .Integer => |size| {
+            if (size < 0) return InterpreterError.TypeMismatch;
+            const len: usize = @intCast(size);
+            const result = try interpreter.allocator.alloc(Value, len);
+            for (0..len) |i| {
+                result[i] = args[1];
+            }
+            return Value{ .Array = result };
+        },
+        else => return InterpreterError.TypeMismatch,
+    }
+}
+
+fn builtinArrayContains(_: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 2) return InterpreterError.InvalidArgumentCount;
+
+    switch (args[0]) {
+        .Array => |arr| {
+            for (arr) |val| {
+                if (valuesEqual(val, args[1])) {
+                    return Value{ .Boolean = true };
+                }
+            }
+            return Value{ .Boolean = false };
         },
         else => return InterpreterError.TypeMismatch,
     }

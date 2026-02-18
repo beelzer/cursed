@@ -43,10 +43,10 @@ slay longest_consecutive(nums normie[]) normie {
 slay contains(arr normie[], target normie) lit {
     bestie i := 0; i < len(arr); i++ {
         ready (arr[i] == target) {
-            damn true
+            damn based
         }
     }
-    damn false
+    damn cringe
 }
 
 slay max(a normie, b normie) normie {

@@ -125,6 +125,7 @@ pub const TokenKind = enum {
     Pipe, // |
     Amp, // &
     Caret, // ^
+    Tilde, // ~
     LeftShift, // <<
     RightShift, // >>
 
@@ -469,6 +470,7 @@ pub const Lexer = struct {
                 return self.makeToken(.Pipe, start_line, start_column);
             },
             '^' => return self.makeToken(.Caret, start_line, start_column),
+            '~' => return self.makeToken(.Tilde, start_line, start_column),
             ':' => {
                 if (self.match('=')) return self.makeToken(.ColonEqual, start_line, start_column);
                 if (self.match(':')) return self.makeToken(.DoubleColon, start_line, start_column);
@@ -973,10 +975,10 @@ pub const Lexer = struct {
 
         // Literals (canonical spec conformance)
         if (std.mem.eql(u8, text, "based")) return .Based;   // true literal
-        if (std.mem.eql(u8, text, "cringe")) return .Cringe; // false literal  
+        if (std.mem.eql(u8, text, "cringe")) return .Cringe; // false literal
         if (std.mem.eql(u8, text, "nah")) return .Nah;       // nil literal
         if (std.mem.eql(u8, text, "no_cap")) return .NoCap;
-        
+
         // Deprecated forms - treated as identifiers to trigger parser errors
         if (std.mem.eql(u8, text, "cap")) return .Identifier;   // Use 'nah' instead
         if (std.mem.eql(u8, text, "truth")) return .Identifier; // Use 'based' instead

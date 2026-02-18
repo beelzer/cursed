@@ -25,11 +25,15 @@ pub const Prec = enum {
     Assignment,  // =
     Or,          // ||
     And,         // &&
+    BitwiseOr,   // |
+    BitwiseXor,  // ^
+    BitwiseAnd,  // &
     Equality,    // == !=
     Comparison,  // > >= < <=
+    Shift,       // << >>
     Term,        // + -
     Factor,      // * / %
-    Unary,       // ! - * &
+    Unary,       // ! - * & ~
     Access,      // .
     Call,        // () []
     Primary,
@@ -96,6 +100,9 @@ pub const Parser = struct {
     error_recovery_stats: ErrorRecoveryStats,
     macro_system: ?*hygienic_macro_system.HygienicMacroSystem,
     use_pratt: bool = true,
+    /// When true, `{` is NOT treated as an infix operator (struct literal).
+    /// Set this when parsing conditions for control flow statements.
+    no_brace_expr: bool = false,
     // Infinite loop detection
     loop_position_counter: std.AutoHashMap(usize, usize),
     parse_start_time: i64,
@@ -316,18 +323,22 @@ pub const Parser = struct {
 
     /// Get precedence for a given token kind
     fn getPrecedence(self: *Parser, token_kind: TokenKind) Prec {
-        _ = self;
         return switch (token_kind) {
             .Equal, .PlusEqual, .MinusEqual, .StarEqual, .SlashEqual, .PercentEqual => .Assignment,
             .PipePipe => .Or,
             .AmpAmp => .And,
+            .Pipe => .BitwiseOr,
+            .Caret => .BitwiseXor,
+            .Amp => .BitwiseAnd,
             .EqualEqual, .BangEqual => .Equality,
             .Greater, .GreaterEqual, .Less, .LessEqual => .Comparison,
+            .LeftShift, .RightShift => .Shift,
             .Plus, .Minus => .Term,
             .Star, .Slash, .Percent => .Factor,
             .PlusPlus, .MinusMinus => .Unary,
-            .Bang, .At => .Unary, // Added .At for ඞ unary operator
-            .LeftParen, .LeftBracket, .LeftBrace => .Call,
+            .Bang, .At, .Tilde => .Unary,
+            .LeftParen, .LeftBracket => .Call,
+            .LeftBrace => if (self.no_brace_expr) .None else .Call,
             .Dot => .Access,
             else => .None,
         };
@@ -345,7 +356,7 @@ pub const Parser = struct {
             .LeftParen => parsePrattGrouping,
             .LeftBracket => parsePrattArrayOrComposite,
             .LeftBrace => parsePrattMapOrComposite,
-            .Bang, .Minus, .Star, .Amp, .At => parsePrattUnary, // Added .At for ඞ address-of operator
+            .Bang, .Minus, .Star, .Amp, .At, .Tilde => parsePrattUnary, // Added .At for ඞ, .Tilde for bitwise NOT
             .PlusPlus, .MinusMinus => parsePrattPrefixIncrement,
             .Normie, .Tea, .Txt, .Sip, .Smol, .Mid, .Thicc, .Snack, .Meal, .Byte, .Rune, .Extra, .Lit, .Cap, .Yikes => parsePrattTypeForComposite,
             else => null,
@@ -354,17 +365,17 @@ pub const Parser = struct {
 
     /// Get infix parsing function for a given token kind  
     fn getInfixFunction(self: *Parser, token_kind: TokenKind) InfixParseFn {
-        _ = self;
         return switch (token_kind) {
             .Plus, .Minus, .Star, .Slash, .Percent => parsePrattBinary,
             .EqualEqual, .BangEqual => parsePrattBinary,
             .Greater, .GreaterEqual, .Less, .LessEqual => parsePrattBinary,
             .AmpAmp, .PipePipe => parsePrattBinary,
+            .Caret, .Amp, .Pipe, .LeftShift, .RightShift => parsePrattBinary,
             .Equal, .PlusEqual, .MinusEqual, .StarEqual, .SlashEqual, .PercentEqual => parsePrattAssignment,
             .LeftParen => parsePrattCall,
             .Dot => parsePrattMemberAccess,
             .LeftBracket => parsePrattArrayAccess,
-            .LeftBrace => parsePrattStructLiteral,
+            .LeftBrace => if (self.no_brace_expr) null else parsePrattStructLiteral,
             .PlusPlus, .MinusMinus => parsePrattPostfixIncrement,
             else => null,
         };
@@ -520,7 +531,11 @@ pub const Parser = struct {
         // Check if this is an empty array []
         if (self.check(.RightBracket)) {
             _ = self.advance(); // consume ']'
-            
+
+            // Handle typed empty array syntax: []type{}, [][]type{}, []ඞType{}, etc.
+            // The type annotation and {} are just decoration on empty arrays - consume them
+            self.consumeTypedEmptyArraySuffix();
+
             return Expression{ .Array = try self.allocateArrayExpression(ast.ArrayExpression{
                 .elements = .{},
             })};
@@ -536,9 +551,40 @@ pub const Parser = struct {
         };
     }
 
+    /// Consume a typed empty array suffix like `type{}`, `[]type{}`, `ඞType{}`, etc.
+    /// Called after parsing `[]` to handle syntax like `[]normie{}`, `[]tea{}`, `[][]normie{}`, `[]ඞListNode{}`
+    fn consumeTypedEmptyArraySuffix(self: *Parser) void {
+        // Handle nested array brackets: [][]...
+        while (!self.isAtEnd() and self.current + 1 < self.tokens.len and
+               self.tokens[self.current].kind == .LeftBracket and
+               self.tokens[self.current + 1].kind == .RightBracket) {
+            self.current += 2; // consume []
+        }
+
+        // Handle pointer prefix: ඞ (tokenized as .At)
+        if (!self.isAtEnd() and self.tokens[self.current].kind == .At) {
+            self.current += 1; // consume ඞ
+        }
+
+        // Check for type name (or identifier for user-defined types) followed by {}
+        if (!self.isAtEnd() and self.current + 2 < self.tokens.len and
+            self.tokens[self.current + 1].kind == .LeftBrace and
+            self.tokens[self.current + 2].kind == .RightBrace)
+        {
+            const tk = self.tokens[self.current].kind;
+            if (tk == .Normie or tk == .Tea or tk == .Txt or tk == .Sip or
+                tk == .Smol or tk == .Mid or tk == .Thicc or tk == .Snack or
+                tk == .Meal or tk == .Byte or tk == .Rune or tk == .Extra or
+                tk == .Lit or tk == .Cap or tk == .Drip or tk == .Identifier)
+            {
+                self.current += 3; // consume type, {, }
+            }
+        }
+    }
+
     fn parsePrattMapOrComposite(self: *Parser) ParserError!Expression {
         _ = self.advance(); // consume '{'
-        
+
         // Empty braces {}
         if (self.check(.RightBrace)) {
             _ = self.advance(); // consume '}'
@@ -2854,7 +2900,9 @@ pub const Parser = struct {
             const name = self.advance().lexeme;
             
             // NEW SYNTAX: Check for composite literal Type[value]{...}
-            if (self.check(.LeftBracket)) {
+            // CRITICAL: Only enter this branch for known type names to avoid consuming
+            // array access tokens (e.g., arr[0]) that should be handled by parseCall
+            if (self.check(.LeftBracket) and self.isKnownTypeName(name)) {
                 // Parse array/slice type suffix: Type[value] or Type[5]
                 var type_with_array = if (self.isKnownTypeName(name))
                     self.getBasicTypeFromName(name)
@@ -3294,13 +3342,20 @@ pub const Parser = struct {
         if (self.match(.LeftParen)) {
             has_parens = true;
         }
-        
+
+        // Prevent `{` from being consumed as struct literal in condition
+        if (!has_parens) {
+            self.no_brace_expr = true;
+        }
         const condition = try self.parseExpression();
-        
+        if (!has_parens) {
+            self.no_brace_expr = false;
+        }
+
         if (has_parens) {
             _ = try self.consume(.RightParen, "Expected ')' after condition");
         }
-        
+
         _ = try self.consume(.LeftBrace, "Expected '{'");
         
         var then_branch = std.ArrayList(*Statement){ .items = &.{}, .capacity = 0 };
@@ -3368,14 +3423,21 @@ pub const Parser = struct {
 
     fn parseWhileStatement(self: *Parser) ParserError!ast.WhileStatement {
         _ = self.advance(); // consume periodt/flex/bestie
-        
-        // CURSED syntax allows condition without parentheses: bestie condition {
+
+        // CURSED syntax allows condition without parentheses: periodt condition {
         var has_parens = false;
         if (self.match(.LeftParen)) {
             has_parens = true;
         }
-        
+
+        // Prevent `{` from being consumed as struct literal in condition
+        if (!has_parens) {
+            self.no_brace_expr = true;
+        }
         const condition = try self.parseExpression();
+        if (!has_parens) {
+            self.no_brace_expr = false;
+        }
         
         if (has_parens) {
             _ = try self.consume(.RightParen, "Expected ')' after condition");
@@ -3409,32 +3471,27 @@ pub const Parser = struct {
 
     fn parseForStatement(self: *Parser) ParserError!Statement {
         _ = try self.consume(.Bestie, "Expected 'bestie'");
-        
-        // Debug logging removed for test compatibility
-        
+
         // Check for infinite loop
         try self.checkInfiniteLoop();
-        
+
         // Check for range-for loop (bestie var := flex ...)
         if (self.isRangeForLoop()) {
-            // Range for loop detected
             return try self.parseRangeForStatement();
         }
-        
+
         // Check if it's a while-style for loop (no semicolons)
         if (!self.hasSemicolonsBeforeBrace()) {
-            // While-style for loop detected
-            // While-style for loop: bestie condition { ... }
             var condition: ?Expression = null;
-            
+
             if (!self.check(.LeftBrace)) {
+                self.no_brace_expr = true;
+                defer { self.no_brace_expr = false; }
                 condition = self.parseExpression() catch {
-                    // If expression parsing fails, provide better error recovery
-                    // Failed to parse condition
                     return ParserError.InvalidSyntax;
                 };
             }
-            
+
         _ = try self.consume(.LeftBrace, "Expected '{'");
             
             var body = std.ArrayList(*Statement){ .items = &.{}, .capacity = 0 };
@@ -3468,24 +3525,27 @@ pub const Parser = struct {
         }
         
         // C-style for loop: bestie init; condition; update { ... }
-        
+
         // Parse init statement (optional)
         var init_stmt: ?Statement = null;
         if (!self.check(.Semicolon)) {
             init_stmt = try self.parseStatement();
         }
         _ = try self.consume(.Semicolon, "Expected ';' after for loop init");
-        
+
         // Parse condition (optional)
         var condition: ?Expression = null;
         if (!self.check(.Semicolon)) {
             condition = try self.parseExpression();
         }
         _ = try self.consume(.Semicolon, "Expected ';' after for loop condition");
-        
+
         // Parse update statement (optional)
+        // Prevent `{` from being consumed as struct literal in update expression
         var update: ?Statement = null;
         if (!self.check(.LeftBrace)) {
+            self.no_brace_expr = true;
+            defer { self.no_brace_expr = false; }
             update = try self.parseStatement();
         }
         
@@ -4467,7 +4527,7 @@ pub const Parser = struct {
 
     fn parseAssignmentStatement(self: *Parser) ParserError!Statement {
         // Parse only the left-hand side (target) without consuming assignment operator
-        const target = try self.parsePrimary(); // Use parsePrimary instead of parseExpression
+        const target = try self.parseCall(); // Use parseCall to handle arr[i] and obj.field targets
         const target_ptr = try self.arena_allocator.create(Expression);
 
         target_ptr.* = target;

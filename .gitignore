@@ -30,4 +30,8 @@ devenv.local.nix
 
 # Node
 node_modules/
+package-lock.json
 *.vsix
+
+# VS Code extension build output
+tools/vscode-extension/out/
