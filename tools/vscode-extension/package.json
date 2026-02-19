@@ -2,7 +2,7 @@
   "name": "cursed-lang",
   "displayName": "CURSED Language",
   "description": "Language support for the CURSED programming language - programming, but make it gen z",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "publisher": "cursed-lang",
   "license": "MIT",
   "repository": {
@@ -230,7 +230,7 @@
       "properties": {
         "cursed.compiler.path": {
           "type": "string",
-          "default": "cursed-compiler",
+          "default": "./zig-out/bin/cursed-compiler",
           "description": "Path to the CURSED compiler executable",
           "scope": "machine-overridable",
           "order": 0

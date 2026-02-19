@@ -15,7 +15,7 @@ function runDiagnostics(document: vscode.TextDocument) {
     if (document.languageId !== 'cursed') return;
 
     const config = vscode.workspace.getConfiguration('cursed');
-    const compilerPath = config.get('compiler.path', 'cursed-compiler');
+    const compilerPath = config.get('compiler.path', './zig-out/bin/cursed-compiler');
     const filePath = document.fileName;
 
     const delay = config.get('diagnostics.delay', 500);
@@ -393,7 +393,7 @@ class CursedTaskProvider implements vscode.TaskProvider {
     provideTasks(): vscode.Task[] {
         const tasks: vscode.Task[] = [];
         const config = vscode.workspace.getConfiguration('cursed');
-        const compilerPath = config.get('compiler.path', 'cursed-compiler');
+        const compilerPath = config.get('compiler.path', './zig-out/bin/cursed-compiler');
 
         // Check task
         const checkDef: vscode.TaskDefinition = { type: 'cursed', task: 'check' };
@@ -484,7 +484,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 return;
             }
             const config = vscode.workspace.getConfiguration('cursed');
-            const compilerPath = config.get('compiler.path', 'cursed-compiler');
+            const compilerPath = config.get('compiler.path', './zig-out/bin/cursed-compiler');
             const clearTerminal = config.get('run.clearTerminal', false);
             const filePath = editor.document.fileName;
             const terminal = vscode.window.createTerminal('CURSED');
@@ -503,7 +503,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 return;
             }
             const config = vscode.workspace.getConfiguration('cursed');
-            const compilerPath = config.get('compiler.path', 'cursed-compiler');
+            const compilerPath = config.get('compiler.path', './zig-out/bin/cursed-compiler');
             const filePath = editor.document.fileName;
             const terminal = vscode.window.createTerminal('CURSED Build');
             terminal.sendText(`${compilerPath} --compile "${filePath}"`);
@@ -515,7 +515,7 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('cursed.runTest', async (filePath: string, testName: string) => {
             const config = vscode.workspace.getConfiguration('cursed');
-            const compilerPath = config.get('compiler.path', 'cursed-compiler');
+            const compilerPath = config.get('compiler.path', './zig-out/bin/cursed-compiler');
             const terminal = vscode.window.createTerminal('CURSED Test');
             terminal.sendText(`${compilerPath} "${filePath}" --test ${testName}`);
             terminal.show();
