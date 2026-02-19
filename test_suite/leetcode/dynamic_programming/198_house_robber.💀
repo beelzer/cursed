@@ -1,0 +1,108 @@
+vibe main
+yeet "vibez"
+
+no cap
+    LeetCode #198: House Robber
+    Rob houses to maximize money without robbing adjacent houses
+    Time: O(n), Space: O(1) - optimized DP approach
+on god
+
+slay max_val(a normie, b normie) normie {
+    lowkey (a > b) {
+        damn a
+    }
+    damn b
+}
+
+slay rob(nums normie[]) normie {
+    lowkey (len(nums) == 0) {
+        damn 0
+    }
+    lowkey (len(nums) == 1) {
+        damn nums[0]
+    }
+
+    fr fr DP: rob_or_not[i] = max(rob house i + prev_prev, don't rob house i)
+    sus prev2 normie = 0
+    sus prev1 normie = nums[0]
+
+    bestie i := 1; i < len(nums); i++ {
+        sus current normie = max_val(nums[i] + prev2, prev1)
+        prev2 = prev1
+        prev1 = current
+    }
+
+    damn prev1
+}
+
+slay make_array(size normie, value normie) normie[] {
+    fr fr Create an array of given size filled with a value
+    sus arr normie[] = []normie{}
+    bestie i := 0; i < size; i++ {
+        arr = append(arr, value)
+    }
+    damn arr
+}
+
+slay rob_with_array(nums normie[]) normie {
+    fr fr Alternative: explicit DP array approach
+    lowkey (len(nums) == 0) {
+        damn 0
+    }
+    lowkey (len(nums) == 1) {
+        damn nums[0]
+    }
+
+    sus dp normie[] = make_array(len(nums), 0)
+    dp[0] = nums[0]
+    dp[1] = max_val(nums[0], nums[1])
+
+    bestie i := 2; i < len(nums); i++ {
+        dp[i] = max_val(dp[i-1], nums[i] + dp[i-2])
+    }
+
+    damn dp[len(nums) - 1]
+}
+
+slay test_house_robber() {
+    vibez.spill("=== LeetCode #198: House Robber ===")
+
+    fr fr Test case 1: [1,2,3,1]
+    facts houses1 normie[] = [1, 2, 3, 1]
+    sus result1_opt normie = rob(houses1)
+    sus result1_arr normie = rob_with_array(houses1)
+    vibez.spill("Test 1 - Houses: [1,2,3,1]")
+    vibez.spill("Expected: 4 (rob house 0 and 2: 1+3=4)")
+    vibez.spill("Optimized DP:", result1_opt)
+    vibez.spill("Array DP:", result1_arr)
+
+    fr fr Test case 2: [2,7,9,3,1]
+    facts houses2 normie[] = [2, 7, 9, 3, 1]
+    sus result2 normie = rob(houses2)
+    vibez.spill("Test 2 - Houses: [2,7,9,3,1]")
+    vibez.spill("Expected: 12 (rob house 0, 2, 4: 2+9+1=12)")
+    vibez.spill("Result:", result2)
+
+    fr fr Test case 3: [2,1,1,2]
+    facts houses3 normie[] = [2, 1, 1, 2]
+    sus result3 normie = rob(houses3)
+    vibez.spill("Test 3 - Houses: [2,1,1,2]")
+    vibez.spill("Expected: 4 (rob house 0 and 3: 2+2=4)")
+    vibez.spill("Result:", result3)
+
+    fr fr Edge cases
+    vibez.spill("=== Edge Cases ===")
+    facts single_house normie[] = [5]
+    sus result_single normie = rob(single_house)
+    vibez.spill("Single house [5]:", result_single)
+
+    facts empty_houses normie[] = []normie{}
+    sus result_empty normie = rob(empty_houses)
+    vibez.spill("No houses []:", result_empty)
+
+    vibez.spill("=== House Robber Complete! Robbery strategy is sus-tained ===")
+}
+
+slay main_character() {
+    test_house_robber()
+}

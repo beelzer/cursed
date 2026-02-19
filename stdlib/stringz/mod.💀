@@ -94,13 +94,6 @@ slay to_lower(text tea) tea {
     damn text  fr fr Default fallback
 }
 
-slay from_int(num normie) tea {
-    fr fr Convert integer to string - basic cases
-    lowkey (num == 0) { damn "0" }
-    lowkey (num == 17) { damn "17" }
-    lowkey (num == 42) { damn "42" }
-    lowkey (num == -17) { damn "-17" }
-    damn "0"  fr fr Default fallback
-}
+fr fr from_int is handled by the native builtin - do not override here
 
 fr fr Minimal stringz implementation without dependencies

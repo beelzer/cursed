@@ -1287,6 +1287,40 @@ pub const Interpreter = struct {
             binding_name = primary_name;
         }
 
+        // Check if this looks like a relative file import (contains / or \ or ends with .💀)
+        const is_relative_import = std.mem.indexOf(u8, raw_path, "/") != null or
+            std.mem.indexOf(u8, raw_path, "\\") != null or
+            (raw_path.len > 7 and std.mem.endsWith(u8, raw_path, ".💀"));
+
+        if (is_relative_import) {
+            // Derive binding name: explicit alias > filename stem
+            var file_binding = binding_name;
+            if (alias) |a| {
+                file_binding = a;
+            } else {
+                // Extract filename stem from path (e.g., "./foo/bar.💀" -> "bar")
+                var stem = raw_path;
+                // Strip trailing .💀 extension (4 bytes for UTF-8 skull emoji + dot)
+                // The skull emoji 💀 is 4 UTF-8 bytes: F0 9F 92 80
+                if (std.mem.endsWith(u8, stem, ".💀")) {
+                    stem = stem[0 .. stem.len - 5]; // ".💀" = 1 dot + 4 bytes
+                }
+                // Find last slash
+                var last_slash: ?usize = null;
+                for (0..stem.len) |si| {
+                    if (stem[si] == '/' or stem[si] == '\\') last_slash = si;
+                }
+                if (last_slash) |ls| {
+                    stem = stem[ls + 1 ..];
+                }
+                if (stem.len > 0) file_binding = stem;
+            }
+            self.loadUserFileModule(raw_path, file_binding) catch {
+                return; // Silently ignore if file not found
+            };
+            return;
+        }
+
         // Load the module using the resolved lookup name, but bind under binding_name
         self.loadBuiltinModuleAs(lookup_name, binding_name) catch {
             // If primary component failed, try the last :: component
@@ -1311,6 +1345,76 @@ pub const Interpreter = struct {
                 return; // Silently ignore unresolvable imports
             }
         };
+    }
+
+    fn loadUserFileModule(self: *Interpreter, raw_path: []const u8, binding_name: []const u8) InterpreterError!void {
+        var module_arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+        const temp_allocator = module_arena.allocator();
+
+        // Build candidate paths to try
+        var candidates: [4]?[]const u8 = .{ null, null, null, null };
+        var candidate_count: usize = 0;
+
+        // 1. Try the raw path as-is (absolute or cwd-relative)
+        candidates[candidate_count] = raw_path;
+        candidate_count += 1;
+
+        // 2. Try with .💀 extension appended if not already present
+        if (!std.mem.endsWith(u8, raw_path, ".💀")) {
+            const with_ext = std.fmt.allocPrint(temp_allocator, "{s}.💀", .{raw_path}) catch return InterpreterError.ModuleNotFound;
+            candidates[candidate_count] = with_ext;
+            candidate_count += 1;
+        }
+
+        // 3. Try relative to the current file's directory
+        if (self.current_file) |current| {
+            // Find last slash in current file path
+            var last_slash: ?usize = null;
+            for (0..current.len) |i| {
+                if (current[i] == '/' or current[i] == '\\') {
+                    last_slash = i;
+                }
+            }
+            if (last_slash) |ls| {
+                const dir = current[0 .. ls + 1];
+                const rel_path = std.fmt.allocPrint(temp_allocator, "{s}{s}", .{ dir, raw_path }) catch return InterpreterError.ModuleNotFound;
+                candidates[candidate_count] = rel_path;
+                candidate_count += 1;
+
+                if (!std.mem.endsWith(u8, raw_path, ".💀")) {
+                    const rel_ext = std.fmt.allocPrint(temp_allocator, "{s}{s}.💀", .{ dir, raw_path }) catch return InterpreterError.ModuleNotFound;
+                    candidates[candidate_count] = rel_ext;
+                    candidate_count += 1;
+                }
+            }
+        }
+
+        // Try each candidate path
+        for (candidates[0..candidate_count]) |maybe_path| {
+            const path_str = maybe_path orelse continue;
+            const file = std.fs.cwd().openFile(path_str, .{}) catch continue;
+            defer file.close();
+
+            const source = file.readToEndAlloc(temp_allocator, std.math.maxInt(usize)) catch continue;
+
+            // Tokenize
+            var module_lexer = lexer.Lexer.init(temp_allocator, source);
+            var tokens = module_lexer.tokenize() catch continue;
+            defer tokens.deinit(temp_allocator);
+
+            // Parse
+            var module_parser = parser.Parser.init(temp_allocator, tokens.items);
+            defer module_parser.deinit();
+            var module_program = module_parser.parseProgram() catch continue;
+            defer module_program.deinit(temp_allocator);
+
+            // Extract functions into a module bound under binding_name
+            try self.createModuleFromProgram(binding_name, module_program, path_str, module_arena);
+            return;
+        }
+
+        module_arena.deinit();
+        return InterpreterError.ModuleNotFound;
     }
 
     fn mapModuleAlias(name: []const u8) []const u8 {
@@ -1410,43 +1514,52 @@ pub const Interpreter = struct {
     
     fn createModuleFromProgram(self: *Interpreter, module_name: []const u8, program: ast.Program, _: []const u8, _: std.heap.ArenaAllocator) InterpreterError!void {
         var module_functions = std.StringHashMap(Value).init(self.allocator);
-        
-        // Removed DEBUG: Creating module {s} from program with {} statements\n", .{ module_name, program.statements.items.len });
-        
-        // Extract function declarations from the program
+
+        // Create a module-level environment (child of globals) so functions can call each other
+        const module_env = try self.allocator.create(Environment);
+        module_env.* = Environment.init(self.allocator, self.globals);
+
+        // First pass: process imports so module dependencies are available
+        for (program.statements.items) |stmt_ptr| {
+            const stmt: *ast.Statement = @ptrCast(@alignCast(stmt_ptr));
+            switch (stmt.*) {
+                .Import => |import_stmt| {
+                    self.executeImportStatement(import_stmt) catch {};
+                },
+                else => {}
+            }
+        }
+
+        // Second pass: collect function declarations and register struct types
         for (program.statements.items) |stmt_ptr| {
             const stmt: *ast.Statement = @ptrCast(@alignCast(stmt_ptr));
             switch (stmt.*) {
                 .Function => |func_decl| {
-                    // Removed DEBUG: Found function {s} in module {s}\n", .{ func_decl.name, module_name });
-                    
-                    // Create a closure for this function with the module's environment
                     const func_closure = CursedFunction{
                         .declaration = func_decl,
-                        .closure = &self.globals, // Use global environment as closure for stdlib functions
+                        .closure = module_env,
                     };
-                    
-                    // Store as a BuiltinFunction that calls the real function
                     const wrapped_func = Value{ .UserFunction = func_closure };
                     try module_functions.put(func_decl.name, wrapped_func);
+                    // Also define in module environment so sibling functions can find each other
+                    try module_env.define(func_decl.name, wrapped_func);
                 },
-                else => {
-                    // Skip non-function statements for now
-                }
+                .Struct => |struct_decl| {
+                    try self.type_registry.registerStruct(struct_decl.name, struct_decl);
+                },
+                else => {}
             }
         }
-        
+
         // Create module instance on heap and store pointer in globals
         const module_ptr = try self.allocator.create(ModuleInstance);
-        module_ptr.* = .{ 
+        module_ptr.* = .{
             .functions = module_functions,
-            .arena = std.heap.ArenaAllocator.init(self.allocator), // Initialize a new arena for the module
+            .arena = std.heap.ArenaAllocator.init(self.allocator),
         };
-        
+
         const module_value = Value{ .Module = module_ptr };
         try self.globals.define(module_name, module_value);
-        
-        // Removed DEBUG: Created real stdlib module {s} with {} functions from {s}\n", .{ module_name, module_functions.count(), source_path });
     }
     
     /// Create a stable copy of a function declaration to avoid memory issues with arena allocators
@@ -1962,7 +2075,7 @@ pub const Interpreter = struct {
                             .Array => |array| {
                                 if (uidx >= array.len) return InterpreterError.IndexOutOfBounds;
                                 array[uidx] = value;
-                                try self.environment.set(arr_name, arr_val);
+                                try self.environment.set(arr_name, Value{ .Array = array });
                             },
                             else => return InterpreterError.TypeMismatch,
                         }
@@ -1997,6 +2110,8 @@ pub const Interpreter = struct {
                                 try struct_inst.setField(member.property, value);
                                 // Update the pointer's pointee value
                                 ptr.pointee_value.* = Value{ .Struct = struct_inst.* };
+                                // Store modified pointer back (env.get returns deep clone)
+                                try self.environment.set(obj_name, object_value);
                             },
                             else => {
                                 std.debug.print("Cannot assign to field of dereferenced non-struct: {s}\n", .{@tagName(ptr.pointee_value.*) });
@@ -2034,13 +2149,44 @@ pub const Interpreter = struct {
                     return InterpreterError.TypeMismatch;
                 }
             },
+            .MemberAccess => |nested_member| {
+                // Chained member access assignment: a.b.c = value
+                // Since env.get() returns deep clones, we must modify and propagate back
+                var intermediate = try self.evaluateExpression(member.object.*);
+                switch (intermediate) {
+                    .Pointer => |*ptr| {
+                        // Pointer: modify the pointee struct, then propagate back up
+                        switch (ptr.pointee_value.*) {
+                            .Struct => |*struct_inst| {
+                                try struct_inst.setField(member.property, value);
+                                ptr.pointee_value.* = Value{ .Struct = struct_inst.* };
+                            },
+                            else => {
+                                std.debug.print("Cannot assign to field of dereferenced non-struct in chained access\n", .{});
+                                return InterpreterError.TypeMismatch;
+                            },
+                        }
+                        // Propagate modified pointer back to parent
+                        try self.assignToMemberAccess(nested_member, intermediate);
+                    },
+                    .Struct => |*struct_inst| {
+                        // Value semantics: modify and propagate change back up
+                        try struct_inst.setField(member.property, value);
+                        try self.assignToMemberAccess(nested_member, intermediate);
+                    },
+                    else => {
+                        std.debug.print("Cannot assign to field of non-struct in chained access: {s}\n", .{@tagName(intermediate)});
+                        return InterpreterError.TypeMismatch;
+                    },
+                }
+            },
             else => {
                 std.debug.print("Complex member access assignment not yet supported\n", .{});
                 return InterpreterError.TypeMismatch;
             }
         }
     }
-    
+
     pub fn executeStructStatement(self: *Interpreter, struct_stmt: ast.StructStatement) InterpreterError!void {
         // Register the struct type in the type registry
         try self.type_registry.registerStruct(struct_stmt.name, struct_stmt);
@@ -3053,19 +3199,43 @@ pub const Interpreter = struct {
                 } else {
                     // Try to find function directly first
                     if (self.functions.get(name)) |func| {
-                        // Removed DEBUG: Calling user function '{s}'\n", .{name});
                         // Evaluate arguments
                         var args = std.ArrayList(Value){};
                         defer args.deinit(self.allocator);
-                        
+
                         for (call.arguments.items) |arg_expr| {
                             const arg = try self.evaluateExpression(arg_expr.*);
                             try args.append(self.allocator, arg);
                         }
-                        
+
                         return try self.callFunction(func, args.items);
                     }
-                    
+
+                    // Try to find function in the current environment (closure chain)
+                    if (self.environment.get(name)) |env_value| {
+                        switch (env_value) {
+                            .UserFunction => |user_func| {
+                                var args = std.ArrayList(Value){};
+                                defer args.deinit(self.allocator);
+                                for (call.arguments.items) |arg_expr| {
+                                    const arg = try self.evaluateExpression(arg_expr.*);
+                                    try args.append(self.allocator, arg);
+                                }
+                                return try self.callFunction(user_func, args.items);
+                            },
+                            .BuiltinFunction => |builtin_func| {
+                                var args = std.ArrayList(Value){};
+                                defer args.deinit(self.allocator);
+                                for (call.arguments.items) |arg_expr| {
+                                    const arg = try self.evaluateExpression(arg_expr.*);
+                                    try args.append(self.allocator, arg);
+                                }
+                                return try builtin_func.func(self, args.items);
+                            },
+                            else => {},
+                        }
+                    } else |_| {}
+
                     // Check if this is a global builtin function
                     if (self.globals.get(name)) |global_value| {
                         switch (global_value) {
@@ -3155,7 +3325,7 @@ pub const Interpreter = struct {
 
     fn evaluateMethodCall(self: *Interpreter, member: ast.MemberAccessExpression, args: []*ast.Expression) InterpreterError!Value {
         const object = try self.evaluateExpression(member.object.*);
-        
+
         switch (object) {
             .Struct => |struct_inst| {
                 // Look for method in struct type definition
@@ -3214,13 +3384,13 @@ pub const Interpreter = struct {
                             // Call the builtin function
                             var func_args = ArrayList(Value){};
                             defer func_args.deinit(self.allocator);
-                            
+
                             // Evaluate arguments
                             for (args) |arg_expr| {
                                 const arg_val = try self.evaluateExpression(arg_expr.*);
                                 try func_args.append(self.allocator, arg_val);
                             }
-                            
+
                             // Call the builtin function
                             return try builtin_func.func(self, func_args.items);
                         },

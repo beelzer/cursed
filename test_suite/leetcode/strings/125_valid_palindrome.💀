@@ -1,0 +1,117 @@
+vibe main
+yeet "vibez"
+yeet "stringz"
+
+no cap
+    LeetCode #125: Valid Palindrome
+    Check if string is a palindrome considering only alphanumeric chars
+    Time: O(n), Space: O(1) - two pointer approach
+on god
+
+slay is_alphanumeric(c normie) lit {
+    fr fr Check if character code is a letter or digit
+    damn (c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122)
+}
+
+slay to_lower(c normie) normie {
+    fr fr Convert uppercase to lowercase
+    lowkey (c >= 65 && c <= 90) {
+        damn c + 32
+    }
+    damn c
+}
+
+slay is_palindrome(s tea) lit {
+    fr fr Two-pointer approach - skip non-alphanumeric chars
+    sus left normie = 0
+    sus right normie = stringz.len(s) - 1
+
+    periodt (left < right) {
+        fr fr Skip non-alphanumeric from left
+        periodt (left < right && !is_alphanumeric(stringz.char_at(s, left))) {
+            left = left + 1
+        }
+
+        fr fr Skip non-alphanumeric from right
+        periodt (left < right && !is_alphanumeric(stringz.char_at(s, right))) {
+            right = right - 1
+        }
+
+        fr fr Compare characters (case-insensitive)
+        lowkey (to_lower(stringz.char_at(s, left)) != to_lower(stringz.char_at(s, right))) {
+            damn cringe
+        }
+
+        left = left + 1
+        right = right - 1
+    }
+
+    damn based
+}
+
+slay is_palindrome_simple(s tea) lit {
+    fr fr Simple approach: build cleaned string, then check
+    sus cleaned tea = ""
+
+    bestie i := 0; i < stringz.len(s); i++ {
+        sus c normie = stringz.char_at(s, i)
+        lowkey (is_alphanumeric(c)) {
+            cleaned = stringz.concat(cleaned, stringz.from_char(to_lower(c)))
+        }
+    }
+
+    fr fr Check if cleaned string reads same forwards and backwards
+    sus left normie = 0
+    sus right normie = stringz.len(cleaned) - 1
+
+    periodt (left < right) {
+        lowkey (stringz.char_at(cleaned, left) != stringz.char_at(cleaned, right)) {
+            damn cringe
+        }
+        left = left + 1
+        right = right - 1
+    }
+
+    damn based
+}
+
+slay test_valid_palindrome() {
+    vibez.spill("=== LeetCode #125: Valid Palindrome ===")
+
+    fr fr Test case 1: "A man, a plan, a canal: Panama"
+    facts test1 tea = "A man, a plan, a canal: Panama"
+    sus result1 lit = is_palindrome(test1)
+    sus result1_simple lit = is_palindrome_simple(test1)
+    vibez.spill("Test 1:", test1)
+    vibez.spill("Expected: true, Two-pointer:", result1, "Simple:", result1_simple)
+
+    fr fr Test case 2: "race a car"
+    facts test2 tea = "race a car"
+    sus result2 lit = is_palindrome(test2)
+    vibez.spill("Test 2:", test2)
+    vibez.spill("Expected: false, Got:", result2)
+
+    fr fr Test case 3: " " (empty/whitespace)
+    facts test3 tea = " "
+    sus result3 lit = is_palindrome(test3)
+    vibez.spill("Test 3: (single space)")
+    vibez.spill("Expected: true, Got:", result3)
+
+    fr fr Test case 4: "racecar"
+    facts test4 tea = "racecar"
+    sus result4 lit = is_palindrome(test4)
+    vibez.spill("Test 4:", test4)
+    vibez.spill("Expected: true, Got:", result4)
+
+    fr fr Test case 5: "0P"
+    facts test5 tea = "0P"
+    sus result5 lit = is_palindrome(test5)
+    vibez.spill("Test 5:", test5)
+    vibez.spill("Expected: false, Got:", result5)
+
+    vibez.spill("=== Valid Palindrome Complete! Two pointers hit different ===")
+}
+
+slay main_character() {
+    test_valid_palindrome()
+}

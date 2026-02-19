@@ -258,6 +258,8 @@ fn interpretSource(allocator: Allocator, source: []const u8, filename: []const u
     var cursed_interpreter = interpreter.Interpreter.initWithVerbose(allocator, verbose);
     defer cursed_interpreter.deinit();
     
+    cursed_interpreter.current_file = filename;
+
     cursed_interpreter.interpret(program) catch |err| {
         print("❌ Runtime error in {s}: {any}\n", .{ filename, err });
         return err;

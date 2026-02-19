@@ -1,0 +1,71 @@
+vibe main
+yeet "vibez"
+
+no cap
+    LeetCode #88: Merge Sorted Array
+    Merge two sorted arrays into one sorted array
+    Time: O(m+n), Space: O(m+n) - returns new merged array
+on god
+
+slay merge(nums1 normie[], m normie, nums2 normie[], n normie) normie[] {
+    fr fr Two-pointer merge into a new result array
+    sus result normie[] = []normie{}
+    sus i normie = 0
+    sus j normie = 0
+
+    fr fr Merge while both arrays have elements
+    periodt (i < m && j < n) {
+        lowkey (nums1[i] <= nums2[j]) {
+            result = append(result, nums1[i])
+            i = i + 1
+        } highkey {
+            result = append(result, nums2[j])
+            j = j + 1
+        }
+    }
+
+    fr fr Copy remaining elements from nums1
+    periodt (i < m) {
+        result = append(result, nums1[i])
+        i = i + 1
+    }
+
+    fr fr Copy remaining elements from nums2
+    periodt (j < n) {
+        result = append(result, nums2[j])
+        j = j + 1
+    }
+
+    damn result
+}
+
+slay test_merge_sorted_array() {
+    vibez.spill("=== LeetCode #88: Merge Sorted Array ===")
+
+    fr fr Test case 1: nums1 = [1,2,3], m = 3, nums2 = [2,5,6], n = 3
+    facts nums1_1 normie[] = [1, 2, 3]
+    facts nums2_1 normie[] = [2, 5, 6]
+    sus merged1 normie[] = merge(nums1_1, 3, nums2_1, 3)
+    vibez.spill("Test 1 - Merged:", merged1)
+    vibez.spill("Expected: [1,2,2,3,5,6]")
+
+    fr fr Test case 2: nums1 = [1], m = 1, nums2 = [], n = 0
+    facts nums1_2 normie[] = [1]
+    facts nums2_2 normie[] = []normie{}
+    sus merged2 normie[] = merge(nums1_2, 1, nums2_2, 0)
+    vibez.spill("Test 2 - Merged:", merged2)
+    vibez.spill("Expected: [1]")
+
+    fr fr Test case 3: nums1 = [], m = 0, nums2 = [1], n = 1
+    facts nums1_3 normie[] = []normie{}
+    facts nums2_3 normie[] = [1]
+    sus merged3 normie[] = merge(nums1_3, 0, nums2_3, 1)
+    vibez.spill("Test 3 - Merged:", merged3)
+    vibez.spill("Expected: [1]")
+
+    vibez.spill("=== Merge Sorted Array Complete! ===")
+}
+
+slay main_character() {
+    test_merge_sorted_array()
+}

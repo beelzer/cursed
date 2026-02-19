@@ -1,0 +1,108 @@
+vibe main
+yeet "vibez"
+
+no cap
+    CURSED LeetCode MASTER TEST RUNNER
+    Imports and runs all 21 LeetCode test files for real!
+on god
+
+fr fr Arrays & Hashing
+yeet "./arrays_hashing/001_two_sum.💀" as two_sum
+yeet "./arrays_hashing/011_container_most_water.💀" as container
+yeet "./arrays_hashing/015_three_sum.💀" as three_sum
+yeet "./arrays_hashing/049_group_anagrams.💀" as anagrams
+yeet "./arrays_hashing/128_longest_consecutive.💀" as consecutive
+yeet "./arrays_hashing/238_product_except_self.💀" as product
+yeet "./arrays_hashing/242_valid_anagram.💀" as anagram
+yeet "./arrays_hashing/412_fizzbuzz.💀" as fizzbuzz
+
+fr fr Linked Lists
+yeet "./linked_lists/206_reverse_linked_list.💀" as reverse_ll
+yeet "./linked_lists/021_merge_sorted_lists.💀" as merge_ll
+yeet "./linked_lists/141_linked_list_cycle.💀" as cycle_ll
+
+fr fr Trees & Graphs
+yeet "./trees_graphs/094_binary_tree_inorder.💀" as inorder
+yeet "./trees_graphs/104_maximum_depth_binary_tree.💀" as max_depth
+
+fr fr Dynamic Programming
+yeet "./dynamic_programming/070_climbing_stairs.💀" as stairs
+yeet "./dynamic_programming/198_house_robber.💀" as robber
+
+fr fr Strings
+yeet "./strings/125_valid_palindrome.💀" as palindrome
+
+fr fr Binary Search
+yeet "./binary_search/704_binary_search.💀" as bsearch
+
+fr fr Stack & Queue
+yeet "./stack_queue/020_valid_parentheses.💀" as parens
+
+fr fr Backtracking
+yeet "./backtracking/046_permutations.💀" as perms
+
+fr fr Math & Bits
+yeet "./math_bits/136_single_number.💀" as single
+
+fr fr Sorting
+yeet "./sorting/088_merge_sorted_array.💀" as merge_arr
+
+slay main_character() {
+    vibez.spill("=== CURSED LEETCODE MASTER TEST RUNNER ===")
+    vibez.spill("=== Running all 21 problems for real! ===")
+    vibez.spill("")
+
+    vibez.spill("--- Arrays & Hashing (8 problems) ---")
+    two_sum.test_two_sum()
+    container.test_container_most_water()
+    three_sum.test_three_sum()
+    anagrams.test_group_anagrams()
+    consecutive.test_longest_consecutive()
+    product.test_product_except_self()
+    anagram.test_anagram()
+    fizzbuzz.test_fizzbuzz()
+
+    vibez.spill("")
+    vibez.spill("--- Linked Lists (3 problems) ---")
+    reverse_ll.test_reverse_linked_list()
+    merge_ll.test_merge_sorted_lists()
+    cycle_ll.test_linked_list_cycle()
+
+    vibez.spill("")
+    vibez.spill("--- Trees & Graphs (2 problems) ---")
+    inorder.test_inorder_traversal()
+    max_depth.test_maximum_depth()
+
+    vibez.spill("")
+    vibez.spill("--- Dynamic Programming (2 problems) ---")
+    stairs.test_climbing_stairs()
+    robber.test_house_robber()
+
+    vibez.spill("")
+    vibez.spill("--- Strings (1 problem) ---")
+    palindrome.test_valid_palindrome()
+
+    vibez.spill("")
+    vibez.spill("--- Binary Search (1 problem) ---")
+    bsearch.test_binary_search()
+
+    vibez.spill("")
+    vibez.spill("--- Stack & Queue (1 problem) ---")
+    parens.test_valid_parentheses()
+
+    vibez.spill("")
+    vibez.spill("--- Backtracking (1 problem) ---")
+    perms.test_permutations()
+
+    vibez.spill("")
+    vibez.spill("--- Math & Bits (1 problem) ---")
+    single.test_single_number()
+
+    vibez.spill("")
+    vibez.spill("--- Sorting (1 problem) ---")
+    merge_arr.test_merge_sorted_array()
+
+    vibez.spill("")
+    vibez.spill("=== ALL 21 LEETCODE PROBLEMS COMPLETE! ===")
+    vibez.spill("=== CURSED language solving real algorithms, no cap! ===")
+}

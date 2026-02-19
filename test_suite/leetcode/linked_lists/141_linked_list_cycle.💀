@@ -1,0 +1,105 @@
+vibe main
+yeet "vibez"
+
+no cap
+    LeetCode #141: Linked List Cycle
+    Detect if linked list has a cycle using Floyd's algorithm
+    Uses index-based linked list with struct nodes for value semantics
+    Time: O(n), Space: O(1) - two pointer approach
+on god
+
+squad Node {
+    sus val normie
+    sus next normie
+}
+
+slay has_cycle(nodes Node[], start normie) lit {
+    fr fr Floyd's Cycle Detection (Tortoise and Hare) - this hits different!
+    lowkey (start == -1 || len(nodes) == 0) {
+        damn cringe
+    }
+
+    sus slow normie = start
+    sus fast normie = start
+
+    periodt (fast != -1 && nodes[fast].next != -1) {
+        slow = nodes[slow].next
+        fast = nodes[nodes[fast].next].next
+
+        lowkey (slow == fast) {
+            damn based
+        }
+    }
+
+    damn cringe
+}
+
+slay has_cycle_visited(nodes Node[], start normie) lit {
+    fr fr Alternative: track visited node indices
+    sus visited normie[] = []normie{}
+    sus current normie = start
+
+    periodt (current != -1) {
+        fr fr Check if we've seen this index before
+        bestie i := 0; i < len(visited); i++ {
+            lowkey (visited[i] == current) {
+                damn based
+            }
+        }
+
+        visited = append(visited, current)
+        current = nodes[current].next
+    }
+
+    damn cringe
+}
+
+slay test_linked_list_cycle() {
+    vibez.spill("=== LeetCode #141: Linked List Cycle ===")
+
+    fr fr Test case 1: List with cycle [3,2,0,-4] -> back to index 1
+    fr fr Index: 0->1->2->3->1 (cycle!)
+    sus cycle_nodes Node[] = []Node{}
+    cycle_nodes = append(cycle_nodes, Node{val: 3, next: 1})
+    cycle_nodes = append(cycle_nodes, Node{val: 2, next: 2})
+    cycle_nodes = append(cycle_nodes, Node{val: 0, next: 3})
+    cycle_nodes = append(cycle_nodes, Node{val: -4, next: 1})
+
+    sus has_cycle_1 lit = has_cycle(cycle_nodes, 0)
+    sus has_cycle_1_visited lit = has_cycle_visited(cycle_nodes, 0)
+    vibez.spill("Test 1 - List with cycle [3,2,0,-4] -> back to 2:")
+    vibez.spill("Floyd's algorithm:", has_cycle_1)
+    vibez.spill("Visited approach:", has_cycle_1_visited)
+    vibez.spill("Expected: true")
+
+    fr fr Test case 2: List without cycle [1,2] -> nah
+    sus no_cycle_nodes Node[] = []Node{}
+    no_cycle_nodes = append(no_cycle_nodes, Node{val: 1, next: 1})
+    no_cycle_nodes = append(no_cycle_nodes, Node{val: 2, next: -1})
+
+    sus has_cycle_2 lit = has_cycle(no_cycle_nodes, 0)
+    vibez.spill("Test 2 - List without cycle [1,2]:")
+    vibez.spill("Floyd's algorithm:", has_cycle_2)
+    vibez.spill("Expected: false")
+
+    fr fr Test case 3: Empty list
+    sus has_cycle_3 lit = has_cycle([]Node{}, -1)
+    vibez.spill("Test 3 - Empty list:")
+    vibez.spill("Result:", has_cycle_3)
+    vibez.spill("Expected: false")
+
+    fr fr Test case 4: Single node pointing to itself
+    sus self_cycle Node[] = []Node{}
+    self_cycle = append(self_cycle, Node{val: 1, next: 0})
+
+    sus has_cycle_4 lit = has_cycle(self_cycle, 0)
+    vibez.spill("Test 4 - Single node pointing to itself:")
+    vibez.spill("Result:", has_cycle_4)
+    vibez.spill("Expected: true")
+
+    vibez.spill("=== Cycle Detection Complete! Floyd's algorithm is sus-piciously good ===")
+}
+
+slay main_character() {
+    test_linked_list_cycle()
+}

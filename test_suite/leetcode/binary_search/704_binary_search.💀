@@ -1,0 +1,106 @@
+vibe main
+yeet "vibez"
+
+no cap
+    LeetCode #704: Binary Search
+    Find target in sorted array using divide-and-conquer
+    Time: O(log n), Space: O(1) - iterative approach
+on god
+
+slay binary_search(nums normie[], target normie) normie {
+    sus left normie = 0
+    sus right normie = len(nums) - 1
+
+    periodt (left <= right) {
+        sus m normie = left + (right - left) / 2
+
+        lowkey (nums[m] == target) {
+            damn m
+        } highkey lowkey (nums[m] < target) {
+            left = m + 1
+        } highkey {
+            right = m - 1
+        }
+    }
+
+    damn -1
+}
+
+slay binary_search_recursive(nums normie[], target normie, left normie, right normie) normie {
+    fr fr Recursive approach - this hits different!
+    lowkey (left > right) {
+        damn -1
+    }
+
+    sus m normie = left + (right - left) / 2
+
+    lowkey (nums[m] == target) {
+        damn m
+    } highkey lowkey (nums[m] < target) {
+        damn binary_search_recursive(nums, target, m + 1, right)
+    } highkey {
+        damn binary_search_recursive(nums, target, left, m - 1)
+    }
+}
+
+slay search_insert_position(nums normie[], target normie) normie {
+    fr fr Bonus: find where target would be inserted to keep array sorted
+    sus left normie = 0
+    sus right normie = len(nums)
+
+    periodt (left < right) {
+        sus m normie = left + (right - left) / 2
+
+        lowkey (nums[m] < target) {
+            left = m + 1
+        } highkey {
+            right = m
+        }
+    }
+
+    damn left
+}
+
+slay test_binary_search() {
+    vibez.spill("=== LeetCode #704: Binary Search ===")
+
+    fr fr Test case 1: [−1,0,3,5,9,12], target = 9
+    facts nums1 normie[] = [-1, 0, 3, 5, 9, 12]
+    facts target1 normie = 9
+    sus result1 normie = binary_search(nums1, target1)
+    sus result1_rec normie = binary_search_recursive(nums1, target1, 0, len(nums1) - 1)
+    vibez.spill("Test 1 - Input: [-1,0,3,5,9,12], Target: 9")
+    vibez.spill("Expected: 4, Iterative:", result1, "Recursive:", result1_rec)
+
+    fr fr Test case 2: [−1,0,3,5,9,12], target = 2
+    facts target2 normie = 2
+    sus result2 normie = binary_search(nums1, target2)
+    vibez.spill("Test 2 - Input: [-1,0,3,5,9,12], Target: 2")
+    vibez.spill("Expected: -1, Got:", result2)
+
+    fr fr Test case 3: [5], target = 5
+    facts nums3 normie[] = [5]
+    sus result3 normie = binary_search(nums3, 5)
+    vibez.spill("Test 3 - Input: [5], Target: 5")
+    vibez.spill("Expected: 0, Got:", result3)
+
+    fr fr Test case 4: [2,5], target = 0
+    facts nums4 normie[] = [2, 5]
+    sus result4 normie = binary_search(nums4, 0)
+    vibez.spill("Test 4 - Input: [2,5], Target: 0")
+    vibez.spill("Expected: -1, Got:", result4)
+
+    fr fr Search insert position bonus
+    vibez.spill("=== Bonus: Search Insert Position ===")
+    facts nums5 normie[] = [1, 3, 5, 6]
+    vibez.spill("Array: [1,3,5,6]")
+    vibez.spill("Insert position for 5:", search_insert_position(nums5, 5))
+    vibez.spill("Insert position for 2:", search_insert_position(nums5, 2))
+    vibez.spill("Insert position for 7:", search_insert_position(nums5, 7))
+
+    vibez.spill("=== Binary Search Complete! Divide and conquer is fire ===")
+}
+
+slay main_character() {
+    test_binary_search()
+}

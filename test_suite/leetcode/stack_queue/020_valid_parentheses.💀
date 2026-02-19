@@ -1,0 +1,154 @@
+vibe main
+yeet "vibez"
+yeet "stringz"
+
+no cap
+    LeetCode #20: Valid Parentheses
+    Check if parentheses are properly matched using stack
+    Time: O(n), Space: O(n) - stack approach
+on god
+
+slay pop_last(arr tea[]) tea[] {
+    fr fr Return a new array without the last element
+    sus new_arr tea[] = []tea{}
+    bestie i := 0; i < len(arr) - 1; i++ {
+        new_arr = append(new_arr, arr[i])
+    }
+    damn new_arr
+}
+
+slay is_valid(s tea) lit {
+    lowkey (stringz.len(s) == 0) {
+        damn based
+    }
+
+    lowkey (stringz.len(s) % 2 == 1) {
+        damn cringe
+    }
+
+    sus stack tea[] = []tea{}
+
+    bestie i := 0; i < stringz.len(s); i++ {
+        sus char tea = stringz.from_char(stringz.char_at(s, i))
+
+        lowkey (char == "(" || char == "[" || char == "{") {
+            fr fr Opening bracket - push to stack
+            stack = append(stack, char)
+        } highkey {
+            fr fr Closing bracket - check if matches
+            lowkey (len(stack) == 0) {
+                damn cringe
+            }
+
+            sus top tea = stack[len(stack) - 1]
+            stack = pop_last(stack)
+
+            lowkey (!is_matching_pair(top, char)) {
+                damn cringe
+            }
+        }
+    }
+
+    fr fr Valid if stack is empty (all brackets matched)
+    damn len(stack) == 0
+}
+
+slay is_matching_pair(opening tea, closing tea) lit {
+    lowkey (opening == "(" && closing == ")") {
+        damn based
+    }
+    lowkey (opening == "[" && closing == "]") {
+        damn based
+    }
+    lowkey (opening == "{" && closing == "}") {
+        damn based
+    }
+    damn cringe
+}
+
+slay is_valid_optimized(s tea) lit {
+    fr fr Optimized version - replace pairs and check if empty
+    sus working tea = s
+    sus prev_len normie = stringz.len(working) + 1
+
+    periodt (stringz.len(working) < prev_len && stringz.len(working) > 0) {
+        prev_len = stringz.len(working)
+        working = stringz.replace_all(working, "()", "")
+        working = stringz.replace_all(working, "[]", "")
+        working = stringz.replace_all(working, "{}", "")
+    }
+
+    damn stringz.len(working) == 0
+}
+
+slay is_valid_among_us(s tea) lit {
+    fr fr Among Us themed version - this hits different!
+    fr fr Use "S" = opening, "K" = closing (for Sus and Kill)
+    sus stack tea[] = []tea{}
+
+    bestie i := 0; i < stringz.len(s); i++ {
+        sus char tea = stringz.from_char(stringz.char_at(s, i))
+
+        lowkey (char == "S") {
+            stack = append(stack, char)
+        } highkey lowkey (char == "K") {
+            lowkey (len(stack) == 0) {
+                damn cringe
+            }
+            stack = pop_last(stack)
+        }
+    }
+
+    damn len(stack) == 0
+}
+
+slay test_valid_parentheses() {
+    vibez.spill("=== LeetCode #20: Valid Parentheses ===")
+
+    fr fr Test case 1: "()"
+    facts test1 tea = "()"
+    sus result1 lit = is_valid(test1)
+    vibez.spill("Test 1:", test1, "- Expected: true, Got:", result1)
+
+    fr fr Test case 2: "()[]{}"
+    facts test2 tea = "()[]{}"
+    sus result2 lit = is_valid(test2)
+    vibez.spill("Test 2:", test2, "- Expected: true, Got:", result2)
+
+    fr fr Test case 3: "(]"
+    facts test3 tea = "(]"
+    sus result3 lit = is_valid(test3)
+    vibez.spill("Test 3:", test3, "- Expected: false, Got:", result3)
+
+    fr fr Test case 4: "([)]"
+    facts test4 tea = "([)]"
+    sus result4 lit = is_valid(test4)
+    vibez.spill("Test 4:", test4, "- Expected: false, Got:", result4)
+
+    fr fr Test case 5: "{[]}"
+    facts test5 tea = "{[]}"
+    sus result5 lit = is_valid(test5)
+    vibez.spill("Test 5:", test5, "- Expected: true, Got:", result5)
+
+    fr fr Compare approaches
+    vibez.spill("=== Approach Comparison ===")
+    facts test_str tea = "((()))"
+    sus stack_result lit = is_valid(test_str)
+    sus optimized_result lit = is_valid_optimized(test_str)
+    vibez.spill("Test string:", test_str)
+    vibez.spill("Stack approach:", stack_result)
+    vibez.spill("Optimized approach:", optimized_result)
+
+    fr fr Among Us version
+    vibez.spill("=== Among Us Parentheses ===")
+    facts among_test tea = "SSKK"
+    sus among_result lit = is_valid_among_us(among_test)
+    vibez.spill("Among Us test:", among_test)
+    vibez.spill("Result:", among_result, "(S opens, K closes)")
+
+    vibez.spill("=== Valid Parentheses Complete! Stack operations are clean ===")
+}
+
+slay main_character() {
+    test_valid_parentheses()
+}

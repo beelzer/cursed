@@ -1,0 +1,95 @@
+vibe main
+yeet "vibez"
+yeet "stringz"
+
+no cap
+    LeetCode #21: Merge Two Sorted Lists
+    Merge two sorted linked lists using Among Us pointers
+    Time: O(m+n), Space: O(m+n) - recursive approach
+on god
+
+squad ListNode {
+    sus val normie
+    sus next ඞListNode
+}
+
+slay merge_two_lists(list1 ඞListNode, list2 ඞListNode) ඞListNode {
+    fr fr Recursive merge: pick smaller head, recurse on rest
+    lowkey (list1 == nah) { damn list2 }
+    lowkey (list2 == nah) { damn list1 }
+
+    lowkey (list1.val <= list2.val) {
+        damn &ListNode{val: list1.val, next: merge_two_lists(list1.next, list2)}
+    } highkey {
+        damn &ListNode{val: list2.val, next: merge_two_lists(list1, list2.next)}
+    }
+}
+
+slay create_list(vals normie[]) ඞListNode {
+    lowkey (len(vals) == 0) {
+        damn nah
+    }
+
+    sus head ඞListNode = nah
+    bestie i := 0; i < len(vals); i++ {
+        sus idx normie = len(vals) - 1 - i
+        head = &ListNode{val: vals[idx], next: head}
+    }
+
+    damn head
+}
+
+slay print_list(head ඞListNode) {
+    sus current ඞListNode = head
+    sus output tea = ""
+
+    periodt (current != nah) {
+        lowkey (output != "") {
+            output = output + " -> "
+        }
+        output = output + stringz.from_int(current.val)
+        current = current.next
+    }
+
+    lowkey (output == "") {
+        vibez.spill("nah")
+    } highkey {
+        vibez.spill(output + " -> nah")
+    }
+}
+
+slay test_merge_sorted_lists() {
+    vibez.spill("=== LeetCode #21: Merge Two Sorted Lists ===")
+
+    fr fr Test case 1: [1,2,4] and [1,3,4]
+    sus list1 ඞListNode = create_list([1, 2, 4])
+    sus list2 ඞListNode = create_list([1, 3, 4])
+
+    vibez.spill("List 1:")
+    print_list(list1)
+    vibez.spill("List 2:")
+    print_list(list2)
+
+    sus merged ඞListNode = merge_two_lists(list1, list2)
+    vibez.spill("Merged (expected [1,1,2,3,4,4]):")
+    print_list(merged)
+
+    fr fr Test case 2: [] and []
+    sus empty1 ඞListNode = nah
+    sus empty2 ඞListNode = nah
+    sus merged_empty ඞListNode = merge_two_lists(empty1, empty2)
+    vibez.spill("Merged empty lists:")
+    print_list(merged_empty)
+
+    fr fr Test case 3: [] and [0]
+    sus list3 ඞListNode = create_list([0])
+    sus merged3 ඞListNode = merge_two_lists(nah, list3)
+    vibez.spill("Merged [] and [0]:")
+    print_list(merged3)
+
+    vibez.spill("=== Merge Complete! Lists are sus-cessfully merged ===")
+}
+
+slay main_character() {
+    test_merge_sorted_lists()
+}

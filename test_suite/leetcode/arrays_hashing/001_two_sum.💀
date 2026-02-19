@@ -1,0 +1,50 @@
+vibe main
+yeet "vibez"
+
+no cap
+    LeetCode #1: Two Sum
+    Find two numbers that add up to target
+    Time: O(n^2), Space: O(1) - brute force approach
+on god
+
+slay two_sum(nums normie[], target normie) normie[] {
+    bestie i := 0; i < len(nums); i++ {
+        bestie j := i + 1; j < len(nums); j++ {
+            lowkey (nums[i] + nums[j] == target) {
+                damn [i, j]
+            }
+        }
+    }
+    damn []normie{}
+}
+
+slay test_two_sum() {
+    vibez.spill("=== LeetCode #1: Two Sum ===")
+
+    fr fr Test case 1: [2,7,11,15], target = 9
+    facts nums1 normie[] = [2, 7, 11, 15]
+    facts target1 normie = 9
+    sus result1 normie[] = two_sum(nums1, target1)
+    vibez.spill("Test 1 - Input: [2,7,11,15], Target: 9")
+    vibez.spill("Expected: [0,1], Got:", result1)
+
+    fr fr Test case 2: [3,2,4], target = 6
+    facts nums2 normie[] = [3, 2, 4]
+    facts target2 normie = 6
+    sus result2 normie[] = two_sum(nums2, target2)
+    vibez.spill("Test 2 - Input: [3,2,4], Target: 6")
+    vibez.spill("Expected: [1,2], Got:", result2)
+
+    fr fr Test case 3: [3,3], target = 6
+    facts nums3 normie[] = [3, 3]
+    facts target3 normie = 6
+    sus result3 normie[] = two_sum(nums3, target3)
+    vibez.spill("Test 3 - Input: [3,3], Target: 6")
+    vibez.spill("Expected: [0,1], Got:", result3)
+
+    vibez.spill("=== Two Sum Complete! No cap ===")
+}
+
+slay main_character() {
+    test_two_sum()
+}

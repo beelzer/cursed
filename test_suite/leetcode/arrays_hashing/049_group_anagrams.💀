@@ -1,0 +1,123 @@
+vibe main
+yeet "vibez"
+yeet "stringz"
+
+no cap
+    LeetCode #49: Group Anagrams
+    Group strings that are anagrams of each other
+    Time: O(n * m log m), Space: O(n * m) where n = strings, m = avg length
+on god
+
+slay concat_arrays(a normie[], b normie[]) normie[] {
+    fr fr Concatenate two arrays into a new one
+    sus result normie[] = []normie{}
+    bestie i := 0; i < len(a); i++ {
+        result = append(result, a[i])
+    }
+    bestie i := 0; i < len(b); i++ {
+        result = append(result, b[i])
+    }
+    damn result
+}
+
+slay group_anagrams(strs tea[]) tea[][] {
+    sus groups tea[][] = [][]tea{}
+    sus signatures tea[] = []tea{}
+
+    bestie i := 0; i < len(strs); i++ {
+        sus signature tea = get_signature(strs[i])
+        sus found_group normie = -1
+
+        fr fr Find existing group with same signature
+        bestie j := 0; j < len(signatures); j++ {
+            lowkey (signatures[j] == signature) {
+                found_group = j
+                ghosted
+            }
+        }
+
+        lowkey (found_group == -1) {
+            fr fr Create new group
+            sus new_group tea[] = []tea{}
+            new_group = append(new_group, strs[i])
+            groups = append(groups, new_group)
+            signatures = append(signatures, signature)
+        } highkey {
+            fr fr Add to existing group
+            groups[found_group] = append(groups[found_group], strs[i])
+        }
+    }
+
+    damn groups
+}
+
+slay get_signature(s tea) tea {
+    fr fr Sort characters to create signature - anagrams have same signature
+    sus chars normie[] = string_to_chars(s)
+    sus sorted normie[] = sort_chars(chars)
+    damn chars_to_string(sorted)
+}
+
+slay string_to_chars(s tea) normie[] {
+    sus chars normie[] = []normie{}
+    bestie i := 0; i < stringz.len(s); i++ {
+        chars = append(chars, stringz.char_at(s, i))
+    }
+    damn chars
+}
+
+slay chars_to_string(chars normie[]) tea {
+    sus result tea = ""
+    bestie i := 0; i < len(chars); i++ {
+        result = stringz.concat(result, stringz.from_char(chars[i]))
+    }
+    damn result
+}
+
+slay sort_chars(arr normie[]) normie[] {
+    fr fr Quick sort for char codes - returns a new sorted array
+    lowkey (len(arr) <= 1) {
+        damn arr
+    }
+
+    sus pivot normie = arr[len(arr) / 2]
+    sus less normie[] = []normie{}
+    sus equal normie[] = []normie{}
+    sus greater normie[] = []normie{}
+
+    bestie i := 0; i < len(arr); i++ {
+        lowkey (arr[i] < pivot) {
+            less = append(less, arr[i])
+        } highkey lowkey (arr[i] == pivot) {
+            equal = append(equal, arr[i])
+        } highkey {
+            greater = append(greater, arr[i])
+        }
+    }
+
+    sus sorted_less normie[] = sort_chars(less)
+    sus sorted_greater normie[] = sort_chars(greater)
+    sus result normie[] = concat_arrays(sorted_less, equal)
+    result = concat_arrays(result, sorted_greater)
+
+    damn result
+}
+
+slay test_group_anagrams() {
+    vibez.spill("=== LeetCode #49: Group Anagrams ===")
+
+    facts strs1 tea[] = ["eat", "tea", "tan", "ate", "nat", "bat"]
+    sus result1 tea[][] = group_anagrams(strs1)
+    vibez.spill("Input: [eat,tea,tan,ate,nat,bat]")
+    vibez.spill("Found", len(result1), "anagram groups")
+
+    facts strs2 tea[] = [""]
+    sus result2 tea[][] = group_anagrams(strs2)
+    vibez.spill("Empty string test - Groups:", len(result2))
+
+    vibez.spill("=== Group Anagrams Complete! Anagram grouping is fire ===")
+}
+
+slay main_character() {
+    test_group_anagrams()
+}

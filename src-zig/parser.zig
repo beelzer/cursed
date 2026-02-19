@@ -3740,9 +3740,11 @@ pub const Parser = struct {
                 return ParserError.UnexpectedToken;
             }
             const name = self.advance().lexeme;
-            // Consume optional colon+type after name (e.g., "sus id: i32")
+            // Consume type after name: "sus val normie", "sus val: normie", "sus next ඞNode"
             var field_type = ast.Type{ .Basic = ast.BasicType.Auto };
             if (self.match(.Colon)) {
+                field_type = self.parseType() catch ast.Type{ .Basic = ast.BasicType.Auto };
+            } else if (self.checkTypeKeywordOrPointer()) {
                 field_type = self.parseType() catch ast.Type{ .Basic = ast.BasicType.Auto };
             }
             return ast.StructField{
@@ -3751,8 +3753,8 @@ pub const Parser = struct {
                 .visibility = visibility,
             };
         }
-        if (self.checkBasicType()) {
-            // Type-first syntax with actual type: tea name, normie age, vibes score, etc.
+        if (self.checkTypeKeywordOrPointer()) {
+            // Type-first syntax with actual type keywords: tea name, normie age, ඞNode next, etc.
             const field_type = try self.parseType();
             if (!self.check(.Identifier)) {
                 return ParserError.UnexpectedToken;
@@ -4603,8 +4605,9 @@ pub const Parser = struct {
                self.check(.Thicc) or self.check(.Snack) or self.check(.Meal) or
                self.check(.Byte) or self.check(.Rune) or self.check(.Extra) or
                self.check(.Lit) or self.check(.Cap) or self.check(.Identifier) or
-               self.check(.LeftBracket) or self.check(.Dm) or 
-               self.checkIdentifier("map") or self.check(.LeftParen);
+               self.check(.LeftBracket) or self.check(.Dm) or
+               self.checkIdentifier("map") or self.check(.LeftParen) or
+               self.check(.At); // ඞ pointer types
     }
 
     fn checkBasicType(self: *Parser) bool {
@@ -4614,6 +4617,18 @@ pub const Parser = struct {
                self.check(.Byte) or self.check(.Rune) or self.check(.Extra) or
                self.check(.Lit) or self.check(.Cap) or self.check(.Yikes) or self.check(.Identifier);
                // Removed .At - pointer types should be handled separately in parseType
+    }
+
+    /// Check if the current token is a type keyword or pointer prefix (ඞ),
+    /// but NOT a bare identifier. Used in struct field parsing to distinguish
+    /// type-first syntax (normie age) from name-first syntax (data normie).
+    fn checkTypeKeywordOrPointer(self: *Parser) bool {
+        return self.check(.Normie) or self.check(.Drip) or self.check(.Tea) or self.check(.Txt) or
+               self.check(.Sip) or self.check(.Smol) or self.check(.Mid) or
+               self.check(.Thicc) or self.check(.Snack) or self.check(.Meal) or
+               self.check(.Byte) or self.check(.Rune) or self.check(.Extra) or
+               self.check(.Lit) or self.check(.Cap) or self.check(.Yikes) or
+               self.check(.At);
     }
 
     fn advance(self: *Parser) Token {
@@ -4732,23 +4747,35 @@ pub const Parser = struct {
             return true;
         }
         
-        // FIXED: Only check for simple member access assignment like obj.prop = value
-        // Don't scan too far ahead as it can find unrelated assignments in later statements
-        const initial_pos = pos;
-        const max_lookahead = 5;  // Limit lookahead to prevent false positives
-        
-        while (pos < self.tokens.len and (pos - initial_pos) < max_lookahead) {
+        // Check for member access (obj.prop) and array access (arr[i]) assignment targets
+        // Properly skip over bracket contents to handle arr[j+1] = val patterns
+        const max_lookahead = 20;
+        const start_pos = pos;
+
+        while (pos < self.tokens.len and (pos - start_pos) < max_lookahead) {
             const current_kind = self.tokens[pos].kind;
-            if (current_kind == .Equal or current_kind == .PlusEqual or 
+            if (current_kind == .Equal or current_kind == .PlusEqual or
                current_kind == .MinusEqual or current_kind == .StarEqual or
                current_kind == .SlashEqual or current_kind == .PercentEqual) {
                 return true;
             }
-            // Stop at statement terminators or function calls (which indicate this is not an assignment)
-            if (current_kind == .Semicolon or current_kind == .Newline or 
+            // Stop at statement terminators or function calls
+            if (current_kind == .Semicolon or current_kind == .Newline or
                current_kind == .LeftBrace or current_kind == .RightBrace or
-               current_kind == .LeftParen) {  // LeftParen indicates a function call, not assignment
+               current_kind == .LeftParen or current_kind == .Eof) {
                 return false;
+            }
+            // Skip over bracket contents: arr[expr] — jump to matching ']'
+            if (current_kind == .LeftBracket) {
+                pos += 1;
+                var bracket_depth: usize = 1;
+                while (pos < self.tokens.len and bracket_depth > 0) {
+                    if (self.tokens[pos].kind == .LeftBracket) bracket_depth += 1;
+                    if (self.tokens[pos].kind == .RightBracket) bracket_depth -= 1;
+                    if (self.tokens[pos].kind == .Eof) return false;
+                    pos += 1;
+                }
+                continue;  // pos now points past the ']'
             }
             pos += 1;
         }

@@ -1,0 +1,104 @@
+vibe main
+yeet "vibez"
+
+no cap
+    LeetCode #104: Maximum Depth of Binary Tree
+    Find the maximum depth (height) of a binary tree using pointers
+    Time: O(n), Space: O(h) where h is height
+on god
+
+squad TreeNode {
+    sus val normie
+    sus left ඞTreeNode
+    sus right ඞTreeNode
+}
+
+slay max_depth(root ඞTreeNode) normie {
+    lowkey (root == nah) {
+        damn 0
+    }
+
+    sus left_depth normie = max_depth(root.left)
+    sus right_depth normie = max_depth(root.right)
+
+    lowkey (left_depth > right_depth) {
+        damn 1 + left_depth
+    }
+    damn 1 + right_depth
+}
+
+slay create_test_tree() ඞTreeNode {
+    no cap
+        Create tree: [3,9,20,null,null,15,7]
+              3
+             / \
+            9   20
+               /  \
+              15   7
+    on god
+
+    sus root ඞTreeNode = &TreeNode{val: 3, left: nah, right: nah}
+    root.left = &TreeNode{val: 9, left: nah, right: nah}
+    root.right = &TreeNode{val: 20, left: nah, right: nah}
+    root.right.left = &TreeNode{val: 15, left: nah, right: nah}
+    root.right.right = &TreeNode{val: 7, left: nah, right: nah}
+
+    damn root
+}
+
+slay create_skewed_tree() ඞTreeNode {
+    no cap
+        Create skewed tree for testing edge cases
+          1
+           \
+            2
+             \
+              3
+    on god
+
+    sus root ඞTreeNode = &TreeNode{val: 1, left: nah, right: nah}
+    root.right = &TreeNode{val: 2, left: nah, right: nah}
+    root.right.right = &TreeNode{val: 3, left: nah, right: nah}
+
+    damn root
+}
+
+slay test_maximum_depth() {
+    vibez.spill("=== LeetCode #104: Maximum Depth of Binary Tree ===")
+
+    fr fr Test case 1: Balanced tree [3,9,20,null,null,15,7]
+    sus root1 ඞTreeNode = create_test_tree()
+    sus depth1 normie = max_depth(root1)
+    vibez.spill("Test 1 - Balanced tree:")
+    vibez.spill("Expected depth: 3, Got:", depth1)
+
+    fr fr Test case 2: Empty tree
+    sus root2 ඞTreeNode = nah
+    sus depth2 normie = max_depth(root2)
+    vibez.spill("Test 2 - Empty tree:")
+    vibez.spill("Expected depth: 0, Got:", depth2)
+
+    fr fr Test case 3: Single node [1]
+    sus root3 ඞTreeNode = &TreeNode{val: 1, left: nah, right: nah}
+    sus depth3 normie = max_depth(root3)
+    vibez.spill("Test 3 - Single node:")
+    vibez.spill("Expected depth: 1, Got:", depth3)
+
+    fr fr Test case 4: Skewed tree
+    sus root4 ඞTreeNode = create_skewed_tree()
+    sus depth4 normie = max_depth(root4)
+    vibez.spill("Test 4 - Skewed tree:")
+    vibez.spill("Expected depth: 3, Got:", depth4)
+
+    fr fr Test case 5: Left-heavy tree (built inline for depth 4)
+    sus root5 ඞTreeNode = &TreeNode{val: 1, left: &TreeNode{val: 2, left: &TreeNode{val: 3, left: &TreeNode{val: 4, left: nah, right: nah}, right: nah}, right: nah}, right: nah}
+    sus depth5 normie = max_depth(root5)
+    vibez.spill("Test 5 - Left-heavy tree:")
+    vibez.spill("Expected depth: 4, Got:", depth5)
+
+    vibez.spill("=== Maximum Depth Complete! Tree depth detection is sus-perfect ===")
+}
+
+slay main_character() {
+    test_maximum_depth()
+}
