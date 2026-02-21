@@ -22,6 +22,30 @@ pub fn build(b: *std.Build) void {
     // Install the executable
     b.installArtifact(cursed_exe);
 
+    // CURSED Formatter executable
+    const fmt_exe = b.addExecutable(.{
+        .name = "cursed-fmt",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src-zig/formatter.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+    fmt_exe.linkLibC();
+    b.installArtifact(fmt_exe);
+
+    // CURSED Linter executable
+    const lint_exe = b.addExecutable(.{
+        .name = "cursed-lint",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src-zig/linter.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+    lint_exe.linkLibC();
+    b.installArtifact(lint_exe);
+
     // Create a run step for the compiler
     const run_cmd = b.addRunArtifact(cursed_exe);
     run_cmd.step.dependOn(b.getInstallStep());
