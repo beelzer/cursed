@@ -1,0 +1,56 @@
+vibe main
+
+yeet "vibez"
+
+no cap
+Pointer Intensive Performance Test
+Tests: Heavy pointer usage for performance validation
+Expected: Identical results in both modes
+on god
+
+slay main_character() {
+    vibez.spill("=== Pointer Performance Test ===")
+
+    fr fr Repeated pointer operations in loop
+    sus x normie = 1
+    sus i normie = 0
+    periodt i < 10 {
+        sus ptr ඞnormie = ඞx
+        *ptr = *ptr * 2
+        i = i + 1
+    }
+
+    vibez.spill("After 10 doublings (1 * 2^10 = 1024):")
+    vibez.spill(x)
+
+    fr fr Multiple pointer targets
+    sus a normie = 10
+    sus b normie = 20
+    sus c normie = 30
+    sus total normie = 0
+
+    sus ptr ඞnormie = ඞa
+    total = total + *ptr
+    ptr = ඞb
+    total = total + *ptr
+    ptr = ඞc
+    total = total + *ptr
+
+    vibez.spill("Total through pointers (10+20+30):")
+    vibez.spill(total)
+
+    fr fr Double pointer modification loop
+    sus counter normie = 0
+    sus p1 ඞnormie = ඞcounter
+    sus p2 ඞඞnormie = ඞp1
+    sus j normie = 0
+    periodt j < 50 {
+        **p2 = **p2 + 1
+        j = j + 1
+    }
+
+    vibez.spill("After 50 double-pointer increments:")
+    vibez.spill(counter)
+
+    vibez.spill("=== Performance Test Complete ===")
+}

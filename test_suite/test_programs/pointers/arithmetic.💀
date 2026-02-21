@@ -1,0 +1,39 @@
+vibe main
+
+yeet "vibez"
+
+no cap
+Pointer Arithmetic Test
+Tests: Basic pointer operations with multiple variables
+Expected: Identical results in both modes
+on god
+
+slay main_character() {
+    vibez.spill("=== Pointer Arithmetic Test ===")
+
+    sus a normie = 10
+    sus b normie = 20
+    sus c normie = 30
+
+    sus ptr ඞnormie = ඞa
+
+    vibez.spill("Value through pointer:")
+    vibez.spill(*ptr)
+
+    fr fr Access second variable through pointer
+    ptr = ඞb
+    vibez.spill("Second element:")
+    vibez.spill(*ptr)
+
+    fr fr Modify through pointer
+    *ptr = 999
+    vibez.spill("Modified second element:")
+    vibez.spill(b)
+
+    fr fr Pointer to third variable
+    ptr = ඞc
+    vibez.spill("Third element:")
+    vibez.spill(*ptr)
+
+    vibez.spill("=== Test Complete ===")
+}

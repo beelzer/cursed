@@ -1,0 +1,47 @@
+vibe main
+yeet "vibez"
+
+// Test panic scenarios and recovery mechanisms
+slay cause_panic() yikes {
+    yikes "Critical system failure - panic triggered"
+}
+
+slay safe_operation_with_recovery() {
+    fam {
+        vibez.spill("Starting potentially dangerous operation...")
+        cause_panic()
+        vibez.spill("This line should not execute")
+    } sus err {
+        vibez.spill("Panic recovered successfully:", err.message())
+    }
+}
+
+slay main_character() {
+    vibez.spill("=== Panic Recovery Tests ===")
+
+    // Test 1: Basic panic recovery
+    safe_operation_with_recovery()
+
+    // Test 2: Direct panic handling
+    fam {
+        vibez.spill("About to trigger direct panic")
+        yikes "Direct panic test"
+    } sus err {
+        vibez.spill("Direct panic caught:", err.message())
+    }
+
+    // Test 3: Nested panic scenarios
+    fam {
+        fam {
+            vibez.spill("Nested operation starting")
+            yikes "Nested panic"
+        } sus inner_err {
+            vibez.spill("Inner panic handled:", inner_err.message())
+            yikes "Re-panic from handler"
+        }
+    } sus outer_err {
+        vibez.spill("Outer panic handled:", outer_err.message())
+    }
+
+    vibez.spill("Panic recovery tests completed successfully")
+}

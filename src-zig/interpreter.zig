@@ -794,6 +794,7 @@ pub const Interpreter = struct {
     verbose: bool,
     allocator: Allocator,
     return_value: Value, // For propagating return values from nested statements
+    last_error_message: ?[]const u8, // For propagating yikes error messages to fam blocks
 
     const MAX_CALL_STACK_DEPTH = 1000;
 
@@ -823,6 +824,7 @@ pub const Interpreter = struct {
             .verbose = verbose,
             .allocator = allocator,
             .return_value = Value.Null, // Initialize to null
+            .last_error_message = null,
         };
         
         // Register global builtin functions
@@ -1752,6 +1754,13 @@ pub const Interpreter = struct {
             try module_functions.put("floor", Value{ .BuiltinFunction = .{ .name = "mathz.floor", .func = builtinMathzFloor } });
             try module_functions.put("ceil", Value{ .BuiltinFunction = .{ .name = "mathz.ceil", .func = builtinMathzCeil } });
             try module_functions.put("round", Value{ .BuiltinFunction = .{ .name = "mathz.round", .func = builtinMathzRound } });
+            // Aliases for common long-form names
+            try module_functions.put("multiply", Value{ .BuiltinFunction = .{ .name = "mathz.mul", .func = builtinMathzMul } });
+            try module_functions.put("divide", Value{ .BuiltinFunction = .{ .name = "mathz.div", .func = builtinMathzDiv } });
+            try module_functions.put("subtract", Value{ .BuiltinFunction = .{ .name = "mathz.sub", .func = builtinMathzSub } });
+            try module_functions.put("mod", Value{ .BuiltinFunction = .{ .name = "mathz.mod", .func = builtinMathzMod } });
+            try module_functions.put("modulo", Value{ .BuiltinFunction = .{ .name = "mathz.mod", .func = builtinMathzMod } });
+            try module_functions.put("abs", Value{ .BuiltinFunction = .{ .name = "mathz.abs_normie", .func = builtinMathzAbs } });
         } else if (std.mem.eql(u8, module_name, "stringz")) {
             // Add stringz functions
             try module_functions.put("length", Value{ .BuiltinFunction = .{ .name = "stringz.length", .func = builtinStringzLength } });
@@ -1762,6 +1771,14 @@ pub const Interpreter = struct {
             try module_functions.put("char_at_str", Value{ .BuiltinFunction = .{ .name = "stringz.char_at_str", .func = builtinStringzCharAt } });
             try module_functions.put("from_char", Value{ .BuiltinFunction = .{ .name = "stringz.from_char", .func = builtinStringzFromChar } });
             try module_functions.put("replace_all", Value{ .BuiltinFunction = .{ .name = "stringz.replace_all", .func = builtinStringzReplaceAll } });
+            // Aliases and additional string operations
+            try module_functions.put("from_number", Value{ .BuiltinFunction = .{ .name = "stringz.from_int", .func = builtinStringzFromInt } });
+            try module_functions.put("to_upper", Value{ .BuiltinFunction = .{ .name = "stringz.to_upper", .func = builtinStringzToUpper } });
+            try module_functions.put("to_lower", Value{ .BuiltinFunction = .{ .name = "stringz.to_lower", .func = builtinStringzToLower } });
+            try module_functions.put("upper", Value{ .BuiltinFunction = .{ .name = "stringz.to_upper", .func = builtinStringzToUpper } });
+            try module_functions.put("lower", Value{ .BuiltinFunction = .{ .name = "stringz.to_lower", .func = builtinStringzToLower } });
+            try module_functions.put("substring", Value{ .BuiltinFunction = .{ .name = "stringz.substring", .func = builtinStringzSubstring } });
+            try module_functions.put("contains", Value{ .BuiltinFunction = .{ .name = "stringz.contains", .func = builtinStringzContains } });
         } else if (std.mem.eql(u8, module_name, "fmt")) {
             // Add fmt (formatting) functions
             try module_functions.put("format_int", Value{ .BuiltinFunction = .{ .name = "fmt.format_int", .func = builtinFmtFormatInt } });
@@ -1825,6 +1842,10 @@ pub const Interpreter = struct {
             try module_functions.put("get", Value{ .BuiltinFunction = .{ .name = "collections.get", .func = builtinCollectionsGet } });
             try module_functions.put("remove_last", Value{ .BuiltinFunction = .{ .name = "collections.remove_last", .func = builtinCollectionsRemoveLast } });
             try module_functions.put("remove_first", Value{ .BuiltinFunction = .{ .name = "collections.remove_first", .func = builtinCollectionsRemoveFirst } });
+            // Simple aliases for common operations
+            try module_functions.put("set", Value{ .BuiltinFunction = .{ .name = "collections.set", .func = builtinCollectionsVecSet } });
+            try module_functions.put("contains", Value{ .BuiltinFunction = .{ .name = "collections.contains", .func = builtinCollectionsContains } });
+            try module_functions.put("sum", Value{ .BuiltinFunction = .{ .name = "collections.sum", .func = builtinCollectionsSum } });
         } else if (std.mem.eql(u8, module_name, "json")) {
             // Add json functions
             try module_functions.put("parse", Value{ .BuiltinFunction = .{ .name = "json.parse", .func = builtinJsonParse } });
@@ -1925,6 +1946,13 @@ pub const Interpreter = struct {
             try zig_funcs.put("floor", Value{ .BuiltinFunction = .{ .name = "mathz.floor", .func = builtinMathzFloor } });
             try zig_funcs.put("ceil", Value{ .BuiltinFunction = .{ .name = "mathz.ceil", .func = builtinMathzCeil } });
             try zig_funcs.put("round", Value{ .BuiltinFunction = .{ .name = "mathz.round", .func = builtinMathzRound } });
+            // Aliases for common long-form names
+            try zig_funcs.put("multiply", Value{ .BuiltinFunction = .{ .name = "mathz.mul", .func = builtinMathzMul } });
+            try zig_funcs.put("divide", Value{ .BuiltinFunction = .{ .name = "mathz.div", .func = builtinMathzDiv } });
+            try zig_funcs.put("subtract", Value{ .BuiltinFunction = .{ .name = "mathz.sub", .func = builtinMathzSub } });
+            try zig_funcs.put("mod", Value{ .BuiltinFunction = .{ .name = "mathz.mod", .func = builtinMathzMod } });
+            try zig_funcs.put("modulo", Value{ .BuiltinFunction = .{ .name = "mathz.mod", .func = builtinMathzMod } });
+            try zig_funcs.put("abs", Value{ .BuiltinFunction = .{ .name = "mathz.abs_normie", .func = builtinMathzAbs } });
         } else if (std.mem.eql(u8, module_name, "stringz")) {
             try zig_funcs.put("length", Value{ .BuiltinFunction = .{ .name = "stringz.length", .func = builtinStringzLength } });
             try zig_funcs.put("len", Value{ .BuiltinFunction = .{ .name = "stringz.len", .func = builtinStringzLength } });
@@ -1934,6 +1962,14 @@ pub const Interpreter = struct {
             try zig_funcs.put("char_at_str", Value{ .BuiltinFunction = .{ .name = "stringz.char_at_str", .func = builtinStringzCharAt } });
             try zig_funcs.put("from_char", Value{ .BuiltinFunction = .{ .name = "stringz.from_char", .func = builtinStringzFromChar } });
             try zig_funcs.put("replace_all", Value{ .BuiltinFunction = .{ .name = "stringz.replace_all", .func = builtinStringzReplaceAll } });
+            // Aliases and additional string operations
+            try zig_funcs.put("from_number", Value{ .BuiltinFunction = .{ .name = "stringz.from_int", .func = builtinStringzFromInt } });
+            try zig_funcs.put("to_upper", Value{ .BuiltinFunction = .{ .name = "stringz.to_upper", .func = builtinStringzToUpper } });
+            try zig_funcs.put("to_lower", Value{ .BuiltinFunction = .{ .name = "stringz.to_lower", .func = builtinStringzToLower } });
+            try zig_funcs.put("upper", Value{ .BuiltinFunction = .{ .name = "stringz.to_upper", .func = builtinStringzToUpper } });
+            try zig_funcs.put("lower", Value{ .BuiltinFunction = .{ .name = "stringz.to_lower", .func = builtinStringzToLower } });
+            try zig_funcs.put("substring", Value{ .BuiltinFunction = .{ .name = "stringz.substring", .func = builtinStringzSubstring } });
+            try zig_funcs.put("contains", Value{ .BuiltinFunction = .{ .name = "stringz.contains", .func = builtinStringzContains } });
         } else if (std.mem.eql(u8, module_name, "collections")) {
             try zig_funcs.put("Vec_new", Value{ .BuiltinFunction = .{ .name = "collections.Vec_new", .func = builtinCollectionsVecNew } });
             try zig_funcs.put("Vec_len", Value{ .BuiltinFunction = .{ .name = "collections.Vec_len", .func = builtinCollectionsVecLen } });
@@ -1961,6 +1997,10 @@ pub const Interpreter = struct {
             try zig_funcs.put("get", Value{ .BuiltinFunction = .{ .name = "collections.get", .func = builtinCollectionsGet } });
             try zig_funcs.put("remove_last", Value{ .BuiltinFunction = .{ .name = "collections.remove_last", .func = builtinCollectionsRemoveLast } });
             try zig_funcs.put("remove_first", Value{ .BuiltinFunction = .{ .name = "collections.remove_first", .func = builtinCollectionsRemoveFirst } });
+            // Simple aliases for common operations
+            try zig_funcs.put("set", Value{ .BuiltinFunction = .{ .name = "collections.set", .func = builtinCollectionsVecSet } });
+            try zig_funcs.put("contains", Value{ .BuiltinFunction = .{ .name = "collections.contains", .func = builtinCollectionsContains } });
+            try zig_funcs.put("sum", Value{ .BuiltinFunction = .{ .name = "collections.sum", .func = builtinCollectionsSum } });
         } else {
             return; // No Zig builtins for this module
         }
@@ -4162,41 +4202,18 @@ pub const Interpreter = struct {
     // CURSED Error Handling System Interpreter Implementation
     
     pub fn executeYikesStatement(self: *Interpreter, yikes: ast.YikesStatement) InterpreterError!void {
-        const error_prop = @import("error_propagation.zig");
-        
         // Evaluate the error message expression
         const message_value = try self.evaluateExpression(yikes.message.*);
         const message = switch (message_value) {
             .String => |s| s,
             else => "Unknown error",
         };
-        
-        // Create source location if available
-        const location = if (yikes.location) |loc| 
-            error_prop.ErrorContext.SourceLocation{
-                .file = loc.file,
-                .line = loc.line,
-                .column = loc.column,
-            }
-        else null;
-        
-        // Use error propagation system to create and handle error
-        var error_propagator = error_prop.ErrorPropagation.init(self.allocator);
-        defer error_propagator.deinit();
-        
-        const error_ctx = try error_propagator.createYikesError(
-            message,
-            yikes.error_type,
-            location
-        );
-        
+
+        // Store the error message so fam blocks can access it
+        self.last_error_message = self.allocator.dupe(u8, message) catch message;
+
         // Propagate error immediately (yikes is like throw/panic)
-        const should_continue = try error_propagator.propagateError(error_ctx, true);
-        if (!should_continue) {
-            // Print the error with full context
-            std.debug.print("Error formatting context: {s}\n", .{error_ctx.message});
-            return InterpreterError.RuntimeError;
-        }
+        return InterpreterError.RuntimeError;
     }
 
     pub fn executeFamStatement(self: *Interpreter, fam: ast.FamStatement) InterpreterError!void {
@@ -4220,7 +4237,12 @@ pub const Interpreter = struct {
                     .line = 0,
                     .column = 0,
                 };
-                
+
+                // Use stored yikes message if available, otherwise fall back to error name
+                const error_message = if (self.last_error_message) |msg| msg else @errorName(err);
+                // Clear the stored message so it doesn't leak to unrelated catches
+                self.last_error_message = null;
+
                 error_occurred = error_prop.ErrorContext.initWithLocation(
                     self.allocator,
                     switch (err) {
@@ -4230,7 +4252,7 @@ pub const Interpreter = struct {
                         InterpreterError.DivisionByZero => CursedError.DivisionByZero,
                         else => CursedError.UnknownError,
                     },
-                    @errorName(err),
+                    error_message,
                     location
                 ) catch break;
                 break;
@@ -4246,8 +4268,19 @@ pub const Interpreter = struct {
                 if (error_propagator.errorMatches(error_ctx, catch_block.error_type)) {
                     // Bind error variable if specified
                     if (catch_block.error_variable) |error_var| {
-                        const error_msg = try self.allocator.dupe(u8, error_ctx.message);
-                        try self.environment.define(error_var, Value{ .String = error_msg });
+                        // Create a proper CursedError object so error.message() works
+                        const error_obj = cursed_error.CursedError.init(
+                            self.allocator,
+                            error_ctx.message,
+                            .Runtime,
+                            0,
+                        ) catch {
+                            // Fallback to string binding if allocation fails
+                            const error_msg = try self.allocator.dupe(u8, error_ctx.message);
+                            try self.environment.define(error_var, Value{ .String = error_msg });
+                            break;
+                        };
+                        try self.environment.define(error_var, Value{ .CursedError = error_obj });
                     }
                     
                     // Execute catch block code
@@ -4661,101 +4694,23 @@ pub const Interpreter = struct {
     }
 
     fn evaluateShook(self: *Interpreter, shook: ast.ShookExpression) InterpreterError!Value {
-        const error_prop = @import("error_propagation.zig");
-        
-        // Create error propagation system
-        var error_propagator = error_prop.ErrorPropagation.init(self.allocator);
-        defer error_propagator.deinit();
-        
-        // Evaluate the wrapped expression
+        // shook is the error propagation operator (like Rust's ? or Zig's try)
+        // If the expression succeeds, return its value
+        // If the expression fails, propagate the error up to the enclosing fam block
         const result = self.evaluateExpression(shook.expression.*) catch |err| {
-            // Convert caught error to error context
-            const location = error_prop.ErrorContext.SourceLocation{
-                .file = "unknown", // TODO: Get from context
-                .line = 0,
-                .column = 0,
-            };
-            
-            const error_ctx = try error_prop.ErrorContext.initWithLocation(
-                self.allocator,
-                switch (err) {
-                    InterpreterError.RuntimeError => CursedError.RuntimeError,
-                    InterpreterError.UndefinedVariable => CursedError.UndefinedVariable,
-                    InterpreterError.TypeMismatch => CursedError.TypeMismatch,
-                    InterpreterError.DivisionByZero => CursedError.DivisionByZero,
-                    else => CursedError.UnknownError,
-                },
-                @errorName(err),
-                location
-            );
-            
-            // Use error propagation system to handle the error
-            const should_continue = try error_propagator.propagateError(error_ctx, true);
-            if (!should_continue) {
-                // Error should be propagated up the call stack
-                std.debug.print("Shook propagated error: {s}\n", .{"unknown"});
-                std.debug.print("Error context: {s}\n", .{error_ctx.message});
-                return InterpreterError.RuntimeError;
-            }
-            
-            // Convert to Value for return
-            const error_msg = try self.allocator.dupe(u8, error_ctx.message);
-            return Value{ .String = error_msg };
+            // last_error_message is already set by yikes/other error paths
+            // Just propagate the error up - the fam block will catch it
+            return err;
         };
-        
-        // Check if result is already an error value
+
+        // Check if result is an Error value (old-style error)
         switch (result) {
             .Error => |error_val| {
-                // Convert old error format to new error context
-                const location = error_prop.ErrorContext.SourceLocation{
-                    .file = "unknown",
-                    .line = 0,
-                    .column = 0,
-                };
-                
-                const error_ctx = try error_prop.ErrorContext.initWithLocation(
-                    self.allocator,
-                    CursedError.RuntimeError,
-                    error_val.message,
-                    location
-                );
-                
-                // Propagate using new system
-                const should_continue = try error_propagator.propagateError(error_ctx, true);
-                if (!should_continue) {
-                    return InterpreterError.RuntimeError;
-                }
-                
-                const error_msg = try self.allocator.dupe(u8, error_ctx.message);
-                return Value{ .String = error_msg };
+                // Store the error message for the fam block to use
+                self.last_error_message = self.allocator.dupe(u8, error_val.message) catch error_val.message;
+                return InterpreterError.RuntimeError;
             },
-            .String => |str_val| {
-                // Check if this is an error message (simple heuristic)
-                if (std.mem.startsWith(u8, str_val, "Error:") or 
-                    std.mem.startsWith(u8, str_val, "yikes:") or
-                    std.mem.indexOf(u8, str_val, "error") != null) {
-                    
-                    // Create error context for error message
-                    const error_ctx = try error_prop.ErrorContext.init(
-                        self.allocator,
-                        CursedError.RuntimeError,
-                        str_val
-                    );
-                    
-                    // Propagate the error
-                    const should_continue = try error_propagator.propagateError(error_ctx, true);
-                    if (!should_continue) {
-                        return InterpreterError.RuntimeError;
-                    }
-                }
-                
-                // Regular string value, return as-is
-                return result;
-            },
-            else => {
-                // Normal value, return as-is (shook operator passes through non-errors)
-                return result;
-            }
+            else => return result,
         }
     }
 
@@ -5498,6 +5453,129 @@ fn builtinStringzReplaceAll(interpreter: *Interpreter, args: []Value) Interprete
     return Value{ .String = result };
 }
 
+fn builtinStringzToUpper(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 1) return InterpreterError.InvalidArgumentCount;
+    const str = switch (args[0]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const result = interpreter.allocator.alloc(u8, str.len) catch return InterpreterError.OutOfMemory;
+    for (str, 0..) |c, i| {
+        result[i] = if (c >= 'a' and c <= 'z') c - 32 else c;
+    }
+    return Value{ .String = result };
+}
+
+fn builtinStringzToLower(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 1) return InterpreterError.InvalidArgumentCount;
+    const str = switch (args[0]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const result = interpreter.allocator.alloc(u8, str.len) catch return InterpreterError.OutOfMemory;
+    for (str, 0..) |c, i| {
+        result[i] = if (c >= 'A' and c <= 'Z') c + 32 else c;
+    }
+    return Value{ .String = result };
+}
+
+fn builtinStringzSubstring(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 3) return InterpreterError.InvalidArgumentCount;
+    const str = switch (args[0]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const start_val = switch (args[1]) {
+        .Integer => |i| i,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const end_val = switch (args[2]) {
+        .Integer => |i| i,
+        else => return InterpreterError.TypeMismatch,
+    };
+    if (start_val < 0 or end_val < 0) return InterpreterError.IndexOutOfBounds;
+    const start: usize = @intCast(start_val);
+    const end: usize = @intCast(end_val);
+    if (start > str.len or end > str.len or start > end) return InterpreterError.IndexOutOfBounds;
+    const result = interpreter.allocator.alloc(u8, end - start) catch return InterpreterError.OutOfMemory;
+    @memcpy(result, str[start..end]);
+    return Value{ .String = result };
+}
+
+fn builtinStringzContains(_: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 2) return InterpreterError.InvalidArgumentCount;
+    const haystack = switch (args[0]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    const needle = switch (args[1]) {
+        .String => |s| s,
+        .OwnedString => |s| s,
+        else => return InterpreterError.TypeMismatch,
+    };
+    if (needle.len == 0) return Value{ .Boolean = true };
+    if (needle.len > haystack.len) return Value{ .Boolean = false };
+    var i: usize = 0;
+    while (i + needle.len <= haystack.len) : (i += 1) {
+        if (std.mem.eql(u8, haystack[i..i + needle.len], needle)) {
+            return Value{ .Boolean = true };
+        }
+    }
+    return Value{ .Boolean = false };
+}
+
+fn builtinMathzMod(_: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 2) return InterpreterError.InvalidArgumentCount;
+    const a = args[0];
+    const b = args[1];
+    if (a == .Integer and b == .Integer) {
+        if (b.Integer == 0) return InterpreterError.DivisionByZero;
+        return Value{ .Integer = @mod(a.Integer, b.Integer) };
+    }
+    if (a.isNumber() and b.isNumber()) {
+        const fa = try a.toNumber();
+        const fb = try b.toNumber();
+        if (fb == 0.0) return InterpreterError.DivisionByZero;
+        return Value{ .Float = @mod(fa, fb) };
+    }
+    return InterpreterError.TypeMismatch;
+}
+
+fn builtinCollectionsContains(_: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 2) return InterpreterError.InvalidArgumentCount;
+    switch (args[0]) {
+        .Array => |arr| {
+            for (arr) |elem| {
+                if (elem.equals(args[1])) return Value{ .Boolean = true };
+            }
+            return Value{ .Boolean = false };
+        },
+        else => return InterpreterError.TypeMismatch,
+    }
+}
+
+fn builtinCollectionsSum(_: *Interpreter, args: []Value) InterpreterError!Value {
+    if (args.len != 1) return InterpreterError.InvalidArgumentCount;
+    switch (args[0]) {
+        .Array => |arr| {
+            var sum: i64 = 0;
+            for (arr) |elem| {
+                switch (elem) {
+                    .Integer => |val| sum += val,
+                    .Float => |val| sum += @as(i64, @intFromFloat(val)),
+                    else => {},
+                }
+            }
+            return Value{ .Integer = sum };
+        },
+        else => return InterpreterError.TypeMismatch,
+    }
+}
+
 fn builtinCollectionsRemoveLast(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
     if (args.len != 1) return InterpreterError.InvalidArgumentCount;
     switch (args[0]) {
@@ -5956,16 +6034,16 @@ fn builtinCollectionsVecGet(interpreter: *Interpreter, args: []Value) Interprete
 
 fn builtinCollectionsVecSet(interpreter: *Interpreter, args: []Value) InterpreterError!Value {
     if (args.len != 3) return InterpreterError.InvalidArgumentCount;
-    
+
     switch (args[0]) {
         .Array => |arr| {
             switch (args[1]) {
                 .Integer => |idx| {
-                    if (idx < 0 or idx >= arr.len) return args[0]; // Return original array if out of bounds
-                    // OVERFLOW FIX: Check if index fits in usize
+                    if (idx < 0 or idx >= arr.len) return args[0];
                     if (idx > std.math.maxInt(usize)) return args[0];
-                    
+
                     // Create new array with updated element
+                    // (Environment deep-clones on read, so in-place mutation is not possible)
                     const new_array = try interpreter.allocator.alloc(Value, arr.len);
                     for (arr, 0..) |val, i| {
                         new_array[i] = if (i == @as(usize, @intCast(idx))) args[2] else val;

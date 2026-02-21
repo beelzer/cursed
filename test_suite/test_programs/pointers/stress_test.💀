@@ -1,0 +1,87 @@
+vibe main
+yeet "vibez"
+
+// Comprehensive stress test for ඞ pointer syntax
+// Tests complex nested operations and edge cases
+
+slay stress_test_multiple_indirection() {
+    vibez.spill("=== Multiple Indirection Stress Test ===")
+
+    sus base normie = 42
+    sus ptr1 ඞnormie = ඞbase
+    sus ptr2 ඞඞnormie = ඞptr1
+    sus ptr3 ඞඞඞnormie = ඞptr2
+
+    vibez.spill("Base value:", base)
+    vibez.spill("Via ptr1:", *ptr1)
+    vibez.spill("Via ptr2:", **ptr2)
+    vibez.spill("Via ptr3:", ***ptr3)
+
+    // Modify through deepest pointer
+    ***ptr3 = 999
+    vibez.spill("Modified via ptr3:", base)
+}
+
+slay stress_test_complex_expressions() {
+    vibez.spill("=== Complex Expression Stress Test ===")
+
+    sus a normie = 100
+    sus b normie = 200
+    sus c normie = 300
+
+    sus pa ඞnormie = ඞa
+    sus pb ඞnormie = ඞb
+    sus pc ඞnormie = ඞc
+
+    // Complex pointer arithmetic expressions
+    sus result normie = (*pa + *pb) * (*pc / 100)
+    vibez.spill("Complex expr result:", result)
+
+    // Nested dereferences in expressions
+    *pa = (*pb + *pc) / 2
+    vibez.spill("Modified a:", a)
+
+    // Pointer comparison using lowkey
+    lowkey *pa < *pb {
+        vibez.spill("Pointer comparison works")
+    }
+}
+
+slay stress_test_repeated_modification() {
+    vibez.spill("=== Repeated Modification Stress Test ===")
+
+    sus value normie = 0
+    sus ptr ඞnormie = ඞvalue
+
+    // Modify the value many times through pointer
+    sus i normie = 0
+    periodt i < 100 {
+        *ptr = *ptr + 1
+        i = i + 1
+    }
+
+    vibez.spill("After 100 increments:", value)
+
+    // Double pointer modification
+    sus ptr2 ඞඞnormie = ඞptr
+    sus j normie = 0
+    periodt j < 50 {
+        **ptr2 = **ptr2 + 2
+        j = j + 1
+    }
+
+    vibez.spill("After 50 double-increments:", value)
+}
+
+slay main_character() {
+    vibez.spill("CURSED Pointer Stress Test Suite")
+    vibez.spill("Using world's first Among Us pointer syntax")
+    vibez.spill("=====================================")
+
+    stress_test_multiple_indirection()
+    stress_test_complex_expressions()
+    stress_test_repeated_modification()
+
+    vibez.spill("=====================================")
+    vibez.spill("All stress tests completed!")
+}

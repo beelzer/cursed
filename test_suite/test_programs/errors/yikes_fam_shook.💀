@@ -1,0 +1,57 @@
+vibe main
+yeet "vibez"
+
+// Test comprehensive error handling with yikes/fam patterns
+slay divide_with_error(a normie, b normie) normie yikes {
+    lowkey (b == 0) {
+        yikes "Division by zero error"
+    }
+    damn a / b
+}
+
+slay multiply_with_overflow(a normie, b normie) normie yikes {
+    lowkey (a > 1000 && b > 1000) {
+        yikes "Overflow risk detected"
+    }
+    damn a * b
+}
+
+slay main_character() {
+    vibez.spill("=== CURSED Error Handling Tests ===")
+
+    // Test 1: Successful operation inside fam
+    fam {
+        sus result = divide_with_error(10, 2)
+        vibez.spill("Success: 10/2 =", result)
+    } sus err {
+        vibez.spill("Unexpected error:", err.message())
+    }
+
+    // Test 2: Error propagation with yikes
+    fam {
+        divide_with_error(10, 0)
+        vibez.spill("This should not print")
+    } sus err {
+        vibez.spill("Caught error:", err.message())
+    }
+
+    // Test 3: Nested operations
+    fam {
+        sus val1 = divide_with_error(20, 4)
+        sus val2 = multiply_with_overflow(val1, 200)
+        vibez.spill("Nested operations result:", val2)
+    } sus err {
+        vibez.spill("Nested error caught:", err.message())
+    }
+
+    // Test 4: Multiple error conditions
+    fam {
+        sus a = divide_with_error(100, 5)
+        divide_with_error(a, 0)
+        vibez.spill("Should not reach here")
+    } sus err {
+        vibez.spill("Second operation failed:", err.message())
+    }
+
+    vibez.spill("Error handling tests completed")
+}

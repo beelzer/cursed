@@ -1,0 +1,66 @@
+vibe main
+yeet "vibez"
+yeet "collections"
+
+// Test various memory allocation patterns
+
+slay memory_intensive_operations() {
+    vibez.spill("Creating multiple allocations...")
+
+    fr fr Test growing arrays using collections.push
+    sus arr normie[5] = [0, 0, 0, 0, 0]
+    sus length normie = collections.length(arr)
+    vibez.spill("Initial array length:")
+    vibez.spill(length)
+
+    fr fr Test repeated variable allocation
+    sus sum normie = 0
+    sus i normie = 0
+    periodt i < 100 {
+        sus temp normie = i * i
+        sum = sum + temp
+        i = i + 1
+    }
+    vibez.spill("Sum of squares 0-99:")
+    vibez.spill(sum)
+
+    fr fr Test nested scope allocation
+    sus outer normie = 0
+    sus j normie = 0
+    periodt j < 10 {
+        sus inner normie = j * 10
+        sus deep normie = inner + j
+        outer = outer + deep
+        j = j + 1
+    }
+    vibez.spill("Nested allocation result:")
+    vibez.spill(outer)
+
+    vibez.spill("Memory intensive operations completed")
+}
+
+slay main_character() {
+    vibez.spill("=== Memory Allocation Pattern Tests ===")
+
+    memory_intensive_operations()
+
+    // Test repeated computation cycles
+    sus cycle normie = 0
+    periodt cycle < 5 {
+        vibez.spill("Allocation cycle:")
+        vibez.spill(cycle)
+
+        sus result normie = 0
+        sus k normie = 0
+        periodt k < 50 {
+            result = result + k
+            k = k + 1
+        }
+        vibez.spill("Cycle result:")
+        vibez.spill(result)
+
+        cycle = cycle + 1
+    }
+
+    vibez.spill("All memory allocation tests completed")
+}

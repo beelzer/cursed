@@ -1,0 +1,153 @@
+vibe main
+yeet "vibez"
+
+// Regression test for undefined variable access prevention
+
+slay test_proper_variable_declaration() {
+    vibez.spill("=== Proper Variable Declaration Tests ===")
+
+    // Test 1: Proper variable declarations
+    sus properly_declared normie = 42
+    vibez.spill("Properly declared variable:", properly_declared)
+
+    sus another_var tea = "Hello CURSED"
+    vibez.spill("Another proper variable:", another_var)
+
+    sus calculated_var normie = properly_declared + 8
+    vibez.spill("Calculated variable:", calculated_var)
+
+    // Test 2: Variable scope within blocks
+    lowkey (properly_declared > 40) {
+        sus block_var normie = properly_declared * 2
+        vibez.spill("Block variable:", block_var)
+
+        lowkey (block_var > 80) {
+            sus nested_var normie = block_var + 10
+            vibez.spill("Nested variable:", nested_var)
+        }
+    }
+
+    vibez.spill("Variable declaration tests completed")
+}
+
+slay test_variable_initialization_patterns() {
+    vibez.spill("=== Variable Initialization Pattern Tests ===")
+
+    // Test different initialization patterns
+    sus int_var normie = 0
+    sus string_var tea = ""
+    sus boolean_var lit = cringe
+
+    vibez.spill("Initialized variables:")
+    vibez.spill("Int var:", int_var)
+    vibez.spill("String var:", string_var)
+    vibez.spill("Boolean var:", boolean_var)
+
+    // Test reassignment
+    int_var = 100
+    string_var = "Updated"
+    boolean_var = based
+
+    vibez.spill("After reassignment:")
+    vibez.spill("Int var:", int_var)
+    vibez.spill("String var:", string_var)
+    vibez.spill("Boolean var:", boolean_var)
+
+    // Test initialization with expressions
+    sus expr_var1 normie = int_var + 50
+    sus expr_var2 normie = expr_var1 * 2
+
+    vibez.spill("Expression variables:")
+    vibez.spill("Expr var1:", expr_var1)
+    vibez.spill("Expr var2:", expr_var2)
+}
+
+slay test_variable_scope_isolation() {
+    vibez.spill("=== Variable Scope Isolation Tests ===")
+
+    sus outer_var normie = 100
+    vibez.spill("Outer variable:", outer_var)
+
+    lowkey (outer_var > 50) {
+        sus inner_var normie = outer_var + 25
+        vibez.spill("Inner variable:", inner_var)
+
+        lowkey (inner_var > 100) {
+            sus deep_var normie = inner_var + outer_var
+            vibez.spill("Deep variable:", deep_var)
+
+            // Modify outer variable from inner scope
+            outer_var = 200
+            vibez.spill("Modified outer from inner:", outer_var)
+        }
+
+        vibez.spill("Back in middle scope, outer_var:", outer_var)
+    }
+
+    vibez.spill("Back in outer scope, outer_var:", outer_var)
+
+    // Test loop variable scoping
+    sus loop_var normie = 0
+    periodt loop_var < 3 {
+        sus loop_local normie = loop_var * 10
+        vibez.spill("Loop iteration", loop_var, "local value:", loop_local)
+        loop_var = loop_var + 1
+    }
+
+    vibez.spill("Variable scope tests completed")
+}
+
+slay test_variable_lifecycle_patterns() {
+    vibez.spill("=== Variable Lifecycle Pattern Tests ===")
+
+    // Test variable creation, use, and reassignment patterns
+    sus lifecycle_var normie = 1
+
+    sus stage normie = 1
+    periodt stage <= 5 {
+        vibez.spill("Lifecycle stage", stage, "value:", lifecycle_var)
+
+        lowkey (stage == 1) {
+            lifecycle_var = 10
+        } highkey lowkey (stage == 2) {
+            lifecycle_var = lifecycle_var * 2
+        } highkey lowkey (stage == 3) {
+            lifecycle_var = lifecycle_var + 5
+        } highkey lowkey (stage == 4) {
+            lifecycle_var = lifecycle_var - 3
+        } highkey {
+            lifecycle_var = lifecycle_var / 2
+        }
+
+        stage = stage + 1
+    }
+
+    vibez.spill("Final lifecycle value:", lifecycle_var)
+
+    // Test multiple variables with interdependencies
+    sus var_a normie = 5
+    sus var_b normie = 10
+    sus var_c normie = 15
+
+    vibez.spill("Initial values - A:", var_a, "B:", var_b, "C:", var_c)
+
+    // Swap and modify
+    sus temp normie = var_a
+    var_a = var_b
+    var_b = var_c
+    var_c = temp
+
+    vibez.spill("After rotation - A:", var_a, "B:", var_b, "C:", var_c)
+}
+
+slay main_character() {
+    vibez.spill("=== Undefined Variable Prevention Regression Tests ===")
+
+    test_proper_variable_declaration()
+    test_variable_initialization_patterns()
+    test_variable_scope_isolation()
+    test_variable_lifecycle_patterns()
+
+    vibez.spill("All variable handling regression tests completed")
+    vibez.spill("No undefined variable access detected - regression test passed")
+}

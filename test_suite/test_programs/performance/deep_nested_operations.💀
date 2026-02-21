@@ -1,0 +1,100 @@
+vibe main
+yeet "vibez"
+yeet "mathz"
+yeet "stringz"
+yeet "collections"
+
+no cap
+Stress test for deeply nested operations and complex expressions
+Tests parser limits, expression evaluation, and memory management
+Expected: Successful evaluation of complex nested operations
+on god
+
+slay deeply_nested_calculation(depth normie) {
+    lowkey depth <= 0 {
+        damn 1
+    }
+
+    sus result normie = mathz.multiply(depth, deeply_nested_calculation(mathz.subtract(depth, 1)))
+    damn result
+}
+
+slay nested_string_operations(base_string tea, count normie) {
+    lowkey count <= 0 {
+        damn base_string
+    }
+
+    sus numbered_suffix tea = stringz.from_number(count)
+    sus new_string tea = stringz.concat(base_string, numbered_suffix)
+    damn nested_string_operations(new_string, mathz.subtract(count, 1))
+}
+
+slay complex_array_processing(arr normie, operations normie) {
+    sus length normie = collections.length(arr)
+    sus result = arr
+    sus i normie = 0
+
+    periodt i < length {
+        sus element normie = collections.get(result, i)
+
+        fr fr Nested mathematical operations (single-line to avoid ASI issues)
+        sus tripled normie = mathz.multiply(element, 3)
+        sus half_plus normie = mathz.divide(mathz.add(element, 10), 2)
+        sus processed normie = mathz.add(tripled, half_plus)
+
+        result = collections.set(result, i, processed)
+        i = mathz.add(i, 1)
+    }
+
+    damn result
+}
+
+slay main_character() {
+    vibez.spill("=== DEEP NESTED OPERATIONS STRESS TEST ===")
+
+    fr fr Test deeply nested arithmetic expressions (single-line to avoid ASI)
+    sus inner_add normie = mathz.add(mathz.multiply(2, 4), mathz.multiply(4, 5))
+    sus inner_sub normie = mathz.subtract(mathz.divide(100, 5), mathz.mod(17, 3))
+    sus outer_mul normie = mathz.multiply(inner_add, inner_sub)
+    sus neg_part normie = mathz.subtract(mathz.multiply(-5, 4), mathz.add(10, 15))
+    sus abs_part normie = mathz.abs_normie(neg_part)
+    sus complex_expr normie = mathz.add(outer_mul, abs_part)
+
+    vibez.spill("Complex nested expression result:")
+    vibez.spill(complex_expr)
+
+    fr fr Test recursive factorial calculation
+    sus factorial_result normie = deeply_nested_calculation(6)
+    vibez.spill("Factorial of 6:")
+    vibez.spill(factorial_result)
+
+    fr fr Test nested tea building
+    sus nested_string tea = nested_string_operations("Level", 5)
+    vibez.spill("Nested tea building:")
+    vibez.spill(nested_string)
+
+    fr fr Test complex array operations
+    sus test_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    sus processed_array = complex_array_processing(test_array, 3)
+
+    vibez.spill("Processed array sample:")
+    sus sample_element normie = collections.get(processed_array, 0)
+    vibez.spill(sample_element)
+
+    fr fr Test nested conditional expressions
+    sus cond1 lit = complex_expr > 100
+    sus cond2 lit = factorial_result > 500
+    sus cond3 lit = collections.length(processed_array) == 10
+    sus nested_condition lit = cond1 && cond2 && cond3
+    vibez.spill("Complex boolean evaluation:")
+    vibez.spill(nested_condition)
+
+    fr fr Test deeply nested function calls
+    sus inner_sum normie = mathz.add(deeply_nested_calculation(4), collections.length(processed_array))
+    sus final_result normie = mathz.multiply(inner_sum, 2)
+
+    vibez.spill("Final nested calculation:")
+    vibez.spill(final_result)
+
+    vibez.spill("=== STRESS TEST COMPLETE ===")
+}

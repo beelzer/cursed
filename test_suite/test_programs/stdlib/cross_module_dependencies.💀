@@ -1,0 +1,153 @@
+vibe main
+yeet "vibez"
+yeet "mathz"
+yeet "stringz"
+yeet "collections"
+
+no cap
+Test cross-module dependencies and complex interactions
+Tests stringz+mathz combined operations and data transformations
+Expected: Correct results from cross-module function calls
+on god
+
+slay mathematical_string_operations() {
+    vibez.spill("=== Mathematical String Operations ===")
+
+    sus base_numbers = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+    sus length normie = collections.length(base_numbers)
+    sus i normie = 0
+
+    periodt i < length {
+        sus num normie = collections.get(base_numbers, i)
+        sus abs_val normie = mathz.abs_normie(num)
+        sus doubled normie = mathz.multiply(num, 2)
+
+        fr fr Convert numbers to strings
+        sus num_str tea = stringz.from_number(num)
+        sus abs_str tea = stringz.from_number(abs_val)
+        sus doubled_str tea = stringz.from_number(doubled)
+
+        sus combined tea = stringz.concat(num_str, "|")
+        combined = stringz.concat(combined, abs_str)
+        combined = stringz.concat(combined, "|")
+        combined = stringz.concat(combined, doubled_str)
+
+        vibez.spill("Number processed:")
+        vibez.spill(combined)
+        i = mathz.add(i, 1)
+    }
+
+    vibez.spill("Total processed strings:")
+    vibez.spill(length)
+}
+
+slay string_mathematical_analysis() {
+    vibez.spill("=== String Mathematical Analysis ===")
+
+    sus test_strings = ["abc", "defghi", "jk", "lmno", "p", "qrstuv"]
+    sus str_count normie = collections.length(test_strings)
+    sus total_len normie = 0
+    sus i normie = 0
+
+    periodt i < str_count {
+        sus str tea = collections.get(test_strings, i)
+        sus str_len normie = stringz.length(str)
+
+        fr fr Mathematical operations on string length
+        sus len_doubled normie = mathz.multiply(str_len, 2)
+
+        total_len = mathz.add(total_len, str_len)
+
+        vibez.spill("String:")
+        vibez.spill(str)
+        vibez.spill("length:")
+        vibez.spill(str_len)
+        vibez.spill("doubled:")
+        vibez.spill(len_doubled)
+
+        i = mathz.add(i, 1)
+    }
+
+    vibez.spill("Total length of all strings:")
+    vibez.spill(total_len)
+}
+
+slay complex_data_transformation() {
+    vibez.spill("=== Complex Data Transformation ===")
+
+    fr fr Multi-step transformation using multiple stdlib modules
+    sus items = ["apple", "banana", "cherry", "date", "elderberry"]
+    sus item_count normie = collections.length(items)
+    sus i normie = 0
+
+    periodt i < item_count {
+        sus item tea = collections.get(items, i)
+
+        fr fr String operations
+        sus item_len normie = stringz.length(item)
+
+        fr fr Mathematical operations on length
+        sus len_tripled normie = mathz.multiply(item_len, 3)
+        sus len_mod normie = mathz.mod(item_len, 3)
+
+        fr fr Combine results
+        sus len_str tea = stringz.from_number(len_tripled)
+        sus combined_result tea = stringz.concat(item, "_")
+        combined_result = stringz.concat(combined_result, len_str)
+
+        vibez.spill("Transform:")
+        vibez.spill(combined_result)
+        vibez.spill("mod3:")
+        vibez.spill(len_mod)
+
+        i = mathz.add(i, 1)
+    }
+}
+
+slay performance_intensive_cross_module() {
+    vibez.spill("=== Performance Intensive Cross-Module Operations ===")
+
+    sus iterations normie = 50
+    sus cycle normie = 0
+
+    periodt cycle < 3 {
+        vibez.spill("Performance cycle:")
+        vibez.spill(cycle)
+
+        sus i normie = 0
+        periodt i < iterations {
+            fr fr Create dynamic string
+            sus idx_str tea = stringz.from_number(i)
+            sus base_str tea = stringz.concat("item", idx_str)
+
+            fr fr Mathematical processing
+            sus str_len normie = stringz.length(base_str)
+            sus math_result normie = mathz.multiply(str_len, mathz.abs_normie(mathz.subtract(i, 25)))
+
+            lowkey mathz.mod(i, 10) == 0 {
+                sus result_str tea = stringz.concat(base_str, "_")
+                sus math_str tea = stringz.from_number(math_result)
+                result_str = stringz.concat(result_str, math_str)
+                vibez.spill("Iteration:")
+                vibez.spill(i)
+                vibez.spill(result_str)
+            }
+
+            i = mathz.add(i, 1)
+        }
+
+        vibez.spill("Cycle completed")
+        cycle = mathz.add(cycle, 1)
+    }
+}
+
+slay main_character() {
+    vibez.spill("=== Cross-Module Dependencies Tests ===")
+
+    mathematical_string_operations()
+    string_mathematical_analysis()
+    complex_data_transformation()
+    performance_intensive_cross_module()
+
+    vibez.spill("Cross-module dependency tests completed")
+}

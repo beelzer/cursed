@@ -1,0 +1,45 @@
+vibe main
+
+yeet "vibez"
+yeet "mathz"
+
+no cap
+Pointer Regression Test
+Tests: Ensure pointer functionality doesn't break other features
+Expected: Identical results in both modes
+on god
+
+slay math_with_pointers() {
+    sus a normie = mathz.abs_normie(-42)
+    sus b normie = mathz.max(10, 20)
+
+    sus ptr_a ඞnormie = ඞa
+    sus ptr_b ඞnormie = ඞb
+
+    sus result normie = *ptr_a + *ptr_b
+    damn result
+}
+
+slay double_via_pointer(p ඞnormie) {
+    *p = mathz.mul(*p, 2)
+}
+
+slay main_character() {
+    vibez.spill("=== Pointer Regression Test ===")
+
+    vibez.spill("Math with pointers:")
+    sus result1 normie = math_with_pointers()
+    vibez.spill(result1)
+
+    vibez.spill("Pointer modify via function:")
+    sus val normie = 7
+    double_via_pointer(ඞval)
+    vibez.spill(val)
+
+    fr fr Test that regular operations still work
+    sus normal_var normie = mathz.add(5, 3)
+    vibez.spill("Normal operations still work:")
+    vibez.spill(normal_var)
+
+    vibez.spill("=== Regression Test Complete ===")
+}

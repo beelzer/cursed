@@ -1,0 +1,142 @@
+vibe main
+yeet "vibez"
+yeet "mathz"
+
+// Regression test for division by zero error handling
+slay test_division_scenarios() {
+    vibez.spill("=== Division by Zero Regression Tests ===")
+
+    // Test 1: Normal division operations
+    vibez.spill("Normal division tests:")
+    vibez.spill("10 / 2 =", 10 / 2)
+    vibez.spill("100 / 5 =", 100 / 5)
+    vibez.spill("15 / 3 =", 15 / 3)
+
+    // Test 2: Division with 1
+    vibez.spill("Division by 1 tests:")
+    vibez.spill("42 / 1 =", 42 / 1)
+    vibez.spill("0 / 1 =", 0 / 1)
+
+    // Test 3: Edge case divisions
+    vibez.spill("Edge case divisions:")
+    vibez.spill("8 / 8 =", 8 / 8)
+    vibez.spill("1 / 1 =", 1 / 1)
+}
+
+slay test_division_by_zero_handling() {
+    vibez.spill("=== Division by Zero Error Handling ===")
+
+    vibez.spill("Testing division by zero scenarios:")
+
+    // Test direct division by zero
+    vibez.spill("Attempting: 10 / 0")
+    fam {
+        sus result = 10 / 0
+        vibez.spill("Unexpected: division by zero succeeded with result:", result)
+    } sus err {
+        vibez.spill("Expected: division by zero handled as error")
+    }
+
+    // Test variable division by zero
+    sus zero_var = 0
+    vibez.spill("Attempting: 25 / zero_var")
+    fam {
+        sus result2 = 25 / zero_var
+        vibez.spill("Unexpected: variable division by zero succeeded:", result2)
+    } sus err {
+        vibez.spill("Expected: variable division by zero handled as error")
+    }
+
+    // Test expression division by zero
+    sus expr_result = 5 - 5
+    vibez.spill("Attempting: 30 / (5-5)")
+    fam {
+        sus result3 = 30 / expr_result
+        vibez.spill("Unexpected: expression division by zero succeeded:", result3)
+    } sus err {
+        vibez.spill("Expected: expression division by zero handled as error")
+    }
+}
+
+slay safe_divide(a normie, b normie) normie yikes {
+    lowkey (b == 0) {
+        yikes "Division by zero attempted"
+    }
+    damn a / b
+}
+
+slay test_safe_division_function() {
+    vibez.spill("=== Safe Division Function Test ===")
+
+    fam {
+        sus result1 = safe_divide(20, 4)
+        vibez.spill("Safe division 20/4 =", result1)
+
+        sus result2 = safe_divide(15, 3)
+        vibez.spill("Safe division 15/3 =", result2)
+
+        safe_divide(10, 0)
+        vibez.spill("This line should not execute")
+    } sus err {
+        vibez.spill("Safe division caught error:", err.message())
+    }
+}
+
+slay test_mathematical_division_edge_cases() {
+    vibez.spill("=== Mathematical Division Edge Cases ===")
+
+    vibez.spill("Mathz division tests:")
+
+    fam {
+        sus math_result1 = mathz.div(100, 10)
+        vibez.spill("Mathz divide 100/10 =", math_result1)
+
+        sus math_result2 = mathz.div(50, 0)
+        vibez.spill("This should not print")
+    } sus err {
+        vibez.spill("Mathz division by zero handled:", err.message())
+    }
+
+    // Test with negative numbers
+    vibez.spill("Negative division tests:")
+    vibez.spill("-10 / 2 =", -10 / 2)
+    vibez.spill("10 / -2 =", 10 / -2)
+}
+
+slay test_division_in_loops() {
+    vibez.spill("=== Division in Loop Scenarios ===")
+
+    // Test division operations in loops
+    sus i normie = 1
+    periodt i <= 10 {
+        sus result = 100 / i
+        vibez.spill("100 /", i, "=", result)
+        i = i + 1
+    }
+
+    // Test potential division by zero in loop
+    vibez.spill("Testing division in loop with potential zeros:")
+    sus j normie = 3
+    periodt j >= -3 {
+        lowkey (j != 0) {
+            sus loop_result = 18 / j
+            vibez.spill("18 /", j, "=", loop_result)
+        } highkey {
+            vibez.spill("Skipped division by zero in loop")
+        }
+        j = j - 1
+    }
+}
+
+slay main_character() {
+    vibez.spill("=== Division by Zero Regression Test Suite ===")
+
+    test_division_scenarios()
+    test_division_by_zero_handling()
+    test_safe_division_function()
+    test_mathematical_division_edge_cases()
+    test_division_in_loops()
+
+    vibez.spill("Division by zero regression tests completed")
+    vibez.spill("System successfully handled all division scenarios")
+}

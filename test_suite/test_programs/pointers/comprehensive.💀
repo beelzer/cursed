@@ -1,0 +1,67 @@
+vibe main
+
+yeet "vibez"
+
+no cap
+Comprehensive Pointer Test
+Tests: All major pointer operations and scenarios
+Expected: Identical results in both modes
+on god
+
+slay swap_values(x ඞnormie, y ඞnormie) {
+    sus temp normie = *x
+    *x = *y
+    *y = temp
+}
+
+slay increment_via_pointer(p ඞnormie) {
+    *p = *p + 1
+}
+
+slay main_character() {
+    vibez.spill("=== Comprehensive Pointer Test ===")
+
+    fr fr 1. Basic pointer operations
+    vibez.spill("1. Basic Operations:")
+    sus x normie = 10
+    sus ptr ඞnormie = ඞx
+    *ptr = 20
+    vibez.spill(x)
+
+    fr fr 2. Multiple pointer variables
+    vibez.spill("2. Multiple Pointers:")
+    sus a normie = 100
+    sus b normie = 200
+    sus pa ඞnormie = ඞa
+    sus pb ඞnormie = ඞb
+    vibez.spill(*pa)
+    vibez.spill(*pb)
+
+    fr fr 3. Pointer chains (double/triple indirection)
+    vibez.spill("3. Pointer Chains:")
+    sus val normie = 42
+    sus p1 ඞnormie = ඞval
+    sus p2 ඞඞnormie = ඞp1
+    sus p3 ඞඞඞnormie = ඞp2
+
+    ***p3 = 777
+    vibez.spill(val)
+
+    fr fr 4. Function pointer parameters (swap)
+    vibez.spill("4. Function Parameters:")
+    sus m normie = 100
+    sus n normie = 200
+    swap_values(ඞm, ඞn)
+    vibez.spill(m)
+    vibez.spill(n)
+
+    fr fr 5. Increment via pointer
+    vibez.spill("5. Increment via pointer:")
+    sus counter normie = 0
+    increment_via_pointer(ඞcounter)
+    increment_via_pointer(ඞcounter)
+    increment_via_pointer(ඞcounter)
+    vibez.spill(counter)
+
+    vibez.spill("=== Comprehensive Test Complete ===")
+}

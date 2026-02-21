@@ -1,0 +1,165 @@
+vibe main
+yeet "vibez"
+yeet "mathz"
+yeet "stringz"
+yeet "collections"
+
+no cap
+Test comprehensive stdlib integration across multiple modules
+Tests numeric processing, string operations, collections, and cross-module interaction
+Expected: Correct results from coordinated use of all stdlib modules
+on god
+
+slay process_numeric_data() {
+    vibez.spill("=== Numeric Processing with Mathz ===")
+
+    sus numbers = [-42, 17, 0, -3, 99, -156]
+    sus length normie = collections.length(numbers)
+    sus i normie = 0
+
+    periodt i < length {
+        sus num normie = collections.get(numbers, i)
+        sus abs_val normie = mathz.abs_normie(num)
+        sus doubled normie = mathz.multiply(abs_val, 2)
+
+        vibez.spill("Processed:")
+        vibez.spill(num)
+        vibez.spill("-> abs:")
+        vibez.spill(abs_val)
+        vibez.spill("-> doubled:")
+        vibez.spill(doubled)
+
+        i = mathz.add(i, 1)
+    }
+
+    fr fr Find min and max
+    sus min_val normie = 999999
+    sus max_val normie = -999999
+    i = 0
+
+    periodt i < length {
+        sus num normie = collections.get(numbers, i)
+        sus abs_val normie = mathz.abs_normie(num)
+        lowkey abs_val < min_val {
+            min_val = abs_val
+        }
+        lowkey abs_val > max_val {
+            max_val = abs_val
+        }
+        i = mathz.add(i, 1)
+    }
+
+    vibez.spill("Min absolute value:")
+    vibez.spill(min_val)
+    vibez.spill("Max absolute value:")
+    vibez.spill(max_val)
+}
+
+slay process_string_data() {
+    vibez.spill("=== String Processing with Stringz ===")
+
+    sus texts = ["Hello", "World", "CURSED", "Programming", "Language"]
+    sus combined_text tea = ""
+    sus length normie = collections.length(texts)
+    sus i normie = 0
+
+    periodt i < length {
+        sus text tea = collections.get(texts, i)
+        sus text_len normie = stringz.length(text)
+
+        vibez.spill("Text:")
+        vibez.spill(text)
+        vibez.spill("length:")
+        vibez.spill(text_len)
+
+        combined_text = stringz.concat(combined_text, text)
+        lowkey i < mathz.subtract(length, 1) {
+            combined_text = stringz.concat(combined_text, " ")
+        }
+
+        i = mathz.add(i, 1)
+    }
+
+    vibez.spill("Combined text:")
+    vibez.spill(combined_text)
+    vibez.spill("Final combined length:")
+    vibez.spill(stringz.length(combined_text))
+}
+
+slay process_collections_data() {
+    vibez.spill("=== Collections Processing ===")
+
+    sus data = [5, 2, 8, 1, 9, 3, 7, 4, 6]
+    vibez.spill("Data length:")
+    vibez.spill(collections.length(data))
+
+    fr fr Calculate sum and average
+    sus total normie = collections.sum(data)
+    vibez.spill("Sum of data:")
+    vibez.spill(total)
+
+    fr fr Find min and max
+    sus data_len normie = collections.length(data)
+    sus min_val normie = collections.get(data, 0)
+    sus max_val normie = collections.get(data, 0)
+    sus i normie = 1
+
+    periodt i < data_len {
+        sus elem normie = collections.get(data, i)
+        lowkey elem < min_val {
+            min_val = elem
+        }
+        lowkey elem > max_val {
+            max_val = elem
+        }
+        i = mathz.add(i, 1)
+    }
+
+    vibez.spill("Min value:")
+    vibez.spill(min_val)
+    vibez.spill("Max value:")
+    vibez.spill(max_val)
+}
+
+slay integrated_processing_pipeline() {
+    vibez.spill("=== Integrated Processing Pipeline ===")
+
+    sus numbers = [-15, 23, -8, 42, -99, 17]
+    sus num_len normie = collections.length(numbers)
+
+    fr fr Process numbers with mathz
+    sus sum normie = 0
+    sus i normie = 0
+    periodt i < num_len {
+        sus abs_num normie = mathz.abs_normie(collections.get(numbers, i))
+        sum = mathz.add(sum, abs_num)
+        i = mathz.add(i, 1)
+    }
+
+    vibez.spill("Sum of absolute values:")
+    vibez.spill(sum)
+
+    fr fr Cross-module: convert numbers to strings
+    i = 0
+    periodt i < num_len {
+        sus num normie = collections.get(numbers, i)
+        sus num_str tea = stringz.from_number(num)
+        sus abs_val normie = mathz.abs_normie(num)
+        sus abs_str tea = stringz.from_number(abs_val)
+        sus combined tea = stringz.concat(num_str, " -> abs: ")
+        combined = stringz.concat(combined, abs_str)
+        vibez.spill(combined)
+        i = mathz.add(i, 1)
+    }
+}
+
+slay main_character() {
+    vibez.spill("=== Comprehensive Stdlib Integration Tests ===")
+
+    process_numeric_data()
+    process_string_data()
+    process_collections_data()
+    integrated_processing_pipeline()
+
+    vibez.spill("All stdlib integration tests completed successfully")
+}

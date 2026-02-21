@@ -1625,10 +1625,7 @@ pub const Parser = struct {
             // Break if we hit the closing brace
             if (self.check(.RightBrace)) break;
             
-            // DEBUG: Function body statement parsing - logging removed
-            // std.debug.print("DEBUG: Parsing function body statement at token: {any}\n", .{if (self.current < self.tokens.len) self.tokens[self.current].kind else .Eof});
             const stmt = try self.parseStatement();
-            // std.debug.print("DEBUG: Successfully parsed function body statement\n", .{});
             const stmt_ptr = try self.arena_allocator.create(Statement); 
 
             stmt_ptr.* = stmt;
@@ -2411,7 +2408,15 @@ pub const Parser = struct {
             }};
         }
 
-        // Handle shook error propagation operator
+        // Handle shook error propagation operator (PREFIX only)
+        // TODO: shook currently only works as a prefix operator (shook expr), but tests
+        // and idiomatic usage expect postfix (expr shook) like Rust's ? or Zig's try.
+        // Adding postfix support in parseCall() breaks parsing because the lexer's
+        // automatic semicolon insertion and newline handling interferes — after a keyword
+        // token like .Shook, the parser sees .Newline instead of the next expression token.
+        // Fix requires either: (1) making ASI skip newlines after .Shook, or (2) adding
+        // postfix shook handling that properly skips newlines, or (3) handling shook as a
+        // postfix in a binary-operator-like precedence level.
         if (self.match(.Shook)) {
             const wrapped_expr = try self.allocateExpression(try self.parseUnary());
             var catch_handler: ?*Expression = null;
@@ -4357,9 +4362,9 @@ pub const Parser = struct {
         }
         _ = try self.consume(.RightBrace, "Expected '}'");
         
-        // Parse catch blocks
+        // Parse catch blocks (accept both 'shook' and 'sus' as catch keyword for compatibility)
         var catch_blocks = std.ArrayList(ast.FamStatement.CatchBlock){ .items = &.{}, .capacity = 0 };
-        while (self.match(.Shook)) {
+        while (self.match(.Shook) or self.match(.Sus)) {
             var error_variable: ?[]const u8 = null;
             var error_type: ?[]const u8 = null;
             

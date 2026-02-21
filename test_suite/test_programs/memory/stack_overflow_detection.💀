@@ -1,0 +1,63 @@
+vibe main
+yeet "vibez"
+
+// Test stack overflow scenarios and detection
+slay recursive_function(depth normie) normie {
+    lowkey (depth <= 0) {
+        damn 1
+    }
+
+    sus result normie = depth * recursive_function(depth - 1)
+    damn result
+}
+
+slay safe_recursive_with_limit(depth normie, limit normie) normie yikes {
+    lowkey (depth > limit) {
+        yikes "Recursion limit exceeded"
+    }
+
+    lowkey (depth <= 0) {
+        damn 1
+    }
+
+    sus result = safe_recursive_with_limit(depth - 1, limit)
+    damn depth * result
+}
+
+slay main_character() {
+    vibez.spill("=== Stack Overflow Detection Tests ===")
+
+    // Test 1: Safe recursion depth
+    vibez.spill("Testing safe recursion depth (100)...")
+    sus safe_result = recursive_function(100)
+    vibez.spill("Safe recursion completed, result available")
+
+    // Test 2: Protected recursive function
+    fam {
+        vibez.spill("Testing protected recursion with limit...")
+        sus protected_result = safe_recursive_with_limit(50, 1000)
+        vibez.spill("Protected recursion successful")
+    } sus err {
+        vibez.spill("Protected recursion error:", err.message())
+    }
+
+    // Test 3: Limit exceeded
+    fam {
+        vibez.spill("Testing recursion limit exceeded...")
+        safe_recursive_with_limit(2000, 100)
+        vibez.spill("This should not print")
+    } sus err {
+        vibez.spill("Limit exceeded as expected:", err.message())
+    }
+
+    // Test 4: Deep stack usage
+    vibez.spill("Testing deep stack with local allocations...")
+    sus i normie = 0
+    periodt i < 10 {
+        sus temp_result = recursive_function(10 + i)
+        vibez.spill("Deep stack test", i, "completed")
+        i = i + 1
+    }
+
+    vibez.spill("Stack overflow detection tests completed")
+}
