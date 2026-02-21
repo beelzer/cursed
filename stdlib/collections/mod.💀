@@ -1,4 +1,12 @@
 vibe collections
 
 fr fr Collections module - functions provided by native builtins
-fr fr See interpreter.zig for: length, get, set, push, contains, sum, new_array, etc.
+fr fr Arrays: new_array(), push(arr, val), get(arr, idx), set(arr, idx, val),
+fr fr   length(arr), contains(arr, val), sum(arr), sort(arr), reverse(arr),
+fr fr   slice(arr, start, end), index_of(arr, val), join(arr, sep),
+fr fr   pop(arr), remove(arr, idx), concat(a, b), range(start, end),
+fr fr   unique(arr), arr_min(arr), arr_max(arr), flatten(arr),
+fr fr   remove_last(arr), remove_first(arr), quick_sort(arr), bubble_sort(arr)
+fr fr Vectors: Vec_new(), Vec_len(v), Vec_push(v, val), Vec_pop(v), Vec_get(v, idx), Vec_set(v, idx, val)
+fr fr Maps: Map_new(), Map_len(m), Map_insert(m, k, v), Map_get(m, k), Map_remove(m, k), Map_contains_key(m, k), Map_keys(m)
+fr fr Sets: Set_new(), Set_len(s), Set_insert(s, val), Set_contains(s, val), Set_remove(s, val)

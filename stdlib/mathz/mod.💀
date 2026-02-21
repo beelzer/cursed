@@ -1,86 +1,9 @@
 vibe mathz
 
-fr fr ===== BASIC MATHEMATICAL OPERATIONS =====
-
-slay abs_normie(x normie) normie {
-    lowkey (x < 0) {
-        damn -x
-    }
-    damn x
-}
-
-slay add_two(a normie, b normie) normie {
-    damn a + b
-}
-
-slay max(a normie, b normie) normie {
-    lowkey (a > b) {
-        damn a
-    }
-    damn b
-}
-
-slay min(a normie, b normie) normie {
-    lowkey (a < b) {
-        damn a
-    }
-    damn b
-}
-
-slay pow(base normie, exponent normie) normie {
-    lowkey (exponent == 0) { damn 1 }
-    lowkey (exponent < 0) { damn 0 }
-    lowkey (base == 0) { damn 0 }
-    lowkey (base == 1) { damn 1 }
-    lowkey (base == 2) {
-        lowkey (exponent == 1) { damn 2 }
-        lowkey (exponent == 2) { damn 4 }
-        lowkey (exponent == 3) { damn 8 }
-        lowkey (exponent == 4) { damn 16 }
-    }
-    lowkey (base == 3) {
-        lowkey (exponent == 1) { damn 3 }
-        lowkey (exponent == 2) { damn 9 }
-    }
-    lowkey (base == 5) {
-        lowkey (exponent == 2) { damn 25 }
-    }
-    damn 1  fr fr Default fallback
-}
-
-slay sqrt(x normie) normie {
-    lowkey (x <= 0) { damn 0 }
-    lowkey (x == 1) { damn 1 }
-    lowkey (x == 4) { damn 2 }
-    lowkey (x == 9) { damn 3 }
-    lowkey (x == 16) { damn 4 }
-    lowkey (x == 25) { damn 5 }
-    lowkey (x == 36) { damn 6 }
-    lowkey (x == 49) { damn 7 }
-    lowkey (x == 64) { damn 8 }
-    lowkey (x == 81) { damn 9 }
-    lowkey (x == 100) { damn 10 }
-    damn 0  fr fr Default fallback
-}
-
-slay mod(a normie, b normie) normie {
-    lowkey (b == 0) { damn 0 }
-    damn a % b
-}
-
-slay add(a normie, b normie) normie {
-    damn a + b
-}
-
-slay subtract(a normie, b normie) normie {
-    damn a - b
-}
-
-slay multiply(a normie, b normie) normie {
-    damn a * b
-}
-
-slay divide(a normie, b normie) normie {
-    lowkey (b == 0) { damn 0 }
-    damn a / b
-}
+fr fr Mathematics module - functions provided by native builtins
+fr fr Available: add(a, b), sub(a, b), mul(a, b), div(a, b), mod(a, b),
+fr fr   subtract(a, b), multiply(a, b), divide(a, b), modulo(a, b),
+fr fr   abs_normie(x), abs(x), max(a, b), min(a, b),
+fr fr   pow(base, exp), sqrt(x), floor(x), ceil(x), round(x),
+fr fr   sin(x), cos(x), tan(x), log(x), log10(x), exp(x),
+fr fr   random(), random_range(min, max), pi(), e()

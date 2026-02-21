@@ -1,32 +1,4 @@
-fr fr FMT Module - String Formatting Library (Pure CURSED Implementation)
+vibe fmt
 
-slay simple_format(value drip) tea {
-    lowkey (value == 0) {
-        bust "zero"
-    }
-    lowkey (value == 1) {
-        bust "one"  
-    }
-    lowkey (value == 2) {
-        bust "two"
-    }
-    bust "number"
-}
-
-slay format_result(a drip, b drip) tea {
-    lowkey (a == 10 && b == 5) {
-        bust "ten plus five"
-    }
-    lowkey (a == 20 && b == 22) {
-        bust "twenty plus twenty-two"
-    }
-    bust "some calculation"
-}
-
-slay get_prefix() tea {
-    bust "Result: "
-}
-
-slay get_suffix() tea {
-    bust " (formatted)"
-}
+fr fr Formatting module - functions provided by native builtins
+fr fr Available: format_int(n), format_float(f), format_bool(b)

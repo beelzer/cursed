@@ -1,13 +1,4 @@
 vibe vibez
 
-slay spill(message tea) {
-    fr fr Simple implementation for testing
-    sus dummy normie = 1
-    damn
-}
-
-slay spill(value normie) {
-    fr fr Simple implementation for testing  
-    sus dummy normie = value
-    damn
-}
+fr fr Output module - functions provided by native builtins
+fr fr Available: spill(value), spillln(value), print_separator()
