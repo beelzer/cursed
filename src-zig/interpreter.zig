@@ -310,7 +310,7 @@ pub const BuiltinFunctionValue = struct {
     func: *const fn(*Interpreter, []Value) InterpreterError!Value,
 };
 
-// CRITICAL FIX: Force 8-byte alignment to fix HashMap alignment issues
+// Value union representing all CURSED runtime values
 pub const Value = union(enum) {
     Integer: i64,
     Float: f64,
@@ -638,7 +638,6 @@ pub const Environment = struct {
             .allocator = allocator,
             .mutex = std.Thread.Mutex{},
         };
-        // Removed DEBUG output
         return env;
     }
 
@@ -671,7 +670,6 @@ pub const Environment = struct {
             defer env.mutex.unlock();
             
             const var_count = env.variables.count();
-            // Removed DEBUG output
             
             // Safety check for corruption
             if (var_count > 1000) {
@@ -691,7 +689,6 @@ pub const Environment = struct {
             };
             std.debug.assert(hops < 1_000_000); // detect accidental cycles
         }
-        // Removed DEBUG output
         return InterpreterError.UndefinedVariable;
     }
 
@@ -829,10 +826,8 @@ pub const Interpreter = struct {
         
         // Register global builtin functions
         interp.registerGlobalBuiltins() catch {
-            // Removed DEBUG output
         };
         
-        // Removed DEBUG output
         return interp;
     }
 
@@ -1017,7 +1012,6 @@ pub const Interpreter = struct {
             }
         });
 
-        // Removed DEBUG output
     }
 
     pub fn interpret(self: *Interpreter, program: Program) InterpreterError!void {
@@ -1086,7 +1080,6 @@ pub const Interpreter = struct {
     }
     
     fn executeStatement(self: *Interpreter, stmt: Statement) InterpreterError!bool {
-        // Removed DEBUG output
         switch (stmt) {
             .Expression => |expr| {
                 // Special handling for append() as statement: auto-assign result back
@@ -1448,72 +1441,6 @@ pub const Interpreter = struct {
         return name;
     }
     
-    fn loadRealStdlibModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
-        var module_arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-        const temp_allocator = module_arena.allocator();
-        
-        // Try multiple possible paths for the module
-        const possible_paths = [_][]const u8{
-            try std.fmt.allocPrint(temp_allocator, "stdlib/{s}/mod.💀", .{module_name}),
-            try std.fmt.allocPrint(temp_allocator, "stdlib/layer1/{s}.💀", .{module_name}),
-            try std.fmt.allocPrint(temp_allocator, "stdlib/{s}/{s}.💀", .{ module_name, module_name }),
-        };
-        
-        var loaded_successfully = false;
-        
-        for (possible_paths) |path_str| {
-            // Removed DEBUG output
-            
-            // Try to read the module file
-            const file = std.fs.cwd().openFile(path_str, .{}) catch {
-                // Removed DEBUG output
-                continue;
-            };
-            defer file.close();
-            
-            const source = file.readToEndAlloc(temp_allocator, std.math.maxInt(usize)) catch {
-                // Removed DEBUG output
-                continue;
-            };
-            defer temp_allocator.free(source);
-            
-            // Removed DEBUG output
-            
-            // Parse the module
-            var module_lexer = lexer.Lexer.init(temp_allocator, source);
-            
-            var tokens = module_lexer.tokenize() catch {
-                // Removed DEBUG: Tokenize error for {s}: {}\n", .{ path_str, err });
-                continue;
-            };
-            defer tokens.deinit(temp_allocator);
-            
-            var module_parser = parser.Parser.init(temp_allocator, tokens.items);
-            defer module_parser.deinit();
-            
-            var module_program = module_parser.parseProgram() catch {
-                // Removed DEBUG: Parse error for {s}: {}\n", .{ path_str, err });
-                continue;
-            };
-            defer module_program.deinit(temp_allocator);
-            
-            // Removed DEBUG: Successfully parsed {s}, extracting functions...\n", .{path_str});
-            
-            // Extract function declarations and create a simple module representation
-            try self.createModuleFromProgram(module_name, module_program, path_str, module_arena);
-            loaded_successfully = true;
-            break;
-        }
-        
-        if (!loaded_successfully) {
-            // Clean up arena if module loading failed
-            module_arena.deinit();
-            return InterpreterError.ModuleNotFound;
-        }
-        
-        // Removed DEBUG: Successfully loaded real stdlib module: {s}\n", .{module_name});
-    }
-    
     fn createModuleFromProgram(self: *Interpreter, module_name: []const u8, program: ast.Program, _: []const u8, _: std.heap.ArenaAllocator) InterpreterError!void {
         var module_functions = std.StringHashMap(Value).init(self.allocator);
 
@@ -1564,35 +1491,8 @@ pub const Interpreter = struct {
         try self.globals.define(module_name, module_value);
     }
     
-    /// Create a stable copy of a function declaration to avoid memory issues with arena allocators
-    fn copyFunctionDeclaration(self: *Interpreter, original: ast.FunctionStatement) InterpreterError!ast.FunctionStatement {
-        var copy = ast.FunctionStatement.init(self.allocator, original.name);
-        
-        // Copy parameters
-        for (original.parameters.items) |param| {
-            const param_copy = ast.Parameter{
-                .name = try self.allocator.dupe(u8, param.name),
-                .param_type = param.param_type, // Type copying can be complex, for now just copy the reference
-                .is_mutable = param.is_mutable,
-                .default_value = param.default_value,
-            };
-            try copy.parameters.append(self.allocator, param_copy);
-        }
-        
-        // Copy other fields that are safe to copy by reference
-        copy.return_type = original.return_type;
-        copy.body = original.body; // Body statements can be referenced since they're not modified
-        copy.type_parameters = original.type_parameters;
-        
-        return copy;
-    }
-
-    fn loadCursedStdlibModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
-        return self.loadCursedStdlibModuleAs(module_name, module_name);
-    }
-
     fn loadCursedStdlibModuleAs(self: *Interpreter, module_name: []const u8, bind_as: []const u8) InterpreterError!void {
-        // Try to load CURSED stdlib module from stdlib/{module_name}/mod.💀.💀
+        // Try to load CURSED stdlib module from stdlib/{module_name}/mod.💀
         // First try relative to current directory, then try from parent directory
         const local_path = try std.fmt.allocPrint(self.allocator, "stdlib/{s}/mod.💀", .{module_name});
         defer self.allocator.free(local_path);
@@ -1629,12 +1529,10 @@ pub const Interpreter = struct {
         // Read the entire CURSED stdlib file into module arena
         const max_file_size = 1024 * 1024; // 1MB max
         const source_code = file.readToEndAlloc(module_allocator, max_file_size) catch {
-            // Removed DEBUG: Could not read CURSED stdlib file {s}: {}\n", .{ stdlib_path, err });
             return InterpreterError.ModuleNotFound;
         };
         // Source code now lives in module arena and stays alive with the module
         
-        // Removed DEBUG: Successfully read CURSED stdlib file {s} ({} bytes)\n", .{ stdlib_path, source_code.len });
         
         // Parse the CURSED source code to AST using module arena
         var module_lexer = lexer.Lexer.init(module_allocator, source_code);
@@ -1649,7 +1547,6 @@ pub const Interpreter = struct {
         };
         // AST now lives in module_arena and will stay alive with the module
         
-        // Removed DEBUG: Successfully parsed CURSED stdlib {s} ({} statements)\n", .{ stdlib_path, program.statements.items.len });
         
         const module_env = try self.allocator.create(Environment);
         module_env.* = Environment.init(self.allocator, null);
@@ -1667,7 +1564,6 @@ pub const Interpreter = struct {
                         .declaration = func,
                         .closure = module_env, // Use module environment as closure
                     };
-                    // Removed DEBUG: Registering CURSED stdlib function '{s}.{s}'\n", .{ module_name, func.name });
                     try module_env.define(func.name, Value{ .UserFunction = cursed_func });
                 },
                 else => {}
@@ -1692,12 +1588,10 @@ pub const Interpreter = struct {
             switch (value) {
                 .UserFunction => {
                     // Debug the name before putting it in HashMap
-                    // Removed DEBUG: Exporting function name='{s}' length={} ptr=@{*}\n", .{ name, name.len, name.ptr });
                     
                     // CRITICAL FIX: Copy the function name to stable memory
                     // The original name might be in the module arena which could get deallocated
                     const stable_name = try self.allocator.dupe(u8, name);
-                    // Removed DEBUG: Copied function name to stable memory: '{s}' ptr=@{*}\n", .{ stable_name, stable_name.ptr });
                     
                     try module_functions.put(stable_name, value);
                     // std.debug.print("DEBUG: Exported CURSED function {s}.{s}\n", .{ module_name, stable_name });
@@ -1708,7 +1602,6 @@ pub const Interpreter = struct {
             }
         }
         
-        // Removed DEBUG: Extracted {} functions from CURSED stdlib {s}\n", .{ module_functions.count(), module_name });
         
         // Create module instance on heap and store pointer in globals
         const module_ptr = try self.allocator.create(ModuleInstance);
@@ -1724,11 +1617,6 @@ pub const Interpreter = struct {
         const module_value = Value{ .Module = module_ptr };
         try self.environment.define(bind_as, module_value);
 
-        // Removed DEBUG: Successfully loaded CURSED stdlib module {s} with {} functions\n", .{ module_name, module_functions.count() });
-    }
-
-    fn loadZigBuiltinModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
-        return self.loadZigBuiltinModuleAs(module_name, module_name);
     }
 
     fn loadZigBuiltinModuleAs(self: *Interpreter, module_name: []const u8, bind_as: []const u8) InterpreterError!void {
@@ -1928,13 +1816,6 @@ pub const Interpreter = struct {
         const module_value = Value{ .Module = module_ptr };
         try self.environment.define(bind_as, module_value);
 
-        // Removed DEBUG: Stored module {s} in environment@{*}, now has {} variables\n", .{ module_name, self.environment, self.environment.variables.count() });
-        // Removed DEBUG: self.globals is at @{*}\n", .{&self.globals});
-        // Removed DEBUG: Loaded Zig builtin module {s} with {} functions\n", .{ module_name, module_functions.count() });
-    }
-
-    fn loadBuiltinModule(self: *Interpreter, module_name: []const u8) InterpreterError!void {
-        return self.loadBuiltinModuleAs(module_name, module_name);
     }
 
     fn loadBuiltinModuleAs(self: *Interpreter, module_name: []const u8, bind_as: []const u8) InterpreterError!void {
@@ -2191,7 +2072,6 @@ pub const Interpreter = struct {
         // Define all variables
         for (short_decl.names.items, 0..) |name, i| {
             try self.environment.define(name, evaluated_values.items[i]);
-            // Removed DEBUG: Defined variable '{s}' = {any}\n", .{name, evaluated_values.items[i]});
         }
     }
     
@@ -2348,11 +2228,9 @@ pub const Interpreter = struct {
     fn executeInterfaceStatement(_: *Interpreter, _: ast.InterfaceStatement) InterpreterError!void {
         // Interface statements are handled in the type registry during the first pass
         // Nothing to do here for execution - they're already registered in execute()
-        // Removed DEBUG: Executing interface statement for '{s}'\n", .{interface_stmt.name});
     }
 
     fn executeImplementationStatement(self: *Interpreter, impl_stmt: ast.ImplementationStatement) InterpreterError!void {
-        // Removed DEBUG: Executing implementation statement: {s} for {s}\n", .{impl_stmt.implementing_type, impl_stmt.interface_name});
         
         // Get the interface definition
         const interface_def = self.type_registry.getInterface(impl_stmt.interface_name) orelse {
@@ -2387,7 +2265,6 @@ pub const Interpreter = struct {
                     
                     try vtable.setMethod(interface_method.name, func_value);
                     method_found = true;
-                    // Removed DEBUG: Added method '{s}' to vtable\n", .{interface_method.name});
                     break;
                 }
             }
@@ -2549,7 +2426,6 @@ pub const Interpreter = struct {
                         switch (self_value) {
                             .Struct => |struct_inst| {
                                 if (struct_inst.fields.get(name)) |field_value| {
-                                    // Removed DEBUG: Implicit field access for '{s}' resolved to: {s}\n", .{name, @tagName(field_value.*) });
                                     return field_value.*;
                                 }
                             },
@@ -2727,14 +2603,25 @@ pub const Interpreter = struct {
             }
         } else if (std.mem.eql(u8, bin.operator, "%")) {
             if (left.isNumber() and right.isNumber()) {
+                // Integer fast-path: return Integer when both operands are Integer
+                switch (left) {
+                    .Integer => |left_int| switch (right) {
+                        .Integer => |right_int| {
+                            if (right_int == 0) return InterpreterError.DivisionByZero;
+                            return Value{ .Integer = @mod(left_int, right_int) };
+                        },
+                        else => {},
+                    },
+                    else => {},
+                }
+                // Float fallback for mixed types
                 const left_num = try left.toNumber();
                 const right_num = try right.toNumber();
-                
+
                 if (right_num == 0.0) {
                     return InterpreterError.DivisionByZero;
                 }
-                
-                // Special handling for negative operands
+
                 const result = @mod(left_num, right_num);
                 return Value{ .Float = result };
             }
@@ -2954,7 +2841,6 @@ pub const Interpreter = struct {
                     return Value.Null;
                 } else {
                     // Handle method calls on objects (structs/interfaces)
-                    // Removed DEBUG: Detected method call: {s}.{s}\n", .{@tagName(member.object.*), member.property });
                     return try self.evaluateMethodCall(member.*, call.arguments.items);
                 }
             },
@@ -3286,7 +3172,6 @@ pub const Interpreter = struct {
                     };
                     return Value{ .String = result };
                 } else if (std.mem.eql(u8, name, "runtime_write_file")) {
-                    // Removed DEBUG: Intercepted runtime_write_file call\n", .{});
                     if (call.arguments.items.len != 2) {
                         return InterpreterError.TypeMismatch;
                     }
@@ -3433,10 +3318,8 @@ pub const Interpreter = struct {
         switch (object) {
             .Struct => |struct_inst| {
                 if (struct_inst.fields.get(member.property)) |field_value| {
-                    // Removed DEBUG: Found field '{s}' with value type: {s}\n", .{member.property, @tagName(field_value.*)});
                     return field_value.*;
                 } else {
-                    // Removed DEBUG: Field '{s}' not found in struct\n", .{member.property});
                     return InterpreterError.UndefinedField;
                 }
             },
@@ -3456,21 +3339,17 @@ pub const Interpreter = struct {
                 switch (ptr.pointee_value.*) {
                     .Struct => |struct_inst| {
                         if (struct_inst.fields.get(member.property)) |field_value| {
-                        // Removed DEBUG: Found field '{s}' via pointer dereference with value type: {s}\n", .{member.property, @tagName(field_value.*) });
                         return field_value.*;
                         } else {
-                            // Removed DEBUG: Field '{s}' not found in dereferenced struct\n", .{member.property});
                             return InterpreterError.UndefinedField;
                         }
                     },
                     else => {
-                        // Removed DEBUG: Member access on pointer to non-struct: {s}\n", .{@tagName(ptr.pointee_value.*) });
                         return InterpreterError.TypeMismatch;
                     }
                 }
             },
             else => {
-                // Removed DEBUG: Member access on non-struct type: {s}\n", .{@tagName(object)});
                 return InterpreterError.TypeMismatch;
             }
         }
@@ -3521,10 +3400,8 @@ pub const Interpreter = struct {
                 
                 // Get method from vtable and execute it
                 if (interface_inst.vtable.getMethod(member.property)) |method_func| {
-                    // Removed DEBUG: Found interface method '{s}' in vtable, executing...\n", .{member.property});
                     return try self.executeInterfaceMethod(method_func, method_args.items);
                 } else {
-                    // Removed DEBUG: Method '{s}' not found in interface vtable\n", .{member.property});
                     return InterpreterError.UndefinedMethod;
                 }
             },
@@ -3562,7 +3439,6 @@ pub const Interpreter = struct {
                             return try self.callFunction(user_func, func_args.items);
                         },
                         else => {
-                            // Removed DEBUG: Module member '{s}' is not a function\n", .{member.property});
                             return InterpreterError.TypeMismatch;
                         }
                     }
@@ -3730,7 +3606,6 @@ pub const Interpreter = struct {
     fn evaluateArray(self: *Interpreter, array_expr: ast.ArrayExpression) InterpreterError!Value {
         // Check for overflow before allocation
         if (array_expr.elements.items.len > std.math.maxInt(i64)) {
-            std.debug.print("DEBUG: evaluateArray - Too many elements for array: {}\n", .{array_expr.elements.items.len});
             return InterpreterError.InvalidOperation;
         }
         
@@ -3794,19 +3669,15 @@ pub const Interpreter = struct {
             self.allocator.free(call_info.type_args);
         }
         
-        // Removed DEBUG output for parsing generic call
         
         // Find the generic template function
         const template_func = self.findGenericTemplate(call_info.base_name) orelse {
-            // Removed DEBUG: No generic template found for '{s}'\n", .{call_info.base_name});
             return null;
         };
         
-        // Removed DEBUG output for found generic template function
         
         // Validate type argument count
         if (call_info.type_args.len != template_func.declaration.type_parameters.items.len) {
-            // Removed DEBUG output for type argument count mismatch
             return InterpreterError.TypeMismatch;
         }
         
@@ -3819,13 +3690,11 @@ pub const Interpreter = struct {
             try args.append(self.allocator, arg_value);
         }
         
-        // Removed DEBUG output for calling generic function
         
         // CRITICAL FIX: Create monomorphized (specialized) function instance
         const specialized_func = try self.createSpecializedFunction(template_func, call_info.type_args);
         defer self.destroySpecializedFunction(specialized_func);
         
-        // Removed DEBUG output for created specialized function instance
         
         // Call the specialized function instead of the template
         return try self.callFunction(specialized_func, args.items);
@@ -3912,7 +3781,6 @@ pub const Interpreter = struct {
     
     /// CRITICAL FIX: Create specialized function with type parameter substitution
     fn createSpecializedFunction(self: *Interpreter, template_func: CursedFunction, type_args: [][]const u8) !CursedFunction {
-        // Removed DEBUG output for starting function specialization
         
         // Create type parameter mapping
         var type_substitutions = std.StringHashMap([]const u8).init(self.allocator);
@@ -3920,7 +3788,6 @@ pub const Interpreter = struct {
         
         for (template_func.declaration.type_parameters.items, 0..) |type_param, i| {
             try type_substitutions.put(type_param.name, type_args[i]);
-            // Removed DEBUG output for type substitution
         }
         
         // Clone the template function declaration
@@ -3944,7 +3811,6 @@ pub const Interpreter = struct {
                 .is_mutable = param.is_mutable,
                 .default_value = param.default_value,
             });
-            // Removed DEBUG output for parameter type substitution
         }
         
         // Clone function body with type substitution  
@@ -3955,7 +3821,6 @@ pub const Interpreter = struct {
             try specialized_decl.body.append(self.allocator, heap_stmt);
         }
         
-        // Removed DEBUG output for function body specialization
         
         // Create specialized function
         return CursedFunction{
@@ -3981,7 +3846,6 @@ pub const Interpreter = struct {
         // Free type parameters (should be empty)
         // func.declaration.type_parameters.deinit(self.allocator); // Skip to avoid const issues
         
-        // Removed DEBUG output for cleanup
     }
     
     /// Substitute types in a parameter
@@ -4037,19 +3901,15 @@ pub const Interpreter = struct {
             self.allocator.free(call_info.type_args);
         }
         
-        // Removed DEBUG output for parsing generic struct
         
         // Find the generic template struct
         const template_struct = self.findGenericStructTemplate(call_info.base_name) orelse {
-            // Removed DEBUG: No generic struct template found for '{s}'\n", .{call_info.base_name});
             return null;
         };
         
-        // Removed DEBUG output for found generic struct template
         
         // Validate type argument count
         if (call_info.type_args.len != template_struct.type_parameters.items.len) {
-            // Removed DEBUG output for struct type argument count mismatch
             return InterpreterError.TypeMismatch;
         }
         
@@ -4057,7 +3917,6 @@ pub const Interpreter = struct {
         const specialized_struct_name = try std.fmt.allocPrint(self.allocator, "{s}_specialized", .{call_info.base_name});
         defer self.allocator.free(specialized_struct_name);
         
-        // Removed DEBUG output for creating specialized struct instance
         
         // Create new struct instance with specialized name
         var struct_instance = try StructInstance.init(self.allocator, specialized_struct_name);
@@ -4066,7 +3925,6 @@ pub const Interpreter = struct {
         for (struct_lit.fields.items) |field_assignment| {
             const field_value = try self.evaluateExpression(field_assignment.value.*);
             try struct_instance.setField(field_assignment.field_name, field_value);
-            // Removed DEBUG output for set field in specialized struct
         }
         
         return Value{ .Struct = struct_instance };
@@ -4111,7 +3969,6 @@ pub const Interpreter = struct {
         }
         
         // Bind parameters
-        // Removed DEBUG output for function call parameters
         
         if (args.len != func.declaration.parameters.items.len) {
             return InterpreterError.TypeMismatch;
@@ -4134,16 +3991,11 @@ pub const Interpreter = struct {
         }
         
         var return_value: Value = Value.Null;
-        var has_returned = false;
-        
-        // Removed unused return_values ArrayList that was causing double-deinit issues
-        
+
         for (func.declaration.body.items) |stmt| {
             if (try self.executeStatement(stmt.*)) {
-                // Early return detected - use the stored return value
                 return_value = self.return_value;
-                has_returned = true;
-                break; // Exit function body loop
+                break;
             }
         }
         
@@ -4550,15 +4402,13 @@ pub const Interpreter = struct {
         };
         
         // Spawn the goroutine
-        const goroutine_id = concurrency_runtime.executeStanFromInterpreter(context, GoroutineContext.execute) catch |err| {
-            std.debug.print("Failed to spawn goroutine: {}\n", .{err});
+        const goroutine_id = concurrency_runtime.executeStanFromInterpreter(context, GoroutineContext.execute) catch {
             self.allocator.destroy(context);
             return;
         };
-        
-        std.debug.print("Spawned goroutine with ID: {d}\n", .{goroutine_id});
-        
-        // Wait a bit longer for goroutine to execute
+        _ = goroutine_id;
+
+        // Wait a bit for goroutine to execute
         std.Thread.sleep(10_000_000); // 10ms
     }
     
@@ -4770,35 +4620,35 @@ pub const Interpreter = struct {
             self.environment = defer_entry.?.environment;
             
             // Execute the deferred statement
-            std.debug.print("Executing deferred statement\n", .{});
             self.executeStatementIgnoreReturn(defer_entry.?.statement) catch |err| {
-                std.debug.print("Error executing deferred statement: {}\n", .{err});
-                // Continue with other defers even if one fails
+                if (self.verbose) {
+                    std.debug.print("Error executing deferred statement: {}\n", .{err});
+                }
             };
-            
+
             // Restore environment
             self.environment = saved_env;
         }
     }
-    
+
     /// Execute defers up to a specific stack size (for function scope cleanup)
     fn executeDeferToSize(self: *Interpreter, target_size: usize) void {
         if (self.verbose) {
             std.debug.print("Executing defers from size {d} to {d}\n", .{ self.defer_stack.items.len, target_size });
         }
-        
+
         while (self.defer_stack.items.len > target_size) {
             const defer_entry = self.defer_stack.pop();
-            
+
             // Save current environment and switch to defer environment
             const saved_env = self.environment;
             self.environment = defer_entry.?.environment;
-            
+
             // Execute the deferred statement
-            std.debug.print("Executing scoped deferred statement\n", .{});
             self.executeStatementIgnoreReturn(defer_entry.?.statement) catch |err| {
-                std.debug.print("Error executing deferred statement: {}\n", .{err});
-                // Continue with other defers even if one fails
+                if (self.verbose) {
+                    std.debug.print("Error executing deferred statement: {}\n", .{err});
+                }
             };
             
             // Restore environment
@@ -4827,62 +4677,25 @@ pub const Interpreter = struct {
         }
     }
 
-    // Enhanced channel simulation methods
+    // Channel simulation methods
     fn storeChannelValue(self: *Interpreter, channel_id: u64, value: Value) InterpreterError!void {
-        std.debug.print("MEMORY_DEBUG: storeChannelValue - channel_id={}, value={s}\n", .{channel_id, @tagName(value)});
-        
         if (self.channel_storage.getPtr(channel_id)) |channel_list| {
-            std.debug.print("MEMORY_DEBUG: storeChannelValue - found existing channel, current size={}\n", .{channel_list.items.len});
             try channel_list.append(self.allocator, value);
-            std.debug.print("MEMORY_DEBUG: storeChannelValue - appended to existing channel, new size={}\n", .{channel_list.items.len});
         } else {
-            std.debug.print("MEMORY_DEBUG: storeChannelValue - creating new channel\n", .{});
             var new_list = std.ArrayList(Value){};
-            errdefer new_list.deinit(self.allocator); // Clean up on error
+            errdefer new_list.deinit(self.allocator);
             try new_list.append(self.allocator, value);
             try self.channel_storage.put(channel_id, new_list);
-            std.debug.print("MEMORY_DEBUG: storeChannelValue - created new channel with 1 item\n", .{});
         }
     }
 
     fn retrieveChannelValue(self: *Interpreter, channel_id: u64) InterpreterError!Value {
-        std.debug.print("MEMORY_DEBUG: retrieveChannelValue - channel_id={}\n", .{channel_id});
-        
         if (self.channel_storage.getPtr(channel_id)) |channel_list| {
-            std.debug.print("MEMORY_DEBUG: retrieveChannelValue - found channel, size={}\n", .{channel_list.items.len});
             if (channel_list.items.len > 0) {
-                const value = channel_list.orderedRemove(0);
-                std.debug.print("MEMORY_DEBUG: retrieveChannelValue - retrieved value, remaining size={}\n", .{channel_list.items.len});
-                return value;
-            } else {
-                std.debug.print("MEMORY_DEBUG: retrieveChannelValue - channel empty\n", .{});
+                return channel_list.orderedRemove(0);
             }
-        } else {
-            std.debug.print("MEMORY_DEBUG: retrieveChannelValue - channel not found\n", .{});
         }
-        return Value{ .Integer = 0 }; // Default value when channel is empty
-    }
-
-    // Enhanced concurrency support
-    fn executeGoroutine(self: *Interpreter, function_value: Value) InterpreterError!u64 {
-        _ = self;
-        _ = function_value;
-        // In real implementation, this would spawn actual goroutines
-        // For now, return a simulated goroutine ID
-        return 1;
-    }
-    
-    fn evaluateTuple(self: *Interpreter, tuple: ast.TupleExpression) InterpreterError!Value {
-        var tuple_values = std.ArrayList(Value){};
-        errdefer tuple_values.deinit(self.allocator); // Clean up on error
-        
-        for (tuple.elements.items) |element_expr| {
-            const element_value = try self.evaluateExpression(element_expr.*);
-            try tuple_values.append(self.allocator, element_value);
-        }
-        
-        // TODO: Implement proper Tuple support
-        return Value.Null; // Temporary fix
+        return Value{ .Integer = 0 };
     }
 
     fn evaluateStringInterpolation(self: *Interpreter, interpolation: ast.StringInterpolationExpression) InterpreterError!Value {
@@ -5826,15 +5639,23 @@ fn builtinCollectionsSum(_: *Interpreter, args: []Value) InterpreterError!Value 
     if (args.len != 1) return InterpreterError.InvalidArgumentCount;
     switch (args[0]) {
         .Array => |arr| {
-            var sum: i64 = 0;
+            var int_sum: i64 = 0;
+            var float_sum: f64 = 0.0;
+            var has_float = false;
             for (arr) |elem| {
                 switch (elem) {
-                    .Integer => |val| sum += val,
-                    .Float => |val| sum += @as(i64, @intFromFloat(val)),
+                    .Integer => |val| int_sum += val,
+                    .Float => |val| {
+                        float_sum += val;
+                        has_float = true;
+                    },
                     else => {},
                 }
             }
-            return Value{ .Integer = sum };
+            if (has_float) {
+                return Value{ .Float = @as(f64, @floatFromInt(int_sum)) + float_sum };
+            }
+            return Value{ .Integer = int_sum };
         },
         else => return InterpreterError.TypeMismatch,
     }
@@ -7104,18 +6925,30 @@ fn valuesEqual(a: Value, b: Value) bool {
     switch (a) {
         .Integer => |a_int| switch (b) {
             .Integer => |b_int| return a_int == b_int,
+            .Float => |b_float| return @as(f64, @floatFromInt(a_int)) == b_float,
             else => return false,
         },
         .Float => |a_float| switch (b) {
             .Float => |b_float| return a_float == b_float,
+            .Integer => |b_int| return a_float == @as(f64, @floatFromInt(b_int)),
             else => return false,
         },
         .String => |a_str| switch (b) {
             .String => |b_str| return std.mem.eql(u8, a_str, b_str),
+            .OwnedString => |b_str| return std.mem.eql(u8, a_str, b_str),
+            else => return false,
+        },
+        .OwnedString => |a_str| switch (b) {
+            .String => |b_str| return std.mem.eql(u8, a_str, b_str),
+            .OwnedString => |b_str| return std.mem.eql(u8, a_str, b_str),
             else => return false,
         },
         .Boolean => |a_bool| switch (b) {
             .Boolean => |b_bool| return a_bool == b_bool,
+            else => return false,
+        },
+        .Null => switch (b) {
+            .Null => return true,
             else => return false,
         },
         else => return false,
@@ -7471,11 +7304,6 @@ fn builtinRegexCompile(interpreter: *Interpreter, args: []Value) InterpreterErro
     
     switch (args[0]) {
         .String => |pattern| {
-            _ = RegexPattern.init(interpreter.allocator, pattern, "") catch {
-                return InterpreterError.OutOfMemory;
-            };
-            
-            // For now, return the pattern as a string (later we could add a Regex value type)
             return Value{ .String = try interpreter.allocator.dupe(u8, pattern) };
         },
         else => return InterpreterError.TypeMismatch,
@@ -7939,7 +7767,6 @@ fn builtinMemoryGcCollect(interpreter: *Interpreter, args: []Value) InterpreterE
     
     // In a real GC system, this would trigger garbage collection
     // For now, just return success
-    // Removed DEBUG: Garbage collection triggered (simulated)\n", .{});
     
     return Value{ .Boolean = true };
 }
@@ -7985,8 +7812,8 @@ fn builtinPathSplit(interpreter: *Interpreter, args: []Value) InterpreterError!V
     switch (args[0]) {
         .String => |path| {
             var components = std.ArrayList(Value){};
-            defer components.deinit(interpreter.allocator);
-            
+            errdefer components.deinit(interpreter.allocator);
+
             var it = std.mem.splitSequence(u8, path, "/");
             while (it.next()) |component| {
                 if (component.len > 0) {
@@ -7994,8 +7821,8 @@ fn builtinPathSplit(interpreter: *Interpreter, args: []Value) InterpreterError!V
                     try components.append(interpreter.allocator, Value{ .String = component_copy });
                 }
             }
-            
-            return Value{ .Array = components.items };
+
+            return Value{ .Array = try components.toOwnedSlice(interpreter.allocator) };
         },
         else => return InterpreterError.TypeMismatch,
     }

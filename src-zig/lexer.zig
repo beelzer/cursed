@@ -5,10 +5,7 @@ const Allocator = std.mem.Allocator;
 pub const TokenKind = enum {
     // Literals
     Number,
-    Integer,
     StringLiteral,
-    String,
-    Boolean,
     Character,
     Based, // For 'based' literal (true)
     Cringe, // For 'cringe' literal (false)
@@ -29,14 +26,12 @@ pub const TokenKind = enum {
 
     // CURSED Gen Z Keywords
     Slay, // function definition
-    SlayMacro, // slay_macro! hygienic macro definition
     Yolo, // return statement (deprecated)
     Damn, // return statement (canonical)
     Sus, // mutable variable
     Facts, // immutable constant
     Lowkey, // if statement (canonical)
     Highkey, // else statement (canonical)
-    Otherwise, // DEPRECATED - use highkey
     Periodt, // while loop
     Stan, // goroutine
     Bestie, // for loop
@@ -80,13 +75,9 @@ pub const TokenKind = enum {
     Extra, // complex number type
     Lit, // boolean type
     Cap, // null/nil
-    NoCap, // not null
-    Truth, // true
-    Lies, // false (NoTruth)
     MainCharacter, // main function
     Dm, // channel type
     Select, // select statement
-    Ready, // DEPRECATED - use lowkey for if, select for select
     LeftArrow, // <- channel operator
     Arrow, // -> return type arrow
     Later, // later (defer statement)
@@ -130,7 +121,6 @@ pub const TokenKind = enum {
     RightShift, // >>
 
     // Assignment operators
-    Assign, // = (for assignment context)
     PlusEqual, // +=
     MinusEqual, // -=
     StarEqual, // *=
@@ -166,8 +156,6 @@ pub const TokenKind = enum {
     Unsafe, // unsafe keyword
     Public, // pub keyword
     Private, // priv keyword
-    Comment, // Comment with content
-    IntegerLiteral, // Integer literal token
     DotDotDot, // ... (variadic parameters)
 
     // Comments
@@ -310,8 +298,8 @@ pub const Lexer = struct {
             .Identifier => true,
             
             // Literals
-            .Number, .Integer, .StringLiteral, .String, .Character,
-            .Based, .Cringe, .Nah, .Boolean => true,
+            .Number, .StringLiteral, .Character,
+            .Based, .Cringe, .Nah => true,
             
             // Keywords that can end statements
             .Damn, .Yolo, .Ghosted, .Simp => true, // return, break, continue
@@ -342,7 +330,7 @@ pub const Lexer = struct {
             .LeftParen, .LeftBracket => true,
             
             // else, otherwise keywords  
-            .Else, .Otherwise => true,
+            .Else => true,
             
             else => false,
         };
@@ -358,7 +346,6 @@ pub const Lexer = struct {
         // Check for ඞ (Among Us character) used for pointer types
         const utf8_codepoint = self.peekUtf8();
         if (utf8_codepoint == 0x0D9E) { // ඞ Unicode codepoint
-            // std.debug.print("DEBUG: Found ඞ Unicode character, tokenizing as .At\n", .{});
             const start_pos = self.position;
             _ = self.advanceUtf8(); // Consume the ඞ character
             const start_line = self.line;
@@ -581,12 +568,6 @@ pub const Lexer = struct {
     fn peekNext(self: *Lexer) u8 {
         if (self.position + 1 >= self.input.len) return 0;
         return self.input[self.position + 1];
-    }
-    
-    // SECURITY FIX: Safe peek ahead function with bounds checking
-    fn safePeekAhead(self: *Lexer, offset: usize) u8 {
-        if (self.position + offset >= self.input.len) return 0;
-        return self.input[self.position + offset];
     }
 
     fn match(self: *Lexer, expected: u8) bool {
@@ -889,9 +870,10 @@ pub const Lexer = struct {
                         }
                         if (temp_pos + 3 <= self.input.len and std.mem.eql(u8, self.input[temp_pos..temp_pos + 3], "god")) {
                             // Found "on god" - consume it and return comment token
+                            const old_position = self.position;
                             self.position = temp_pos + 3;
                             // Update column/line tracking (simplified)
-                            self.column += @intCast(temp_pos + 3 - self.position);
+                            self.column += @intCast(self.position - old_position);
                             return Token.init(.BlockComment, self.input[start..self.position], line, column);
                         }
                     }
@@ -919,7 +901,6 @@ pub const Lexer = struct {
     fn getKeywordType(text: []const u8) TokenKind {
         // CURSED Gen Z Keywords
         if (std.mem.eql(u8, text, "slay")) return .Slay;
-        if (std.mem.eql(u8, text, "slay_macro!")) return .SlayMacro;
         if (std.mem.eql(u8, text, "yolo")) return .Yolo;
         if (std.mem.eql(u8, text, "damn")) return .Damn;
         if (std.mem.eql(u8, text, "sus")) return .Sus;
@@ -977,7 +958,6 @@ pub const Lexer = struct {
         if (std.mem.eql(u8, text, "based")) return .Based;   // true literal
         if (std.mem.eql(u8, text, "cringe")) return .Cringe; // false literal
         if (std.mem.eql(u8, text, "nah")) return .Nah;       // nil literal
-        if (std.mem.eql(u8, text, "no_cap")) return .NoCap;
 
         // Deprecated forms - treated as identifiers to trigger parser errors
         if (std.mem.eql(u8, text, "cap")) return .Identifier;   // Use 'nah' instead
@@ -993,7 +973,6 @@ pub const Lexer = struct {
         if (std.mem.eql(u8, text, "recover")) return .Recover;
 
         // Visibility
-        // if (std.mem.eql(u8, text, "spill")) return .Spill; // Removed - not a keyword
         if (std.mem.eql(u8, text, "priv")) return .Priv;
         if (std.mem.eql(u8, text, "crew")) return .Crew;
 
@@ -1027,7 +1006,7 @@ test "lexer basic tokens" {
     
     var lexer = Lexer.init(allocator, "slay main_character() { }");
     const tokens = try lexer.tokenize();
-    defer tokens.deinit();
+    defer tokens.deinit(allocator);
 
     try std.testing.expect(tokens.items.len >= 5);
     try std.testing.expect(tokens.items[0].kind == .Slay);
@@ -1042,7 +1021,7 @@ test "lexer numbers" {
     
     var lexer = Lexer.init(allocator, "42 3.14");
     const tokens = try lexer.tokenize();
-    defer tokens.deinit();
+    defer tokens.deinit(allocator);
 
     try std.testing.expect(tokens.items.len >= 2);
     try std.testing.expect(tokens.items[0].kind == .Number);
@@ -1054,7 +1033,7 @@ test "lexer strings" {
     
     var lexer = Lexer.init(allocator, "\"hello world\"");
     const tokens = try lexer.tokenize();
-    defer tokens.deinit();
+    defer tokens.deinit(allocator);
 
     try std.testing.expect(tokens.items.len >= 1);
     try std.testing.expect(tokens.items[0].kind == .StringLiteral);
@@ -1065,7 +1044,7 @@ test "lexer bitwise operators" {
     
     var lexer = Lexer.init(allocator, "& | ^ << >>");
     const tokens = try lexer.tokenize();
-    defer tokens.deinit();
+    defer tokens.deinit(allocator);
 
     try std.testing.expect(tokens.items.len >= 5);
     try std.testing.expect(tokens.items[0].kind == .Amp);
@@ -1096,7 +1075,7 @@ test "lexer hash character support" {
     // Test hash comment followed by code (filtered in tokenize)
     var lexer4 = Lexer.init(allocator, "# comment\nvibez.spill");
     const tokens4 = try lexer4.tokenize();
-    defer tokens4.deinit();
+    defer tokens4.deinit(allocator);
     try std.testing.expect(tokens4.items.len >= 2);
     try std.testing.expect(tokens4.items[0].kind == .Identifier); // vibez
 }
