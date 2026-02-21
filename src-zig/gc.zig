@@ -2689,80 +2689,6 @@ pub const GCImpl = struct {
     }
 
     
-    /// Create Variable-aware allocation
-    pub fn allocVariable(self: *GC, variable: *const @import("main_unified.zig").Variable) !*anyopaque {
-        
-        // Determine size and type based on Variable content
-        const size: usize = 64; // Default allocation size
-        const type_id: u16 = 0; // Default type ID
-        
-        // TODO: Implement Variable-specific allocation when needed
-        
-        // Allocate with GC
-        const ptr = try self.alloc(size, type_id);
-        
-        // Store Variable data in allocated memory
-        try self.storeVariableData(ptr, variable);
-        
-        return ptr;
-    }
-    
-    /// Store Variable data in GC-allocated memory
-    fn storeVariableData(self: *GC, ptr: *anyopaque, variable: *const @import("main_unified.zig").Variable) !void {
-        _ = self; // Suppress unused parameter warning
-        _ = ptr;
-        _ = variable;
-        
-        // TODO: Re-implement Variable data storage when needed
-    }
-    
-    /// Load Variable from GC-allocated memory
-    pub fn loadVariable(self: *GC, ptr: *anyopaque, _: std.mem.Allocator) !@import("main_unified.zig").Variable {
-        const Variable = @import("main_unified.zig").Variable;
-        const ManagedString = @import("main_unified.zig").ManagedString;
-        
-        const header = ObjectHeader.fromData(ptr);
-        
-        switch (header.type_id) {
-            0 => { // Primitive types - need to determine which one
-                // For simplicity, assume integer
-                const data_ptr = @as(*i64, @ptrCast(@alignCast(ptr)));
-                return Variable{ .Integer = data_ptr.* };
-            },
-            1 => { // String
-                const data_ptr = @as([*:0]u8, @ptrCast(ptr));
-                const str_data = std.mem.span(data_ptr);
-                const copy = try self.allocator.dupe(u8, str_data);
-                return Variable{ .String = ManagedString.fromOwned(copy) };
-            },
-            2 => { // Array
-                const length_ptr = @as(*usize, @ptrCast(@alignCast(ptr)));
-                const length = length_ptr.*;
-                
-                var arr = std.ArrayList(Variable).init(self.allocator);
-                try arr.ensureTotalCapacity(length);
-                
-                // Load array elements (recursive loading needed for GC objects)
-                for (0..length) |_| {
-                    // For now, add placeholder integers
-                    try arr.append(Variable{ .Integer = 0 });
-                }
-                
-                return Variable{ .Array = arr };
-            },
-            3 => { // Struct
-                // Struct loading would require type registry
-                // Struct loading would require type registry for field names
-                // For now, return a simple struct placeholder
-                const struct_inst = @import("main_unified.zig").StructInstance.init(self.allocator, "Unknown");
-                return Variable{ .Struct = struct_inst };
-            },
-            else => {
-                return Variable{ .Integer = 0 }; // Default fallback
-            },
-        }
-    }
-    
     /// Add Variable as root for GC scanning
     pub fn addVariableRoot(self: *GC, variable_ptr: **anyopaque) !void {
         
@@ -3323,56 +3249,6 @@ test "GC tri-color marking algorithm" {
     gc.removeRoot(&root2);
 }
 
-test "GC Variable integration" {
-    const gpa = std.testing.allocator;
-    
-    var config = GCConfig.default();
-    config.initial_heap_size = 1024 * 1024;
-    
-    var gc = try GC.init(gpa, config);
-    defer gc.deinit();
-    
-    // Create test Variables
-    const ManagedString = @import("main_unified.zig").ManagedString;
-    const Variable = @import("main_unified.zig").Variable;
-    
-    var test_string = Variable{ 
-        .String = ManagedString.fromLiteral("Hello GC!") 
-    };
-    
-    var test_int = Variable{ 
-        .Integer = 42 
-    };
-    
-    // Allocate Variables in GC
-    const gc_ptr1 = try gc.allocVariable(&test_string);
-    const gc_ptr2 = try gc.allocVariable(&test_int);
-    
-    // Allocation succeeded if no error thrown
-    
-    // Load Variables back from GC
-    const loaded_string = try gc.loadVariable(gc_ptr1, gpa);
-    const loaded_int = try gc.loadVariable(gc_ptr2, gpa);
-    
-    // Verify Variable data integrity
-    switch (loaded_string) {
-        .String => |str| {
-            try expect(std.mem.eql(u8, str.data, "Hello GC!"));
-            str.deinit(gpa);
-        },
-        else => try expect(false),
-    }
-    
-    switch (loaded_int) {
-        .Integer => |val| try expectEqual(@as(i64, 42), val),
-        else => try expect(false),
-    }
-    
-    // Test Variable root management
-    var var_ptr = &test_string;
-    try gc.addVariableRoot(&var_ptr);
-    gc.removeVariableRoot(&var_ptr);
-}
 
 test "GC stress test - allocation and collection cycles" {
     const gpa = std.testing.allocator;
